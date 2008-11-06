@@ -8,6 +8,7 @@
 #include "PodcastSettingsView.h"
 
 #include <aknnavide.h> 
+#include <podcast.rsg>
 
 class CPodcastSettingsContainer : public CCoeControl
     {
@@ -62,7 +63,7 @@ CPodcastSettingsView::CPodcastSettingsView()
 
 void CPodcastSettingsView::ConstructL( const TRect& aRect )
 {
-	BaseConstructL();
+	BaseConstructL(R_PODCAST_SETTINGSVIEW);	
 	iSettingsContainer = new (ELeave) CPodcastSettingsContainer;
 	iSettingsContainer->ConstructL(aRect);
 }

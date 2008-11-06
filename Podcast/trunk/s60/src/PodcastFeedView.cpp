@@ -5,10 +5,10 @@
  * (c) 2008 Anotherguest (Lars Persson)
  */
 
-
 #include "PodcastFeedView.h"
 
 #include <aknnavide.h> 
+#include <podcast.rsg>
 
 class CPodcastFeedContainer : public CCoeControl
     {
@@ -63,7 +63,7 @@ CPodcastFeedView::CPodcastFeedView()
 
 void CPodcastFeedView::ConstructL( const TRect& aRect )
 {
-	BaseConstructL();
+	BaseConstructL(R_PODCAST_FEEDVIEW);	
 	iFeedContainer = new (ELeave) CPodcastFeedContainer;
 	iFeedContainer->ConstructL(aRect);
 }

@@ -8,6 +8,7 @@
 #include "PodcastShowsView.h"
 
 #include <aknnavide.h> 
+#include <podcast.rsg>
 
 class CPodcastShowsContainer : public CCoeControl
     {
@@ -40,7 +41,6 @@ CPodcastShowsContainer::~CPodcastShowsContainer()
 	delete iNaviDecorator;
 }
 
-
 CPodcastShowsView* CPodcastShowsView::NewL( const TRect& aRect )
     {
     CPodcastShowsView* self = CPodcastShowsView::NewLC( aRect );
@@ -62,7 +62,7 @@ CPodcastShowsView::CPodcastShowsView()
 
 void CPodcastShowsView::ConstructL( const TRect& aRect )
 {
-	BaseConstructL();
+	BaseConstructL(R_PODCAST_SHOWSVIEW);	
 	iShowsContainer = new (ELeave) CPodcastShowsContainer;
 	iShowsContainer->ConstructL(aRect);
 }

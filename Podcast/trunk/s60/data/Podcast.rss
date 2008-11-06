@@ -14,9 +14,7 @@ RESOURCE TBUF { buf = "Podcast"; }
 
 RESOURCE EIK_APP_INFO
     {
-    hotkeys = r_podcast_hotkeys;
-    menubar = r_podcast_main_menubar;
-    cba = R_AVKON_SOFTKEYS_OPTIONS_EXIT;     
+    
     }
 
 
@@ -25,31 +23,6 @@ RESOURCE EIK_APP_INFO
 #include "PodcastShowsView.ra"
 #include "PodcastFeedView.ra"
 #include "PodcastSettingsView.ra"
-
-RESOURCE HOTKEYS r_podcast_hotkeys
-    {
-    control =
-        {
-        HOTKEY { command = EAknCmdExit; key='e'; }
-        };
-    }
-
-RESOURCE MENU_BAR r_podcast_main_menubar
-    {
-    titles =
-        {
-        MENU_TITLE { menu_pane = r_podcast_main_menu; txt = "Menu"; }
-        };
-    }
-
-RESOURCE MENU_PANE r_podcast_main_menu
-    {
-    items =
-        {        
-        MENU_ITEM { command = EPodcastCmdSettings; txt = STRING_podcast_menuitem_settings; },	
-        MENU_ITEM { command = EAknCmdExit; txt = STRING_podcast_menuitem_exit; }
-        };
-    }
 
 RESOURCE NAVI_LABEL r_podcast_navi_pane_text1
     {

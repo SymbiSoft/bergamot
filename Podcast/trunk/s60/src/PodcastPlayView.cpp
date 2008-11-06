@@ -7,8 +7,8 @@
 
 #include "PodcastPlayView.h"
 
-
 #include <aknnavide.h> 
+#include <podcast.rsg>
 
 class CPodcastPlayContainer : public CCoeControl
     {
@@ -63,7 +63,7 @@ CPodcastPlayView::CPodcastPlayView()
 
 void CPodcastPlayView::ConstructL( const TRect& aRect )
 {
-	BaseConstructL();
+	BaseConstructL(R_PODCAST_PLAYVIEW);	
 	iPlayContainer = new (ELeave) CPodcastPlayContainer;
 	iPlayContainer->ConstructL(aRect);
 }

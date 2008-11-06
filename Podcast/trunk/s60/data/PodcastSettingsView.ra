@@ -4,3 +4,37 @@
  * (c) 2008 Teknolog (Sebastian Brännström)
  * (c) 2008 Anotherguest (Lars Persson)
  */
+
+RESOURCE HOTKEYS r_podcast_settingsview_hotkeys
+    {
+    control =
+        {
+        HOTKEY { command = EAknCmdExit; key='e'; }
+        };
+    }
+
+RESOURCE MENU_BAR r_podcast_settingsview_menubar
+    {
+    titles =
+        {
+        MENU_TITLE { menu_pane = r_podcast_settingsview_menu; txt = "Menu"; }
+        };
+    }
+
+RESOURCE MENU_PANE r_podcast_settingsview_menu
+    {
+    items =
+        {        
+        MENU_ITEM { command = EPodcastCmdSettings; txt = STRING_podcast_menuitem_settings; },	
+        MENU_ITEM { command = EAknCmdExit; txt = STRING_podcast_menuitem_exit; }
+        };
+    }
+
+
+RESOURCE AVKON_VIEW r_podcast_settingsview
+{
+	hotkeys = r_podcast_settingsview_hotkeys;
+	menubar = r_podcast_settingsview_menubar;
+	cba = R_AVKON_SOFTKEYS_OPTIONS_EXIT;    
+}
+
