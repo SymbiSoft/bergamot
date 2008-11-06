@@ -7,7 +7,11 @@
 #include "HttpClient.h"
 #include "ShowEngineObserver.h"
 #include "MetaDataReader.h"
+
+#ifdef __SERIES60_3X__
+#else
 #include <QikMediaFileFolderUtils.h>
+#endif
 
 class CShowEngine : public CBase, public MHttpClientObserver, public MMetaDataReaderObserver
 {
@@ -114,8 +118,10 @@ private:
     CMetaDataReader* iMetaDataReader;
     
     TUint iGrossSelectionLength;
-    
+#ifdef __SERIES60_3X__
+#else    
     CQikMediaFileFolderUtils *iMediaFileFolderUtils;
+#endif
 };
 
 #endif /*SHOWENGINE_H_*/

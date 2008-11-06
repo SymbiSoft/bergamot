@@ -1,23 +1,41 @@
 #include "PodcastAppui.h"
 #include <Podcast.rsg>
 #include "Podcast.hrh"
+#include "PodcastBaseView.h"
+#include "PodcastFeedView.h"
+#include "PodcastShowsView.h"
+#include "PodcastPlayView.h"
+#include "PodcastSettingsView.h"
 #include <avkon.hrh>
 
 void CPodcastAppUi::ConstructL()
     {
     BaseConstructL( CAknAppUi::EAknEnableSkin );
-    iAppContainer = CPodcastContainer::NewL( ClientRect() );
-    AddToStackL( iAppContainer );
+    iBaseView = CPodcastBaseView::NewL( ClientRect() );
+	this->AddViewL(iBaseView);
+
+	iFeedView = CPodcastFeedView::NewL( ClientRect() );
+	this->AddViewL(iFeedView);
+
+	iShowsView = CPodcastShowsView::NewL( ClientRect() );
+	this->AddViewL(iShowsView);
+
+	iPlayView = CPodcastPlayView::NewL( ClientRect() );
+	this->AddViewL(iPlayView);
+
+	iSettingsView = CPodcastSettingsView::NewL( ClientRect() );
+	this->AddViewL(iSettingsView);
     }
 
 CPodcastAppUi::~CPodcastAppUi()
-    {
-    if ( iAppContainer )
+    {	
+/*    if ( iAppContainer )
         {
         RemoveFromStack( iAppContainer );
         delete iAppContainer;
         iAppContainer = NULL;
         }
+		*/
     }
 
 // -----------------------------------------------------------------------------
@@ -77,8 +95,8 @@ void CPodcastAppUi::HandleResourceChangeL( TInt aType )
 
     if ( aType==KEikDynamicLayoutVariantSwitch )
         {
-        iAppContainer->SetRect( ClientRect() );
+        //iAppContainer->SetRect( ClientRect() );
         }
 
-    iAppContainer->HandleResourceChange( aType );
+//    iAppContainer->HandleResourceChange( aType );
     }

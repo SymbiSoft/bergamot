@@ -1,11 +1,10 @@
 //  RESOURCE IDENTIFIER
-NAME    FLIS // 4 letter ID
+NAME    ESPD // 4 letter ID
 
 #include <eikon.rh>
 #include <avkon.rsg>
 #include <avkon.rh>
 #include <appinfo.rh>
-#include <Podcast.mbg>
 #include "Podcast.hrh"
 #include "Podcast.rls"
 

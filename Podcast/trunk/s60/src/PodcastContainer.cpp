@@ -11,7 +11,7 @@
 #include <GDI.H>
 
 #include <Podcast.rsg>
-#include <Podcast.mbg>
+
 #include "PodcastContainer.h"
 #include "PodcastAppUi.h"
 #include "Podcast.hrh"
@@ -91,12 +91,12 @@ void CPodcastContainer::LoadGraphicsL()
     CleanupStack::PushL( icons );
 
 	// Creates bitmap and mask for an icon.
-    AknIconUtils::CreateIconL( iBitmap, 
+ /*   AknIconUtils::CreateIconL( iBitmap, 
             iMask, 
             KIconName, 
             EMbmPodcastPodcast, 
             EMbmPodcastPodcast_mask );
-
+*/
     // Determinate icon size
     TSize iconSize;
     iconSize.iWidth = iSizeOfCell.iWidth / 2;

@@ -1,10 +1,16 @@
 #ifndef PODCASTAPPUI_H
 #define PODCASTAPPUI_H
 
-#include <aknappui.h>
-#include "PodcastContainer.h"
+#include <aknviewappui.h>
 
-class CPodcastAppUi : public CAknAppUi
+#include "PodcastContainer.h"
+class CPodcastBaseView;
+class CPodcastFeedView;
+class CPodcastShowsView;
+class CPodcastPlayView;
+class CPodcastSettingsView;
+
+class CPodcastAppUi : public CAknViewAppUi
     {
     public: 
         void ConstructL();
@@ -21,7 +27,11 @@ class CPodcastAppUi : public CAknAppUi
         virtual void HandleResourceChangeL( TInt aType );            
 
     private:
-    	CPodcastContainer *iAppContainer;
+    	CPodcastBaseView *iBaseView;
+		CPodcastFeedView* iFeedView;
+		CPodcastShowsView* iShowsView;
+		CPodcastPlayView*  iPlayView;
+		CPodcastSettingsView* iSettingsView;
     };
 
 #endif
