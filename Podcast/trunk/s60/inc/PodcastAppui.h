@@ -4,7 +4,7 @@
 #include <aknviewappui.h>
 
 #include "PodcastContainer.h"
-class CPodcastBaseView;
+class CPodcastMainView;
 class CPodcastFeedView;
 class CPodcastShowsView;
 class CPodcastPlayView;
@@ -27,7 +27,7 @@ class CPodcastAppUi : public CAknViewAppUi
         virtual void HandleResourceChangeL( TInt aType );            
 
     private:
-    	CPodcastBaseView *iBaseView;
+    	CPodcastMainView *iMainView;
 		CPodcastFeedView* iFeedView;
 		CPodcastShowsView* iShowsView;
 		CPodcastPlayView*  iPlayView;

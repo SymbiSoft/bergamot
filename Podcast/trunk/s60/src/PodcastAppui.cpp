@@ -1,7 +1,7 @@
 #include "PodcastAppui.h"
 #include <Podcast.rsg>
 #include "Podcast.hrh"
-#include "PodcastBaseView.h"
+#include "PodcastMainView.h"
 #include "PodcastFeedView.h"
 #include "PodcastShowsView.h"
 #include "PodcastPlayView.h"
@@ -11,8 +11,8 @@
 void CPodcastAppUi::ConstructL()
     {
     BaseConstructL( CAknAppUi::EAknEnableSkin );
-    iBaseView = CPodcastBaseView::NewL( ClientRect() );
-	this->AddViewL(iBaseView);
+    iMainView = CPodcastMainView::NewL( ClientRect() );
+	this->AddViewL(iMainView);
 
 	iFeedView = CPodcastFeedView::NewL( ClientRect() );
 	this->AddViewL(iFeedView);
