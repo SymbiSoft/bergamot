@@ -19,6 +19,13 @@ RESOURCE EIK_APP_INFO
     cba = R_AVKON_SOFTKEYS_OPTIONS_EXIT;     
     }
 
+
+#include "PodcastMainView.ra"
+#include "PodcastPlayView.ra"
+#include "PodcastShowsView.ra"
+#include "PodcastFeedView.ra"
+#include "PodcastSettingsView.ra"
+
 RESOURCE HOTKEYS r_podcast_hotkeys
     {
     control =
