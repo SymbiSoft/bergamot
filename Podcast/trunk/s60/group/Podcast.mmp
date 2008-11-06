@@ -1,3 +1,10 @@
+/**
+ * This file is a part of Escarpod Podcast project
+ * (c) 2008 The Bergamot Project
+ * (c) 2008 Teknolog (Sebastian Brännström)
+ * (c) 2008 Anotherguest (Lars Persson)
+ */
+
 #if !defined(__UIQ3_SDK__)
 TARGET			Podcast.exe
 TARGETTYPE  	exe
@@ -11,6 +18,11 @@ SOURCE  PodcastApp.cpp
 SOURCE  PodcastAppui.cpp 
 SOURCE  PodcastDocument.cpp
 SOURCE  PodcastContainer.cpp
+SOURCE  PodcastBaseView.cpp
+SOURCE  PodcastFeedView.cpp
+SOURCE  PodcastPlayView.cpp
+SOURCE  PodcastSettingsView.cpp
+SOURCE  PodcastShowsView.cpp
 
 SOURCEPATH ..\data
 

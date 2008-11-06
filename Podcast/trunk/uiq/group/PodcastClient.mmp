@@ -1,6 +1,4 @@
 // PodcastClient.mmp
-
-#if defined(__UIQ3_SDK__)
 TARGET            PodcastClient.exe
 TARGETTYPE        exe
 TARGETPATH        \sys\bin
@@ -147,4 +145,3 @@ CAPABILITY NetworkServices UserEnvironment
 EPOCSTACKSIZE 81920
 
 EPOCHEAPSIZE 1024000 32768000
-#endif
