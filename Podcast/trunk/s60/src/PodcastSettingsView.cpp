@@ -65,7 +65,7 @@ void CPodcastSettingsView::ConstructL( const TRect& aRect )
 {
 	BaseConstructL(R_PODCAST_SETTINGSVIEW);	
 	iSettingsContainer = new (ELeave) CPodcastSettingsContainer;
-	iSettingsContainer->ConstructL(aRect);
+	iSettingsContainer->ConstructL(ClientRect());
 }
     
 CPodcastSettingsView::~CPodcastSettingsView()

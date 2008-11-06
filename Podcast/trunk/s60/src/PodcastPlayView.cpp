@@ -65,7 +65,7 @@ void CPodcastPlayView::ConstructL( const TRect& aRect )
 {
 	BaseConstructL(R_PODCAST_PLAYVIEW);	
 	iPlayContainer = new (ELeave) CPodcastPlayContainer;
-	iPlayContainer->ConstructL(aRect);
+	iPlayContainer->ConstructL(ClientRect());
 }
     
 CPodcastPlayView::~CPodcastPlayView()

@@ -64,7 +64,7 @@ void CPodcastShowsView::ConstructL( const TRect& aRect )
 {
 	BaseConstructL(R_PODCAST_SHOWSVIEW);	
 	iShowsContainer = new (ELeave) CPodcastShowsContainer;
-	iShowsContainer->ConstructL(aRect);
+	iShowsContainer->ConstructL(ClientRect());
 }
     
 CPodcastShowsView::~CPodcastShowsView()

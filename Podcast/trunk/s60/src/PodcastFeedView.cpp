@@ -65,7 +65,7 @@ void CPodcastFeedView::ConstructL( const TRect& aRect )
 {
 	BaseConstructL(R_PODCAST_FEEDVIEW);	
 	iFeedContainer = new (ELeave) CPodcastFeedContainer;
-	iFeedContainer->ConstructL(aRect);
+	iFeedContainer->ConstructL(ClientRect());
 }
     
 CPodcastFeedView::~CPodcastFeedView()
