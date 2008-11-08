@@ -42,18 +42,18 @@ CPodcastFeedContainer::~CPodcastFeedContainer()
 }
 
 
-CPodcastFeedView* CPodcastFeedView::NewL( const TRect& aRect )
+CPodcastFeedView* CPodcastFeedView::NewL()
     {
-    CPodcastFeedView* self = CPodcastFeedView::NewLC( aRect );
+    CPodcastFeedView* self = CPodcastFeedView::NewLC();
     CleanupStack::Pop( self );
     return self;
     }
 
-CPodcastFeedView* CPodcastFeedView::NewLC( const TRect& aRect )
+CPodcastFeedView* CPodcastFeedView::NewLC()
     {
     CPodcastFeedView* self = new ( ELeave ) CPodcastFeedView();
     CleanupStack::PushL( self );
-    self->ConstructL( aRect );
+    self->ConstructL();
     return self;
     }
 
@@ -61,16 +61,14 @@ CPodcastFeedView::CPodcastFeedView()
 {
 }
 
-void CPodcastFeedView::ConstructL( const TRect& aRect )
+void CPodcastFeedView::ConstructL()
 {
 	BaseConstructL(R_PODCAST_FEEDVIEW);	
-	iFeedContainer = new (ELeave) CPodcastFeedContainer;
-	iFeedContainer->ConstructL(ClientRect());
+	CPodcastListView::ConstructL();
 }
     
 CPodcastFeedView::~CPodcastFeedView()
     {
-    delete iFeedContainer;    
     }
 
 TUid CPodcastFeedView::Id() const
@@ -82,8 +80,10 @@ void CPodcastFeedView::DoActivateL(const TVwsViewId& aPrevViewId,
 	                                  TUid aCustomMessageId,
 	                                  const TDesC8& aCustomMessage)
 {
+	CPodcastListView::DoActivateL(aPrevViewId, aCustomMessageId, aCustomMessage);
 }
 
 void CPodcastFeedView::DoDeactivate()
 {
+	CPodcastListView::DoDeactivate();
 }

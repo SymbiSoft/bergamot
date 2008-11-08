@@ -31,7 +31,7 @@ void CPodcastPlayContainer::ConstructL( const TRect& aRect )
 
 	 // Set the windows size
     SetRect( aRect );    
-    
+    MakeVisible(EFalse);
     // Activate the window, which makes it ready to be drawn
     ActivateL();   
 }
@@ -42,18 +42,18 @@ CPodcastPlayContainer::~CPodcastPlayContainer()
 }
 
 
-CPodcastPlayView* CPodcastPlayView::NewL( const TRect& aRect )
+CPodcastPlayView* CPodcastPlayView::NewL()
     {
-    CPodcastPlayView* self = CPodcastPlayView::NewLC( aRect );
+    CPodcastPlayView* self = CPodcastPlayView::NewLC();
     CleanupStack::Pop( self );
     return self;
     }
 
-CPodcastPlayView* CPodcastPlayView::NewLC( const TRect& aRect )
+CPodcastPlayView* CPodcastPlayView::NewLC()
     {
     CPodcastPlayView* self = new ( ELeave ) CPodcastPlayView();
     CleanupStack::PushL( self );
-    self->ConstructL( aRect );
+    self->ConstructL();
     return self;
     }
 
@@ -61,7 +61,7 @@ CPodcastPlayView::CPodcastPlayView()
 {
 }
 
-void CPodcastPlayView::ConstructL( const TRect& aRect )
+void CPodcastPlayView::ConstructL()
 {
 	BaseConstructL(R_PODCAST_PLAYVIEW);	
 	iPlayContainer = new (ELeave) CPodcastPlayContainer;

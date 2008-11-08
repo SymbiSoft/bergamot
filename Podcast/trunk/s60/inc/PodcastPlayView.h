@@ -15,11 +15,11 @@ class CPodcastPlayContainer;
 class CPodcastPlayView : public CAknView
     {
     public: 
-        static CPodcastPlayView* NewL( const TRect& aRect );
-        static CPodcastPlayView* NewLC( const TRect& aRect );
+        static CPodcastPlayView* NewL();
+        static CPodcastPlayView* NewLC();
         ~CPodcastPlayView();
 	protected:
-	    void ConstructL( const TRect& aRect );
+	    void ConstructL();
 		CPodcastPlayView();
 
 		/**

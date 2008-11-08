@@ -16,11 +16,11 @@ class CPodcastSettingsContainer;
 class CPodcastSettingsView : public CAknView
     {
     public: 
-        static CPodcastSettingsView* NewL( const TRect& aRect );
-        static CPodcastSettingsView* NewLC( const TRect& aRect );
+        static CPodcastSettingsView* NewL();
+        static CPodcastSettingsView* NewLC();
         ~CPodcastSettingsView();
 	protected:
-	    void ConstructL( const TRect& aRect );
+	    void ConstructL();
 		CPodcastSettingsView();
 
 		/**

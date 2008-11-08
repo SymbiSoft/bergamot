@@ -10,49 +10,18 @@
 #include <aknnavide.h> 
 #include <podcast.rsg>
 
-class CPodcastMainContainer : public CCoeControl
+CPodcastMainView* CPodcastMainView::NewL()
     {
-    public: 
-		CPodcastMainContainer();
-		~CPodcastMainContainer();
-		void ConstructL( const TRect& aRect );
-	protected:
-		CAknNavigationDecorator* iNaviDecorator;
-        CAknNavigationControlContainer* iNaviPane;
-	};
-
-CPodcastMainContainer::CPodcastMainContainer()
-{
-}
-
-void CPodcastMainContainer::ConstructL( const TRect& aRect )
-{
-	CreateWindowL();
-
-	 // Set the windows size
-    SetRect( aRect );    
-    
-    // Activate the window, which makes it ready to be drawn
-    ActivateL();   
-}
-
-CPodcastMainContainer::~CPodcastMainContainer()
-{
-	delete iNaviDecorator;
-}
-
-CPodcastMainView* CPodcastMainView::NewL( const TRect& aRect )
-    {
-    CPodcastMainView* self = CPodcastMainView::NewLC( aRect );
+    CPodcastMainView* self = CPodcastMainView::NewLC();
     CleanupStack::Pop( self );
     return self;
     }
 
-CPodcastMainView* CPodcastMainView::NewLC( const TRect& aRect )
+CPodcastMainView* CPodcastMainView::NewLC()
     {
     CPodcastMainView* self = new ( ELeave ) CPodcastMainView();
     CleanupStack::PushL( self );
-    self->ConstructL( aRect );
+    self->ConstructL();
     return self;
     }
 
@@ -60,16 +29,14 @@ CPodcastMainView::CPodcastMainView()
 {
 }
 
-void CPodcastMainView::ConstructL( const TRect& aRect )
+void CPodcastMainView::ConstructL()
 {
 	BaseConstructL(R_PODCAST_MAINVIEW);
-	iMainContainer = new (ELeave) CPodcastMainContainer;
-	iMainContainer->ConstructL(ClientRect());
+	CPodcastListView::ConstructL();
 }
     
 CPodcastMainView::~CPodcastMainView()
     {
-    delete iMainContainer;    
     }
 
 TUid CPodcastMainView::Id() const
@@ -81,8 +48,10 @@ void CPodcastMainView::DoActivateL(const TVwsViewId& aPrevViewId,
 	                                  TUid aCustomMessageId,
 	                                  const TDesC8& aCustomMessage)
 {
+	CPodcastListView::DoActivateL(aPrevViewId, aCustomMessageId, aCustomMessage);
 }
 
 void CPodcastMainView::DoDeactivate()
 {
+	CPodcastListView::DoDeactivate();
 }

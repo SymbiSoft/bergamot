@@ -5,28 +5,20 @@
  * (c) 2008 Anotherguest (Lars Persson)
  */
 
-#ifndef PODCASTFEEDVIEWH
-#define PODCASTFEEDVIEWH 
+#ifndef PODCASTLISTVIEWH
+#define PODCASTLISTVIEWH 
 
 #include <aknview.h>
 
-#include "PodcastListView.h"
-
-class CPodcastFeedView : public CPodcastListView
+class CAknDoubleLargeStyleListBox;
+class CPodcastListContainer;
+class CPodcastListView : public CAknView
     {
     public: 
-        static CPodcastFeedView* NewL();
-        static CPodcastFeedView* NewLC();
-        ~CPodcastFeedView();
+        ~CPodcastListView();
 	protected:
 	    void ConstructL();
-		CPodcastFeedView();
-
-		/**
-		 * Returns views id, intended for overriding by sub classes.
-		 * @return id for this view.
-		 */
-		TUid Id() const;
+		CPodcastListView();	
 
 		/** 
 		 * Handles a view activation and passes the message of type 
@@ -45,6 +37,18 @@ class CPodcastFeedView : public CPodcastListView
 		 * This function is called by @c AknViewDeactivated().
 		 */
 		void DoDeactivate();
-};
 
-#endif // PODCASTFEEDVIEWH
+		void HandleViewRectChange();
+		
+		/** 
+		* Event handler for status pane size changes.
+		* @c CAknView provides an empty implementation for sub classes that do 
+		* not want to handle this event.
+		*/
+		void HandleStatusPaneSizeChange();
+
+	protected:
+		 CPodcastListContainer* iListContainer;
+};
+#endif // PODCASTBASEVIEWH
+

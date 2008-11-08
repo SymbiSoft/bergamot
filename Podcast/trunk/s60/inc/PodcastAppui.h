@@ -22,10 +22,6 @@ class CPodcastAppUi : public CAknViewAppUi
 
     private:
         void HandleCommandL(TInt aCommand);
-        virtual TKeyResponse HandleKeyEventL(
-            const TKeyEvent& aKeyEvent,TEventCode aType);
-        virtual void HandleResourceChangeL( TInt aType );            
-
     private:
     	CPodcastMainView *iMainView;
 		CPodcastFeedView* iFeedView;

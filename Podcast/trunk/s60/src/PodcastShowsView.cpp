@@ -41,18 +41,18 @@ CPodcastShowsContainer::~CPodcastShowsContainer()
 	delete iNaviDecorator;
 }
 
-CPodcastShowsView* CPodcastShowsView::NewL( const TRect& aRect )
+CPodcastShowsView* CPodcastShowsView::NewL()
     {
-    CPodcastShowsView* self = CPodcastShowsView::NewLC( aRect );
+    CPodcastShowsView* self = CPodcastShowsView::NewLC();
     CleanupStack::Pop( self );
     return self;
     }
 
-CPodcastShowsView* CPodcastShowsView::NewLC( const TRect& aRect )
+CPodcastShowsView* CPodcastShowsView::NewLC()
     {
     CPodcastShowsView* self = new ( ELeave ) CPodcastShowsView();
     CleanupStack::PushL( self );
-    self->ConstructL( aRect );
+    self->ConstructL();
     return self;
     }
 
@@ -60,16 +60,14 @@ CPodcastShowsView::CPodcastShowsView()
 {
 }
 
-void CPodcastShowsView::ConstructL( const TRect& aRect )
+void CPodcastShowsView::ConstructL()
 {
 	BaseConstructL(R_PODCAST_SHOWSVIEW);	
-	iShowsContainer = new (ELeave) CPodcastShowsContainer;
-	iShowsContainer->ConstructL(ClientRect());
+	CPodcastListView::ConstructL();
 }
     
 CPodcastShowsView::~CPodcastShowsView()
     {
-    delete iShowsContainer;    
     }
 
 TUid CPodcastShowsView::Id() const
@@ -81,8 +79,10 @@ void CPodcastShowsView::DoActivateL(const TVwsViewId& aPrevViewId,
 	                                  TUid aCustomMessageId,
 	                                  const TDesC8& aCustomMessage)
 {
+	CPodcastListView::DoActivateL(aPrevViewId, aCustomMessageId, aCustomMessage);
 }
 
 void CPodcastShowsView::DoDeactivate()
 {
+	CPodcastListView::DoDeactivate();
 }

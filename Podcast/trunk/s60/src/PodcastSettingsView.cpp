@@ -31,7 +31,7 @@ void CPodcastSettingsContainer::ConstructL( const TRect& aRect )
 
 	 // Set the windows size
     SetRect( aRect );    
-    
+    MakeVisible(EFalse);
     // Activate the window, which makes it ready to be drawn
     ActivateL();   
 }
@@ -42,18 +42,18 @@ CPodcastSettingsContainer::~CPodcastSettingsContainer()
 }
 
 
-CPodcastSettingsView* CPodcastSettingsView::NewL( const TRect& aRect )
+CPodcastSettingsView* CPodcastSettingsView::NewL()
     {
-    CPodcastSettingsView* self = CPodcastSettingsView::NewLC( aRect );
+    CPodcastSettingsView* self = CPodcastSettingsView::NewLC();
     CleanupStack::Pop( self );
     return self;
     }
 
-CPodcastSettingsView* CPodcastSettingsView::NewLC( const TRect& aRect )
+CPodcastSettingsView* CPodcastSettingsView::NewLC()
     {
     CPodcastSettingsView* self = new ( ELeave ) CPodcastSettingsView();
     CleanupStack::PushL( self );
-    self->ConstructL( aRect );
+    self->ConstructL();
     return self;
     }
 
@@ -61,7 +61,7 @@ CPodcastSettingsView::CPodcastSettingsView()
 {
 }
 
-void CPodcastSettingsView::ConstructL( const TRect& aRect )
+void CPodcastSettingsView::ConstructL()
 {
 	BaseConstructL(R_PODCAST_SETTINGSVIEW);	
 	iSettingsContainer = new (ELeave) CPodcastSettingsContainer;

@@ -17,7 +17,7 @@ RESOURCE MENU_BAR r_podcast_playview_menubar
     {
     titles =
         {
-        MENU_TITLE { menu_pane = r_podcast_playview_menu; txt = "Menu"; }
+        MENU_TITLE { menu_pane = r_podcast_playview_menu; txt = "Play"; }
         };
     }
 
@@ -25,7 +25,7 @@ RESOURCE MENU_PANE r_podcast_playview_menu
     {
     items =
         {        
-        MENU_ITEM { command = EPodcastCmdSettings; txt = STRING_podcast_menuitem_settings; },	
+        MENU_ITEM { command = EPodcastCmdSettings; txt = "Play"; },	
         MENU_ITEM { command = EAknCmdExit; txt = STRING_podcast_menuitem_exit; }
         };
     }

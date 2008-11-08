@@ -11,16 +11,16 @@
 
 #include <aknview.h>
 
-class CPodcastShowsContainer;
+#include "PodcastListView.h"
 
-class CPodcastShowsView : public CAknView
+class CPodcastShowsView : public CPodcastListView
     {
     public: 
-        static CPodcastShowsView* NewL( const TRect& aRect );
-        static CPodcastShowsView* NewLC( const TRect& aRect );
+        static CPodcastShowsView* NewL();
+        static CPodcastShowsView* NewLC();
         ~CPodcastShowsView();
 	protected:
-	    void ConstructL( const TRect& aRect );
+	    void ConstructL();
 		CPodcastShowsView();
 
 		/**
@@ -46,8 +46,6 @@ class CPodcastShowsView : public CAknView
 		 * This function is called by @c AknViewDeactivated().
 		 */
 		void DoDeactivate();
-	private:
-		CPodcastShowsContainer* iShowsContainer;
 };
 
 #endif // PODCASTSHOWSVIEWH

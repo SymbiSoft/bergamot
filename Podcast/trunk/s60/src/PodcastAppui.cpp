@@ -11,19 +11,19 @@
 void CPodcastAppUi::ConstructL()
     {
     BaseConstructL( CAknAppUi::EAknEnableSkin );
-    iMainView = CPodcastMainView::NewL( ClientRect() );
+    iMainView = CPodcastMainView::NewL();
 	this->AddViewL(iMainView);
 
-	iFeedView = CPodcastFeedView::NewL( ClientRect() );
+	iFeedView = CPodcastFeedView::NewL();
 	this->AddViewL(iFeedView);
 
-	iShowsView = CPodcastShowsView::NewL( ClientRect() );
+	iShowsView = CPodcastShowsView::NewL();
 	this->AddViewL(iShowsView);
 
-	iPlayView = CPodcastPlayView::NewL( ClientRect() );
+	iPlayView = CPodcastPlayView::NewL();
 	this->AddViewL(iPlayView);
 
-	iSettingsView = CPodcastSettingsView::NewL( ClientRect() );
+	iSettingsView = CPodcastSettingsView::NewL();
 	this->AddViewL(iSettingsView);
     }
 
@@ -53,18 +53,6 @@ void CPodcastAppUi::DynInitMenuPaneL(
     }
 
 // -----------------------------------------------------------------------------
-// CPodcastAppUi::HandleKeyEventL(
-//     const TKeyEvent& aKeyEvent,TEventCode /*aType*/)
-// takes care of key event handling
-// -----------------------------------------------------------------------------
-//
-TKeyResponse CPodcastAppUi::HandleKeyEventL(
-    const TKeyEvent& /*aKeyEvent*/,TEventCode /*aType*/ )
-    {
-    return EKeyWasNotConsumed;
-    }
-
-// -----------------------------------------------------------------------------
 // CPodcastAppUi::HandleCommandL(TInt aCommand)
 // takes care of command handling
 // -----------------------------------------------------------------------------
@@ -82,21 +70,4 @@ void CPodcastAppUi::HandleCommandL( TInt aCommand )
         default:
             break;      
         }
-    }
-
-// -----------------------------------------------------------------------------
-// CPodcastAppUi::HandleResourceChangeL( TInt aType )
-// Called by framework when layout is changed.
-// -----------------------------------------------------------------------------
-//
-void CPodcastAppUi::HandleResourceChangeL( TInt aType )
-    {
-    CAknAppUi::HandleResourceChangeL( aType );
-
-    if ( aType==KEikDynamicLayoutVariantSwitch )
-        {
-        //iAppContainer->SetRect( ClientRect() );
-        }
-
-//    iAppContainer->HandleResourceChange( aType );
     }
