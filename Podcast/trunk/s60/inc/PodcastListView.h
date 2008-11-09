@@ -9,9 +9,28 @@
 #define PODCASTLISTVIEWH 
 
 #include <aknview.h>
+#include <aknlists.h> 
 
 class CAknDoubleLargeStyleListBox;
-class CPodcastListContainer;
+class CEikFormattedCellListBox;
+class CPodcastListContainer : public CCoeControl
+    {
+    public: 
+		CPodcastListContainer();
+		~CPodcastListContainer();
+		void ConstructL( const TRect& aRect );
+		void SizeChanged();
+        TInt CountComponentControls() const;
+        CCoeControl* ComponentControl( TInt aIndex ) const;
+		void HandleResourceChange(TInt aType);
+		virtual TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType);
+		CEikFormattedCellListBox* Listbox();
+	protected:
+		CEikFormattedCellListBox * iListbox;
+
+	};
+
+
 class CPodcastListView : public CAknView
     {
     public: 

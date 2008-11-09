@@ -63,4 +63,50 @@ LIBRARY	gdi.lib
 LANG SC
 
 CAPABILITY	  	  NONE
+
+
+START BITMAP Podcast.mbm
+	TARGETPATH \resource\apps
+	HEADER
+	SOURCEPATH ..\..\common\images
+	SOURCE c16 PodcastClient_64x64.bmp
+	SOURCE 8 PodcastClient_64x64_mask.bmp
+	SOURCE c16 PodcastClient_40x40.bmp
+	SOURCE 8 PodcastClient_40x40_mask.bmp
+	SOURCE c16 PodcastClient_18x18.bmp
+	SOURCE 8 PodcastClient_18x18_mask.bmp
+	SOURCE c16 feeds_40x40.bmp
+	SOURCE 8 feeds_40x40m.bmp
+	SOURCE c16 feed_40x40.bmp
+	SOURCE 8 feed_40x40m.bmp
+	SOURCE c16 play_40x40.bmp
+	SOURCE 8 play_40x40m.bmp
+	SOURCE c16 downloaded_view_40x40.bmp
+	SOURCE 8 downloaded_view_40x40m.bmp
+	SOURCE c16 pending_view_40x40.bmp
+	SOURCE 8 pending_view_40x40m.bmp
+	SOURCE c16 show_40x40.bmp
+	SOURCE 8 show_40x40m.bmp
+	SOURCE c16 show_playing_40x40.bmp
+	SOURCE 8 show_playing_40x40m.bmp
+	SOURCE c16 downloading_40x40.bmp
+	SOURCE 8 downloading_40x40m.bmp 
+	SOURCE c16 audiobooks_40x40.bmp
+	SOURCE 8 audiobooks_40x40m.bmp
+	SOURCE c16 new_40x40.bmp
+	SOURCE 8 new_40x40m.bmp
+	SOURCE c16 queued_40x40.bmp
+	SOURCE 8 queued_40x40m.bmp
+	SOURCE c16 suspended_40x40.bmp
+	SOURCE 8 suspended_40x40m.bmp
+	SOURCE c16 AudioBookChapter_40x40.bmp
+	SOURCE 8 AudioBookChapter_40x40m.bmp
+	SOURCE c16 AudioBookIndividual_40x40.bmp
+	SOURCE 8 AudioBookIndividual_40x40m.bmp
+	SOURCE c16 AudioBook_120.bmp
+	SOURCE 8 AudioBook_120m.bmp
+	SOURCE c16 Show_120.bmp
+	SOURCE 8 Show_120m.bmp 
+	SOURCE 8 emptyimage.bmp
+END
 #endif

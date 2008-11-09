@@ -12,26 +12,14 @@
 #include <aknlists.h> 
 #include <aknviewappui.h>
 
-class CPodcastListContainer : public CCoeControl
-    {
-    public: 
-		CPodcastListContainer();
-		~CPodcastListContainer();
-		void ConstructL( const TRect& aRect );
-		void SizeChanged();
-        TInt CountComponentControls() const;
-        CCoeControl* ComponentControl( TInt aIndex ) const;
-		void HandleResourceChange(TInt aType);
-
-	protected:
-		CAknNavigationDecorator* iNaviDecorator;
-        CAknNavigationControlContainer* iNaviPane;
-		CEikFormattedCellListBox * iListbox;
-
-	};
 
 CPodcastListContainer::CPodcastListContainer()
 {
+}
+
+TKeyResponse CPodcastListContainer::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType)
+{
+	return iListbox->OfferKeyEventL(aKeyEvent, aType);
 }
 
 void CPodcastListContainer::ConstructL( const TRect& aRect )
@@ -40,16 +28,13 @@ void CPodcastListContainer::ConstructL( const TRect& aRect )
 
 	 // Set the windows size
     SetRect( aRect );    
-    iListbox =static_cast<CEikFormattedCellListBox*>( new (ELeave) CAknDoubleStyleListBox);
+    iListbox =static_cast<CEikFormattedCellListBox*>( new (ELeave) CAknDoubleLargeStyleListBox);
 	iListbox->SetMopParent( this );
 	iListbox->SetContainerWindowL(*this);
 	iListbox->ConstructL(this, 0);
 	iListbox->CreateScrollBarFrameL(ETrue);
 	iListbox->ScrollBarFrame()->SetScrollBarVisibilityL(CEikScrollBarFrame::EOn, CEikScrollBarFrame::EAuto );    
 	iListbox->SetSize(aRect.Size());
-	CDesCArray* items = new (ELeave) CDesCArrayFlat(5);
-	items->AppendL(_L("\tLine one\tLine two"));
-	iListbox->Model()->SetItemTextArray(items);
 	iListbox->HandleItemAdditionL();
 	iListbox->MakeVisible(ETrue);
     MakeVisible(EFalse);
@@ -92,10 +77,14 @@ void CPodcastListContainer::SizeChanged()
 	}
 }
 
+CEikFormattedCellListBox* CPodcastListContainer::Listbox()
+{
+	return iListbox;
+}
+
 
 CPodcastListContainer::~CPodcastListContainer()
 {
-	delete iNaviDecorator;
 }
 
 CPodcastListView::CPodcastListView()

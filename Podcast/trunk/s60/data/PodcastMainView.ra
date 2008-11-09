@@ -38,3 +38,16 @@ RESOURCE AVKON_VIEW r_podcast_mainview
 	cba = R_AVKON_SOFTKEYS_OPTIONS_EXIT;    
 }
 
+
+RESOURCE ARRAY r_podcast_mainmenu_array
+{
+	items = 
+	{
+	LBUF {txt = "0\tPlayer\tPlaying: %S";},
+	LBUF {txt = "1\tShows on Phone\t%d Unplayed, %d total";},
+	LBUF {txt = "2\tDownloader\t%d Queued";},
+	LBUF {txt = "3\tFeeds\t%d Feeds";},
+	LBUF {txt = "4\tAudio Books\t%d Books";}
+	};
+
+}
