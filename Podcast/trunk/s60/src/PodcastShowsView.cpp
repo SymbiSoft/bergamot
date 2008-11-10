@@ -6,6 +6,7 @@
  */
 
 #include "PodcastShowsView.h"
+#include "PodcastAppUi.h"
 
 #include <aknnavide.h> 
 #include <podcast.rsg>
@@ -41,22 +42,22 @@ CPodcastShowsContainer::~CPodcastShowsContainer()
 	delete iNaviDecorator;
 }
 
-CPodcastShowsView* CPodcastShowsView::NewL()
+CPodcastShowsView* CPodcastShowsView::NewL(CPodcastModel& aPodcastModel)
     {
-    CPodcastShowsView* self = CPodcastShowsView::NewLC();
+    CPodcastShowsView* self = CPodcastShowsView::NewLC(aPodcastModel);
     CleanupStack::Pop( self );
     return self;
     }
 
-CPodcastShowsView* CPodcastShowsView::NewLC()
+CPodcastShowsView* CPodcastShowsView::NewLC(CPodcastModel& aPodcastModel)
     {
-    CPodcastShowsView* self = new ( ELeave ) CPodcastShowsView();
+    CPodcastShowsView* self = new ( ELeave ) CPodcastShowsView(aPodcastModel);
     CleanupStack::PushL( self );
     self->ConstructL();
     return self;
     }
 
-CPodcastShowsView::CPodcastShowsView()
+CPodcastShowsView::CPodcastShowsView(CPodcastModel& aPodcastModel):iPodcastModel(aPodcastModel)
 {
 }
 
@@ -72,7 +73,7 @@ CPodcastShowsView::~CPodcastShowsView()
 
 TUid CPodcastShowsView::Id() const
 {
-	return TUid::Uid(3);
+	return KUidPodcastShowsViewID;
 }
 		
 void CPodcastShowsView::DoActivateL(const TVwsViewId& aPrevViewId,

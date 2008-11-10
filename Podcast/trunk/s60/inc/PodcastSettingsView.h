@@ -10,18 +10,20 @@
 #define PODCASTSETTINGSVIEWH 
 
 #include <aknview.h>
+#include "ShowEngineObserver.h"
+#include "PodcastModel.h"
 
 class CPodcastSettingsContainer;
 
 class CPodcastSettingsView : public CAknView
     {
     public: 
-        static CPodcastSettingsView* NewL();
-        static CPodcastSettingsView* NewLC();
+        static CPodcastSettingsView* NewL(CPodcastModel& aPodcastModel);
+        static CPodcastSettingsView* NewLC(CPodcastModel& aPodcastModel);
         ~CPodcastSettingsView();
 	protected:
 	    void ConstructL();
-		CPodcastSettingsView();
+		CPodcastSettingsView(CPodcastModel& aPodcastModel);
 
 		/**
 		 * Returns views id, intended for overriding by sub classes.
@@ -48,6 +50,7 @@ class CPodcastSettingsView : public CAknView
 		void DoDeactivate();
 	private:
 		CPodcastSettingsContainer* iSettingsContainer;
+		CPodcastModel& iPodcastModel;
 };
 
 #endif // PODCASTSETTINGSVIEWH

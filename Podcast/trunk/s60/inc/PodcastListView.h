@@ -10,6 +10,8 @@
 
 #include <aknview.h>
 #include <aknlists.h> 
+#include <eiklbo.h>
+#include "PodcastModel.h"
 
 class CAknDoubleLargeStyleListBox;
 class CEikFormattedCellListBox;
@@ -65,7 +67,13 @@ class CPodcastListView : public CAknView
 		* not want to handle this event.
 		*/
 		void HandleStatusPaneSizeChange();
-
+				
+		/** 
+		* Command handling function intended for overriding by sub classes. 
+		* Default implementation is empty.  
+		* @param aCommand ID of the command to respond to. 
+		*/
+		void HandleCommandL(TInt aCommand);
 	protected:
 		 CPodcastListContainer* iListContainer;
 };

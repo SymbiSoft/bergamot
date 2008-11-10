@@ -2,8 +2,76 @@
 #define PODCAST_HRH
 
 enum TPodcastCommandIds
-    {    
-    EPodcastCmdSettings = 0x6000
-    };
+	{
+	EPodcastView = 0x1000,
+	EPodcastViewMain,
+	//EPodcastViewAllShows,
+	EPodcastViewNewShows,
+	EPodcastViewDownloadedShows,
+	EPodcastViewPendingShows,
+	EPodcastViewFeeds,
+	EPodcastViewPlayer,
+	EPodcastViewAudioBooks,
+	EPodcastPlay,
+	EPodcastStop,
+	EPodcastPause,
+	// Feeds commands
+	EPodcastAddFeed,
+	EPodcastEditFeed,
+	EPodcastDeleteFeed,
+	EPodcastDeleteFeedHardware,
+	EPodcastDeleteAllPlayed,
+	EPodcastUpdateFeed,
+	EPodcastUpdateAllFeeds,
+	EPodcastCancelUpdateAllFeeds,
+	EPodcastImportFeeds,
+	EPodcastExportFeeds,
+	// Show commands
+	EPodcastDownloadShow,
+	EPodcastDeleteShow,
+	EPodcastDeleteShowHardware,
+	EPodcastRemoveDownload,
+	EPodcastRemoveDownloadHardware,
+	EPodcastRemoveAllDownloads,
+	EPodcastStopDownloads,
+	EPodcastResumeDownloads,
+	EPodcastMarkAllPlayed,
+	EPodcastMarkAsPlayed,
+	EPodcastMarkAsUnplayed,
+	EPodcastShowUnplayedOnly,
+	EPodcastUpdateLibrary,
+	// Audio book commands
+	EPodcastAddNewAudioBook,
+	EPodcastAddAudioBookChapter,
+	EPodcastRemoveAudioBook,
+	EPodcastRemoveAudioBookHardware,
+	EPodcastImportAudioBook,
+	EPodcastSetOrderAudioBook,
+	EPodcastPlayAudioBook,
+	EPodcastPauseAudioBook,
+	// Common commands
+	EPodcastBack,
+	EPodcastZoomSetting,
+	EPodcastSettings,
+	EPodcastSelectShowDir,
+	EPodcastSetVolume,
+	EPodcastSetAudioBookPlayOrderSwap,
+	EPodcastAbout
+};
+
+enum TPodcastClientShowCategory
+	{
+	EShowAllShows = 0x4000,
+	EShowNewShows,
+	EShowFeedShows,
+	EShowDownloadedShows,
+	EShowPendingShows
+	};
+
+enum TFeedsViewMode
+{
+	EFeedsNormalMode = 0x100,
+	EFeedsAudioBooksMode = 0x101
+};
 
 #endif

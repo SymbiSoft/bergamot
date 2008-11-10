@@ -6,29 +6,31 @@
  */
 
 #include "PodcastMainView.h"
-
+#include "ShowEngine.h"
+#include "PodcastAppUi.h"
+#include "Podcast.hrh"
 #include <aknnavide.h> 
 #include <podcast.rsg>
 #include <podcast.mbg>
 #include <gulicon.h>
 #include <eikenv.h>
 
-CPodcastMainView* CPodcastMainView::NewL()
+CPodcastMainView* CPodcastMainView::NewL(CPodcastModel& aPodcastModel)
     {
-    CPodcastMainView* self = CPodcastMainView::NewLC();
+    CPodcastMainView* self = CPodcastMainView::NewLC(aPodcastModel);
     CleanupStack::Pop( self );
     return self;
     }
 
-CPodcastMainView* CPodcastMainView::NewLC()
+CPodcastMainView* CPodcastMainView::NewLC(CPodcastModel& aPodcastModel)
     {
-    CPodcastMainView* self = new ( ELeave ) CPodcastMainView();
+    CPodcastMainView* self = new ( ELeave ) CPodcastMainView(aPodcastModel);
     CleanupStack::PushL( self );
     self->ConstructL();
     return self;
     }
 
-CPodcastMainView::CPodcastMainView()
+CPodcastMainView::CPodcastMainView(CPodcastModel& aPodcastModel):iPodcastModel(aPodcastModel)
 {
 }
 
@@ -100,6 +102,7 @@ void CPodcastMainView::ConstructL()
 
 	CDesCArray* items = iEikonEnv->ReadDesCArrayResourceL(R_PODCAST_MAINMENU_ARRAY);
 	iListContainer->Listbox()->Model()->SetItemTextArray(items);
+	iListContainer->Listbox()->SetListBoxObserver(this);
 }
     
 CPodcastMainView::~CPodcastMainView()
@@ -122,3 +125,91 @@ void CPodcastMainView::DoDeactivate()
 {
 	CPodcastListView::DoDeactivate();
 }
+
+TInt CPodcastMainView::StaticCheckForQuedDownloadsL(TAny* aBaseView)
+{
+	static_cast<CPodcastMainView*>(aBaseView)->CheckForQuedDownloadsL();
+	return KErrNone;
+}
+
+void CPodcastMainView::CheckForQuedDownloadsL()
+{
+	delete iStartupCallBack;
+	iStartupCallBack = NULL;
+
+	iPodcastModel.ShowEngine().SelectShowsDownloading();
+	if (iPodcastModel.ShowEngine().GetSelectedShows().Count() > 0) {
+		if(iEikonEnv->QueryWinL(R_PODCAST_ENABLE_DOWNLOADS_TITLE, R_PODCAST_ENABLE_DOWNLOADS_PROMPT))
+		{
+			iPodcastModel.ShowEngine().ResumeDownloads();
+		} else {
+			iPodcastModel.ShowEngine().StopDownloads();
+		}
+/*		UpdateListboxItemsL();*/
+	}
+}
+
+
+void CPodcastMainView::ShowListUpdated()
+	{
+//	TRAP_IGNORE(UpdateListboxItemsL());	
+	}
+
+void CPodcastMainView::DownloadQueueUpdated(TInt /*aDownloadingShows*/, TInt /*aQueuedShows*/)
+
+	{
+//	TRAP_IGNORE(UpdateListboxItemsL());
+	}
+
+// From // MEikListBoxObserverClass
+void CPodcastMainView::HandleListBoxEventL(CEikListBox* /*aListBox*/, TListBoxEvent aEventType)
+{
+	switch(aEventType)
+	{
+	case EEventEnterKeyPressed:
+	case EEventItemClicked:
+	case EEventItemActioned:
+		{
+			TUid newview = TUid::Uid(0);
+			TUid messageUid = TUid::Uid(0);
+
+			switch(iListContainer->Listbox()->CurrentItemIndex())
+			{
+			case 0:
+				if (iPodcastModel.PlayingPodcast()) {
+					newview = KUidPodcastPlayViewID;
+				}
+				break;
+			case 1:
+				newview = KUidPodcastShowsViewID;
+				messageUid = TUid::Uid(EShowNewShows);
+				break;
+			case 2:
+				newview = KUidPodcastShowsViewID;
+				messageUid = TUid::Uid(EShowPendingShows);
+				break;
+			case 3:
+				newview = KUidPodcastFeedViewID;
+				messageUid = TUid::Uid(EFeedsNormalMode);
+				break;
+			case 4:
+				newview = KUidPodcastFeedViewID;
+				messageUid = TUid::Uid(EFeedsAudioBooksMode);	
+				break;
+			}
+
+			if(newview.iUid != 0)
+			{			
+				AppUi()->ActivateLocalViewL(newview,  messageUid, KNullDesC8());
+			}
+		}
+		break;
+	default:
+		break;
+		}
+
+
+}
+
+
+

@@ -25,9 +25,18 @@ RESOURCE MENU_PANE r_podcast_settingsview_menu
     {
     items =
         {        
-        MENU_ITEM { command = EPodcastCmdSettings; txt = "Settings"; },	
-        MENU_ITEM { command = EAknCmdExit; txt = STRING_podcast_menuitem_exit; }
-        };
+	// Other commands	
+		MENU_ITEM
+			{
+			command = EPodcastZoomSetting;
+			txt = STRING_r_zoom_cmd;
+			},
+		MENU_ITEM
+			{
+			command = EPodcastAbout;
+			txt = STRING_r_view_about_cmd;
+			}		
+		};
     }
 
 
@@ -35,6 +44,6 @@ RESOURCE AVKON_VIEW r_podcast_settingsview
 {
 	hotkeys = r_podcast_settingsview_hotkeys;
 	menubar = r_podcast_settingsview_menubar;
-	cba = R_AVKON_SOFTKEYS_OPTIONS_EXIT;    
+	cba = R_AVKON_SOFTKEYS_OPTIONS_BACK;    
 }
 

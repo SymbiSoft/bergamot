@@ -6,7 +6,7 @@
  */
 
 #include "PodcastFeedView.h"
-
+#include "PodcastAppUi.h"
 #include <aknnavide.h> 
 #include <podcast.rsg>
 
@@ -42,22 +42,22 @@ CPodcastFeedContainer::~CPodcastFeedContainer()
 }
 
 
-CPodcastFeedView* CPodcastFeedView::NewL()
+CPodcastFeedView* CPodcastFeedView::NewL(CPodcastModel& aPodcastModel)
     {
-    CPodcastFeedView* self = CPodcastFeedView::NewLC();
+    CPodcastFeedView* self = CPodcastFeedView::NewLC(aPodcastModel);
     CleanupStack::Pop( self );
     return self;
     }
 
-CPodcastFeedView* CPodcastFeedView::NewLC()
+CPodcastFeedView* CPodcastFeedView::NewLC(CPodcastModel& aPodcastModel)
     {
-    CPodcastFeedView* self = new ( ELeave ) CPodcastFeedView();
+    CPodcastFeedView* self = new ( ELeave ) CPodcastFeedView(aPodcastModel);
     CleanupStack::PushL( self );
     self->ConstructL();
     return self;
     }
 
-CPodcastFeedView::CPodcastFeedView()
+CPodcastFeedView::CPodcastFeedView(CPodcastModel& aPodcastModel):iPodcastModel(aPodcastModel)
 {
 }
 
@@ -73,7 +73,7 @@ CPodcastFeedView::~CPodcastFeedView()
 
 TUid CPodcastFeedView::Id() const
 {
-	return TUid::Uid(2);
+	return KUidPodcastFeedViewID;
 }
 		
 void CPodcastFeedView::DoActivateL(const TVwsViewId& aPrevViewId,

@@ -6,6 +6,7 @@
  */
 
 #include "PodcastSettingsView.h"
+#include "PodcastAppUi.h"
 
 #include <aknnavide.h> 
 #include <podcast.rsg>
@@ -42,22 +43,22 @@ CPodcastSettingsContainer::~CPodcastSettingsContainer()
 }
 
 
-CPodcastSettingsView* CPodcastSettingsView::NewL()
+CPodcastSettingsView* CPodcastSettingsView::NewL(CPodcastModel& aPodcastModel)
     {
-    CPodcastSettingsView* self = CPodcastSettingsView::NewLC();
+    CPodcastSettingsView* self = CPodcastSettingsView::NewLC(aPodcastModel);
     CleanupStack::Pop( self );
     return self;
     }
 
-CPodcastSettingsView* CPodcastSettingsView::NewLC()
+CPodcastSettingsView* CPodcastSettingsView::NewLC(CPodcastModel& aPodcastModel)
     {
-    CPodcastSettingsView* self = new ( ELeave ) CPodcastSettingsView();
+    CPodcastSettingsView* self = new ( ELeave ) CPodcastSettingsView(aPodcastModel);
     CleanupStack::PushL( self );
     self->ConstructL();
     return self;
     }
 
-CPodcastSettingsView::CPodcastSettingsView()
+CPodcastSettingsView::CPodcastSettingsView(CPodcastModel& aPodcastModel):iPodcastModel(aPodcastModel)
 {
 }
 
@@ -75,7 +76,7 @@ CPodcastSettingsView::~CPodcastSettingsView()
 
 TUid CPodcastSettingsView::Id() const
 {
-	return TUid::Uid(5);
+	return KUidPodcastSettingsViewID;
 }
 		
 void CPodcastSettingsView::DoActivateL(const TVwsViewId& aPrevViewId,

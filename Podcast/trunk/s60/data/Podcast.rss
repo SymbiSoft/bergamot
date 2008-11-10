@@ -14,7 +14,6 @@ RESOURCE TBUF { buf = "Podcast"; }
 
 RESOURCE EIK_APP_INFO
     {
-    
     }
 
 

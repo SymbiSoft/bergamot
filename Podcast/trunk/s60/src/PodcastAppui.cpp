@@ -6,36 +6,35 @@
 #include "PodcastShowsView.h"
 #include "PodcastPlayView.h"
 #include "PodcastSettingsView.h"
+#include "ShowEngine.h"
+#include "PodcastModel.h"
+
 #include <avkon.hrh>
 
 void CPodcastAppUi::ConstructL()
     {
     BaseConstructL( CAknAppUi::EAknEnableSkin );
-    iMainView = CPodcastMainView::NewL();
+    iPodcastModel = CPodcastModel::NewL();
+
+    iMainView = CPodcastMainView::NewL(*iPodcastModel);
 	this->AddViewL(iMainView);
 
-	iFeedView = CPodcastFeedView::NewL();
+	iFeedView = CPodcastFeedView::NewL(*iPodcastModel);
 	this->AddViewL(iFeedView);
 
-	iShowsView = CPodcastShowsView::NewL();
+	iShowsView = CPodcastShowsView::NewL(*iPodcastModel);
 	this->AddViewL(iShowsView);
 
-	iPlayView = CPodcastPlayView::NewL();
+	iPlayView = CPodcastPlayView::NewL(*iPodcastModel);
 	this->AddViewL(iPlayView);
 
-	iSettingsView = CPodcastSettingsView::NewL();
+	iSettingsView = CPodcastSettingsView::NewL(*iPodcastModel);
 	this->AddViewL(iSettingsView);
     }
 
 CPodcastAppUi::~CPodcastAppUi()
     {	
-/*    if ( iAppContainer )
-        {
-        RemoveFromStack( iAppContainer );
-        delete iAppContainer;
-        iAppContainer = NULL;
-        }
-		*/
+	delete iPodcastModel;
     }
 
 // -----------------------------------------------------------------------------
@@ -67,6 +66,7 @@ void CPodcastAppUi::HandleCommandL( TInt aCommand )
             Exit();
             break;
             }
+	
         default:
             break;      
         }

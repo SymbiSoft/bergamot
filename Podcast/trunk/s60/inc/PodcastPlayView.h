@@ -9,18 +9,20 @@
 #define PODCASTPLAYVIEWH 
 
 #include <aknview.h>
+#include "ShowEngineObserver.h"
+#include "PodcastModel.h"
 
 class CPodcastPlayContainer;
 
 class CPodcastPlayView : public CAknView
     {
     public: 
-        static CPodcastPlayView* NewL();
-        static CPodcastPlayView* NewLC();
+        static CPodcastPlayView* NewL(CPodcastModel& aPodcastModel);
+        static CPodcastPlayView* NewLC(CPodcastModel& aPodcastModel);
         ~CPodcastPlayView();
 	protected:
 	    void ConstructL();
-		CPodcastPlayView();
+		CPodcastPlayView(CPodcastModel& aPodcastModel);
 
 		/**
 		 * Returns views id, intended for overriding by sub classes.
@@ -47,6 +49,7 @@ class CPodcastPlayView : public CAknView
 		void DoDeactivate();
 	private:
 		CPodcastPlayContainer* iPlayContainer;
+		CPodcastModel& iPodcastModel;
 };
 
 #endif // PODCASTPLAYVIEWH

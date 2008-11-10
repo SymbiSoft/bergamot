@@ -6,7 +6,8 @@
  */
 
 #include "PodcastListView.h"
-
+#include "Podcast.hrh"
+#include "PodcastAppUi.h"
 #include <aknnavide.h> 
 #include <podcast.rsg>
 #include <aknlists.h> 
@@ -139,5 +140,34 @@ void CPodcastListView::DoDeactivate()
 	if ( iListContainer )
 	{
         AppUi()->RemoveFromViewStack( *this, iListContainer );
+		iListContainer->MakeVisible(EFalse);
+	}
+}
+
+/** 
+* Command handling function intended for overriding by sub classes. 
+* Default implementation is empty.  
+* @param aCommand ID of the command to respond to. 
+*/
+void CPodcastListView::HandleCommandL(TInt aCommand)
+{
+	RDebug::Printf("CPodcastListView::HandleCommandL=%d", aCommand);
+	switch(aCommand)
+	{
+	case EAknSoftkeyExit:
+	case EEikCmdExit:
+		{
+            AppUi()->Exit();
+            break;
+		}
+	case EPodcastSettings:
+		AppUi()->ActivateLocalViewL(KUidPodcastSettingsViewID);
+		break;
+	case EPodcastZoomSetting:
+		break;
+	case EPodcastAbout:
+		break;
+	default:
+		break;
 	}
 }

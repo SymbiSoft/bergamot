@@ -25,8 +25,8 @@ RESOURCE MENU_PANE r_podcast_playview_menu
     {
     items =
         {        
-        MENU_ITEM { command = EPodcastCmdSettings; txt = "Play"; },	
-        MENU_ITEM { command = EAknCmdExit; txt = STRING_podcast_menuitem_exit; }
+        MENU_ITEM { command = EPodcastSettings; txt = "Play"; },	
+        MENU_ITEM { command = EPodcastBack; txt = "Back"; }
         };
     }
 
@@ -35,6 +35,6 @@ RESOURCE AVKON_VIEW r_podcast_playview
 {
 	hotkeys = r_podcast_playview_hotkeys;
 	menubar = r_podcast_playview_menubar;
-	cba = R_AVKON_SOFTKEYS_OPTIONS_EXIT;    
+	cba = R_AVKON_SOFTKEYS_OPTIONS_BACK;    
 }
 
