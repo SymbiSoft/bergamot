@@ -1,6 +1,4 @@
-#include <qikon.hrh>
 #include <commdb.h>
-#include <podcastclient.rsg>
 #include "PodcastModel.h"
 #include "FeedEngine.h"
 #include "SoundEngine.h"
@@ -8,6 +6,12 @@
 #include "ShowEngine.h"
 
 const TInt KDefaultGranu = 5;
+#define EQikCmdZoomLevel1							0x0800
+/** @publishedAll @released */
+#define EQikCmdZoomLevel2							0x0801
+/** @publishedAll @released */
+#define EQikCmdZoomLevel3							0x0802
+/** @publishedAll @released */
 
 CPodcastModel* CPodcastModel::NewL()
 {

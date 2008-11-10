@@ -25,7 +25,7 @@ CShowEngine::~CShowEngine()
 	delete iShowClient;
 	iObservers.Close();
 	delete iMetaDataReader;
-	delete iMediaFileFolderUtils;
+	iApaSession.Close();
 	}
 
 CShowEngine* CShowEngine::NewL(CPodcastModel& aPodcastModel)
@@ -37,6 +37,26 @@ CShowEngine* CShowEngine::NewL(CPodcastModel& aPodcastModel)
 	return self;
 	}
 
+void CShowEngine::GetMimeType(const TDesC& aFileName, TDes& aMimeType)
+{
+	aMimeType.Zero();
+	RFile file;
+	if(file.Open(iFs, aFileName, 0) == KErrNone)
+	{
+		if(file.Read(iRecogBuffer) == KErrNone)
+		{
+			file.Close();
+			TDataRecognitionResult result;
+			if(iApaSession.RecognizeData(aFileName, iRecogBuffer, result) == KErrNone)
+			{
+				aMimeType.Copy(result.iDataType.Des());
+			}
+			
+		}
+	}
+	file.Close();
+}
+
 void CShowEngine::ConstructL()
 	{
 	iFs.Connect();
@@ -44,7 +64,7 @@ void CShowEngine::ConstructL()
 	iShowClient->SetResumeEnabled(ETrue);
 	iMetaDataReader = new (ELeave) CMetaDataReader(*this);
 	iMetaDataReader->ConstructL();
-	iMediaFileFolderUtils = CQikMediaFileFolderUtils::NewL(*CEikonEnv::Static());
+	iApaSession.Connect();
 	
 	// Try to load the database.
 	TRAPD(err, LoadShowsL());
@@ -285,7 +305,7 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TBool aSuccessful)
 			
 		// decide what kind of file this is
 		TBuf<100> mimeType;
-		iMediaFileFolderUtils->GetMimeType(iShowDownloading->FileName(), mimeType);
+		GetMimeType(iShowDownloading->FileName(), mimeType);
 		
 		if (mimeType.Left(5) == _L("audio")) {
 			iShowDownloading->SetShowType(EAudioPodcast);
@@ -893,7 +913,7 @@ void CShowEngine::ListDirL(TFileName &folder) {
 			
 			// decide what kind of file this is
 			TBuf<100> mimeType;
-			iMediaFileFolderUtils->GetMimeType(pathName, mimeType);
+			GetMimeType(pathName, mimeType);
 			DP2("'%S' has mime: '%S'", &pathName, &mimeType);
 #ifdef __WINS__
 			if(mimeType.Length() == 0)

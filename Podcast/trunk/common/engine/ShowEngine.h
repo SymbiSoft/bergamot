@@ -2,16 +2,12 @@
 #define SHOWENGINE_H_
 
 #include <e32base.h>
+#include <APGCLI.H>
 #include "ShowInfo.h"
 #include "PodcastModel.h"
 #include "HttpClient.h"
 #include "ShowEngineObserver.h"
 #include "MetaDataReader.h"
-
-#ifdef __SERIES60_3X__
-#else
-#include <QikMediaFileFolderUtils.h>
-#endif
 
 class CShowEngine : public CBase, public MHttpClientObserver, public MMetaDataReaderObserver
 {
@@ -71,6 +67,7 @@ protected:
 	// from MetaDataReaderObserver
 	void ReadMetaData(CShowInfo *aShowInfo);
 	void ReadMetaDataComplete();
+	void GetMimeType(const TDesC& aFileName, TDes& aMimeType);
 private:
 	CShowEngine(CPodcastModel& aPodcastModel);
 	void ConstructL();
@@ -118,10 +115,8 @@ private:
     CMetaDataReader* iMetaDataReader;
     
     TUint iGrossSelectionLength;
-#ifdef __SERIES60_3X__
-#else    
-    CQikMediaFileFolderUtils *iMediaFileFolderUtils;
-#endif
+    RApaLsSession iApaSession;
+	TBuf8<512> iRecogBuffer;
 };
 
 #endif /*SHOWENGINE_H_*/
