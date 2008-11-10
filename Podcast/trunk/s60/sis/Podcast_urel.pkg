@@ -1,0 +1,18 @@
+%{"Bergamot Project"}
+:"Bergamot Project"
+#{"Escarpod"}, (0xA0009D00), 0, 40, 0, TYPE=SA
+[0x101F7961], 0, 0, 0, {"Series60ProductID"}
+
+; Freeware installation "warning" required by Symbian signed
+;"..\..\common\group\FreewareWarningEN.txt"-"",FT 
+
+"\epoc32\data\z\resource\apps\Podcast.rsc"-"!:\resource\apps\Podcast.rsc"
+"\epoc32\data\z\resource\apps\Podcastsvg.mif"-"!:\resource\apps\Podcastsvg.mif"
+"\epoc32\data\z\resource\apps\Podcast.mbm"-"!:\resource\apps\Podcast.mbm"
+"\Epoc32\Data\z\private\10003a3f\import\apps\Podcast_reg.rsc"-"!:\private\10003a3f\import\apps\Podcast_reg.rsc"
+
+;"../../common/config/config.cfg"-"c:\private\A00046ae\config.cfg"
+;"../../common/config/defaultfeeds.xml"-"c:\private\A00046ae\defaultfeeds.xml"
+
+; application UI
+"\epoc32\release\gcce\urel\Podcast.exe"-"!:\sys\bin\Podcast.exe", FR, RI

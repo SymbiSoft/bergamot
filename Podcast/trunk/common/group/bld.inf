@@ -6,6 +6,8 @@ PRJ_MMPFILES
 ..\..\common\engine\engine.mmp
 #else
 ..\..\s60\group\Podcast.mmp
+gnumakefile ..\..\s60\group\icons.mk
+
 #endif
 
 PRJ_PLATFORMS

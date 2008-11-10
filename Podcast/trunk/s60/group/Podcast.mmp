@@ -12,61 +12,8 @@ UID				0x0 0xA0009D00
 VENDORID		0x0
 EPOCSTACKSIZE	0x5000
 
-SOURCEPATH ..\src
-SOURCE  Podcast.cpp
-SOURCE  PodcastApp.cpp
-SOURCE  PodcastAppui.cpp 
-SOURCE  PodcastDocument.cpp
-SOURCE  PodcastContainer.cpp
-SOURCE  PodcastListView.cpp
-SOURCE  PodcastMainView.cpp
-SOURCE  PodcastFeedView.cpp
-SOURCE  PodcastPlayView.cpp
-SOURCE  PodcastSettingsView.cpp
-SOURCE  PodcastShowsView.cpp
-
-SOURCEPATH ..\data
-
-START RESOURCE Podcast.rss
-	HEADER
-	TARGETPATH resource\apps
-END
-
-START RESOURCE Podcast_reg.rss
-#ifdef WINSCW
-TARGETPATH 	  \private\10003a3f\apps
-#else
-TARGETPATH 	  \private\10003a3f\import\apps
-#endif
-END
-
-USERINCLUDE . 
-USERINCLUDE ..\inc
-
-SYSTEMINCLUDE   . \epoc32\include
-SYSTEMINCLUDE   \epoc32\include\libc
-
-LIBRARY	euser.lib 
-LIBRARY	apparc.lib
-LIBRARY	cone.lib
-LIBRARY	eikcore.lib 
-LIBRARY eikcoctl.lib
-LIBRARY avkon.lib
-LIBRARY	egul.lib    // for CGulIcon
-LIBRARY	bafl.lib
-LIBRARY	eikdlg.lib
-LIBRARY	efsrv.lib
-LIBRARY	aknicon.lib
-LIBRARY	gdi.lib
-
-
-LANG SC
-
-CAPABILITY	  	  NONE
-
-
 START BITMAP Podcast.mbm
-	TARGETPATH \resource\apps
+	//TARGETPATH \resource\apps
 	HEADER
 	SOURCEPATH ..\..\common\images
 	SOURCE c16 PodcastClient_64x64.bmp
@@ -109,4 +56,61 @@ START BITMAP Podcast.mbm
 	SOURCE 8 Show_120m.bmp 
 	SOURCE 8 emptyimage.bmp
 END
+
+
+SYSTEMINCLUDE   \epoc32\include
+SYSTEMINCLUDE   \epoc32\include\libc
+
+USERINCLUDE . 
+USERINCLUDE ..\inc
+
+SOURCEPATH ..\src
+SOURCE  Podcast.cpp
+SOURCE  PodcastApp.cpp
+SOURCE  PodcastAppui.cpp 
+SOURCE  PodcastDocument.cpp
+SOURCE  PodcastContainer.cpp
+SOURCE  PodcastListView.cpp
+SOURCE  PodcastMainView.cpp
+SOURCE  PodcastFeedView.cpp
+SOURCE  PodcastPlayView.cpp
+SOURCE  PodcastSettingsView.cpp
+SOURCE  PodcastShowsView.cpp
+
+SOURCEPATH ..\data
+
+START RESOURCE Podcast.rss
+	HEADER
+//	TARGETPATH resource\apps
+END
+
+START RESOURCE Podcast_reg.rss
+#ifdef WINSCW
+TARGETPATH 	  \private\10003a3f\apps
+#else
+TARGETPATH 	  \private\10003a3f\import\apps
+#endif
+END
+
+
+LIBRARY	euser.lib 
+LIBRARY	apparc.lib
+LIBRARY	cone.lib
+LIBRARY	eikcore.lib 
+LIBRARY eikcoctl.lib
+LIBRARY avkon.lib
+LIBRARY	egul.lib    // for CGulIcon
+LIBRARY	bafl.lib
+LIBRARY	eikdlg.lib
+LIBRARY	efsrv.lib
+LIBRARY	aknicon.lib
+LIBRARY	gdi.lib
+
+
+LANG SC
+
+CAPABILITY	  	  NONE
+
+
+
 #endif

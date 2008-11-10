@@ -37,6 +37,6 @@ RESOURCE LOCALISABLE_APP_INFO r_podcast_localisable_app_info
         {
         caption = STRING_podcast_caption_string;
         number_of_icons = 1;
-        icon_file = "\\resource\\apps\\Podcast.mif";
+        icon_file = "\\resource\\apps\\Podcastsvg.mif";
 	};
     }
