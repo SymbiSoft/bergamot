@@ -121,9 +121,9 @@ RESOURCE TIME_EDITOR r_podcast_updatetime
 	};
 	maxTime = TIME
 	{
-	second = 23;
+	second = 59;
 	minute = 59;
-	hour = 59;
+	hour = 23;
 	};
 	}
 
@@ -138,6 +138,6 @@ RESOURCE EDWIN r_podcast_showdir
 {
 lines = 3;
 maxlength = 256;
-default_input_mode = EAknEditorNumericInputMode;
+default_input_mode = EAknEditorTextInputMode;
 }
 
