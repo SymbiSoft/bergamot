@@ -37,7 +37,7 @@ TInt CPodcastSettingsContainer::CountComponentControls() const
 	return iListbox!=NULL?1:0;
 }
 
-CCoeControl* CPodcastSettingsContainer::ComponentControl( TInt aIndex ) const
+CCoeControl* CPodcastSettingsContainer::ComponentControl( TInt /*aIndex*/ ) const
 {
 	return iListbox;
 }
@@ -103,8 +103,8 @@ TUid CPodcastSettingsView::Id() const
 }
 		
 void CPodcastSettingsView::DoActivateL(const TVwsViewId& aPrevViewId,
-	                                  TUid aCustomMessageId,
-	                                  const TDesC8& aCustomMessage)
+	                                  TUid /*aCustomMessageId*/,
+	                                  const TDesC8& /*aCustomMessage*/)
 {
 	iPreviousView = aPrevViewId;
 	
