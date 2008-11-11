@@ -13,7 +13,7 @@ VENDORID		0x0
 EPOCSTACKSIZE	0x5000
 
 START BITMAP Podcast.mbm
-	//TARGETPATH \resource\apps
+	TARGETPATH \resource\apps
 	HEADER
 	SOURCEPATH ..\..\common\images
 	SOURCE c16 PodcastClient_64x64.bmp
