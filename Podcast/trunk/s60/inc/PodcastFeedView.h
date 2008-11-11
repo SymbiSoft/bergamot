@@ -13,7 +13,7 @@
 #include "PodcastModel.h"
 #include "PodcastListView.h"
 
-class CPodcastFeedView : public CPodcastListView
+class CPodcastFeedView : public CPodcastListView, MEikListBoxObserver
     {
     public: 
         static CPodcastFeedView* NewL(CPodcastModel& aPodcastModel);
@@ -46,8 +46,14 @@ class CPodcastFeedView : public CPodcastListView
 		 * This function is called by @c AknViewDeactivated().
 		 */
 		void DoDeactivate();
+		
+
+		// From // MEikListBoxObserverClass
+		void HandleListBoxEventL(CEikListBox* aListBox, TListBoxEvent aEventType);
+
 	private:
 		CPodcastModel& iPodcastModel;
+		CDesCArrayFlat iFeeds;
 };
 
 #endif // PODCASTFEEDVIEWH

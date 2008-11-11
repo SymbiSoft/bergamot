@@ -9,6 +9,10 @@
 #include "PodcastAppUi.h"
 #include <aknnavide.h> 
 #include <podcast.rsg>
+#include "FeedEngine.h"
+#include <podcast.mbg>
+#include <gulicon.h>
+#include <eikenv.h>
 
 class CPodcastFeedContainer : public CCoeControl
     {
@@ -57,7 +61,7 @@ CPodcastFeedView* CPodcastFeedView::NewLC(CPodcastModel& aPodcastModel)
     return self;
     }
 
-CPodcastFeedView::CPodcastFeedView(CPodcastModel& aPodcastModel):iPodcastModel(aPodcastModel)
+CPodcastFeedView::CPodcastFeedView(CPodcastModel& aPodcastModel):iPodcastModel(aPodcastModel), iFeeds(1)
 {
 }
 
@@ -65,6 +69,24 @@ void CPodcastFeedView::ConstructL()
 {
 	BaseConstructL(R_PODCAST_FEEDVIEW);	
 	CPodcastListView::ConstructL();
+	
+	CArrayPtr< CGulIcon >* icons = new(ELeave) CArrayPtrFlat< CGulIcon >(1);
+	CleanupStack::PushL( icons );
+
+	// Load the bitmap for feed icon	
+	CFbsBitmap* bitmap = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastFeed_40x40);
+	CleanupStack::PushL( bitmap );		
+	// Load the mask for feed icon	
+	CFbsBitmap* mask = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastFeed_40x40m );	
+	CleanupStack::PushL( mask );
+	// Append the feed icon to icon array
+	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );
+	CleanupStack::Pop(2); // bitmap, mask
+
+	iListContainer->Listbox()->ItemDrawer()->FormattedCellData()->SetIconArrayL( icons );
+	CleanupStack::Pop(icons); // icons
+
+	iListContainer->Listbox()->SetListBoxObserver(this);
 }
     
 CPodcastFeedView::~CPodcastFeedView()
@@ -81,9 +103,28 @@ void CPodcastFeedView::DoActivateL(const TVwsViewId& aPrevViewId,
 	                                  const TDesC8& aCustomMessage)
 {
 	CPodcastListView::DoActivateL(aPrevViewId, aCustomMessageId, aCustomMessage);
+	
+
+	const RFeedInfoArray &feeds =  iPodcastModel.FeedEngine().GetSortedFeeds();
+
+
+	iFeeds.Reset();
+	for (int i=0;i<feeds.Count();i++) {
+		iFeeds.AppendL(feeds[i]->Title());
+	}
+	
+	iListContainer->Listbox()->Model()->SetItemTextArray(&iFeeds);
+
+	
 }
 
 void CPodcastFeedView::DoDeactivate()
 {
 	CPodcastListView::DoDeactivate();
+}
+
+
+void CPodcastFeedView::HandleListBoxEventL(CEikListBox* aListBox, TListBoxEvent aEventType)
+{
+	
 }
