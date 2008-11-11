@@ -49,28 +49,95 @@ RESOURCE AVKON_VIEW r_podcast_settingsview
 
 RESOURCE AVKON_SETTING_ITEM_LIST r_podcast_settings
 {
-title = "Settings";
+title = STRING_r_podcast_settings_title;
 items =
 	{
 			AVKON_SETTING_ITEM
 			{
-			name = "Field1";
-			identifier = 1;
-			setting_page_resource = r_field1_page;
-			}
+			name = STRING_r_podcast_setting_showdir;
+			identifier = EPodcastSettingShowDir;
+			setting_page_resource = r_podcast_showdir_page;
+			},
+			AVKON_SETTING_ITEM
+			{
+				identifier= EPodcastSettingUpdateInterval;			
+				name= STRING_r_podcast_setting_checkevery;
+				setting_page_resource = r_podcast_updateinterval_page;
+
+			},
+			AVKON_SETTING_ITEM
+			{
+				identifier= EPodcastSettingUpdateTime;			
+				name= STRING_r_podcast_setting_updateat;
+				setting_page_resource = r_podcast_updatetime_page;
+			}/*,
+			AVKON_SETTING_ITEM
+			{
+				identifier= EPodcastSettingAutoDownload;					
+				name= STRING_r_podcast_setting_autodownload;
+				setting_page_resource = r_podcast_autodl_page;					
+			}*/
+
+
 	};
 }
 
-RESOURCE AVKON_SETTING_PAGE r_field1_page
+RESOURCE AVKON_SETTING_PAGE r_podcast_autodl_page
 {
-label="Field1 Label";
-type = EEikCtEdwin;
-editor_resource_id = r_field1;
+label=STRING_r_podcast_setting_autodownload;
+type = EEikCtCheckBox;
+
 }
 
-RESOURCE EDWIN r_field1
+
+
+RESOURCE AVKON_SETTING_PAGE r_podcast_updateinterval_page
 {
-maxlength = 40;
-default_input_mode = EAknEditorNumericInputMode;
-allowed_input_modes = EAknEditorNumericInputMode;
+label=STRING_r_podcast_setting_checkevery;
+type = EAknCtIntegerEdwin;
+editor_resource_id = r_podcast_updateinterval;
 }
+
+RESOURCE AVKON_INTEGER_EDWIN r_podcast_updateinterval
+	{
+	min = 0;
+	max = 1440;
+	}
+
+RESOURCE AVKON_SETTING_PAGE r_podcast_updatetime_page
+{
+label=STRING_r_podcast_setting_updateat;
+type = EEikCtTimeEditor;
+editor_resource_id = r_podcast_updatetime;
+}
+
+RESOURCE TIME_EDITOR r_podcast_updatetime
+	{
+	minTime = TIME
+	{
+	second = 0;
+	minute = 0;
+	hour = 0;
+	};
+	maxTime = TIME
+	{
+	second = 23;
+	minute = 59;
+	hour = 59;
+	};
+	}
+
+RESOURCE AVKON_SETTING_PAGE r_podcast_showdir_page
+{
+label=STRING_r_podcast_setting_showdir;
+type = EEikCtEdwin;
+editor_resource_id = r_podcast_showdir;
+}
+
+RESOURCE EDWIN r_podcast_showdir
+{
+lines = 3;
+maxlength = 256;
+default_input_mode = EAknEditorNumericInputMode;
+}
+

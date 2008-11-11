@@ -59,6 +59,21 @@ enum TPodcastCommandIds
 	EPodcastAbout
 };
 
+enum TPodcastControl
+	{
+	EPodcastListViewListCtrl= 0x1000,	
+	// Controls for view context	
+	// Settings View controls
+	EPodcastSettingShowDir,
+	EPodcastSettingAutoDownload,
+	EPodcastSettingAutoUpdate,
+	EPodcastSettingUpdateInterval,
+	EPodcastSettingUpdateTime,
+	EPodcastSettingMaxsimdls,
+	EPodcastSettingConnection,
+	EPodcastSettingIAPList,
+	EPodcastSettingsVolume	
+	};
 enum TPodcastClientShowCategory
 	{
 	EShowAllShows = 0x4000,

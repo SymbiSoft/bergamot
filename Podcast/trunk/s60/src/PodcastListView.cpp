@@ -36,7 +36,6 @@ void CPodcastListContainer::ConstructL( const TRect& aRect )
 	iListbox->CreateScrollBarFrameL(ETrue);
 	iListbox->ScrollBarFrame()->SetScrollBarVisibilityL(CEikScrollBarFrame::EAuto, CEikScrollBarFrame::EAuto );    
 	iListbox->SetSize(aRect.Size());
-	iListbox->HandleItemAdditionL();
 	iListbox->MakeVisible(ETrue);
     MakeVisible(EFalse);
 	// Activate the window, which makes it ready to be drawn
