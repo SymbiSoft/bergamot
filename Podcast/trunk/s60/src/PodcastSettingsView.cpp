@@ -37,13 +37,24 @@ public:
 		{
 		switch(aSettingId)
 			{
-			case 1:
+			case EPodcastSettingShowDir:
+				return new (ELeave) CAknTextSettingItem(aSettingId, iShowDir);
+				break;
+			case EPodcastSettingUpdateInterval:
+				return new (ELeave) CAknIntegerEdwinSettingItem(aSettingId, iIntervalUpdate);
+				break;
+			case EPodcastSettingUpdateTime:
+				return new (ELeave) CAknTimeOrDateSettingItem(aSettingId, CAknTimeOrDateSettingItem::ETime, iTimeUpdate);
+				break;
 			default:
 				return CAknSettingItemList::CreateSettingItemL(aSettingId);
 				break;
 			}
 		return NULL;
 		}
+	TFileName iShowDir;
+	TInt iIntervalUpdate;
+	TTime iTimeUpdate;
 	};
 
 class CPodcastSettingsContainer : public CCoeControl
