@@ -47,3 +47,30 @@ RESOURCE AVKON_VIEW r_podcast_settingsview
 	cba = R_AVKON_SOFTKEYS_OPTIONS_BACK;    
 }
 
+RESOURCE AVKON_SETTING_ITEM_LIST r_podcast_settings
+{
+title = "Settings";
+items =
+	{
+			AVKON_SETTING_ITEM
+			{
+			name = "Field1";
+			identifier = 1;
+			setting_page_resource = r_field1_page;
+			}
+	};
+}
+
+RESOURCE AVKON_SETTING_PAGE r_field1_page
+{
+label="Field1 Label";
+type = EEikCtEdwin;
+editor_resource_id = r_field1;
+}
+
+RESOURCE EDWIN r_field1
+{
+maxlength = 40;
+default_input_mode = EAknEditorNumericInputMode;
+allowed_input_modes = EAknEditorNumericInputMode;
+}

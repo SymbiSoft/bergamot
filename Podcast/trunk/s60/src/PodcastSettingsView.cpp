@@ -8,7 +8,8 @@
 #include "PodcastSettingsView.h"
 #include "PodcastAppUi.h"
 #include "Podcast.hrh"
-
+#include <aknlists.h>
+#include <aknsettingitemlist.h>
 #include <aknnavide.h> 
 #include <podcast.rsg>
 
@@ -18,7 +19,10 @@ class CPodcastSettingsContainer : public CCoeControl
 		CPodcastSettingsContainer();
 		~CPodcastSettingsContainer();
 		void ConstructL( const TRect& aRect );
+		TInt CountComponentControls() const;
+		CCoeControl* ComponentControl( TInt aIndex ) const;
 	protected:
+		CAknSettingItemList  * iListbox;
 		CAknNavigationDecorator* iNaviDecorator;
         CAknNavigationControlContainer* iNaviPane;
 	};
@@ -27,20 +31,38 @@ CPodcastSettingsContainer::CPodcastSettingsContainer()
 {
 }
 
-void CPodcastSettingsContainer::ConstructL( const TRect& aRect )
-{
-	CreateWindowL();
 
-	 // Set the windows size
-    SetRect( aRect );    
-    MakeVisible(EFalse);
-    // Activate the window, which makes it ready to be drawn
-    ActivateL();   
+TInt CPodcastSettingsContainer::CountComponentControls() const
+{
+	return iListbox!=NULL?1:0;
 }
+
+CCoeControl* CPodcastSettingsContainer::ComponentControl( TInt aIndex ) const
+{
+	return iListbox;
+}
+
+void CPodcastSettingsContainer::ConstructL( const TRect& aRect )
+	{
+	CreateWindowL();
+	iListbox =new (ELeave) CAknSettingItemList;
+	iListbox->SetMopParent( this );
+	iListbox->SetContainerWindowL(*this);
+	iListbox->ConstructFromResourceL(R_PODCAST_SETTINGS);
+	iListbox->SetSize(aRect.Size());
+
+	iListbox->MakeVisible(ETrue);
+	// Set the windows size
+	SetRect( aRect );    
+	MakeVisible(EFalse);
+	// Activate the window, which makes it ready to be drawn
+	ActivateL();   
+	}
 
 CPodcastSettingsContainer::~CPodcastSettingsContainer()
 {
 	delete iNaviDecorator;
+	delete iListbox;
 }
 
 
@@ -85,6 +107,7 @@ void CPodcastSettingsView::DoActivateL(const TVwsViewId& aPrevViewId,
 	                                  const TDesC8& aCustomMessage)
 {
 	iPreviousView = aPrevViewId;
+	
 	if(iSettingsContainer)
 		{
 		iSettingsContainer->SetRect(ClientRect());
