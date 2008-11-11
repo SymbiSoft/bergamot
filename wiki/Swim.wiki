@@ -43,6 +43,7 @@ The complete source code is found in the [http://bergamot.googlecode.com/svn/Syn
   * 0.40 (2008-11-06) [http://bergamot.googlecode.com/svn/Sync/tags/v040 Source]
     * First S60 version
     * Bug fix for UIQ
+    * *Note that the S60 version of 0.40 has a bug that causes syncing every 30 minutes*
 
   * 0.30 (2008-10-04) [http://bergamot.googlecode.com/svn/Sync/tags/v030 Source]
     * Finally changed UIDs so Swim can be signed with Symbian [https://www.symbiansigned.com/app/page/public/openSignedOnline.do Open Signed Online]!
