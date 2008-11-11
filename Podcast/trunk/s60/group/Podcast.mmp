@@ -85,10 +85,12 @@ SOURCE  PodcastSettingsView.cpp
 SOURCE  PodcastShowsView.cpp
 
 SOURCEPATH ..\data
+USERINCLUDE ..\..\common\resources
 
 START RESOURCE Podcast.rss
 	HEADER
 	TARGETPATH resource\apps
+	LANG			  01 02 03 04 05 06 07 16 17 25 27 44 49
 END
 
 START RESOURCE Podcast_reg.rss

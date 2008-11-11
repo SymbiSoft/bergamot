@@ -17,7 +17,7 @@ RESOURCE MENU_BAR r_podcast_mainview_menubar
     {
     titles =
         {
-        MENU_TITLE { menu_pane = r_podcast_mainview_menu; txt = "Main"; }
+        MENU_TITLE { menu_pane = r_podcast_mainview_menu; txt = STRING_r_view_main_cmd; }
         };
     }
 

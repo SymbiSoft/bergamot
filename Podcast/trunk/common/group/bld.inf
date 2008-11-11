@@ -5,6 +5,7 @@ PRJ_MMPFILES
 ..\..\uiq\group\PodcastClient.mmp
 ..\..\common\engine\engine.mmp
 #else
+..\..\common\engine\engine.mmp
 ..\..\s60\group\Podcast.mmp
 gnumakefile ..\..\s60\group\icons.mk
 
