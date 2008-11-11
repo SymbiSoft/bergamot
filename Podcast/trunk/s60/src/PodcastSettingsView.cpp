@@ -65,6 +65,12 @@ class CPodcastSettingsContainer : public CCoeControl
 		void ConstructL( const TRect& aRect );
 		TInt CountComponentControls() const;
 		CCoeControl* ComponentControl( TInt aIndex ) const;
+    protected:
+    	TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType)
+    	{
+    		return iListbox->OfferKeyEventL(aKeyEvent, aType);
+    	}
+
 	protected:
 		CPodcastSettingItemList  * iListbox;
 		CAknNavigationDecorator* iNaviDecorator;
