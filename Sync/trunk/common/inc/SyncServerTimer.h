@@ -16,6 +16,7 @@ public:
 	void SetPeriod(int period);
 	
 private:
+	TTime timeToSync;
 	TSmlProfileId profileId;
 	int thePeriod;
 //	RMutex mutex;

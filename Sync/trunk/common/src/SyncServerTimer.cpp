@@ -15,17 +15,25 @@ CSyncServerTimer::~CSyncServerTimer() {
 void CSyncServerTimer::ConstructL() {
 	CTimer::ConstructL();
 	CActiveScheduler::Add(this);
-//	mutex.CreateGlobal(KSyncServerMutex);
 }
 
 void CSyncServerTimer::RunL() {
-//	mutex.OpenGlobal(KSyncServerMutex);
-//	mutex.Wait();
-	DP("Mutex Wait finished");
 	DP1("Sync account %d", profileId);
 	
-#ifdef __WINS__
-#else
+#ifndef __WINS__
+	TTime time;
+	time.UniversalTime();
+	if (time < timeToSync) {
+		// timer was probably reset, this happens on Nokia every 30 minutes
+		DP("Timer reset");
+		TRAPD(error,AtUTC(timeToSync));
+		
+		if (error != KErrNone) {
+			DP1("Error from AtUTC: %d", error);
+		}
+		return;
+	}
+
 	RSyncMLSession session;
 	TInt error;
 	TRAP(error, session.OpenL());
@@ -56,11 +64,8 @@ void CSyncServerTimer::RunL() {
 	job.Close();
 	
 	session.Close();
-//	DP("Mutex Signal"));
-//	mutex.Signal();
-//	mutex.Close();
-	// run again
 #endif
+	// run again
 	RunPeriodically();
 }
 
@@ -76,39 +81,45 @@ void CSyncServerTimer::RunPeriodically() {
 
 	switch(thePeriod) {
 	case ENever:
+		DP("ENever");
 		return;
 	case EFifteenMinutes: {
-//		TTimeIntervalSeconds tmi; // for testing
+		DP("EFifteenMinutes");
 		TTimeIntervalMinutes tmi;
 		tmi = 15;
 		time = time + tmi;
 		break;
 	}
 	case EOneHour: {
+		DP("EOneHour");
 		TTimeIntervalMinutes tmi;
 		tmi = 60;
 		time = time + tmi;
 		break;
 	}
 	case EFourHours: {
+		DP("EFourHours");
 		TTimeIntervalHours tmi;
 		tmi = 4;
 		time = time + tmi;
 		break;
 	}
 	case ETwelveHours: {
+		DP("ETwelveHours");
 		TTimeIntervalHours tmi;
 		tmi = 12;
 		time = time + tmi;
 		break;
 	}	
 	case EDaily: {
+		DP("EDaily");
 		TTimeIntervalHours tmi;
 		tmi = 24;
 		time = time + tmi;
 		break;
 	}
 	case EWeekly: {
+		DP("EWeekly");
 		TTimeIntervalDays tmi;
 		tmi = 7;
 		time = time + tmi;
@@ -119,8 +130,11 @@ void CSyncServerTimer::RunPeriodically() {
 		return;
 	}
 
-	DP("Running timer");
-	TRAPD(error,AtUTC(time));
+	TBuf<100> timestr;
+	time.FormatL(timestr, _L("%H:%T:%S"));
+	DP1("Running timer, next sync at: %S", &timestr);
+	timeToSync = time;
+	TRAPD(error,AtUTC(timeToSync));
 	
 	if (error != KErrNone) {
 		DP1("Error from AtUTC: %d", error);
