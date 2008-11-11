@@ -7,6 +7,7 @@
 
 #include "PodcastSettingsView.h"
 #include "PodcastAppUi.h"
+#include "Podcast.hrh"
 
 #include <aknnavide.h> 
 #include <podcast.rsg>
@@ -83,8 +84,50 @@ void CPodcastSettingsView::DoActivateL(const TVwsViewId& aPrevViewId,
 	                                  TUid aCustomMessageId,
 	                                  const TDesC8& aCustomMessage)
 {
+	iPreviousView = aPrevViewId;
+	if(iSettingsContainer)
+		{
+		iSettingsContainer->SetRect(ClientRect());
+		AppUi()->AddToViewStackL( *this, iSettingsContainer );	
+		iSettingsContainer->MakeVisible(ETrue);
+		iSettingsContainer->DrawNow();
+		}
 }
 
 void CPodcastSettingsView::DoDeactivate()
+	{
+	if ( iSettingsContainer )
+		{
+		AppUi()->RemoveFromViewStack( *this, iSettingsContainer );
+		iSettingsContainer->MakeVisible(EFalse);
+		}
+	}
+
+/** 
+* Command handling function intended for overriding by sub classes. 
+* Default implementation is empty.  
+* @param aCommand ID of the command to respond to. 
+*/
+void CPodcastSettingsView::HandleCommandL(TInt aCommand)
 {
+	RDebug::Printf("CPodcastListView::HandleCommandL=%d", aCommand);
+	switch(aCommand)
+	{
+	case EAknSoftkeyExit:
+	case EEikCmdExit:
+		{
+            AppUi()->Exit();
+            break;
+		}
+	case EAknSoftkeyBack:
+		{
+		AppUi()->ActivateViewL(iPreviousView);
+		}break;	
+	case EPodcastZoomSetting:
+		break;
+	case EPodcastAbout:
+		break;
+	default:
+		break;
+	}
 }

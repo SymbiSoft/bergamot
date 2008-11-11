@@ -48,9 +48,18 @@ class CPodcastSettingsView : public CAknView
 		 * This function is called by @c AknViewDeactivated().
 		 */
 		void DoDeactivate();
+		
+		/** 
+		 * Command handling function intended for overriding by sub classes. 
+		 * Default implementation is empty.  
+		 * @param aCommand ID of the command to respond to. 
+		 */
+		void HandleCommandL(TInt aCommand);
 	private:
 		CPodcastSettingsContainer* iSettingsContainer;
 		CPodcastModel& iPodcastModel;
+		 /** Previous activated view */
+		 TVwsViewId iPreviousView;
 };
 
 #endif // PODCASTSETTINGSVIEWH
