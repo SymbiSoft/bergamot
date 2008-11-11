@@ -12,6 +12,39 @@
 #include <aknsettingitemlist.h>
 #include <aknnavide.h> 
 #include <podcast.rsg>
+class CPodcastSettingItemList:public CAknSettingItemList
+	{
+public:
+	CPodcastSettingItemList()
+		{
+
+		}
+	
+	~CPodcastSettingItemList()
+		{
+
+		}
+
+	/**
+	 * Framework method to create a setting item based upon the user id aSettingId. The 
+	 * client code decides what type to contruct. new (ELeave) must then be used and the resulting 
+	 * pointer returned. Ownership is thereafter base class's responsiblity.
+	 *
+	 * @param aSettingId	ID to use to determine the type of the setting item
+	 * @return a constructed (not 2nd-stage constructed) setting item.
+	 */
+	CAknSettingItem* CreateSettingItemL( TInt aSettingId )
+		{
+		switch(aSettingId)
+			{
+			case 1:
+			default:
+				return CAknSettingItemList::CreateSettingItemL(aSettingId);
+				break;
+			}
+		return NULL;
+		}
+	};
 
 class CPodcastSettingsContainer : public CCoeControl
     {
@@ -22,7 +55,7 @@ class CPodcastSettingsContainer : public CCoeControl
 		TInt CountComponentControls() const;
 		CCoeControl* ComponentControl( TInt aIndex ) const;
 	protected:
-		CAknSettingItemList  * iListbox;
+		CPodcastSettingItemList  * iListbox;
 		CAknNavigationDecorator* iNaviDecorator;
         CAknNavigationControlContainer* iNaviPane;
 	};
@@ -45,7 +78,7 @@ CCoeControl* CPodcastSettingsContainer::ComponentControl( TInt /*aIndex*/ ) cons
 void CPodcastSettingsContainer::ConstructL( const TRect& aRect )
 	{
 	CreateWindowL();
-	iListbox =new (ELeave) CAknSettingItemList;
+	iListbox =new (ELeave) CPodcastSettingItemList;
 	iListbox->SetMopParent( this );
 	iListbox->SetContainerWindowL(*this);
 	iListbox->ConstructFromResourceL(R_PODCAST_SETTINGS);
