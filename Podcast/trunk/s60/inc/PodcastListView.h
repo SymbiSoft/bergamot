@@ -76,6 +76,7 @@ class CPodcastListView : public CAknView
 		void HandleCommandL(TInt aCommand);
 	protected:
 		 CPodcastListContainer* iListContainer;
-};
+		 TVwsViewId iPreviousView;
+    };
 #endif // PODCASTBASEVIEWH
 

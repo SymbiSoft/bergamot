@@ -126,6 +126,8 @@ void CPodcastListView::DoActivateL(const TVwsViewId& aPrevViewId,
 	                                  TUid aCustomMessageId,
 									  const TDesC8& aCustomMessage)
 {
+	iPreviousView = aPrevViewId;
+	
 	if(iListContainer)
 	{
 		iListContainer->SetRect(ClientRect());
@@ -160,6 +162,10 @@ void CPodcastListView::HandleCommandL(TInt aCommand)
             AppUi()->Exit();
             break;
 		}
+	case EAknSoftkeyBack:
+		{
+		AppUi()->ActivateViewL(iPreviousView);
+		}break;
 	case EPodcastSettings:
 		AppUi()->ActivateLocalViewL(KUidPodcastSettingsViewID);
 		break;
