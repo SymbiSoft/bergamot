@@ -1,4 +1,4 @@
-#summary The UIQ Podcatcher
+#summary The Symbian Podcatcher
 #labels Featured
 
 = Escarpod =
