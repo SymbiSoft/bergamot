@@ -34,7 +34,7 @@ void CPodcastListContainer::ConstructL( const TRect& aRect )
 	iListbox->SetContainerWindowL(*this);
 	iListbox->ConstructL(this, 0);
 	iListbox->CreateScrollBarFrameL(ETrue);
-	iListbox->ScrollBarFrame()->SetScrollBarVisibilityL(CEikScrollBarFrame::EOn, CEikScrollBarFrame::EAuto );    
+	iListbox->ScrollBarFrame()->SetScrollBarVisibilityL(CEikScrollBarFrame::EAuto, CEikScrollBarFrame::EAuto );    
 	iListbox->SetSize(aRect.Size());
 	iListbox->HandleItemAdditionL();
 	iListbox->MakeVisible(ETrue);
