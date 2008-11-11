@@ -23,7 +23,7 @@ TKeyResponse CPodcastListContainer::OfferKeyEventL(const TKeyEvent& aKeyEvent,TE
 	return iListbox->OfferKeyEventL(aKeyEvent, aType);
 }
 
-void CPodcastListContainer::ConstructL( const TRect& aRect )
+void CPodcastListContainer::ConstructL( const TRect& aRect, TInt aListboxFlags )
 {
 	CreateWindowL();
 
@@ -32,7 +32,7 @@ void CPodcastListContainer::ConstructL( const TRect& aRect )
     iListbox =static_cast<CEikFormattedCellListBox*>( new (ELeave) CAknDoubleLargeStyleListBox);
 	iListbox->SetMopParent( this );
 	iListbox->SetContainerWindowL(*this);
-	iListbox->ConstructL(this, 0);
+	iListbox->ConstructL(this, aListboxFlags);
 	iListbox->CreateScrollBarFrameL(ETrue);
 	iListbox->ScrollBarFrame()->SetScrollBarVisibilityL(CEikScrollBarFrame::EAuto, CEikScrollBarFrame::EAuto );    
 	iListbox->SetSize(aRect.Size());
@@ -95,7 +95,7 @@ void CPodcastListView::ConstructL()
 {
 	iListContainer = new (ELeave) CPodcastListContainer;
 	iListContainer->SetMopParent( this );
-	iListContainer->ConstructL(ClientRect());
+	iListContainer->ConstructL(ClientRect(), iListboxFlags);
 }
 
 void CPodcastListView::HandleViewRectChange()
@@ -131,6 +131,7 @@ void CPodcastListView::DoActivateL(const TVwsViewId& aPrevViewId,
 	{
 		iListContainer->SetRect(ClientRect());
 		AppUi()->AddToViewStackL( *this, iListContainer );	
+		UpdateListboxItemsL();
 		iListContainer->MakeVisible(ETrue);
 		iListContainer->DrawNow();
 	}

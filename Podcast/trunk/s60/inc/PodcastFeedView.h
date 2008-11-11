@@ -9,11 +9,12 @@
 #define PODCASTFEEDVIEWH 
 
 #include <aknview.h>
-#include "ShowEngineObserver.h"
+#include "FeedEngine.h"
 #include "PodcastModel.h"
 #include "PodcastListView.h"
+#include "Podcast.hrh"
 
-class CPodcastFeedView : public CPodcastListView, MEikListBoxObserver
+class CPodcastFeedView : public CPodcastListView, MEikListBoxObserver, public MFeedEngineObserver
     {
     public: 
         static CPodcastFeedView* NewL(CPodcastModel& aPodcastModel);
@@ -50,10 +51,23 @@ class CPodcastFeedView : public CPodcastListView, MEikListBoxObserver
 
 		// From // MEikListBoxObserverClass
 		void HandleListBoxEventL(CEikListBox* aListBox, TListBoxEvent aEventType);
+		void UpdateListboxItemsL();
 
+		
+		// from MFeedEngineObserver
+		void FeedInfoUpdated(CFeedInfo* aFeedInfo);
+		void FeedDownloadUpdatedL(TUint aFeedUid, TInt aPercentOfCurrentDownload);
+		void FeedUpdateCompleteL(TUint aFeeidUid);
+		void FeedUpdateAllCompleteL();
 	private:
 		CPodcastModel& iPodcastModel;
 		CDesCArrayFlat iFeeds;
+		TBool iUpdatingAllRunning;
+		TBool iProgressAdded;
+		TFeedsViewMode iCurrentViewMode;
+		HBufC* iBooksFormat;
+		HBufC* iFeedsFormat;
+		HBufC* iNeverUpdated;
 };
 
 #endif // PODCASTFEEDVIEWH

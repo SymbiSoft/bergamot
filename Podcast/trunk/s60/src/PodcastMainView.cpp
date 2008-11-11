@@ -100,9 +100,19 @@ void CPodcastMainView::ConstructL()
 	iListContainer->Listbox()->ItemDrawer()->FormattedCellData()->SetIconArrayL( icons );
 	CleanupStack::Pop(icons); // icons
 
-	CDesCArray* items = iEikonEnv->ReadDesCArrayResourceL(R_PODCAST_MAINMENU_ARRAY);
-	iListContainer->Listbox()->Model()->SetItemTextArray(items);
 	iListContainer->Listbox()->SetListBoxObserver(this);
+}
+
+
+void CPodcastMainView::UpdateListboxItemsL()
+{
+ // Update already existing items perhaps for special layout?
+	if(iListContainer->Listbox() != NULL)
+	{
+		CDesCArray* items = iEikonEnv->ReadDesCArrayResourceL(R_PODCAST_MAINMENU_ARRAY);
+		iListContainer->Listbox()->Model()->SetItemTextArray(items);
+		iListContainer->Listbox()->HandleItemAdditionL();			
+	}
 }
     
 CPodcastMainView::~CPodcastMainView()
@@ -119,6 +129,12 @@ void CPodcastMainView::DoActivateL(const TVwsViewId& aPrevViewId,
 	                                  const TDesC8& aCustomMessage)
 {
 	CPodcastListView::DoActivateL(aPrevViewId, aCustomMessageId, aCustomMessage);
+	if(iCheckForQuedDownloads)
+	{
+		iCheckForQuedDownloads = EFalse;
+		iStartupCallBack = new (ELeave) CAsyncCallBack(TCallBack(StaticCheckForQuedDownloadsL, this), CActive::EPriorityIdle);
+		iStartupCallBack->Call();
+	}
 }
 
 void CPodcastMainView::DoDeactivate()
@@ -145,7 +161,7 @@ void CPodcastMainView::CheckForQuedDownloadsL()
 		} else {
 			iPodcastModel.ShowEngine().StopDownloads();
 		}
-/*		UpdateListboxItemsL();*/
+		UpdateListboxItemsL();
 	}
 }
 

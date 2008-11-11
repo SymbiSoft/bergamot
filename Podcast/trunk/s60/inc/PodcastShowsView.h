@@ -10,12 +10,14 @@
 #define PODCASTSHOWSVIEWH 
 
 #include <aknview.h>
+#include <aknlists.h> 
+#include <eiklbo.h>
 #include "ShowEngineObserver.h"
 #include "PodcastModel.h"
-
+#include "Podcast.hrh"
 #include "PodcastListView.h"
 
-class CPodcastShowsView : public CPodcastListView
+class CPodcastShowsView : public CPodcastListView,public MEikListBoxObserver
     {
     public: 
         static CPodcastShowsView* NewL(CPodcastModel& aPodcastModel);
@@ -48,7 +50,14 @@ class CPodcastShowsView : public CPodcastListView
 		 * This function is called by @c AknViewDeactivated().
 		 */
 		void DoDeactivate();
+
+		void UpdateListboxItemsL();
+
+		// From // MEikListBoxObserverClass
+		void HandleListBoxEventL(CEikListBox* aListBox, TListBoxEvent aEventType);
+
 	private:
+		TPodcastClientShowCategory iCurrentCategory;
 		CPodcastModel& iPodcastModel;
 };
 

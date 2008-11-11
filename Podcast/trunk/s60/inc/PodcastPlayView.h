@@ -12,6 +12,8 @@
 #include "ShowEngineObserver.h"
 #include "PodcastModel.h"
 
+const TInt KActiveShowUIDCmd = 0x1000;
+
 class CPodcastPlayContainer;
 
 class CPodcastPlayView : public CAknView

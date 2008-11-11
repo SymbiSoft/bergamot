@@ -13,7 +13,7 @@
 #include "PodcastListView.h"
 #include "ShowEngineObserver.h"
 #include "PodcastModel.h"
-class CPodcastMainView : public CPodcastListView, MShowEngineObserver, MEikListBoxObserver
+class CPodcastMainView : public CPodcastListView,public MShowEngineObserver,public MEikListBoxObserver
     {
     public: 
         static CPodcastMainView* NewL(CPodcastModel& aPodcastModel);
@@ -56,6 +56,8 @@ class CPodcastMainView : public CPodcastListView, MShowEngineObserver, MEikListB
 
 		// From // MEikListBoxObserverClass
 		void HandleListBoxEventL(CEikListBox* aListBox, TListBoxEvent aEventType);
+
+		void UpdateListboxItemsL();
 	private:
 		TBool iCheckForQuedDownloads;
 		CAsyncCallBack* iStartupCallBack;

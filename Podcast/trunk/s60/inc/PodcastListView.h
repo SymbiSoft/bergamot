@@ -20,7 +20,7 @@ class CPodcastListContainer : public CCoeControl
     public: 
 		CPodcastListContainer();
 		~CPodcastListContainer();
-		void ConstructL( const TRect& aRect );
+		void ConstructL( const TRect& aRect, TInt aListboxFlags );
 		void SizeChanged();
         TInt CountComponentControls() const;
         CCoeControl* ComponentControl( TInt aIndex ) const;
@@ -74,10 +74,15 @@ class CPodcastListView : public CAknView
 		* @param aCommand ID of the command to respond to. 
 		*/
 		void HandleCommandL(TInt aCommand);
+
+		virtual void UpdateListboxItemsL() = 0;
 	protected:
 		 CPodcastListContainer* iListContainer;
 		 /** Previous activated view */
 		 TVwsViewId iPreviousView;
+
+		 /** Listbox flags which the listbox is created with*/
+		 TInt iListboxFlags;
     };
 #endif // PODCASTBASEVIEWH
 
