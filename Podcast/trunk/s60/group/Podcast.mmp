@@ -62,7 +62,9 @@ SYSTEMINCLUDE   \epoc32\include
 SYSTEMINCLUDE   \epoc32\include\libc
 SYSTEMINCLUDE \epoc32\include\mmf\common 
 SYSTEMINCLUDE \epoc32\include\mmf\plugin
-
+SYSTEMINCLUDE \epoc32\include\middleware
+SYSTEMINCLUDE \epoc32\include\domain\middleware
+SYSTEMINCLUDE \epoc32\include\osextensions
 
 USERINCLUDE ..\..\common\engine
 USERINCLUDE ..\..\common\libid3tag
@@ -86,7 +88,7 @@ SOURCEPATH ..\data
 
 START RESOURCE Podcast.rss
 	HEADER
-//	TARGETPATH resource\apps
+	TARGETPATH resource\apps
 END
 
 START RESOURCE Podcast_reg.rss
