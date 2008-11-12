@@ -346,7 +346,8 @@ void CPodcastFeedView::UpdateFeedInfoDataL(CFeedInfo* aFeedInfo, TInt aIndex, TB
 											
 		if (aFeedInfo->LastUpdated().Int64() == 0) 
 		{
-			updatedDate.Zero();
+			updatedDate.Copy(*iNeverUpdated);					
+			unplayedShows.Copy(KUnknownUpdateDateString());
 		}
 		else 
 		{
