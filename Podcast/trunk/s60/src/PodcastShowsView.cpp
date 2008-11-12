@@ -876,7 +876,7 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 						{
 						iItemArray->Delete(index);
 						iItemIdArray.Remove(index);						
-						iListContainer->Listbox()->HandleItemRemovalL()
+						iListContainer->Listbox()->HandleItemRemovalL();
 						
 						/*MQikListBoxModel& model(iListbox->Model());
 						 model.ModelBeginUpdateLC();
