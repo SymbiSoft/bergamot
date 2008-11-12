@@ -84,12 +84,22 @@ void CPodcastFeedView::ConstructL()
 	iPodcastModel.FeedEngine().AddObserver(this);
 	CArrayPtr< CGulIcon >* icons = new(ELeave) CArrayPtrFlat< CGulIcon >(1);
 	CleanupStack::PushL( icons );
-
-	// Load the bitmap for feed icon	
-	CFbsBitmap* bitmap = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastFeed_40x40);
+	
+	// Load the bitmap for empty icon	
+	CFbsBitmap* bitmap = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastEmptyimage);
 	CleanupStack::PushL( bitmap );		
 	// Load the mask for feed icon	
-	CFbsBitmap* mask = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastFeed_40x40m );	
+	CFbsBitmap* mask = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastEmptyimage );	
+	CleanupStack::PushL( mask );
+	// Append the feed icon to icon array
+	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );
+	CleanupStack::Pop(2); // bitmap, mask
+	
+	// Load the bitmap for feed icon	
+	bitmap = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastFeed_40x40);
+	CleanupStack::PushL( bitmap );		
+	// Load the mask for feed icon	
+	mask = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastFeed_40x40m );	
 	CleanupStack::PushL( mask );
 	// Append the feed icon to icon array
 	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );
@@ -97,17 +107,8 @@ void CPodcastFeedView::ConstructL()
 
 	bitmap = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastAudiobookindividual_40x40);
 	CleanupStack::PushL( bitmap );		
-	// Load the mask for feed icon	
+	// Load the mask for audiobook icon	
 	mask = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastAudiobookindividual_40x40m );	
-	CleanupStack::PushL( mask );
-	// Append the feed icon to icon array
-	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );
-	CleanupStack::Pop(2); // bitmap, mask
-	
-	bitmap = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastEmptyimage);
-	CleanupStack::PushL( bitmap );		
-	// Load the mask for feed icon	
-	mask = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastEmptyimage );	
 	CleanupStack::PushL( mask );
 	// Append the feed icon to icon array
 	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );
@@ -308,7 +309,7 @@ void CPodcastFeedView::UpdateListboxItemsL()
 		else
 			{
 			iListContainer->Listbox()->Reset();
-			
+			iListContainer->Listbox()->ItemDrawer()->ClearAllPropertiesL();
 	//		model.ModelBeginUpdateLC();
 									
 		//	MQikListBoxData* listBoxData;
@@ -390,7 +391,15 @@ void CPodcastFeedView::UpdateListboxItemsL()
 					{
 					iEikonEnv->ReadResourceL(itemName, R_PODCAST_FEEDS_NO_FEEDS);
 					}
+				iItemArray->Reset();
+				iItemIdArray.Reset();
+				itemName.Insert(0, _L("0\t"));
 				iItemArray->AppendL(itemName);
+				iItemIdArray.Append(0);
+				TListItemProperties itemProps;
+				itemProps.SetDimmed(ETrue);
+				itemProps.SetHiddenSelection(ETrue);								
+				iListContainer->Listbox()->ItemDrawer()->SetPropertiesL(0, itemProps);
 				iListContainer->Listbox()->HandleItemAdditionL();			
 			//	listBoxData->SetDimmed(ETrue);
 					

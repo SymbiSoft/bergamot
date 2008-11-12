@@ -74,7 +74,7 @@ protected:
 	void HandleCommandL(TInt aCommand);
 	
 	void GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex);
-
+	void UpdateFeedUpdateStateL();
 private:
 	TPodcastClientShowCategory iCurrentCategory;
 	CPodcastModel& iPodcastModel;
