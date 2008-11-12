@@ -571,9 +571,7 @@ void CPodcastShowsView::UpdateListboxItemsL()
 						}
 					}
 				else
-					{
-					//					MQikListBoxData* listBoxData = model.NewDataL(MQikListBoxModel::EDataNormal);
-					//					CleanupClosePushL(*listBoxData);
+					{					
 					iEikonEnv->ReadResourceL(showSize,R_PODCAST_SHOWS_NO_ITEMS);
 					showSize.Insert(0, _L("0\t"));
 					iItemArray->Reset();
@@ -586,8 +584,7 @@ void CPodcastShowsView::UpdateListboxItemsL()
 					//iListContainer->Listbox()->ItemDrawer()->SetPropertiesL(0, itemProps);					
 					//listBoxData->AddTextL(*noItems, EQikListBoxSlotText1);
 					//listBoxData->SetDimmed(ETrue);
-					//CleanupStack::PopAndDestroy(noItems);
-					//CleanupStack::PopAndDestroy();
+					//CleanupStack::PopAndDestroy(noItems);		
 					}
 				iListContainer->Listbox()->HandleItemAdditionL();
 				}				
@@ -696,6 +693,7 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 					 model.ModelBeginUpdateLC();
 					 model.RemoveDataL(index);
 					 model.ModelEndUpdateL();*/
+					iListContainer->Listbox()->HandleItemRemovalL();
 					}
 
 				UpdateListboxItemsL();
@@ -802,8 +800,7 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 			if (index >= 0 && index < iPodcastModel.ActiveShowList().Count())
 				{
 				iPodcastModel.ShowEngine().AddDownload(iPodcastModel.ActiveShowList()[index]);
-				//UpdateShowItemL(iPodcastModel.ActiveShowList()[index]);
-
+				UpdateShowItemL(iPodcastModel.ActiveShowList()[index]);
 				}
 			}
 			break;
@@ -877,6 +874,10 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 					{
 					if (index > 0)
 						{
+						iItemArray->Delete(index);
+						iItemIdArray.Remove(index);						
+						iListContainer->Listbox()->HandleItemRemovalL()
+						
 						/*MQikListBoxModel& model(iListbox->Model());
 						 model.ModelBeginUpdateLC();
 						 model.RemoveDataL(index);
