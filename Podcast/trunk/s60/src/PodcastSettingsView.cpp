@@ -70,12 +70,24 @@ class CPodcastSettingsContainer : public CCoeControl
     	{
     		return iListbox->OfferKeyEventL(aKeyEvent, aType);
     	}
-
+		void HandleResourceChange(TInt aType);
 	protected:
 		CPodcastSettingItemList  * iListbox;
 		CAknNavigationDecorator* iNaviDecorator;
         CAknNavigationControlContainer* iNaviPane;
 	};
+
+
+
+void CPodcastSettingsContainer::HandleResourceChange(TInt aType)
+{
+		switch( aType )
+    	{
+	    case KEikDynamicLayoutVariantSwitch:
+		    SetRect(iEikonEnv->EikAppUi()->ClientRect());
+		    break;
+	    }
+}
 
 CPodcastSettingsContainer::CPodcastSettingsContainer()
 {

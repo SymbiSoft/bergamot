@@ -9,6 +9,8 @@
 #include "ShowEngine.h"
 #include "PodcastAppUi.h"
 #include "Podcast.hrh"
+#include "SoundEngine.h"
+#include "FeedEngine.h"
 #include <aknnavide.h> 
 #include <podcast.rsg>
 #include <podcast.mbg>
@@ -39,6 +41,7 @@ CPodcastMainView::CPodcastMainView(CPodcastModel& aPodcastModel):iPodcastModel(a
 void CPodcastMainView::ConstructL()
 {
 	BaseConstructL(R_PODCAST_MAINVIEW);
+	iMainMenuItems = iEikonEnv->ReadDesCArrayResourceL(R_PODCAST_MAINMENU_ARRAY);
 	CPodcastListView::ConstructL();	// Create icon array with granularity of 1 icon
 	
 	CArrayPtr< CGulIcon >* icons = new(ELeave) CArrayPtrFlat< CGulIcon >(1);
@@ -111,16 +114,62 @@ void CPodcastMainView::UpdateListboxItemsL()
  // Update already existing items perhaps for special layout?
 	if(iListContainer->Listbox() != NULL)
 	{
-		CDesCArray* items = iEikonEnv->ReadDesCArrayResourceL(R_PODCAST_MAINMENU_ARRAY);
-		delete iItemArray;
-		iItemArray = items;
-		iListContainer->Listbox()->Model()->SetItemTextArray(iItemArray);
+	
+		TBool playerActive = EFalse;
+		TPtrC descriptionText(KNullDesC());
+
+		if(iPodcastModel.PlayingPodcast() != NULL && (iPodcastModel.SoundEngine().State() == ESoundEnginePlaying || iPodcastModel.SoundEngine().State() == ESoundEnginePaused))
+		{
+			playerActive = ETrue;
+			descriptionText.Set(iPodcastModel.PlayingPodcast()->Title());
+		}
+		iItemArray->Reset();
+		TInt cnt = iMainMenuItems->Count();
+		for(TInt loop = 0;loop<cnt; loop++)
+		{
+			switch(loop)
+			{
+			case 0:
+				iListboxFormatbuffer.Format(iMainMenuItems->MdcaPoint(loop), &descriptionText);
+				break;
+			case 1:
+				{
+					TUint unplayed, total;
+					iPodcastModel.ShowEngine().GetStatsForDownloaded(total, unplayed);
+					/*if (total == -1) {
+						iEikonEnv->ReadResourceL(formatting, R_PODCAST_ONPHONE_STATUS_UNKNOWN);
+						statusText.Copy(formatting);
+					} else {*/											
+					//}
+					iListboxFormatbuffer.Format(iMainMenuItems->MdcaPoint(loop), unplayed, total);				
+				}
+				break;
+			case 2:
+				/*if(iPodcastModel.ShowEngine().DownloadsStopped()) {
+					iEikonEnv->ReadResourceL(formatting, R_PODCAST_PENDING_STATUS_SUSPENDED);
+					
+				} else {
+					iEikonEnv->ReadResourceL(formatting, R_PODCAST_PENDING_STATUS_ACTIVE);				
+				}*/
+				iListboxFormatbuffer.Format(iMainMenuItems->MdcaPoint(loop), iPodcastModel.ShowEngine().GetNumDownloadingShowsL());						
+				break;
+			case 3:
+				iListboxFormatbuffer.Format(iMainMenuItems->MdcaPoint(loop), iPodcastModel.FeedEngine().GetSortedFeeds().Count());
+				break;
+			case 4:
+				iListboxFormatbuffer.Format(iMainMenuItems->MdcaPoint(loop), iPodcastModel.FeedEngine().GetSortedBooks().Count());
+				break;
+			}
+			iItemArray->AppendL(iListboxFormatbuffer);
+		}
+
 		iListContainer->Listbox()->HandleItemAdditionL();			
 	}
 }
     
 CPodcastMainView::~CPodcastMainView()
     {
+	delete iMainMenuItems;
     }
 
 TUid CPodcastMainView::Id() const
@@ -172,13 +221,13 @@ void CPodcastMainView::CheckForQuedDownloadsL()
 
 void CPodcastMainView::ShowListUpdated()
 	{
-//	TRAP_IGNORE(UpdateListboxItemsL());	
+	TRAP_IGNORE(UpdateListboxItemsL());	
 	}
 
 void CPodcastMainView::DownloadQueueUpdated(TInt /*aDownloadingShows*/, TInt /*aQueuedShows*/)
 
 	{
-//	TRAP_IGNORE(UpdateListboxItemsL());
+	TRAP_IGNORE(UpdateListboxItemsL());
 	}
 
 // From // MEikListBoxObserverClass

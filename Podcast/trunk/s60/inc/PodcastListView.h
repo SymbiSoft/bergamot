@@ -90,7 +90,7 @@ class CPodcastListView : public CAknView
 		 
 		 CDesCArray* iItemArray;
 		 RArray<TInt> iItemIdArray;
-		TBuf<1024> iListboxFormatbuffer;
+		TBuf<256> iListboxFormatbuffer;
     };
 #endif // PODCASTBASEVIEWH
 

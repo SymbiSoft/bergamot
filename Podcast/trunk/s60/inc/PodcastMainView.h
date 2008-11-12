@@ -62,6 +62,7 @@ class CPodcastMainView : public CPodcastListView,public MShowEngineObserver,publ
 		TBool iCheckForQuedDownloads;
 		CAsyncCallBack* iStartupCallBack;
 		CPodcastModel& iPodcastModel;
+		CDesCArray* iMainMenuItems;
 };
 #endif // PODCASTBASEVIEWH
 
