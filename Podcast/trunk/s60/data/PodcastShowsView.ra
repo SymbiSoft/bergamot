@@ -56,6 +56,11 @@ RESOURCE AVKON_VIEW r_podcast_showsview
 RESOURCE TBUF r_podcast_shows_no_items {buf = STRING_r_podcast_shows_no_items;}
 
 RESOURCE TBUF r_podcast_new_audiobook_select_files { buf = STRING_r_podcast_new_audiobook_select_files;}
+// Shows view status strings
+RESOURCE TBUF r_podcast_shows_title_format { buf =  STRING_r_podcast_shows_title_format;}
+RESOURCE TBUF r_podcast_shows_title_download {buf = STRING_r_podcast_shows_title_download;}
+RESOURCE TBUF r_podcast_shows_downloads_suspended { buf = STRING_r_podcast_shows_downloads_suspended;}
+
 
 RESOURCE ARRAY r_podcast_new_audiobook_mimearray
 {

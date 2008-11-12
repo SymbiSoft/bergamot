@@ -94,7 +94,22 @@ void CPodcastShowsView::DoActivateL(const TVwsViewId& aPrevViewId,
 	                                  TUid aCustomMessageId,
 	                                  const TDesC8& aCustomMessage)
 {
+switch(aCustomMessageId.iUid)
+	{
+	case EShowNewShows:
+	case EShowAllShows:
+	case EShowDownloadedShows:
+	case EShowPendingShows:
+		iCurrentCategory = (TPodcastClientShowCategory) aCustomMessageId.iUid;
+		break;
+	case EShowFeedShows:
+		iCurrentCategory = EShowFeedShows;
+		break;
+	}	
+
 	CPodcastListView::DoActivateL(aPrevViewId, aCustomMessageId, aCustomMessage);
+	
+	//UpdateFeedUpdateStateL();
 }
 
 void CPodcastShowsView::DoDeactivate()
@@ -397,10 +412,79 @@ void CPodcastShowsView::UpdateListboxItemsL()
 				
 				// Informs that the update of the list box model has ended
 			//	model.ModelEndUpdateL();
+			}					
+		}	
+
+		if (iCurrentCategory == EShowPendingShows) 
+			{
+			HBufC* titleBuffer = NULL;
+
+			if (iPodcastModel.ShowEngine().DownloadsStopped()) {
+			HBufC* titleFormat=  iEikonEnv->AllocReadResourceLC(R_PODCAST_SHOWS_DOWNLOADS_SUSPENDED);
+			titleBuffer = HBufC::NewL(titleFormat->Length()+8);
+			titleBuffer->Des().Format(*titleFormat, len);			
+			CleanupStack::PopAndDestroy(titleFormat);
+			CleanupStack::PushL(titleBuffer);
+			} else {
+			HBufC* titleFormat=  iEikonEnv->AllocReadResourceLC(R_PODCAST_SHOWS_TITLE_DOWNLOAD);
+			titleBuffer = HBufC::NewL(titleFormat->Length()+8);
+			titleBuffer->Des().Format(*titleFormat, len);			
+			CleanupStack::PopAndDestroy(titleFormat);
+			CleanupStack::PushL(titleBuffer);
 			}
-			
-			
-		}			
+
+			if(iNaviPane != NULL)
+				{
+				iNaviPane->Pop(iNaviDecorator);
+				delete iNaviDecorator;
+				iNaviDecorator = NULL;
+				iNaviDecorator  = iNaviPane->CreateNavigationLabelL(*titleBuffer);
+				}		
+
+			if(iNaviPane != NULL)
+				{
+				iNaviPane->Pop(iNaviDecorator);
+				delete iNaviDecorator;
+				iNaviDecorator = NULL;
+				iNaviDecorator  = iNaviPane->CreateNavigationLabelL(*titleBuffer);
+				}		
+			CleanupStack::PopAndDestroy(titleBuffer);
+
+			} else 
+				{
+				TUint unplayed = 0;
+				if(len == 0)
+					{
+					if(iNaviPane != NULL)
+						{
+						iNaviPane->Pop(iNaviDecorator);
+						delete iNaviDecorator;
+						iNaviDecorator = NULL;					
+						}		
+					}
+				else
+					{
+
+
+					for (TInt loop = 0;loop<len;loop++)
+						{
+						unplayed+=(iPodcastModel.ActiveShowList()[loop]->PlayState() == ENeverPlayed);
+						}
+					}
+				HBufC* titleFormat=  iEikonEnv->AllocReadResourceLC(R_PODCAST_SHOWS_TITLE_FORMAT);
+				HBufC* titleBuffer = HBufC::NewL(titleFormat->Length()+8);
+				titleBuffer->Des().Format(*titleFormat, unplayed, iPodcastModel.ShowEngine().GetGrossSelectionLength());
+				CleanupStack::PopAndDestroy(titleFormat);
+				CleanupStack::PushL(titleBuffer);
+				if(iNaviPane != NULL)
+					{
+					iNaviPane->Pop(iNaviDecorator);
+					delete iNaviDecorator;
+					iNaviDecorator = NULL;
+					iNaviDecorator  = iNaviPane->CreateNavigationLabelL(*titleBuffer);
+					}		
+				CleanupStack::PopAndDestroy(titleBuffer);	
+				}	
 	}
 }
 
