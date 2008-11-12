@@ -101,13 +101,7 @@ RESOURCE MENU_PANE r_podcast_feedview_menu
 			{
 			command = EPodcastAbout;
 			txt = STRING_r_view_about_cmd;
-			},				
-        MENU_ITEM 
-        	{ 
-        	command = EPodcastBack; 
-        	txt = "Back"; 
-        	}
-
+			}
         };
     }
 
