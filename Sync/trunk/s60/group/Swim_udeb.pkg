@@ -1,6 +1,6 @@
 %{"Bergamot Project"}
 :"Bergamot Project"
-#{"Swim"}, (0xE0983805), 0, 40, 0, TYPE=SA
+#{"Swim"}, (0xE0983805), 0, 41, 0, TYPE=SA
 [0x101F7961], 0, 0, 0, {"Series60ProductID"}
 
 ; Freeware installation "warning" required by Symbian signed
