@@ -9,6 +9,9 @@
 #include "PodcastAppUi.h"
 #include "FeedEngine.h"
 #include "ShowEngine.h"
+#include "SettingsEngine.h"
+#include "SoundEngine.h"
+#include "PodcastPlayView.h"
 
 #include <aknnavide.h> 
 #include <podcast.rsg>
@@ -363,11 +366,11 @@ void CPodcastFeedView::UpdateListboxItemsL()
 			{
 		case EFeedsAudioBooksMode:
 			{
-//			templateStr = iEikonEnv->AllocReadResourceLC(R_PODCAST_BOOKS_TITLE_FORMAT);
+			templateStr = iEikonEnv->AllocReadResourceLC(R_PODCAST_BOOKS_TITLE_FORMAT);
 			}break;
 		default:
 			{
-		//	templateStr = iEikonEnv->AllocReadResourceLC(R_PODCAST_FEEDS_TITLE_FORMAT);
+			templateStr = iEikonEnv->AllocReadResourceLC(R_PODCAST_FEEDS_TITLE_FORMAT);
 			}
 			break;
 			}
@@ -379,3 +382,243 @@ void CPodcastFeedView::UpdateListboxItemsL()
 
 		}
 	}
+
+/** 
+ * Command handling function intended for overriding by sub classes. 
+ * Default implementation is empty.  
+ * @param aCommand ID of the command to respond to. 
+ */
+void CPodcastFeedView::HandleCommandL(TInt aCommand)
+	{
+	switch(aCommand)
+		{
+		case EPodcastAddFeed:
+			{
+		/*	CPodcastClientAddFeedDlg* dlg = new (ELeave) CPodcastClientAddFeedDlg(iPodcastModel);
+			if(dlg->ExecuteLD(R_PODCAST_ADD_FEED_DLG))
+				{
+				UpdateListboxItemsL();
+				}*/
+			break;
+			}
+		case EPodcastImportFeeds:
+			{		
+			CDesCArrayFlat* mimeTypes = new (ELeave) CDesCArrayFlat(KDefaultGran);
+			CleanupStack::PushL(mimeTypes);
+			CDesCArrayFlat* fileNames = new (ELeave) CDesCArrayFlat(KDefaultGran);
+			CleanupStack::PushL(fileNames);
+			HBufC* import_title = iEikonEnv->AllocReadResourceLC(R_PODCAST_IMPORT_FEEDS_TITLE);
+			//if(CQikSelectFileDlg::RunDlgLD(*mimeTypes, *fileNames, import_title))
+				{
+				if(fileNames->MdcaCount()>0)
+					{
+					iPodcastModel.FeedEngine().ImportFeedsL(fileNames->MdcaPoint(0));
+					UpdateListboxItemsL();
+					}
+				}
+
+			CleanupStack::PopAndDestroy(3,mimeTypes); // title, fileNames, mimeTypes								
+			}break;
+		case EPodcastExportFeeds:
+			{
+			TFileName fileName;
+			iPodcastModel.FeedEngine().ExportFeedsL(fileName);
+			TBuf<1024> fName;
+			TFileName newName;
+			newName.Copy(_L("feeds.xml"));
+			//CQikSaveFileDlg::RunDlgLD(fileName, newName, NULL,ESaveFileUsingMove);
+			}break;
+		case EPodcastEditFeed:
+			{
+			if(iListContainer->Listbox() != NULL)
+				{
+				TInt index = iListContainer->Listbox()->CurrentItemIndex();
+
+				const RFeedInfoArray& feeds = iPodcastModel.FeedEngine().GetSortedFeeds();
+
+				TInt cnt = feeds.Count();
+
+				if(index< cnt)
+					{
+					/*CPodcastClientAddFeedDlg* dlg = new (ELeave) CPodcastClientAddFeedDlg(iPodcastModel, feeds[index]);
+					if(dlg->ExecuteLD(R_PODCAST_EDIT_FEED_DLG))
+						{
+						UpdateListboxItemsL();
+						}*/
+					}			
+				}
+			break;
+			}
+
+		case EPodcastDeleteFeedHardware:
+		case EPodcastDeleteFeed:
+			{
+			if(iListContainer->Listbox() != NULL)
+				{
+				TInt index = iListContainer->Listbox()->CurrentItemIndex();
+			/*	MQikListBoxModel& model(iListbox->Model());
+				MQikListBoxData* data = model.RetrieveDataL(index);	
+				if(data != NULL)*/
+					{
+					if(iEikonEnv->QueryWinL(R_PODCAST_REMOVE_FEED_TITLE, R_PODCAST_REMOVE_FEED_PROMPT))
+						{
+					//	iPodcastModel.FeedEngine().RemoveFeed(data->ItemId());
+						//iListContainer->Listbox()-(index); remove item TODO
+						}					
+					}
+				UpdateListboxItemsL();
+				}
+			break;	
+			}
+		case EPodcastUpdateAllFeeds:
+			{
+			const RFeedInfoArray& array = iPodcastModel.FeedEngine().GetSortedFeeds();
+			TBool hasNewFeed = EFalse;
+			for (int i=0;i<array.Count();i++) {
+			if (array[i]->LastUpdated().Int64() == 0) {
+			hasNewFeed = ETrue;
+			break;
+			}
+			}
+
+			if (hasNewFeed) {
+			TBuf<200> message;
+			TBuf<100> title;
+			iEikonEnv->ReadResourceL(message, R_CATCHUP_FEED);
+			iEikonEnv->ReadResourceL(title, R_CATCHUP_FEED_TITLE);
+			if (iEikonEnv->QueryWinL(title, message)) {
+			iPodcastModel.FeedEngine().SetCatchupMode(ETrue);
+			}
+			}
+
+			iUpdatingAllRunning = ETrue;			
+			iPodcastModel.FeedEngine().UpdateAllFeedsL();
+			HBufC* str = iEikonEnv->AllocReadResourceLC(R_PODCAST_FEEDS_UPDATE_MESSAGE);
+			User::InfoPrint(*str);
+			CleanupStack::PopAndDestroy(str);
+			}
+			break;
+
+		case EPodcastCancelUpdateAllFeeds:
+			{
+			if(iUpdatingAllRunning)
+				{
+				iUpdatingAllRunning = EFalse;
+
+				iPodcastModel.FeedEngine().CancelUpdateAllFeedsL();
+
+				if(iProgressAdded)
+					{
+				//	ViewContext()->RemoveAndDestroyProgressInfo();
+					//ViewContext()->DrawNow();
+					iProgressAdded = EFalse;
+					}				
+				}
+			}break;
+			//
+		case EPodcastDeleteAllPlayed:
+			{
+			//HandleAddNewAudioBookL();
+			/*if(iListbox != NULL)
+						{
+						TInt index = iListbox->CurrentItemIndex();
+						}*/
+						break;
+			}
+		case EPodcastPlayAudioBook:
+			{
+			if(iListContainer->Listbox() != NULL)
+				{
+				TInt index = iListContainer->Listbox()->CurrentItemIndex();
+			//	MQikListBoxModel& model(iListbox->Model());
+//				MQikListBoxData* data = model.RetrieveDataL(index);	
+	//			if(data != NULL)
+					{
+					CFeedInfo *feedInfo = NULL;//TODO iPodcastModel.FeedEngine().GetFeedInfoByUid(data->ItemId());
+
+					if (feedInfo != NULL) {
+					iPodcastModel.SetActiveFeedInfo(feedInfo);
+					TBool aUnplayedOnlyState = iPodcastModel.SettingsEngine().SelectUnplayedOnly();
+					// we only select unplayed chapters
+					iPodcastModel.SettingsEngine().SetSelectUnplayedOnly(ETrue);
+					iPodcastModel.ShowEngine().SelectShowsByFeed(feedInfo->Uid());
+					iPodcastModel.SettingsEngine().SetSelectUnplayedOnly(aUnplayedOnlyState);
+
+					RShowInfoArray& showArray = iPodcastModel.ShowEngine().GetSelectedShows();
+
+					if(showArray.Count() == 0 || showArray[0] == NULL) {
+					// can't play empty books...
+					return;
+					}
+
+					// this should be the first unplayed chapter in this book
+					CShowInfo *startShow = showArray[0];
+
+					TPckgBuf<TInt> showUid;
+					showUid() = startShow->Uid();
+					AppUi()->ActivateLocalViewL(KUidPodcastPlayViewID, TUid::Uid(KActiveShowUIDCmd), showUid);											
+					iPodcastModel.PlayPausePodcastL(startShow, ETrue);
+					}
+
+					}
+				}			
+			}
+			break;
+		case EPodcastPauseAudioBook:
+			{
+			iPodcastModel.SoundEngine().Pause();			
+			}
+			break;
+		case EPodcastAddNewAudioBook:
+			{
+			//TODO: HandleAddNewAudioBookL();
+			UpdateListboxItemsL();
+			}break;
+		case EPodcastImportAudioBook:
+			{
+			CDesCArrayFlat* mimeTypes = iEikonEnv->ReadDesCArrayResourceL(R_PODCAST_IMPORT_AUDIOBOOK_MIMEARRAY);
+
+			//CDesCArrayFlat* mimeTypes = new (ELeave) CDesCArrayFlat(KDefaultGran);
+			CleanupStack::PushL(mimeTypes);
+
+			CDesCArrayFlat* fileNames = new (ELeave) CDesCArrayFlat(KDefaultGran);
+			CleanupStack::PushL(fileNames);
+			HBufC* import_title = iEikonEnv->AllocReadResourceLC(R_PODCAST_IMPORT_BOOK_TITLE);
+		//	if(CQikSelectFileDlg::RunDlgLD(*mimeTypes, *fileNames, import_title))
+				{
+				if(fileNames->MdcaCount()>0)
+					{
+					//TODO
+				//	CPodcastClientAudioBookDlg* titleDialog = new (ELeave) CPodcastClientAudioBookDlg(iPodcastModel, *fileNames, ETrue);
+					//titleDialog->ExecuteLD(R_PODCAST_NEW_AUDIOBOOK_DLG);	
+					}
+
+				}
+			UpdateListboxItemsL();
+			CleanupStack::PopAndDestroy(3,mimeTypes); // title, fileNames, mimeTypes								
+			}break;
+		case EPodcastRemoveAudioBookHardware:
+		case EPodcastRemoveAudioBook:
+			{
+			if(iListContainer->Listbox() != NULL)
+				{
+				TInt index = iListContainer->Listbox()->CurrentItemIndex();
+				//MQikListBoxModel& model(iListbox->Model());
+				//MQikListBoxData* data = model.RetrieveDataL(index);	
+				//if(data != NULL)
+					{
+					if(iEikonEnv->QueryWinL(R_PODCAST_REMOVE_BOOK_TITLE, R_PODCAST_REMOVE_BOOK_PROMPT))
+						{
+						//iPodcastModel.FeedEngine().RemoveBookL(data->ItemId());
+					//	iListContainer->Listbox()->RemoveItemL(index);
+						}					
+					}
+				UpdateListboxItemsL();
+				}
+			}break;		
+		default:
+			CPodcastListView::HandleCommandL(aCommand);
+			break;
+		}
+	}
+	

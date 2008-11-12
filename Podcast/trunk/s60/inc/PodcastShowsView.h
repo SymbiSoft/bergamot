@@ -65,6 +65,13 @@ protected:
 	void FeedUpdateCompleteL(TUint aFeedUid);
 	void FeedUpdateAllCompleteL();
 	void FeedDownloadUpdatedL(TUint /*aFeedUid*/, TInt /*aPercentOfCurrentDownload*/);
+
+	/** 
+	 * Command handling function intended for overriding by sub classes. 
+	 * Default implementation is empty.  
+	 * @param aCommand ID of the command to respond to. 
+	 */
+	void HandleCommandL(TInt aCommand);
 private:
 	TPodcastClientShowCategory iCurrentCategory;
 	CPodcastModel& iPodcastModel;

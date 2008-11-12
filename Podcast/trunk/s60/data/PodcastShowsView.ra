@@ -53,3 +53,18 @@ RESOURCE AVKON_VIEW r_podcast_showsview
 	cba = R_AVKON_SOFTKEYS_OPTIONS_BACK;    
 }
 
+RESOURCE TBUF r_podcast_shows_no_items {buf = STRING_r_podcast_shows_no_items;}
+
+RESOURCE TBUF r_podcast_new_audiobook_select_files { buf = STRING_r_podcast_new_audiobook_select_files;}
+
+RESOURCE ARRAY r_podcast_new_audiobook_mimearray
+{
+	items = 
+	{
+	 LBUF {txt = "audio/wav";},
+	 LBUF {txt = "audio/mp3";},
+	 LBUF {txt = "audio/mp4";},
+	 LBUF {txt = "audio/*";}
+	};
+
+}

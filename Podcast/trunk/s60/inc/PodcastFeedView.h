@@ -59,6 +59,13 @@ class CPodcastFeedView : public CPodcastListView, MEikListBoxObserver, public MF
 		void FeedDownloadUpdatedL(TUint aFeedUid, TInt aPercentOfCurrentDownload);
 		void FeedUpdateCompleteL(TUint aFeeidUid);
 		void FeedUpdateAllCompleteL();
+		
+		/** 
+		 * Command handling function intended for overriding by sub classes. 
+		 * Default implementation is empty.  
+		 * @param aCommand ID of the command to respond to. 
+		 */
+		void HandleCommandL(TInt aCommand);
 	private:
 		CPodcastModel& iPodcastModel;
 		CDesCArrayFlat iFeeds;
