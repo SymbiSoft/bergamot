@@ -118,6 +118,38 @@ void CPodcastFeedView::DoActivateL(const TVwsViewId& aPrevViewId,
 	                                  TUid aCustomMessageId,
 	                                  const TDesC8& aCustomMessage)
 {
+switch(aCustomMessageId.iUid)
+	{
+	case EFeedsAudioBooksMode:
+		{
+		iCurrentViewMode = EFeedsAudioBooksMode;
+		}
+		break;
+	case EFeedsNormalMode:
+		{
+		iCurrentViewMode = EFeedsNormalMode;
+		}break;
+	default:
+		{
+		// Fix for issue #72
+		if (aPrevViewId.iAppUid != KUidPodcastClientID) {
+		break;
+		}
+
+		if(/*(aPrevViewId == TVwsViewId(KUidPodcastClientID, KUidPodcastShowsViewID) ||
+			aPrevViewId == TVwsViewId(KUidPodcastClientID, KUidPodcastFeedViewID)) &&*/	
+				iPodcastModel.ActiveFeedInfo() != NULL && iPodcastModel.ActiveFeedInfo()->IsBookFeed())
+			{
+			iCurrentViewMode = EFeedsAudioBooksMode;
+			}
+		else
+			{
+			iCurrentViewMode = EFeedsNormalMode;
+			}
+		}
+		break;
+	}	
+
 	CPodcastListView::DoActivateL(aPrevViewId, aCustomMessageId, aCustomMessage);
 	
 }
@@ -334,16 +366,16 @@ void CPodcastFeedView::UpdateListboxItemsL()
 				TBuf<KMaxFeedNameLength> itemName;
 				if(iCurrentViewMode == EFeedsAudioBooksMode)
 					{
-				//	iEikonEnv->ReadResourceL(itemName, R_PODCAST_BOOKS_NO_BOOKS);
+					iEikonEnv->ReadResourceL(itemName, R_PODCAST_BOOKS_NO_BOOKS);
 					}
 				else
 					{
-				//	iEikonEnv->ReadResourceL(itemName, R_PODCAST_FEEDS_NO_FEEDS);
+					iEikonEnv->ReadResourceL(itemName, R_PODCAST_FEEDS_NO_FEEDS);
 					}
-			//	listBoxData->AddTextL(itemName, EQikListBoxSlotText1);
+				iItemArray->AppendL(itemName);
+				iListContainer->Listbox()->HandleItemAdditionL();			
 			//	listBoxData->SetDimmed(ETrue);
-				
-			//	CleanupStack::PopAndDestroy(listBoxData);
+					
 				}
 
 			// Informs that the update of the list box model has ended
@@ -366,7 +398,13 @@ void CPodcastFeedView::UpdateListboxItemsL()
 			}
 		HBufC* titleBuffer = HBufC::NewLC(templateStr->Length()+8);
 		titleBuffer->Des().Format(*templateStr, len);
-	//	ViewContext()->ChangeTextL(EPodcastListViewContextLabel, *titleBuffer);
+		if(iNaviPane != NULL)
+				{
+				iNaviPane->Pop(iNaviDecorator);
+				delete iNaviDecorator;
+				iNaviDecorator = NULL;
+				iNaviDecorator  = iNaviPane->CreateNavigationLabelL(*titleBuffer);
+				}		
 		CleanupStack::PopAndDestroy(titleBuffer);
 		CleanupStack::PopAndDestroy(templateStr);
 

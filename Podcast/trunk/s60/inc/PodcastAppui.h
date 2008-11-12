@@ -10,7 +10,7 @@ class CPodcastShowsView;
 class CPodcastPlayView;
 class CPodcastSettingsView;
 class CPodcastModel;
-
+const TUid KUidPodcastClientID          = {0xA00046AE};
 const TUid KUidPodcastBaseViewID = {0x00000001};
 const TUid KUidPodcastFeedViewID = {0x00000002};
 const TUid KUidPodcastShowsViewID = {0x00000003};
