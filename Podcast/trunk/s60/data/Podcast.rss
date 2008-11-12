@@ -16,18 +16,6 @@ RESOURCE EIK_APP_INFO
     {
     }
 
-
-#include "PodcastMainView.ra"
-#include "PodcastPlayView.ra"
-#include "PodcastShowsView.ra"
-#include "PodcastFeedView.ra"
-#include "PodcastSettingsView.ra"
-
-RESOURCE NAVI_LABEL r_podcast_navi_pane_text1
-    {
-    txt = STRING_filelist_private_folder1;
-    }
-
 RESOURCE LOCALISABLE_APP_INFO r_podcast_localisable_app_info
     {
     short_caption = STRING_r_short_caption;
@@ -39,3 +27,10 @@ RESOURCE LOCALISABLE_APP_INFO r_podcast_localisable_app_info
         icon_file = "\\resource\\apps\\Podcastsvg.mif";
 	};
     }
+
+
+#include "PodcastMainView.ra"
+#include "PodcastPlayView.ra"
+#include "PodcastShowsView.ra"
+#include "PodcastFeedView.ra"
+#include "PodcastSettingsView.ra"
