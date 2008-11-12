@@ -116,7 +116,9 @@ void CPodcastMainView::UpdateListboxItemsL()
 	if(iListContainer->Listbox() != NULL)
 	{
 		CDesCArray* items = iEikonEnv->ReadDesCArrayResourceL(R_PODCAST_MAINMENU_ARRAY);
-		iListContainer->Listbox()->Model()->SetItemTextArray(items);
+		delete iItemArray;
+		iItemArray = items;
+		iListContainer->Listbox()->Model()->SetItemTextArray(iItemArray);
 		iListContainer->Listbox()->HandleItemAdditionL();			
 	}
 }

@@ -13,6 +13,7 @@
 #include <aknlists.h> 
 #include <aknviewappui.h>
 
+const TInt KDefaultGran = 5;
 CPodcastListContainer::CPodcastListContainer()
 {
 }
@@ -96,6 +97,9 @@ void CPodcastListView::ConstructL()
 	iListContainer = new (ELeave) CPodcastListContainer;
 	iListContainer->SetMopParent( this );
 	iListContainer->ConstructL(ClientRect(), iListboxFlags);
+	iItemArray = new (ELeave)CDesCArrayFlat(KDefaultGran);
+	iListContainer->Listbox()->Model()->SetItemTextArray(iItemArray);
+	iListContainer->Listbox()->Model()->SetOwnershipType(ELbmDoesNotOwnItemArray);
 	iNaviPane =( CAknNavigationControlContainer * ) StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidNavi ) );
 }
 
@@ -120,6 +124,8 @@ CPodcastListView::~CPodcastListView()
     {
     delete iListContainer;  
     delete iNaviDecorator;
+    delete iItemArray;
+    iItemIdArray.Close();
     }
 
 	

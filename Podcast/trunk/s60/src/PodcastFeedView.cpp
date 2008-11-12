@@ -73,7 +73,7 @@ CPodcastFeedView* CPodcastFeedView::NewLC(CPodcastModel& aPodcastModel)
     return self;
     }
 
-CPodcastFeedView::CPodcastFeedView(CPodcastModel& aPodcastModel):iPodcastModel(aPodcastModel), iFeeds(1)
+CPodcastFeedView::CPodcastFeedView(CPodcastModel& aPodcastModel):iPodcastModel(aPodcastModel)
 {
 }
 
@@ -120,16 +120,6 @@ void CPodcastFeedView::DoActivateL(const TVwsViewId& aPrevViewId,
 {
 	CPodcastListView::DoActivateL(aPrevViewId, aCustomMessageId, aCustomMessage);
 	
-
-	const RFeedInfoArray &feeds =  iPodcastModel.FeedEngine().GetSortedFeeds();
-
-
-	iFeeds.Reset();
-	for (int i=0;i<feeds.Count();i++) {
-		iFeeds.AppendL(feeds[i]->Title());
-	}
-	
-	iListContainer->Listbox()->Model()->SetItemTextArray(&iFeeds);	
 }
 
 void CPodcastFeedView::DoDeactivate()

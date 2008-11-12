@@ -67,8 +67,7 @@ class CPodcastFeedView : public CPodcastListView, MEikListBoxObserver, public MF
 		 */
 		void HandleCommandL(TInt aCommand);
 	private:
-		CPodcastModel& iPodcastModel;
-		CDesCArrayFlat iFeeds;
+		CPodcastModel& iPodcastModel;		
 		TBool iUpdatingAllRunning;
 		TBool iProgressAdded;
 		TFeedsViewMode iCurrentViewMode;
