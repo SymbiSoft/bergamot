@@ -259,7 +259,7 @@ void CPodcastFeedView::FeedDownloadUpdatedL(TUint aFeedUid, TInt aPercentOfCurre
 		iUpdatingAllRunning = ETrue;		
 	}
 
-	// UPdate status text
+	// Update status text
 	UpdateFeedInfoStatusL(aFeedUid, ETrue);
 
 	if(aPercentOfCurrentDownload>=0 && aPercentOfCurrentDownload<100)
