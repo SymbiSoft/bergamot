@@ -79,7 +79,9 @@ CPodcastFeedView::CPodcastFeedView(CPodcastModel& aPodcastModel):iPodcastModel(a
 
 void CPodcastFeedView::ConstructL()
 {
-	BaseConstructL(R_PODCAST_FEEDVIEW);	
+	BaseConstructL(R_PODCAST_FEEDVIEW);
+	iBooksFormat = iEikonEnv->AllocReadResourceL(R_PODCAST_BOOKS_STATUS_FORMAT);
+	iFeedsFormat = iEikonEnv->AllocReadResourceL(R_PODCAST_FEEDS_STATUS_FORMAT);
 	CPodcastListView::ConstructL();
 	iPodcastModel.FeedEngine().AddObserver(this);
 	CArrayPtr< CGulIcon >* icons = new(ELeave) CArrayPtrFlat< CGulIcon >(1);
@@ -508,11 +510,11 @@ void CPodcastFeedView::UpdateListboxItemsL()
 				itemProps.SetDimmed(ETrue);
 				itemProps.SetHiddenSelection(ETrue);								
 				iListContainer->Listbox()->ItemDrawer()->SetPropertiesL(0, itemProps);
-				iListContainer->Listbox()->HandleItemAdditionL();			
+					
 			//	listBoxData->SetDimmed(ETrue);
 					
 				}
-
+			iListContainer->Listbox()->HandleItemAdditionL();		
 			// Informs that the update of the list box model has ended
 			//model.ModelEndUpdateL();
 			}

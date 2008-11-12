@@ -583,14 +583,14 @@ void CPodcastShowsView::UpdateListboxItemsL()
 					
 					itemProps.SetDimmed(ETrue);
 					itemProps.SetHiddenSelection(ETrue);
-					iListContainer->Listbox()->ItemDrawer()->SetPropertiesL(0, itemProps);
-					iListContainer->Listbox()->HandleItemAdditionL();
+					//iListContainer->Listbox()->ItemDrawer()->SetPropertiesL(0, itemProps);					
 					//listBoxData->AddTextL(*noItems, EQikListBoxSlotText1);
 					//listBoxData->SetDimmed(ETrue);
 					//CleanupStack::PopAndDestroy(noItems);
 					//CleanupStack::PopAndDestroy();
 					}
-				}
+				iListContainer->Listbox()->HandleItemAdditionL();
+				}				
 			}
 
 		if (iCurrentCategory == EShowPendingShows)
