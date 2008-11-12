@@ -15,6 +15,9 @@
 
 class CAknDoubleLargeStyleListBox;
 class CEikFormattedCellListBox;
+class CAknNavigationDecorator;
+class CAknNavigationControlContainer;
+
 class CPodcastListContainer : public CCoeControl
     {
     public: 
@@ -77,6 +80,8 @@ class CPodcastListView : public CAknView
 
 		virtual void UpdateListboxItemsL() = 0;
 	protected:
+		 CAknNavigationDecorator* iNaviDecorator;
+		 CAknNavigationControlContainer* iNaviPane;
 		 CPodcastListContainer* iListContainer;
 		 /** Previous activated view */
 		 TVwsViewId iPreviousView;

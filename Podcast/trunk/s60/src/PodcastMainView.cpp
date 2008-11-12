@@ -103,6 +103,10 @@ void CPodcastMainView::ConstructL()
 	CleanupStack::Pop(icons); // icons
 
 	iListContainer->Listbox()->SetListBoxObserver(this);
+	if(iNaviPane != NULL)
+		{
+		iNaviDecorator  = iNaviPane->CreateMessageLabelL(_L("MAIN TEST"));
+		}
 }
 
 

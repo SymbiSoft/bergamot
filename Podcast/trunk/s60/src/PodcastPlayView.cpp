@@ -9,6 +9,7 @@
 #include "PodcastAppUi.h"
 #include "SoundEngine.h"
 #include "ShowEngine.h"
+#include "Podcast.hrh"
 #include <aknnavide.h> 
 #include <podcast.rsg>
 #include <coecobs.h>
@@ -39,6 +40,11 @@ class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver,pu
 		void PlaybackStoppedL(); 
 	    void UpdateViewL();
 		void UpdateMaxProgressValueL(TInt aDuration);
+		
+		TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType)
+		   {
+		   	return EKeyWasNotConsumed;//iListbox->OfferKeyEventL(aKeyEvent, aType);
+		   }
 	protected:
 		CAknNavigationDecorator* iNaviDecorator;
         CAknNavigationControlContainer* iNaviPane;
@@ -209,8 +215,41 @@ void CPodcastPlayView::DoActivateL(const TVwsViewId& aPrevViewId,
 	                                  TUid aCustomMessageId,
 	                                  const TDesC8& aCustomMessage)
 {
+	iPreviousView = aPrevViewId;
 }
 
 void CPodcastPlayView::DoDeactivate()
 {
+}
+
+/** 
+* Command handling function intended for overriding by sub classes. 
+* Default implementation is empty.  
+* @param aCommand ID of the command to respond to. 
+*/
+void CPodcastPlayView::HandleCommandL(TInt aCommand)
+{
+	RDebug::Printf("CPodcastListView::HandleCommandL=%d", aCommand);
+	switch(aCommand)
+	{
+	case EAknSoftkeyExit:
+	case EEikCmdExit:
+		{
+            AppUi()->Exit();
+            break;
+		}
+	case EAknSoftkeyBack:
+		{
+	//	AppUi()->ActivateViewL(iPreviousView);
+		}break;
+	case EPodcastSettings:
+		AppUi()->ActivateLocalViewL(KUidPodcastSettingsViewID);
+		break;
+	case EPodcastZoomSetting:
+		break;
+	case EPodcastAbout:
+		break;
+	default:
+		break;
+	}
 }

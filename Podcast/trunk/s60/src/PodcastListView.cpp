@@ -13,7 +13,6 @@
 #include <aknlists.h> 
 #include <aknviewappui.h>
 
-
 CPodcastListContainer::CPodcastListContainer()
 {
 }
@@ -85,6 +84,7 @@ CEikFormattedCellListBox* CPodcastListContainer::Listbox()
 
 CPodcastListContainer::~CPodcastListContainer()
 {
+	delete iListbox;
 }
 
 CPodcastListView::CPodcastListView()
@@ -96,6 +96,7 @@ void CPodcastListView::ConstructL()
 	iListContainer = new (ELeave) CPodcastListContainer;
 	iListContainer->SetMopParent( this );
 	iListContainer->ConstructL(ClientRect(), iListboxFlags);
+	iNaviPane =( CAknNavigationControlContainer * ) StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidNavi ) );
 }
 
 void CPodcastListView::HandleViewRectChange()
@@ -117,7 +118,8 @@ void CPodcastListView::HandleStatusPaneSizeChange()
     
 CPodcastListView::~CPodcastListView()
     {
-    delete iListContainer;    
+    delete iListContainer;  
+    delete iNaviDecorator;
     }
 
 	
@@ -135,6 +137,11 @@ void CPodcastListView::DoActivateL(const TVwsViewId& aPrevViewId,
 		iListContainer->MakeVisible(ETrue);
 		iListContainer->DrawNow();
 	}
+	
+	if(iNaviDecorator && iNaviPane)
+		{
+		iNaviPane->PushL(*iNaviDecorator);
+		}
 }
 
 void CPodcastListView::DoDeactivate()
@@ -143,6 +150,10 @@ void CPodcastListView::DoDeactivate()
 	{
         AppUi()->RemoveFromViewStack( *this, iListContainer );
 		iListContainer->MakeVisible(EFalse);
+		if(iNaviDecorator && iNaviPane)
+		{
+		iNaviPane->Pop(iNaviDecorator);
+		}
 	}
 }
 
