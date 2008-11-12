@@ -623,14 +623,15 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			if(iListContainer->Listbox() != NULL)
 				{
 				TInt index = iListContainer->Listbox()->CurrentItemIndex();
-			/*	MQikListBoxModel& model(iListbox->Model());
-				MQikListBoxData* data = model.RetrieveDataL(index);	
-				if(data != NULL)*/
+			
+				if(index < iItemArray->MdcaCount() && index >= 0)
 					{
 					if(iEikonEnv->QueryWinL(R_PODCAST_REMOVE_FEED_TITLE, R_PODCAST_REMOVE_FEED_PROMPT))
 						{
-					//	iPodcastModel.FeedEngine().RemoveFeed(data->ItemId());
-						//iListContainer->Listbox()-(index); remove item TODO
+						iPodcastModel.FeedEngine().RemoveFeed(iItemIdArray[index]);
+						iItemArray->Delete(index);
+						
+						iListContainer->Listbox()->HandleItemRemovalL();
 						}					
 					}
 				UpdateListboxItemsL();
@@ -697,11 +698,10 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			if(iListContainer->Listbox() != NULL)
 				{
 				TInt index = iListContainer->Listbox()->CurrentItemIndex();
-			//	MQikListBoxModel& model(iListbox->Model());
-//				MQikListBoxData* data = model.RetrieveDataL(index);	
-	//			if(data != NULL)
+
+				if(index < iItemArray->MdcaCount() && index >= 0)
 					{
-					CFeedInfo *feedInfo = NULL;//TODO iPodcastModel.FeedEngine().GetFeedInfoByUid(data->ItemId());
+					CFeedInfo *feedInfo = iPodcastModel.FeedEngine().GetFeedInfoByUid(iItemIdArray[index]);
 
 					if (feedInfo != NULL) {
 					iPodcastModel.SetActiveFeedInfo(feedInfo);
@@ -769,15 +769,14 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			{
 			if(iListContainer->Listbox() != NULL)
 				{
-				TInt index = iListContainer->Listbox()->CurrentItemIndex();
-				//MQikListBoxModel& model(iListbox->Model());
-				//MQikListBoxData* data = model.RetrieveDataL(index);	
-				//if(data != NULL)
+				TInt index = iListContainer->Listbox()->CurrentItemIndex();			
+				if(index < iItemArray->MdcaCount() && index >= 0)
 					{
 					if(iEikonEnv->QueryWinL(R_PODCAST_REMOVE_BOOK_TITLE, R_PODCAST_REMOVE_BOOK_PROMPT))
 						{
-						//iPodcastModel.FeedEngine().RemoveBookL(data->ItemId());
-					//	iListContainer->Listbox()->RemoveItemL(index);
+						iPodcastModel.FeedEngine().RemoveBookL(iItemIdArray[index]);
+						iItemArray->Delete(index);
+						iListContainer->Listbox()->HandleItemRemovalL();
 						}					
 					}
 				UpdateListboxItemsL();
