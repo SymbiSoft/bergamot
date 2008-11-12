@@ -25,7 +25,7 @@ const TInt KMaxUnplayedFeedsLength =64;
 const TInt KADayInHours = 24;
 const TInt KDefaultGran = 5;
 _LIT(KUnknownUpdateDateString, "?/?");
-
+_LIT(KFeedFormat, "%d\t%S\t%S %S");
 class CPodcastFeedContainer : public CCoeControl
     {
     public: 
@@ -211,14 +211,38 @@ void CPodcastFeedView::HandleListBoxEventL(CEikListBox* aListBox, TListBoxEvent 
 	}
 }
 
+void CPodcastFeedView::FeedInfoUpdatedL(CFeedInfo* aFeedInfo)
+	{
+	// Since a title might have been updated
+	if (iProgressAdded)
+		{
+		//ViewContext()->RemoveAndDestroyProgressInfo();
+		//ViewContext()->DrawNow();
+		iProgressAdded = EFalse;
+		}
+
+	if (iCurrentViewMode == EFeedsNormalMode)
+		{
+		const RFeedInfoArray& feeds = iPodcastModel.FeedEngine().GetSortedFeeds();
+
+		TInt index = feeds.Find(aFeedInfo);
+
+		if (index != KErrNotFound && index<iItemArray->Count())
+			{
+			UpdateFeedInfoDataL(aFeedInfo, index);
+			iListContainer->Listbox()->DrawItem(index);
+			}
+		}
+	}
+
 void CPodcastFeedView::FeedInfoUpdated(CFeedInfo* aFeedInfo)
 	{
-	//TRAP_IGNORE(FeedInfoUpdatedL(aFeedInfo))
+	TRAP_IGNORE(FeedInfoUpdatedL(aFeedInfo))
 	}
 
 void CPodcastFeedView::FeedUpdateCompleteL(TUint aFeedUid)
 	{
-//	UpdateFeedInfoStatusL(aFeedUid, EFalse);
+	UpdateFeedInfoStatusL(aFeedUid, EFalse);
 	}
 
 void CPodcastFeedView::FeedUpdateAllCompleteL()
@@ -236,7 +260,7 @@ void CPodcastFeedView::FeedDownloadUpdatedL(TUint aFeedUid, TInt aPercentOfCurre
 	}
 
 	// UPdate status text
-	//UpdateFeedInfoStatusL(aFeedUid, ETrue);
+	UpdateFeedInfoStatusL(aFeedUid, ETrue);
 
 	if(aPercentOfCurrentDownload>=0 && aPercentOfCurrentDownload<100)
 		{
@@ -256,6 +280,106 @@ void CPodcastFeedView::FeedDownloadUpdatedL(TUint aFeedUid, TInt aPercentOfCurre
 		}
 	}
 
+
+void CPodcastFeedView::UpdateFeedInfoStatusL(TUint aFeedUid, TBool aIsUpdating)
+	{
+	
+	if(iCurrentViewMode == EFeedsNormalMode)
+		{	
+		const RFeedInfoArray& feeds = iPodcastModel.FeedEngine().GetSortedFeeds();
+
+		TInt cnt = feeds.Count();
+		TInt index = KErrNotFound;
+		while(index == KErrNotFound && cnt>0)
+		{
+			cnt--;
+			if(feeds[cnt]->Uid() == aFeedUid)
+			{
+				index = cnt;
+				break;
+			}
+		}
+	//	TInt index = feeds.Find(aFeedInfo);
+		
+		if (index != KErrNotFound && index < iItemArray->MdcaCount())
+			{
+			UpdateFeedInfoDataL(feeds[index], index, aIsUpdating);
+			iListContainer->Listbox()->DrawItem(index);
+			}
+		}
+	}
+
+void CPodcastFeedView::UpdateFeedInfoDataL(CFeedInfo* aFeedInfo, TInt aIndex, TBool aIsUpdating )
+	{
+	TBuf<KMaxShortDateFormatSpec*2> updatedDate;
+	//aListboxData->SetTextL(aFeedInfo->Title(), EQikListBoxSlotText1);
+	//aListboxData->SetTextL(aFeedInfo->Description(), EQikListBoxSlotText2);
+	
+	TUint unplayedCount = 0;
+	TUint showCount = 0;
+	TBuf<KMaxUnplayedFeedsLength> unplayedShows;
+	TListItemProperties itemProps;	
+	TInt iconIndex = 0;
+	if(aIsUpdating)
+		{
+			iEikonEnv->ReadResourceL(updatedDate, R_PODCAST_FEEDS_IS_UPDATING);
+			unplayedShows = KNullDesC();			
+		}
+	else
+	{
+		iPodcastModel.ShowEngine().GetStatsByFeed(aFeedInfo->Uid(), showCount, unplayedCount, aFeedInfo->IsBookFeed());
+		
+		if (aFeedInfo->IsBookFeed()) {
+		    iconIndex = 2;
+			unplayedShows.Format(*iBooksFormat, unplayedCount, showCount);
+		} else {
+			iconIndex = 1;
+			unplayedShows.Format(*iFeedsFormat, unplayedCount, showCount);
+		}	
+		
+		//aListboxData->SetEmphasis(unplayedCount > 0);					
+	
+		itemProps.SetBold(unplayedCount > 0);
+											
+		if (aFeedInfo->LastUpdated().Int64() == 0) 
+		{
+			updatedDate.Zero();
+		}
+		else 
+		{
+			TTime now;
+			TTimeIntervalHours interval;
+			now.HomeTime();
+			now.HoursFrom(aFeedInfo->LastUpdated(), interval);
+			if (interval.Int() < KADayInHours) 
+			{
+				aFeedInfo->LastUpdated().FormatL(updatedDate, KTimeFormat());
+			}
+			else 
+			{
+				aFeedInfo->LastUpdated().FormatL(updatedDate, KDateFormat());
+			}
+		}
+	}
+//	aListboxData->SetDisabled(aIsUpdating);
+	itemProps.SetDimmed(aIsUpdating);
+	
+	
+	iListboxFormatbuffer.Format(KFeedFormat(), iconIndex, &aFeedInfo->Title(), &unplayedShows, &updatedDate);
+	iItemArray->Delete(aIndex);
+	if(aIndex>= iItemArray->MdcaCount())
+			{
+			iItemArray->AppendL(iListboxFormatbuffer);
+			}
+		else
+			{
+			iItemArray->InsertL(aIndex, iListboxFormatbuffer);
+			}
+	iListContainer->Listbox()->ItemDrawer()->SetPropertiesL(aIndex, itemProps);
+//	aListboxData->SetTextL(unplayedShows, EQikListBoxSlotText2);
+//	aListboxData->SetTextL(updatedDate, EQikListBoxSlotText3);
+	}
+
 void CPodcastFeedView::UpdateListboxItemsL()
 	{
 	if(iListContainer->IsVisible())
@@ -272,16 +396,13 @@ void CPodcastFeedView::UpdateListboxItemsL()
 		
 		TInt len = sortedItems->Count();
 		TBool allUidsMatch = EFalse;
-//		MQikListBoxModel& model(iListbox->Model());
 
 		if(len == iListContainer->Listbox()->Model()->NumberOfItems())
 			{
 			TUint itemId = 0;
 			for(TInt loop = 0;loop< len ;loop++)
-				{
-				//MQikListBoxData* data = model.RetrieveDataL(loop);	
-				//itemId = data->ItemId();
-				//data->Close();
+				{				
+				itemId = iItemIdArray[loop];
 				if((*sortedItems)[loop]->Uid() != itemId)
 					{						
 					break;
@@ -292,41 +413,31 @@ void CPodcastFeedView::UpdateListboxItemsL()
 
 		if(allUidsMatch)
 			{
-		//	model.ModelBeginUpdateLC();
-
 			for(TInt loop = 0;loop< len ;loop++)
-				{
-			//	MQikListBoxData* data = model.RetrieveDataL(loop);	
-			//	CleanupClosePushL(*data);
-		//	//	UpdateFeedInfoDataL((*sortedItems)[loop], data);
-		//		CleanupStack::PopAndDestroy(data);
-		//		model.DataUpdatedL(loop);
+				{	
+				UpdateFeedInfoDataL((*sortedItems)[loop], loop);
+				iListContainer->Listbox()->DrawItem(loop);		
 				}
-
-			// Informs that the update of the list box model has ended
-		//	model.ModelEndUpdateL();
 			}
 		else
 			{
+			TListItemProperties itemProps;
 			iListContainer->Listbox()->Reset();
 			iListContainer->Listbox()->ItemDrawer()->ClearAllPropertiesL();
-	//		model.ModelBeginUpdateLC();
-									
-		//	MQikListBoxData* listBoxData;
+			iItemIdArray.Reset();		
 			TBuf<KMaxShortDateFormatSpec*2> updatedDate;
 			TBuf<KMaxUnplayedFeedsLength> unplayedShows;
 			
 			if (len > 0) 
 				{
 				for (int i=0;i<len;i++) 
-					{
-				//	listBoxData = model.NewDataL(MQikListBoxModel::EDataNormal);
-				//	CleanupClosePushL(*listBoxData);
+					{				
 					
 					CFeedInfo *fi = (*sortedItems)[i];
+					iItemIdArray.Append(fi->Uid());
 				//	listBoxData->SetItemId(fi->Uid());
 				//	listBoxData->AddTextL(fi->Title(), EQikListBoxSlotText1);					
-
+					TInt iconIndex = 0;
 					TUint unplayedCount = 0;
 					TUint showCount = 0;
 					iPodcastModel.ShowEngine().GetStatsByFeed(fi->Uid(), showCount, unplayedCount, fi->IsBookFeed());
@@ -356,25 +467,22 @@ void CPodcastFeedView::UpdateListboxItemsL()
 							fi->LastUpdated().FormatL(updatedDate, KDateFormat());
 							}
 						}
-						
+					
+					if (fi->IsBookFeed())
+						{
+						iconIndex = 2;						
+						}
+					else
+						{
+						iconIndex = 1;						
+						}
+					iListboxFormatbuffer.Format(KFeedFormat(), iconIndex, &fi->Title(), &unplayedShows, &updatedDate);
+					iItemArray->AppendL(iListboxFormatbuffer);
+					itemProps.SetBold(unplayedCount > 0);
+					iListContainer->Listbox()->ItemDrawer()->SetPropertiesL(i, itemProps);
 				//	listBoxData->SetEmphasis(unplayedCount > 0);					
 				//	listBoxData->AddTextL(unplayedShows, EQikListBoxSlotText2);
-				//	listBoxData->AddTextL(updatedDate, EQikListBoxSlotText3);
-					
-					
-				/*	CQikContent* content;
-					
-					if (fi->IsBookFeed()) {
-						content = CQikContent::NewL(this, _L("*"), EMbmPodcastclientAudiobookindividual_40x40, EMbmPodcastclientAudiobookindividual_40x40m);
-					} else {
-						content = CQikContent::NewL(this, _L("*"), EMbmPodcastclientFeed_40x40, EMbmPodcastclientFeed_40x40m);
-					}
-					
-					CleanupStack::PushL(content);
-					listBoxData->AddIconL(content,EQikListBoxSlotLeftMediumIcon1);
-					CleanupStack::Pop(content);
-					
-					CleanupStack::PopAndDestroy(listBoxData);*/
+				//	listBoxData->AddTextL(updatedDate, EQikListBoxSlotText3);												
 					}
 				} 
 			else 
@@ -394,8 +502,8 @@ void CPodcastFeedView::UpdateListboxItemsL()
 				iItemArray->Reset();
 				iItemIdArray.Reset();
 				itemName.Insert(0, _L("0\t"));
-				iItemArray->AppendL(itemName);
-				iItemIdArray.Append(0);
+				//iItemArray->AppendL(itemName);
+				//iItemIdArray.Append(0);
 				TListItemProperties itemProps;
 				itemProps.SetDimmed(ETrue);
 				itemProps.SetHiddenSelection(ETrue);								

@@ -66,6 +66,10 @@ class CPodcastFeedView : public CPodcastListView, MEikListBoxObserver, public MF
 		 * @param aCommand ID of the command to respond to. 
 		 */
 		void HandleCommandL(TInt aCommand);
+		void FeedInfoUpdatedL(CFeedInfo* aFeedInfo);
+		void UpdateFeedInfoDataL(CFeedInfo* aFeedInfo, TInt aIndex, TBool aIsUpdating = EFalse);
+		void UpdateFeedInfoStatusL(TUint aFeedUid, TBool aIsUpdating = EFalse);
+
 	private:
 		CPodcastModel& iPodcastModel;		
 		TBool iUpdatingAllRunning;

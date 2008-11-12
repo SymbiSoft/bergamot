@@ -75,6 +75,8 @@ protected:
 	
 	void GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex);
 	void UpdateFeedUpdateStateL();
+	void UpdateShowItemL(CShowInfo* aShowInfo, TInt aSizeDownloaded);
+	void UpdateShowItemDataL(CShowInfo* aShowInfo,TInt aIndex, TInt aSizeDownloaded = KErrNotFound);
 private:
 	TPodcastClientShowCategory iCurrentCategory;
 	CPodcastModel& iPodcastModel;
