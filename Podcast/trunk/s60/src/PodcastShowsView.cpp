@@ -15,10 +15,34 @@
 #include <aknnavide.h> 
 #include <podcast.rsg>
 #include <podcast.mbg>
+#include <gulicon.h>
 const TInt KSizeBufLen = 64;
 const TInt KDefaultGran = 5;
 _LIT(KSizeDownloadingOf, "%S/%S");
 _LIT(KChapterFormatting, "%03d");
+
+const TUint KIconArrayIds[] = 
+{
+EMbmPodcastEmptyimage,
+EMbmPodcastEmptyimage,
+EMbmPodcastShow_40x40,
+EMbmPodcastShow_40x40m,
+EMbmPodcastNew_40x40,
+EMbmPodcastNew_40x40m,
+EMbmPodcastShow_playing_40x40,
+EMbmPodcastShow_playing_40x40m,
+EMbmPodcastDownloading_40x40,
+EMbmPodcastDownloading_40x40m,
+EMbmPodcastSuspended_40x40,
+EMbmPodcastQueued_40x40m,
+EMbmPodcastSuspended_40x40,
+EMbmPodcastQueued_40x40m,
+EMbmPodcastQueued_40x40,
+EMbmPodcastQueued_40x40m,
+EMbmPodcastAudiobookchapter_40x40,
+EMbmPodcastAudiobookchapter_40x40m,
+0,0
+};
 
 class CPodcastShowsContainer : public CCoeControl
     {
@@ -74,6 +98,24 @@ void CPodcastShowsView::ConstructL()
 {
 	BaseConstructL(R_PODCAST_SHOWSVIEW);	
 	CPodcastListView::ConstructL();
+	CArrayPtr< CGulIcon >* icons = new(ELeave) CArrayPtrFlat< CGulIcon >(1);	
+	CleanupStack::PushL( icons );
+	TInt pos = 0;
+	while(KIconArrayIds[pos] > 0)
+		{
+		// Load the bitmap for play icon	
+		CFbsBitmap* bitmap = iEikonEnv->CreateBitmapL( _L("*"), KIconArrayIds[pos]);
+		CleanupStack::PushL( bitmap );		
+		// Load the mask for play icon	
+		CFbsBitmap* mask = iEikonEnv->CreateBitmapL( _L("*"), KIconArrayIds[pos+1] );	
+		CleanupStack::PushL( mask );
+		// Append the play icon to icon array
+		icons->AppendL( CGulIcon::NewL( bitmap, mask ) );
+		CleanupStack::Pop(2); // bitmap, mask
+		pos+=2;
+		}
+	iListContainer->Listbox()->ItemDrawer()->FormattedCellData()->SetIconArrayL( icons );
+	CleanupStack::Pop(icons); // icons
 	iListContainer->Listbox()->SetListBoxObserver(this);
 	iPodcastModel.FeedEngine().AddObserver(this);
 	iPodcastModel.ShowEngine().AddObserver(this);
@@ -247,6 +289,36 @@ void CPodcastShowsView::HandleListBoxEventL(CEikListBox* /*aListBox*/, TListBoxE
 	}
 }
 
+
+void CPodcastShowsView::GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex)
+{	
+	TBool dlStop = iPodcastModel.ShowEngine().DownloadsStopped();
+	if (aShowInfo->ShowType() == EAudioBook) {
+		aIconIndex = EAudiobookChapterIcon;	
+	} else {
+		if (iPodcastModel.PlayingPodcast() == aShowInfo) { // && iPodcastModel.SoundEngine().State() == ESoundEnginePlaying) {
+					aIconIndex = EPlayingShowIcon;
+		} else {
+			switch(aShowInfo->DownloadState())
+			{
+			case EDownloaded:
+				aIconIndex = EShowIcon;				
+				break;	
+			case ENotDownloaded:
+				aIconIndex = ENewShowIcon;
+				break;
+			case EQueued:
+				aIconIndex = dlStop ? ESuspendedShowIcon : EQuedShowIcon;				
+				break;
+			case EDownloading:
+				aIconIndex = dlStop ? ESuspendedShowIcon : EDownloadingShowIcon;				
+				break;
+			}
+		}
+	}
+}
+
+
 void CPodcastShowsView::UpdateListboxItemsL()
 {
 	if(iListContainer->IsVisible())
@@ -294,21 +366,18 @@ void CPodcastShowsView::UpdateListboxItemsL()
 				allUidsMatch = ETrue;
 				TUint itemId = 0;
 				for(TInt loop = 0;loop< len ;loop++)
-				{
-/*					MQikListBoxData* data = model.RetrieveDataL(loop);	
-					itemId = data->ItemId();
-					data->Close();
+				{	
+					itemId = iItemIdArray[loop];					
 					if(fItems[loop]->Uid() != itemId)
 					{			
 						allUidsMatch = EFalse;
 						break;
-					}		*/			
+					}					
 				}
 			}
 
 			if(allUidsMatch && len > 0)
-			{
-				//model.ModelBeginUpdateLC();
+			{				
 				for(TInt loop = 0;loop< len ;loop++)
 				{											
 					//MQikListBoxData* data = model.RetrieveDataL(loop);	
@@ -316,10 +385,7 @@ void CPodcastShowsView::UpdateListboxItemsL()
 					//UpdateShowItemDataL(fItems[loop], data);									
 					//CleanupStack::PopAndDestroy();//close data
 					//model.DataUpdatedL(loop);
-				}
-
-				//model.ModelEndUpdateL();
-
+				}		
 			}
 			else
 			{

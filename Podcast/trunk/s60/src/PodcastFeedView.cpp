@@ -95,6 +95,24 @@ void CPodcastFeedView::ConstructL()
 	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );
 	CleanupStack::Pop(2); // bitmap, mask
 
+	bitmap = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastAudiobookindividual_40x40);
+	CleanupStack::PushL( bitmap );		
+	// Load the mask for feed icon	
+	mask = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastAudiobookindividual_40x40m );	
+	CleanupStack::PushL( mask );
+	// Append the feed icon to icon array
+	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );
+	CleanupStack::Pop(2); // bitmap, mask
+	
+	bitmap = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastEmptyimage);
+	CleanupStack::PushL( bitmap );		
+	// Load the mask for feed icon	
+	mask = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastEmptyimage );	
+	CleanupStack::PushL( mask );
+	// Append the feed icon to icon array
+	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );
+	CleanupStack::Pop(2); // bitmap, mask
+
 	iListContainer->Listbox()->ItemDrawer()->FormattedCellData()->SetIconArrayL( icons );
 	CleanupStack::Pop(icons); // icons
 

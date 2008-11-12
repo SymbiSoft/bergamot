@@ -91,6 +91,16 @@ enum TFeedsViewMode
 	EFeedsAudioBooksMode = 0x101
 };
 
-
+enum TShowsIconIndex
+	{
+	EShowNoIcon,
+	EShowIcon,
+	ENewShowIcon,
+	EPlayingShowIcon,
+	EDownloadingShowIcon,
+	ESuspendedShowIcon,
+	EQuedShowIcon,
+	EAudiobookChapterIcon	
+	};
 
 #endif

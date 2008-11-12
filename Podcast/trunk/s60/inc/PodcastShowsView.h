@@ -72,6 +72,9 @@ protected:
 	 * @param aCommand ID of the command to respond to. 
 	 */
 	void HandleCommandL(TInt aCommand);
+	
+	void GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex);
+
 private:
 	TPodcastClientShowCategory iCurrentCategory;
 	CPodcastModel& iPodcastModel;
