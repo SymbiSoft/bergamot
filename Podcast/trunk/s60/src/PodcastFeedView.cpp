@@ -788,3 +788,53 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 		}
 	}
 	
+
+void CPodcastFeedView::DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane)
+{
+	if(aResourceId == R_PODCAST_FEEDVIEW_MENU)
+	{
+		TBool playingPodcast = (iPodcastModel.PlayingPodcast() != NULL && (iPodcastModel.SoundEngine().State() == ESoundEnginePlaying || iPodcastModel.SoundEngine().State() == ESoundEnginePaused));
+		if (iListContainer->Listbox() == NULL)
+			return;
+		TInt index = iListContainer->Listbox()->CurrentItemIndex();
+		TBool isBookMode = (iCurrentViewMode == EFeedsAudioBooksMode);
+		const RFeedInfoArray* sortedItems = NULL;
+		if(isBookMode)
+		{
+			sortedItems = &iPodcastModel.FeedEngine().GetSortedBooks();
+		}
+		else
+		{
+			sortedItems = &iPodcastModel.FeedEngine().GetSortedFeeds();
+		}
+
+		TUint cnt = sortedItems->Count();
+
+		if (cnt == 0)
+		{		
+			aMenuPane->SetItemDimmed(EPodcastDeleteFeed, ETrue);
+			aMenuPane->SetItemDimmed(EPodcastUpdateAllFeeds, ETrue);
+			aMenuPane->SetItemDimmed(EPodcastEditFeed, ETrue);
+			aMenuPane->SetItemDimmed(EPodcastRemoveAudioBook, ETrue);
+		}
+		else
+		{			
+			aMenuPane->SetItemDimmed(EPodcastDeleteFeed, (isBookMode||iUpdatingAllRunning));
+			aMenuPane->SetItemDimmed(EPodcastUpdateAllFeeds, (isBookMode || iUpdatingAllRunning));
+			aMenuPane->SetItemDimmed(EPodcastEditFeed, (isBookMode||iUpdatingAllRunning));	
+			aMenuPane->SetItemDimmed(EPodcastRemoveAudioBook, !isBookMode);
+		}
+		
+		aMenuPane->SetItemDimmed(EPodcastAddNewAudioBook, !isBookMode);
+		aMenuPane->SetItemDimmed(EPodcastImportAudioBook, !isBookMode);
+		aMenuPane->SetItemDimmed(EPodcastAddFeed, (isBookMode||iUpdatingAllRunning));
+		aMenuPane->SetItemDimmed(EPodcastImportFeeds, (isBookMode||iUpdatingAllRunning));
+		aMenuPane->SetItemDimmed(EPodcastExportFeeds, (isBookMode||iUpdatingAllRunning));
+		
+		TBool playingThisBook = (iPodcastModel.PlayingPodcast() != NULL) && (sortedItems != NULL && sortedItems->Count() > 0) && (iPodcastModel.PlayingPodcast()->FeedUid() == (*sortedItems)[index]->Uid()) && iPodcastModel.SoundEngine().State() == ESoundEnginePlaying;
+		aMenuPane->SetItemDimmed(EPodcastPlayAudioBook, !(isBookMode && cnt && !playingThisBook));
+		aMenuPane->SetItemDimmed(EPodcastPauseAudioBook, !(isBookMode && cnt && playingThisBook));
+		
+		aMenuPane->SetItemDimmed(EPodcastCancelUpdateAllFeeds, (isBookMode||!iUpdatingAllRunning));	
+	}
+}

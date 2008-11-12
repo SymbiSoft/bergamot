@@ -137,7 +137,7 @@ STATICLIBRARY	engine.lib
 STATICLIBRARY	libid3tag.lib
 LANG SC
 
-CAPABILITY	  	  NONE
+CAPABILITY NetworkServices UserEnvironment
 
 
 

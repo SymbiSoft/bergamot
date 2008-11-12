@@ -148,6 +148,8 @@ RESOURCE TBUF r_podcast_shows_title_format { buf =  STRING_r_podcast_shows_title
 RESOURCE TBUF r_podcast_shows_title_download {buf = STRING_r_podcast_shows_title_download;}
 RESOURCE TBUF r_podcast_shows_downloads_suspended { buf = STRING_r_podcast_shows_downloads_suspended;}
 
+RESOURCE TBUF r_podcast_player_suspend_dl_cmd{buf = STRING_r_suspend_download_cmd;}
+RESOURCE TBUF r_podcast_player_remove_dl_cmd{buf = STRING_r_view_remove_download_short_cmd;}
 
 RESOURCE ARRAY r_podcast_new_audiobook_mimearray
 {

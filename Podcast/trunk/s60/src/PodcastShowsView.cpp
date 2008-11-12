@@ -906,4 +906,122 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 			break;
 		}
 	}
-
+	
+	void CPodcastShowsView::DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane)
+	{
+		if(aResourceId == R_PODCAST_SHOWSVIEW_MENU)
+		{
+			
+			RShowInfoArray &fItems = iPodcastModel.ActiveShowList();
+			TInt itemCnt = fItems.Count();
+			TBool removeDeleteShowCmd = ETrue;
+			TBool removeDownloadShowCmd = ETrue;
+			TBool removeRemoveSuspendCmd = EFalse;
+			TBool updatingState = (iCurrentCategory != EShowDownloadedShows && iPodcastModel.FeedEngine().ClientState() != ENotUpdating && iPodcastModel.FeedEngine().ActiveClientUid() == iPodcastModel.ActiveFeedInfo()->Uid());
+			TBool playingPodcast = (iPodcastModel.PlayingPodcast() != NULL && (iPodcastModel.SoundEngine().State() == ESoundEnginePlaying || iPodcastModel.SoundEngine().State() == ESoundEnginePaused));
+			TBool removeSetPlayed = EFalse;
+			//aMenuPane->SetItemDimmed(EPodcastViewPlayer, !playingPodcast);
+			
+			if(iListContainer->Listbox() != NULL)
+			{
+				TInt index = iListContainer->Listbox()->CurrentItemIndex();
+				
+				if(index>= 0 && index < itemCnt)
+				{							
+					if(fItems[index]->DownloadState() != EQueued &&  fItems[index]->DownloadState() != EDownloading)
+					{			
+					}
+					else
+					{
+						if(fItems[index]->DownloadState() == EQueued)
+						{
+							aMenuPane->SetItemTextL(EPodcastRemoveDownload, R_PODCAST_PLAYER_REMOVE_DL_CMD);							
+						}
+						else
+						{					
+							aMenuPane->SetItemTextL(EPodcastRemoveDownload, R_PODCAST_PLAYER_SUSPEND_DL_CMD);
+							removeRemoveSuspendCmd = ETrue;
+						}
+					}
+					
+					removeDeleteShowCmd = fItems[index]->DownloadState() != EDownloaded || updatingState || 
+						(iPodcastModel.PlayingPodcast() != NULL && fItems[index] == iPodcastModel.PlayingPodcast() && iPodcastModel.SoundEngine().State() == ESoundEnginePlaying);
+					
+					if(fItems[index]->DownloadState() == ENotDownloaded)
+					{
+						removeDownloadShowCmd = EFalse;
+					}
+					
+					if(fItems[index]->PlayState() == EPlayed) {
+						removeSetPlayed = ETrue;
+					}
+					
+				}
+				
+			}		
+			
+			TBool iUpdateRunning = iPodcastModel.FeedEngine().ClientState() != ENotUpdating && iPodcastModel.ActiveFeedInfo() != NULL && iPodcastModel.FeedEngine().ActiveClientUid() == iPodcastModel.ActiveFeedInfo()->Uid();
+			
+			aMenuPane->SetItemDimmed(EPodcastUpdateFeed, iUpdateRunning || (iCurrentCategory != EShowFeedShows || iPodcastModel.ActiveFeedInfo()->IsBookFeed()));
+			aMenuPane->SetItemDimmed(EPodcastCancelUpdateAllFeeds, !iUpdateRunning);
+			
+			aMenuPane->SetItemDimmed(EPodcastDownloadShow, removeDownloadShowCmd || updatingState);
+			
+			aMenuPane->SetItemButtonState(EPodcastShowUnplayedOnly, iPodcastModel.SettingsEngine().SelectUnplayedOnly()?EEikMenuItemSymbolOn:EEikMenuItemSymbolIndeterminate);
+			
+			
+			aMenuPane->SetItemDimmed(EPodcastShowUnplayedOnly, updatingState);
+			aMenuPane->SetItemDimmed(EPodcastMarkAllPlayed, updatingState);
+			
+			aMenuPane->SetItemDimmed(EPodcastDeleteShow, removeDeleteShowCmd);					
+			TBool isOrdinaryList = iCurrentCategory == EShowDownloadedShows || (iCurrentCategory == EShowFeedShows && !(iPodcastModel.ActiveFeedInfo()?iPodcastModel.ActiveFeedInfo()->IsBookFeed():ETrue));
+			aMenuPane->SetItemDimmed(EPodcastDeleteAllPlayed, (!(!updatingState && !iPodcastModel.SettingsEngine().SelectUnplayedOnly()) || !isOrdinaryList));						
+			
+			aMenuPane->SetItemDimmed(EPodcastSetOrderAudioBook, !(EShowFeedShows == iCurrentCategory && (iPodcastModel.ActiveFeedInfo()?iPodcastModel.ActiveFeedInfo()->IsBookFeed(): ETrue)));
+			aMenuPane->SetItemDimmed(EPodcastAddAudioBookChapter, !(EShowFeedShows == iCurrentCategory && (iPodcastModel.ActiveFeedInfo()?iPodcastModel.ActiveFeedInfo()->IsBookFeed(): ETrue)));
+			
+			aMenuPane->SetItemDimmed(EPodcastRemoveAllDownloads, ETrue);
+			aMenuPane->SetItemDimmed(EPodcastMarkAsPlayed, removeSetPlayed || !itemCnt);
+			aMenuPane->SetItemDimmed(EPodcastMarkAsUnplayed, !removeSetPlayed || !itemCnt);
+			
+			
+			switch(iCurrentCategory)
+			{	
+			case EShowPendingShows:
+				{
+					aMenuPane->SetItemDimmed(EPodcastMarkAllPlayed, ETrue);
+					aMenuPane->SetItemDimmed(EPodcastUpdateLibrary, ETrue);
+					aMenuPane->SetItemDimmed(EPodcastRemoveDownload, (!itemCnt|| removeRemoveSuspendCmd));				
+					aMenuPane->SetItemDimmed(EPodcastRemoveAllDownloads, (!iPodcastModel.ShowEngine().DownloadsStopped() || !itemCnt));				
+					aMenuPane->SetItemDimmed(EPodcastStopDownloads, (iPodcastModel.ShowEngine().DownloadsStopped()));
+					aMenuPane->SetItemDimmed(EPodcastResumeDownloads, (!iPodcastModel.ShowEngine().DownloadsStopped()));			
+					aMenuPane->SetItemDimmed(EPodcastShowUnplayedOnly, ETrue);				
+					aMenuPane->SetItemDimmed(EPodcastDownloadShow, ETrue);
+					aMenuPane->SetItemDimmed(EPodcastMarkAsPlayed, ETrue);
+					aMenuPane->SetItemDimmed(EPodcastMarkAsUnplayed, ETrue);
+					aMenuPane->SetItemDimmed(EPodcastDeleteShow, ETrue);
+				}break;
+			case EShowDownloadedShows:
+				{
+					aMenuPane->SetItemDimmed(EPodcastMarkAllPlayed, updatingState);
+					aMenuPane->SetItemDimmed(EPodcastUpdateLibrary, EFalse);
+					aMenuPane->SetItemDimmed(EPodcastRemoveDownload, ETrue);
+					aMenuPane->SetItemDimmed(EPodcastStopDownloads, ETrue);
+					aMenuPane->SetItemDimmed(EPodcastResumeDownloads, ETrue);
+					aMenuPane->SetItemDimmed(EPodcastShowUnplayedOnly, EFalse);
+					aMenuPane->SetItemDimmed(EPodcastViewDownloadedShows, ETrue);
+				}break;
+			default:
+				{
+					aMenuPane->SetItemDimmed(EPodcastRemoveDownload, ETrue);					
+					aMenuPane->SetItemDimmed(EPodcastStopDownloads, ETrue);
+					aMenuPane->SetItemDimmed(EPodcastResumeDownloads, ETrue);
+					aMenuPane->SetItemDimmed(EPodcastMarkAllPlayed, updatingState);
+					aMenuPane->SetItemDimmed(EPodcastUpdateLibrary, ETrue);
+					aMenuPane->SetItemDimmed(EPodcastShowUnplayedOnly, EFalse);
+				}break;
+			}	
+			
+			
+}
+}

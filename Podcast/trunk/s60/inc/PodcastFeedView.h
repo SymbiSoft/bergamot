@@ -70,6 +70,7 @@ class CPodcastFeedView : public CPodcastListView, MEikListBoxObserver, public MF
 		void UpdateFeedInfoDataL(CFeedInfo* aFeedInfo, TInt aIndex, TBool aIsUpdating = EFalse);
 		void UpdateFeedInfoStatusL(TUint aFeedUid, TBool aIsUpdating = EFalse);
 
+		 void DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane);
 	private:
 		CPodcastModel& iPodcastModel;		
 		TBool iUpdatingAllRunning;

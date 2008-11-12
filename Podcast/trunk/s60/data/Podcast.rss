@@ -1,6 +1,6 @@
 //  RESOURCE IDENTIFIER
 NAME    ESPD // 4 letter ID
-
+#include <eikon.hrh>
 #include <eikon.rh>
 #include <avkon.rsg>
 #include <avkon.rh>

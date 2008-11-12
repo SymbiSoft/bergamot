@@ -77,6 +77,8 @@ protected:
 	void UpdateFeedUpdateStateL();
 	void UpdateShowItemL(CShowInfo* aShowInfo, TInt aSizeDownloaded = KErrNotFound);
 	void UpdateShowItemDataL(CShowInfo* aShowInfo,TInt aIndex, TInt aSizeDownloaded = KErrNotFound);
+
+	 void DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane);
 private:
 	TPodcastClientShowCategory iCurrentCategory;
 	CPodcastModel& iPodcastModel;
