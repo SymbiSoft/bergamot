@@ -80,6 +80,7 @@ CPodcastFeedView::CPodcastFeedView(CPodcastModel& aPodcastModel):iPodcastModel(a
 void CPodcastFeedView::ConstructL()
 {
 	BaseConstructL(R_PODCAST_FEEDVIEW);
+	iNeverUpdated = iEikonEnv->AllocReadResourceL(R_PODCAST_FEEDS_NEVER_UPDATED);
 	iBooksFormat = iEikonEnv->AllocReadResourceL(R_PODCAST_BOOKS_STATUS_FORMAT);
 	iFeedsFormat = iEikonEnv->AllocReadResourceL(R_PODCAST_FEEDS_STATUS_FORMAT);
 	CPodcastListView::ConstructL();
