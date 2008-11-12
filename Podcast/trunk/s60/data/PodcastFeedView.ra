@@ -25,6 +25,67 @@ RESOURCE MENU_PANE r_podcast_feedview_menu
     {
     items =
         {        
+        // Feed handling        	
+        	MENU_ITEM
+        			{
+        			command = EPodcastAddFeed;
+        			txt = STRING_r_view_add_feed_cmd;
+        			},
+        	MENU_ITEM	
+        			{
+        			command = EPodcastAddNewAudioBook;			
+        			txt = STRING_r_view_new_audiobook_cmd;
+        			},
+        	MENU_ITEM	
+        			{
+        			command = EPodcastImportAudioBook;
+        			txt = STRING_r_view_import_audiobook_cmd;
+        			},
+        	MENU_ITEM
+        			{
+        			command = EPodcastEditFeed;	
+        			txt = STRING_r_view_edit_feed_cmd;
+        			},
+        		MENU_ITEM
+        			{
+        			command = EPodcastDeleteFeed;
+        			txt = STRING_r_view_delete_feed_cmd;
+        			},		
+        		MENU_ITEM
+        			{
+        			command = EPodcastRemoveAudioBook;
+        			txt = STRING_r_view_remove_audiobook_cmd;
+        			},	
+        	MENU_ITEM
+        			{
+        			command = EPodcastImportFeeds;
+        			txt = STRING_r_view_import_feeds_cmd;
+        			},	
+        	MENU_ITEM
+        			{      			
+        			command = EPodcastExportFeeds;       			
+        			txt = STRING_r_view_export_feeds_cmd;
+        			},	
+        		MENU_ITEM
+        			{
+        			command = EPodcastUpdateAllFeeds;	
+        			txt = STRING_r_update_all_feeds_cmd;			
+        			},	
+        		MENU_ITEM
+        			{
+        			command = EPodcastPlayAudioBook;
+        			txt = STRING_r_play_cmd;
+        			},	
+        		MENU_ITEM
+        			{
+        			command = EPodcastPauseAudioBook;
+        			txt = STRING_r_pause_cmd;
+        			},	
+        		MENU_ITEM
+        			{
+        			command = EPodcastCancelUpdateAllFeeds;
+        			txt = STRING_r_cancel_update_all_feeds_cmd;
+        			},	        		
      	// Other commands
 		MENU_ITEM
 			{
