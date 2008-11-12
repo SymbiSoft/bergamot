@@ -1,6 +1,8 @@
 #ifndef PODCAST_HRH
 #define PODCAST_HRH
 
+#define KOneHundredPercent 100
+
 enum TPodcastCommandIds
 	{
 	EPodcastView = 0x1000,

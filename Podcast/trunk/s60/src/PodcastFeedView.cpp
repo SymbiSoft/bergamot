@@ -78,7 +78,7 @@ void CPodcastFeedView::ConstructL()
 {
 	BaseConstructL(R_PODCAST_FEEDVIEW);	
 	CPodcastListView::ConstructL();
-	
+	iPodcastModel.FeedEngine().AddObserver(this);
 	CArrayPtr< CGulIcon >* icons = new(ELeave) CArrayPtrFlat< CGulIcon >(1);
 	CleanupStack::PushL( icons );
 
@@ -100,6 +100,10 @@ void CPodcastFeedView::ConstructL()
     
 CPodcastFeedView::~CPodcastFeedView()
     {
+	iPodcastModel.FeedEngine().RemoveObserver(this);
+	delete iBooksFormat;
+	delete iFeedsFormat;
+	delete iNeverUpdated;
     }
 
 TUid CPodcastFeedView::Id() const

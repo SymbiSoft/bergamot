@@ -32,6 +32,8 @@ CPodcastMainView* CPodcastMainView::NewLC(CPodcastModel& aPodcastModel)
 
 CPodcastMainView::CPodcastMainView(CPodcastModel& aPodcastModel):iPodcastModel(aPodcastModel)
 {
+	iCheckForQuedDownloads = ETrue;
+	iPodcastModel.ShowEngine().AddObserver(this);
 }
 
 void CPodcastMainView::ConstructL()

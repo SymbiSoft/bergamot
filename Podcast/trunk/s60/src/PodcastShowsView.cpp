@@ -73,10 +73,14 @@ void CPodcastShowsView::ConstructL()
 	BaseConstructL(R_PODCAST_SHOWSVIEW);	
 	CPodcastListView::ConstructL();
 	iListContainer->Listbox()->SetListBoxObserver(this);
+	iPodcastModel.FeedEngine().AddObserver(this);
+	iPodcastModel.ShowEngine().AddObserver(this);
 }
     
 CPodcastShowsView::~CPodcastShowsView()
     {
+	iPodcastModel.ShowEngine().RemoveObserver(this);
+	iPodcastModel.FeedEngine().RemoveObserver(this);
     }
 
 TUid CPodcastShowsView::Id() const
@@ -95,6 +99,111 @@ void CPodcastShowsView::DoDeactivate()
 {
 	CPodcastListView::DoDeactivate();
 }
+
+// Engine callback when new shows are available
+void CPodcastShowsView::ShowListUpdated()
+{
+	TRAP_IGNORE(UpdateListboxItemsL());
+}
+
+void CPodcastShowsView::ShowDownloadUpdatedL(TInt aPercentOfCurrentDownload, TInt aBytesOfCurrentDownload, TInt /*aBytesTotal*/)
+{
+	//DP("CPodcastClientShowsView::ShowDownloadUpdatedL");
+	//if(ViewContext() != NULL)
+	{
+		CShowInfo *showInfo = NULL;
+		TInt index = iListContainer->Listbox()->CurrentItemIndex();
+		if(index >= 0 && index < iPodcastModel.ActiveShowList().Count())
+		{
+					showInfo = iPodcastModel.ActiveShowList()[index];
+		}
+
+		// now we only show when the active downloa has focus in a list
+		//if(!iPodcastModel.ShowEngine().DownloadsStopped() && showInfo != NULL && showInfo->Uid() == iPodcastModel.ShowEngine().ShowDownloading()->Uid() &&				
+
+		// we show progress bar only for pending shows and inside the feed to which
+	    // the active download belongs
+		if ((iCurrentCategory == EShowPendingShows && aBytesOfCurrentDownload != -1) ||
+				(iPodcastModel.ShowEngine().ShowDownloading()!= NULL && iPodcastModel.ActiveFeedInfo() != NULL && iPodcastModel.ShowEngine().ShowDownloading()->FeedUid() == iPodcastModel.ActiveFeedInfo()->Uid() &&
+				aPercentOfCurrentDownload>=0 && aPercentOfCurrentDownload < KOneHundredPercent))
+		{
+			if(!iProgressAdded)
+			{
+			//	ViewContext()->AddProgressInfoL(EEikProgressTextPercentage, KOneHundredPercent);
+
+				iProgressAdded = ETrue;
+			}
+			
+			//ViewContext()->SetAndDrawProgressInfo(aPercentOfCurrentDownload);
+		}
+		else
+		{
+			//ViewContext()->RemoveAndDestroyProgressInfo();
+			//ViewContext()->DrawNow();
+			iProgressAdded = EFalse;
+		}
+
+		if(aPercentOfCurrentDownload == KOneHundredPercent)
+		{
+			//ViewContext()->RemoveAndDestroyProgressInfo();
+			//ViewContext()->DrawNow();
+			iProgressAdded = EFalse;
+			
+			if(iCurrentCategory == EShowPendingShows && iPodcastModel.ShowEngine().ShowDownloading() != NULL)
+			{
+				// First find the item, to remove it if we are in the pending show list
+				TInt index = iPodcastModel.ActiveShowList().Find(iPodcastModel.ShowEngine().ShowDownloading());
+				
+				if(index != KErrNotFound)
+				{
+					//iListContainer->Listbox()->(index);
+					iPodcastModel.ActiveShowList().Remove(index);
+					UpdateListboxItemsL();
+				}
+			}
+		}
+
+		if(iPodcastModel.ShowEngine().ShowDownloading() != NULL)
+		{
+			//UpdateShowItemL(iPodcastModel.ShowEngine().ShowDownloading(), aBytesOfCurrentDownload);
+		}
+				
+	}
+}
+
+void CPodcastShowsView::FeedInfoUpdated(CFeedInfo* aFeedInfo)
+{
+	if(iPodcastModel.ActiveFeedInfo() != NULL && aFeedInfo->Uid() == iPodcastModel.ActiveFeedInfo()->Uid())
+	{
+		iPodcastModel.SetActiveFeedInfo(aFeedInfo);
+	//	TRAP_IGNORE(UpdateFeedUpdateStateL());
+		// Title might have changed
+		TRAP_IGNORE(UpdateListboxItemsL());
+	}
+}
+
+void CPodcastShowsView::FeedUpdateCompleteL(TUint aFeedUid)
+{
+	if(iPodcastModel.ActiveFeedInfo() != NULL && iPodcastModel.ActiveFeedInfo()->Uid() == aFeedUid)
+	{
+		//UpdateFeedUpdateStateL();		
+	}
+	if (iDisableCatchupMode) {
+		iPodcastModel.FeedEngine().SetCatchupMode(EFalse);
+	}
+}
+
+void CPodcastShowsView::FeedUpdateAllCompleteL()
+{
+}
+
+void CPodcastShowsView::FeedDownloadUpdatedL(TUint aFeedUid, TInt /*aPercentOfCurrentDownload*/)
+	{
+	if(iPodcastModel.ActiveFeedInfo() != NULL && iPodcastModel.ActiveFeedInfo()->Uid() == aFeedUid)
+		{
+			//UpdateFeedUpdateStateL();
+		}
+	}
 
 void CPodcastShowsView::HandleListBoxEventL(CEikListBox* aListBox, TListBoxEvent aEventType)
 {
