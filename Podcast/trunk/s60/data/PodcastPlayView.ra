@@ -25,8 +25,60 @@ RESOURCE MENU_PANE r_podcast_playview_menu
     {
     items =
         {        
-        MENU_ITEM { command = EPodcastSettings; txt = "Play"; },	
-        MENU_ITEM { command = EPodcastBack; txt = "Back"; }
+  	MENU_ITEM
+			{
+			command = EPodcastPlay;
+			
+			txt = STRING_r_play_cmd;
+			},
+	MENU_ITEM
+			{
+			command = EPodcastDownloadShow;
+			
+			txt = STRING_r_view_download_cmd;
+			},
+		MENU_ITEM
+			{
+			command = EPodcastRemoveDownload;
+			
+			txt = STRING_r_view_remove_download_cmd;
+
+			},	
+		MENU_ITEM
+			{		
+			command = EPodcastResumeDownloads;
+			
+			txt = STRING_r_view_resume_downloads_cmd;
+		
+			},					
+		MENU_ITEM
+			{
+			command = EPodcastStop;
+			
+			txt = STRING_r_stop_cmd;
+			
+			},
+		MENU_ITEM
+			{
+			command = EPodcastSetVolume;
+			
+			txt = STRING_r_volume_cmd;
+			},
+	MENU_ITEM
+			{
+			command = EPodcastMarkAsPlayed;
+			
+			txt = STRING_r_view_mark_as_played_cmd;
+			
+			},
+	MENU_ITEM
+			{
+			command = EPodcastMarkAsUnplayed;
+			
+			txt = STRING_r_view_mark_as_unplayed_cmd;
+			
+			}
+     
         };
     }
 
@@ -37,4 +89,3 @@ RESOURCE AVKON_VIEW r_podcast_playview
 	menubar = r_podcast_playview_menubar;
 	cba = R_AVKON_SOFTKEYS_OPTIONS_BACK;    
 }
-

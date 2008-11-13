@@ -15,6 +15,7 @@
 const TInt KActiveShowUIDCmd = 0x1000;
 
 class CPodcastPlayContainer;
+class CAknNavigationControlContainer;
 
 class CPodcastPlayView : public CAknView
     {
@@ -57,10 +58,12 @@ class CPodcastPlayView : public CAknView
 		*/
 		void HandleCommandL(TInt aCommand);
 	private:
+        CAknNavigationControlContainer* iNaviPane;
 		CPodcastPlayContainer* iPlayContainer;
 		CPodcastModel& iPodcastModel;
 		/** Previous activated view */
 		TVwsViewId iPreviousView;
+		TInt iCurrentViewShowUid;
 };
 
 #endif // PODCASTPLAYVIEWH
