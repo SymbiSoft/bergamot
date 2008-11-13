@@ -193,7 +193,7 @@ int winWrite(
 
   if (pFile->file.Write(ptr, amt) != KErrNone) rc = SQLITE_FULL;
 
-  return SQLITE_OK;
+  return rc;
 }
 
 /*
