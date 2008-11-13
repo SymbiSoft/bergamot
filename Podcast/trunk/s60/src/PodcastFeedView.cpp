@@ -584,6 +584,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			HBufC* import_title = iEikonEnv->AllocReadResourceLC(R_PODCAST_IMPORT_FEEDS_TITLE);
 			CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeSelect);
 			TFileName importName;
+			dlg->SetTitleL(*import_title);
 			//if(CQikSelectFileDlg::RunDlgLD(*mimeTypes, *fileNames, import_title))i
 			if(dlg->ExecuteL(importName))
 				{
@@ -763,6 +764,8 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			HBufC* import_title = iEikonEnv->AllocReadResourceLC(R_PODCAST_IMPORT_BOOK_TITLE);
 			CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeSelect);
 			TFileName importName;
+			dlg->SetTitleL(*import_title);
+			
 			if(dlg->ExecuteL(importName))
 				{
 				if( importName.Length()>0 )
