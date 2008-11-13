@@ -180,6 +180,36 @@ RESOURCE DIALOG r_podcast_new_audiobook_dlg
 	};
 }
 
+RESOURCE FILESELECTIONDIALOG r_podcast_import_audiobook
+{
+ title = STRING_r_view_import_book_title;
+ root_path = "";
+ filters =
+ {
+  FILTER
+  {
+  filter_type = EFilenameFilter;
+  filter_style = EInclusiveFilter;
+  filter_data = { "*.m3u" };
+  }
+ };
+}
+
+RESOURCE FILESELECTIONDIALOG r_podcast_import_podcast
+{
+ title = STRING_r_view_import_feeds_title;
+ root_path = "";
+ filters =
+ {
+  FILTER
+  {
+  filter_type = EFilenameFilter;
+  filter_style = EInclusiveFilter;
+  filter_data = { "*.opml" };
+  }
+ };
+}
+
 // Books
 RESOURCE TBUF r_podcast_books_title_format {buf = STRING_r_podcast_books_title_format;}
 RESOURCE TBUF r_podcast_books_status_format {buf = STRING_r_podcast_books_status_format;}
