@@ -1,6 +1,8 @@
 #include "..\libid3tag\bld.inf"
+#include "..\sqlite\group\bld.inf"
 
 PRJ_MMPFILES
+
 #if defined(__UIQ3_SDK__)
 ..\..\uiq\group\PodcastClient.mmp
 ..\..\common\engine\engine.mmp
