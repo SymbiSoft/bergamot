@@ -583,7 +583,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			CDesCArrayFlat* fileNames = new (ELeave) CDesCArrayFlat(KDefaultGran);
 			CleanupStack::PushL(fileNames);
 			HBufC* import_title = iEikonEnv->AllocReadResourceLC(R_PODCAST_IMPORT_FEEDS_TITLE);
-			CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeBrowse, R_PODCAST_IMPORT_PODCAST);
+			CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeNormal, R_PODCAST_IMPORT_PODCAST);
 			TFileName importName;
 			dlg->SetTitleL(*import_title);
 									

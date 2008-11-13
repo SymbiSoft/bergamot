@@ -89,7 +89,7 @@ void COpmlParser::OnStartElementL(const RTagInfo& aElement, const RAttributeArra
 				TBuf<1024> val16;
 				val16.Copy(attr.Value().DesC());
 				// xmlUrl=...
-				if (attr16.Compare(KTagXmlUrl) == 0) {
+				if (attr16.Compare(KTagXmlUrl) == 0 || attr16.Compare(KTagUrl) == 0) {
 					newFeed->SetUrlL(val16);
 					hasUrl = ETrue;
 				// text=...
