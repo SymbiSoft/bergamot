@@ -431,7 +431,8 @@ void CPodcastFeedView::UpdateListboxItemsL()
 			TListItemProperties itemProps;
 			iListContainer->Listbox()->Reset();
 			iListContainer->Listbox()->ItemDrawer()->ClearAllPropertiesL();
-			iItemIdArray.Reset();		
+			iItemIdArray.Reset();
+			iItemArray->Reset();
 			TBuf<KMaxShortDateFormatSpec*2> updatedDate;
 			TBuf<KMaxUnplayedFeedsLength> unplayedShows;
 			
