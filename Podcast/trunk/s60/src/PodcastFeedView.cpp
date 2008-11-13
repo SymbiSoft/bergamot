@@ -867,8 +867,9 @@ void CPodcastFeedView::HandleAddNewAudioBookL()
 			HBufC* promptformat = iEikonEnv->AllocReadResourceLC(R_PODCAST_ADDBOOK_PROMPTFORMAT);						
 			HBufC* prompt = HBufC::NewLC(inputprompt->Length()+promptformat->Length()+ KNumberOfFilesMaxLength);
 			prompt->Des().Format(*promptformat, fileNameArray->Count());
-			prompt->Des().Append('\n');
-			prompt->Des().Append(*inputprompt);
+			prompt->Des().Insert(0, *inputprompt);
+			prompt->Des().Insert(0,_L("\n"));
+			
 			if (dlg->ExecuteLD(R_PODCAST_NEW_AUDIOBOOK_DLG, *prompt))
 				{
 				// Add book // See CPodcastClientAudioBookDlg
