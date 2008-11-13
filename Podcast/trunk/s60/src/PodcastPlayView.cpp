@@ -622,6 +622,8 @@ void CPodcastPlayContainer::UpdateViewL()
 				TCallBack(PlayingUpdateStaticCallbackL, this));
 		}
 		iCoverImageCtrl->SetSize(TSize(Size().iWidth, iCoverImageCtrl->MinimumSize().iHeight));
+
+		SetSize(Size());
 }
 
 CPodcastPlayView* CPodcastPlayView::NewL(CPodcastModel& aPodcastModel)
