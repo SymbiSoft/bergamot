@@ -22,7 +22,7 @@ class CPodcastAppUi : public CAknViewAppUi
     public: 
         void ConstructL();
        ~CPodcastAppUi();
-        
+        void DBTest();
     private:
         // From MEikMenuObserver
         void DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane);

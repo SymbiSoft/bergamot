@@ -68,6 +68,7 @@ SYSTEMINCLUDE \epoc32\include\osextensions
 
 USERINCLUDE ..\..\common\engine
 USERINCLUDE ..\..\common\libid3tag
+USERINCLUDE ..\..\common\sqlite\src
 USERINCLUDE . 
 USERINCLUDE ..\inc
 
