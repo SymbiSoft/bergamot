@@ -135,6 +135,7 @@ LIBRARY apgrfx.lib
 
 STATICLIBRARY	engine.lib
 STATICLIBRARY	libid3tag.lib
+STATICLIBRARY	sqlite.lib
 LANG SC
 
 CAPABILITY NetworkServices UserEnvironment
