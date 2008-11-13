@@ -183,7 +183,7 @@ RESOURCE DIALOG r_podcast_new_audiobook_dlg
 RESOURCE FILESELECTIONDIALOG r_podcast_import_audiobook
 {
  title = STRING_r_view_import_book_title;
- root_path = "\\";
+ root_path = "c:\\";
  filters =
  {
   FILTER
@@ -198,7 +198,7 @@ RESOURCE FILESELECTIONDIALOG r_podcast_import_audiobook
 RESOURCE FILESELECTIONDIALOG r_podcast_import_podcast
 {
  title = STRING_r_view_import_feeds_title;
- root_path = "\\";
+ root_path = "c:\\";
  filters =
  {
   FILTER
