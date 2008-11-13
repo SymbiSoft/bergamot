@@ -42,13 +42,9 @@
 extern "C" {
 #endif
 
-#ifndef EXPORT_C
 #define EXPORT_C
-#endif
 
-#ifndef IMPORT_C
 #define IMPORT_C
-#endif
 
 /*
 ** Add the ability to override 'extern'
