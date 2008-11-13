@@ -6,6 +6,7 @@ NAME    ESPD // 4 letter ID
 #include <avkon.rh>
 #include <appinfo.rh>
 #include <commondialogs.rh>
+#include <commondialogs.hrh>
 #include "Podcast.hrh"
 #include "languages.rss"
 
