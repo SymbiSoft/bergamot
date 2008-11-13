@@ -28,6 +28,7 @@ const TInt KDefaultGran = 5;
 const TInt KNumberOfFilesMaxLength = 4;
 _LIT(KUnknownUpdateDateString, "?/?");
 _LIT(KFeedFormat, "%d\t%S\t%S %S");
+_LIT(KDefaultDataFolder, "C:\\DATA\\");
 class CPodcastFeedContainer : public CCoeControl
     {
     public: 
@@ -585,6 +586,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeSelect);
 			TFileName importName;
 			dlg->SetTitleL(*import_title);
+			dlg->SetDefaultFolderL(KDefaultDataFolder());						
 			//if(CQikSelectFileDlg::RunDlgLD(*mimeTypes, *fileNames, import_title))i
 			if(dlg->ExecuteL(importName))
 				{
@@ -764,6 +766,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			HBufC* import_title = iEikonEnv->AllocReadResourceLC(R_PODCAST_IMPORT_BOOK_TITLE);
 			CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeSelect);
 			TFileName importName;
+			dlg->SetDefaultFolderL(KDefaultDataFolder());
 			dlg->SetTitleL(*import_title);
 			
 			if(dlg->ExecuteL(importName))
