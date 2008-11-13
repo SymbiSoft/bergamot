@@ -12,7 +12,7 @@
 #include "SettingsEngine.h"
 #include "SoundEngine.h"
 #include "PodcastPlayView.h"
-
+#include <caknfileselectiondialog.h>
 #include <aknnavide.h> 
 #include <podcast.rsg>
 #include <podcast.mbg>
@@ -582,11 +582,14 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			CDesCArrayFlat* fileNames = new (ELeave) CDesCArrayFlat(KDefaultGran);
 			CleanupStack::PushL(fileNames);
 			HBufC* import_title = iEikonEnv->AllocReadResourceLC(R_PODCAST_IMPORT_FEEDS_TITLE);
-			//if(CQikSelectFileDlg::RunDlgLD(*mimeTypes, *fileNames, import_title))
+			CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeSelect);
+			TFileName importName;
+			//if(CQikSelectFileDlg::RunDlgLD(*mimeTypes, *fileNames, import_title))i
+			if(dlg->ExecuteL(importName))
 				{
-				if(fileNames->MdcaCount()>0)
+				if(importName.Length()>0)
 					{
-					iPodcastModel.FeedEngine().ImportFeedsL(fileNames->MdcaPoint(0));
+					iPodcastModel.FeedEngine().ImportFeedsL(importName);
 					UpdateListboxItemsL();
 					}
 				}
@@ -758,17 +761,26 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			CDesCArrayFlat* fileNames = new (ELeave) CDesCArrayFlat(KDefaultGran);
 			CleanupStack::PushL(fileNames);
 			HBufC* import_title = iEikonEnv->AllocReadResourceLC(R_PODCAST_IMPORT_BOOK_TITLE);
-		//	if(CQikSelectFileDlg::RunDlgLD(*mimeTypes, *fileNames, import_title))
+			CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeSelect);
+			TFileName importName;
+			if(dlg->ExecuteL(importName))
 				{
-				if(fileNames->MdcaCount()>0)
+				if( importName.Length()>0 )
 					{
-					//TODO
-				//	CPodcastClientAudioBookDlg* titleDialog = new (ELeave) CPodcastClientAudioBookDlg(iPodcastModel, *fileNames, ETrue);
-					//titleDialog->ExecuteLD(R_PODCAST_NEW_AUDIOBOOK_DLG);	
-					}
+					TBuf<256> data;
+					CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(data) ;//CPodcastClientAddFeedDlg(iPodcastModel);
 
+					HBufC* prompt= iEikonEnv->AllocReadResourceLC(R_PODCAST_ADDBOOK_PROMPT);
+					
+					if (dlg->ExecuteLD(R_PODCAST_NEW_AUDIOBOOK_DLG, *prompt))
+						{
+						// Add book // See CPodcastClientAudioBookDlg
+						UpdateListboxItemsL();
+						}
+					CleanupStack::PopAndDestroy(prompt);
+					}
 				}
-			UpdateListboxItemsL();
+												
 			CleanupStack::PopAndDestroy(3,mimeTypes); // title, fileNames, mimeTypes								
 			}break;
 		case EPodcastRemoveAudioBookHardware:
