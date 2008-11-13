@@ -19,11 +19,13 @@
 #include <gulicon.h>
 #include <eikenv.h>
 #include <e32const.h>
-
+#include <eikdialg.h>
+#include <aknquerydialog.h>
 const TInt KMaxFeedNameLength = 100;
 const TInt KMaxUnplayedFeedsLength =64;
 const TInt KADayInHours = 24;
 const TInt KDefaultGran = 5;
+const TInt KNumberOfFilesMaxLength = 4;
 _LIT(KUnknownUpdateDateString, "?/?");
 _LIT(KFeedFormat, "%d\t%S\t%S %S");
 class CPodcastFeedContainer : public CCoeControl
@@ -561,11 +563,16 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 		{
 		case EPodcastAddFeed:
 			{
-		/*	CPodcastClientAddFeedDlg* dlg = new (ELeave) CPodcastClientAddFeedDlg(iPodcastModel);
-			if(dlg->ExecuteLD(R_PODCAST_ADD_FEED_DLG))
+			TBuf<256> data;
+			CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(data) ;//CPodcastClientAddFeedDlg(iPodcastModel);
+			dlg->PrepareLC(R_PODCAST_ADD_FEED_DLG);
+			HBufC* prompt = iEikonEnv->AllocReadResourceLC(R_PODCAST_ADDFEED_PROMPT);
+			dlg->SetPromptL(*prompt);
+			CleanupStack::PopAndDestroy(prompt);
+			if(dlg->RunLD())
 				{
 				UpdateListboxItemsL();
-				}*/
+				}
 			break;
 			}
 		case EPodcastImportFeeds:
@@ -738,7 +745,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			break;
 		case EPodcastAddNewAudioBook:
 			{
-			//TODO: HandleAddNewAudioBookL();
+			HandleAddNewAudioBookL();
 			UpdateListboxItemsL();
 			}break;
 		case EPodcastImportAudioBook:
@@ -838,3 +845,40 @@ void CPodcastFeedView::DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane
 		aMenuPane->SetItemDimmed(EPodcastCancelUpdateAllFeeds, (isBookMode||!iUpdatingAllRunning));	
 	}
 }
+
+void CPodcastFeedView::HandleAddNewAudioBookL()
+	{
+	CDesCArrayFlat* mimeArray = iEikonEnv->ReadDesCArrayResourceL(R_PODCAST_NEW_AUDIOBOOK_MIMEARRAY);
+	CleanupStack::PushL(mimeArray);
+	CDesCArrayFlat* fileNameArray = new (ELeave) CDesCArrayFlat(KDefaultGran);
+	CleanupStack::PushL(fileNameArray);
+	HBufC* dialogTitle = iEikonEnv->AllocReadResourceLC(R_PODCAST_NEW_AUDIOBOOK_SELECT_FILES);
+	//TQikDefaultFolderDescription defaultFolder;
+	//defaultFolder.SetDefaultFolder(EQikFileHandlingDefaultFolderAudio);
+	fileNameArray->AppendL(_L("C:\\testfile.mp3"));
+//	if(CQikSelectFileDlg::RunDlgLD(*mimeArray, *fileNameArray, defaultFolder, dialogTitle, EQikSelectFileDialogEnableMultipleSelect|EQikSelectFileDialogSortByName))
+		{
+		if(fileNameArray->Count() > 0)
+			{
+			TBuf<256> data;
+			CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(data) ;//CPodcastClientAddFeedDlg(iPodcastModel);
+		
+			HBufC* inputprompt= iEikonEnv->AllocReadResourceLC(R_PODCAST_ADDBOOK_PROMPT);			
+			HBufC* promptformat = iEikonEnv->AllocReadResourceLC(R_PODCAST_ADDBOOK_PROMPTFORMAT);						
+			HBufC* prompt = HBufC::NewLC(inputprompt->Length()+promptformat->Length()+ KNumberOfFilesMaxLength);
+			prompt->Des().Format(*promptformat, fileNameArray->Count());
+			prompt->Des().Append('\n');
+			prompt->Des().Append(*inputprompt);
+			if (dlg->ExecuteLD(R_PODCAST_NEW_AUDIOBOOK_DLG, *prompt))
+				{
+				// Add book // See CPodcastClientAudioBookDlg
+				UpdateListboxItemsL();
+				}		
+			CleanupStack::PopAndDestroy(3, inputprompt);
+			}
+		}
+
+	CleanupStack::PopAndDestroy(dialogTitle);
+	CleanupStack::PopAndDestroy(fileNameArray);
+	CleanupStack::PopAndDestroy(mimeArray);
+	}

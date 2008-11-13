@@ -71,6 +71,7 @@ class CPodcastFeedView : public CPodcastListView, MEikListBoxObserver, public MF
 		void UpdateFeedInfoStatusL(TUint aFeedUid, TBool aIsUpdating = EFalse);
 
 		 void DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane);
+		void HandleAddNewAudioBookL();
 	private:
 		CPodcastModel& iPodcastModel;		
 		TBool iUpdatingAllRunning;

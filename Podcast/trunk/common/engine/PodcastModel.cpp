@@ -270,7 +270,7 @@ TBool CPodcastModel::ConnectHttpSessionL(RHTTPSession &aSession)
 	/*if(iSettingsEngine->SpecificIAP() == -1)
 	{
 		TInt iapSelected = iConnPref.IapId();
-		CPodcastClientIAPDlg* selectIAPDlg = new (ELeave) CPodcastClientIAPDlg(*this, iapSelected);
+		/*CPodcastClientIAPDlg* selectIAPDlg = new (ELeave) CPodcastClientIAPDlg(*this, iapSelected);
 		if(selectIAPDlg->ExecuteLD(R_PODCAST_IAP_DLG))
 		{
 			iConnPref.SetIapId(iapSelected);
@@ -279,7 +279,7 @@ TBool CPodcastModel::ConnectHttpSessionL(RHTTPSession &aSession)
 		{
 			return EFalse;
 		}
-	}
+	}*/
 
 	CConnectionWaiter* connectionWaiter = new (ELeave) CConnectionWaiter;
 	
@@ -287,7 +287,7 @@ TBool CPodcastModel::ConnectHttpSessionL(RHTTPSession &aSession)
 	CActiveScheduler::Start();
 	TInt result = connectionWaiter->iStatus.Int();
 	delete connectionWaiter;
-	User::LeaveIfError(result);*/
+	User::LeaveIfError(result);
 
 	RHTTPConnectionInfo connInfo = aSession.ConnectionInfo();
 	RStringPool pool = aSession.StringPool();
