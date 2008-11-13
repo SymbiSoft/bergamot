@@ -89,18 +89,8 @@ RESOURCE MENU_PANE r_podcast_feedview_menu
      	// Other commands
 		MENU_ITEM
 			{
-			command = EPodcastSettings;
-			txt = STRING_r_settings_cmd;
-			},
-		MENU_ITEM
-			{
 			command = EPodcastZoomSetting;
 			txt = STRING_r_zoom_cmd;
-			},
-		MENU_ITEM
-			{
-			command = EPodcastAbout;
-			txt = STRING_r_view_about_cmd;
 			}
         };
     }
