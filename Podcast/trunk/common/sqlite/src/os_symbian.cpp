@@ -231,11 +231,12 @@ int winSync(sqlite3_file *id, int flags){
   }
   sqlite3_sync_count++;
 #endif
-  if (pFile->file.Flush() != KErrNone)
+  TInt error = pFile->file.Flush();
+  if (error != KErrNone)
   {
-    return SQLITE_OK;
-  }else{
     return SQLITE_IOERR;
+  }else{
+    return SQLITE_OK;
   }
 }
 
