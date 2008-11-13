@@ -56,5 +56,5 @@ SOURCE                                  os_symbian.cpp
 USERINCLUDE                             ..\src 
 USERINCLUDE                             .. 
 SYSTEMINCLUDE                           \Epoc32\include 
-SYSTEMINCLUDE                           \Epoc32\include\stdapis
+SYSTEMINCLUDE                           \Epoc32\include\libc
 macro                                   OS_SYMBIAN 
