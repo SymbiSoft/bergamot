@@ -583,7 +583,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			CDesCArrayFlat* fileNames = new (ELeave) CDesCArrayFlat(KDefaultGran);
 			CleanupStack::PushL(fileNames);
 			HBufC* import_title = iEikonEnv->AllocReadResourceLC(R_PODCAST_IMPORT_FEEDS_TITLE);
-			CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeBrowse);
+			CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeNormal);
 			TFileName importName;
 			dlg->SetTitleL(*import_title);
 			dlg->SetDefaultFolderL(KDefaultDataFolder());						
@@ -764,7 +764,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			CDesCArrayFlat* fileNames = new (ELeave) CDesCArrayFlat(KDefaultGran);
 			CleanupStack::PushL(fileNames);
 			HBufC* import_title = iEikonEnv->AllocReadResourceLC(R_PODCAST_IMPORT_BOOK_TITLE);
-			CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeBrowse);
+			CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeNormal);
 			TFileName importName;
 			dlg->SetDefaultFolderL(KDefaultDataFolder());
 			dlg->SetTitleL(*import_title);
