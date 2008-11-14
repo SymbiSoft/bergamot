@@ -28,5 +28,5 @@ CPodcastDocument* CPodcastDocument::NewL(CEikApplication& aApp )
     
 CEikAppUi* CPodcastDocument::CreateAppUiL()
     {
-    return new (ELeave) CPodcastAppUi;
+    return new (ELeave) CPodcastAppUi(iPodcastModel);
     }

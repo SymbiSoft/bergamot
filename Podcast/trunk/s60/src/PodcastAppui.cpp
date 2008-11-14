@@ -16,9 +16,12 @@
 #include "libc\string.h"
 #include "libc\stdio.h"
 
-void CPodcastAppUi::ConstructL(CPodcastModel* aPodcastModel)
-    {
-    iPodcastModel =  aPodcastModel;
+CPodcastAppUi::CPodcastAppUi(CPodcastModel* aPodcastModel):iPodcastModel(aPodcastModel)
+	{
+	
+	}
+void CPodcastAppUi::ConstructL()
+    {    
     BaseConstructL( CAknAppUi::EAknEnableSkin );
 
     iMainView = CPodcastMainView::NewL(*iPodcastModel);
