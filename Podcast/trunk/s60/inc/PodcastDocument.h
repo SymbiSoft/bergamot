@@ -4,7 +4,7 @@
 #include <akndoc.h>
 
 class  CEikAppUi;
-
+class CPodcastModel;
 class CPodcastDocument : public CAknDocument
     {
     public:
@@ -17,6 +17,7 @@ class CPodcastDocument : public CAknDocument
 
     private:
         CEikAppUi* CreateAppUiL();
+        CPodcastModel* iPodcastModel;
     };
 
 #endif

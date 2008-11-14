@@ -16,10 +16,10 @@
 #include "libc\string.h"
 #include "libc\stdio.h"
 
-void CPodcastAppUi::ConstructL()
+void CPodcastAppUi::ConstructL(CPodcastModel* aPodcastModel)
     {
+    iPodcastModel =  aPodcastModel;
     BaseConstructL( CAknAppUi::EAknEnableSkin );
-    iPodcastModel = CPodcastModel::NewL();
 
     iMainView = CPodcastMainView::NewL(*iPodcastModel);
 	this->AddViewL(iMainView);
@@ -41,7 +41,6 @@ void CPodcastAppUi::ConstructL()
 
 CPodcastAppUi::~CPodcastAppUi()
     {	
-	delete iPodcastModel;
     }
 
 // -----------------------------------------------------------------------------

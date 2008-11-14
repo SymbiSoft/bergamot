@@ -20,7 +20,7 @@ const TUid KUidPodcastSettingsViewID = {0x00000005};
 class CPodcastAppUi : public CAknViewAppUi
     {
     public: 
-        void ConstructL();
+        void ConstructL(CPodcastModel* aPodcastModel);
        ~CPodcastAppUi();
         void DBTest();
     private:

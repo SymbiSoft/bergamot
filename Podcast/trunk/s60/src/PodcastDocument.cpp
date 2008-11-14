@@ -1,6 +1,6 @@
 #include "PodcastDocument.h"
 #include "PodcastAppui.h"
-
+#include "PodcastModel.h"
 CPodcastDocument::CPodcastDocument( CEikApplication& aApp )
     : CAknDocument( aApp )    
     {
@@ -8,10 +8,12 @@ CPodcastDocument::CPodcastDocument( CEikApplication& aApp )
 
 CPodcastDocument::~CPodcastDocument()
     {
+    delete iPodcastModel;
     }
 
 void CPodcastDocument::ConstructL()
     {
+    iPodcastModel = CPodcastModel::NewL();
     }
 
 CPodcastDocument* CPodcastDocument::NewL(CEikApplication& aApp )
