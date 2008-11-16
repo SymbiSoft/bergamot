@@ -132,9 +132,7 @@ CPodcastListView::~CPodcastListView()
 void CPodcastListView::DoActivateL(const TVwsViewId& aPrevViewId,
 	                                  TUid aCustomMessageId,
 									  const TDesC8& aCustomMessage)
-{
-	iPreviousView = aPrevViewId;
-	
+{	
 	if(iListContainer)
 	{
 		iListContainer->SetRect(ClientRect());

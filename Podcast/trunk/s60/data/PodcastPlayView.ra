@@ -89,3 +89,20 @@ RESOURCE AVKON_VIEW r_podcast_playview
 	menubar = r_podcast_playview_menubar;
 	cba = R_AVKON_SOFTKEYS_OPTIONS_BACK;    
 }
+
+RESOURCE SLIDER r_podcast_playview_slider
+    {
+    layout = EAknSettingsItemSliderLayout;
+    minvalue = 0;
+    maxvalue = 100;
+    step = 5;
+    valuetype = EAknSliderValuePercentage;
+    minlabel = "Min";
+    maxlabel = "Max";
+    }
+	
+// Player
+RESOURCE TBUF r_podcast_player_pause_cmd{buf = STRING_r_pause_cmd;}
+RESOURCE TBUF r_podcast_player_play_cmd{buf = STRING_r_play_cmd;}
+RESOURCE TBUF r_podcast_player_suspend_dl_cmd{buf = STRING_r_suspend_download_cmd;}
+RESOURCE TBUF r_podcast_player_remove_dl_cmd{buf = STRING_r_view_remove_download_short_cmd;}

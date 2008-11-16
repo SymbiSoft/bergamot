@@ -12,6 +12,7 @@
 #include "SettingsEngine.h"
 #include "SoundEngine.h"
 #include "PodcastPlayView.h"
+#include "PodcastApp.h"
 #include <caknfileselectiondialog.h>
 #include <aknnavide.h> 
 #include <podcast.rsg>
@@ -176,7 +177,7 @@ switch(aCustomMessageId.iUid)
 	}	
 
 	CPodcastListView::DoActivateL(aPrevViewId, aCustomMessageId, aCustomMessage);
-	
+	iPreviousView = TVwsViewId(KUidPodcast, KUidPodcastBaseViewID);		
 }
 
 void CPodcastFeedView::DoDeactivate()
@@ -565,14 +566,67 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 		{
 		case EPodcastAddFeed:
 			{
-			TBuf<256> data;
-			CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(data) ;//CPodcastClientAddFeedDlg(iPodcastModel);
+			_LIT(KURLPrefix, "http://");
+			_LIT(KItpcPrefix, "itpc://");
+			_LIT(KPcastPrefix, "pcast://");			
+			TBuf<256> url;
+			CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(url) ;//CPodcastClientAddFeedDlg(iPodcastModel);
 			dlg->PrepareLC(R_PODCAST_ADD_FEED_DLG);
 			HBufC* prompt = iEikonEnv->AllocReadResourceLC(R_PODCAST_ADDFEED_PROMPT);
 			dlg->SetPromptL(*prompt);
 			CleanupStack::PopAndDestroy(prompt);
 			if(dlg->RunLD())
 				{
+				// url is always present so access that								
+				// Some pod links are written in format itpc://mylink.net/podcast.xml
+				// Symbian HTTP stack does not like itpc:// 
+				// Try to use a HTTP instead.
+				TInt p = url.Find(KItpcPrefix);
+				if (p >= 0)
+					{
+					url.Delete(p, KItpcPrefix().Length());
+					}
+
+				// Some pod links are written in format pcast://mylink.net/podcast.xml
+				// Symbian HTTP stack does not like itpc:// 
+				// Try to use a HTTP instead.
+				p = url.Find(KPcastPrefix);
+				if (p >= 0)
+					{
+					url.Delete(p, KPcastPrefix().Length());
+					}
+
+				// The URL must start with http://, otherwise the HTTP stack fails.
+				TInt pos = url.Find(KURLPrefix);
+				if (pos == KErrNotFound)
+					{
+					HBufC* newUrl = HBufC::NewL(url.Length() + KURLPrefix().Length());
+					TPtr ptr = newUrl->Des();
+					ptr.Append(KURLPrefix());
+					ptr.Append(url);
+
+					// replace the url buffer
+					url.Copy(*newUrl);
+					delete newUrl;					
+					}
+
+				// check which mode we are in.
+				// we are creating a new feed
+				CFeedInfo* newFeedInfo = CFeedInfo::NewL();
+				CleanupStack::PushL(newFeedInfo);
+				newFeedInfo->SetUrlL(url);
+				newFeedInfo->SetTitleL(newFeedInfo->Url());
+				CleanupStack::Pop(newFeedInfo);
+
+				TBool added = iPodcastModel.FeedEngine().AddFeed(newFeedInfo); // takes ownership
+				if (!added)
+					{
+					TBuf<200> message;
+					TBuf<100> title;
+					iEikonEnv->ReadResourceL(message, R_ADD_FEED_EXISTS);
+					iEikonEnv->ReadResourceL(title, R_ADD_FEED_EXISTS_TITLE);
+					iEikonEnv->InfoWinL(title, message);				
+					}								
 				UpdateListboxItemsL();
 				}
 			break;
@@ -774,15 +828,15 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 				{
 				if( importName.Length()>0 )
 					{
-					TBuf<256> data;
-					CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(data) ;//CPodcastClientAddFeedDlg(iPodcastModel);
+					TBuf<128> title;
+					CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(title) ;//CPodcastClientAddFeedDlg(iPodcastModel);
 
 					HBufC* prompt= iEikonEnv->AllocReadResourceLC(R_PODCAST_ADDBOOK_PROMPT);
 					
 					if (dlg->ExecuteLD(R_PODCAST_NEW_AUDIOBOOK_DLG, *prompt))
 						{
 						// Add book // See CPodcastClientAudioBookDlg
-						iPodcastModel.FeedEngine().ImportBookL(data, importName);
+						iPodcastModel.FeedEngine().ImportBookL(title, importName);
 						UpdateListboxItemsL();
 						}
 					CleanupStack::PopAndDestroy(prompt);
@@ -880,8 +934,8 @@ void CPodcastFeedView::HandleAddNewAudioBookL()
 		{
 		if(fileNameArray->Count() > 0)
 			{
-			TBuf<256> data;
-			CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(data) ;//CPodcastClientAddFeedDlg(iPodcastModel);
+			TBuf<256> title;
+			CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(title) ;//CPodcastClientAddFeedDlg(iPodcastModel);
 		
 			HBufC* inputprompt= iEikonEnv->AllocReadResourceLC(R_PODCAST_ADDBOOK_PROMPT);			
 			HBufC* promptformat = iEikonEnv->AllocReadResourceLC(R_PODCAST_ADDBOOK_PROMPTFORMAT);						
@@ -892,6 +946,7 @@ void CPodcastFeedView::HandleAddNewAudioBookL()
 			if (dlg->ExecuteLD(R_PODCAST_NEW_AUDIOBOOK_DLG, *prompt))
 				{
 				// Add book // See CPodcastClientAudioBookDlg
+				iPodcastModel.FeedEngine().AddBookL(title, fileNameArray);
 				UpdateListboxItemsL();
 				}		
 			CleanupStack::PopAndDestroy(3, inputprompt);
@@ -902,3 +957,4 @@ void CPodcastFeedView::HandleAddNewAudioBookL()
 	CleanupStack::PopAndDestroy(fileNameArray);
 	CleanupStack::PopAndDestroy(mimeArray);
 	}
+

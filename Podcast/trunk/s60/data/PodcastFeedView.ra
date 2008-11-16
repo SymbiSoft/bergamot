@@ -160,7 +160,7 @@ RESOURCE DIALOG r_podcast_new_audiobook_dlg
 					control = EDWIN
 						{
 						flags= EEikEdwinNoHorizScrolling | EEikEdwinResizable;
-						maxlength = 256;
+						maxlength = 128;
 						width = 4;
 						lines = 5;
 						};

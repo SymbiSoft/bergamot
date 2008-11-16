@@ -11,6 +11,7 @@
 #include "ShowEngine.h"
 #include "SettingsEngine.h"
 #include "SoundEngine.h"
+#include "PodcastApp.h"
 #include "Constants.h"
 #include <aknnavide.h> 
 #include <podcast.rsg>
@@ -153,6 +154,21 @@ void CPodcastShowsView::DoActivateL(const TVwsViewId& aPrevViewId,
 
 	CPodcastListView::DoActivateL(aPrevViewId, aCustomMessageId, aCustomMessage);
 
+	if(aPrevViewId.iAppUid == KUidPodcast)
+		{
+		switch(aPrevViewId.iViewUid.iUid)
+			{
+			case 1: // BaseView
+				iPreviousView = TVwsViewId(KUidPodcast, KUidPodcastBaseViewID);
+			break;
+			case 5:// Settings
+				break;
+			default:
+				iPreviousView = TVwsViewId(KUidPodcast, KUidPodcastFeedViewID);
+				break;
+			}
+		}
+		
 	UpdateFeedUpdateStateL();
 	}
 
@@ -689,10 +705,6 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 					iItemArray->Delete(index);
 					iItemIdArray.Remove(index);
 					
-					/*MQikListBoxModel& model(iListbox->Model());
-					 model.ModelBeginUpdateLC();
-					 model.RemoveDataL(index);
-					 model.ModelEndUpdateL();*/
 					iListContainer->Listbox()->HandleItemRemovalL();
 					}
 

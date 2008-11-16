@@ -57,6 +57,8 @@ class CPodcastPlayView : public CAknView
 		* @param aCommand ID of the command to respond to. 
 		*/
 		void HandleCommandL(TInt aCommand);
+		
+		void DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane);
 	private:
         CAknNavigationControlContainer* iNaviPane;
 		CPodcastPlayContainer* iPlayContainer;

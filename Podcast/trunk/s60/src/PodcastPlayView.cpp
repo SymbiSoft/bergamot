@@ -24,12 +24,13 @@
 #include <akntabgrp.h>
 #include <gulalign.h>
 #include <aknsbasicbackgroundcontrolcontext.h>
-
+#include <aknslider.h>
 const TInt KAudioTickerPeriod = 1000000;
 const TInt KMaxCoverImageWidth = 200;
+const TInt KTimeLabelSize = 64;
+_LIT(KZeroTime,"0:00:00/0:00:00");
 
-
-class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver,public MShowEngineObserver
+class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver, public MShowEngineObserver
     {
     public: 
 		CPodcastPlayContainer(CPodcastModel& aPodcastModel, CAknNavigationControlContainer* aNaviPane);
@@ -79,6 +80,8 @@ class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver,pu
 		CEikProgressInfo* iDownloadProgressInfo;
 		CEikLabel* iShowInfoTitle;
 		CEikLabel* iShowInfoLabel;
+		CEikLabel* iTimeLabel;
+	
 		CShowInfo* iShowInfo;
 		CPodcastModel& iPodcastModel;
 		TUint iMaxProgressValue;
@@ -117,7 +120,7 @@ void CPodcastPlayContainer::Draw( const TRect& aRect ) const
 
 TInt CPodcastPlayContainer::CountComponentControls() const
     {
-    return 4; // return number of controls inside this container
+    return 5; // return number of controls inside this container
     }
 
 CCoeControl* CPodcastPlayContainer::ComponentControl(TInt aIndex) const
@@ -141,6 +144,8 @@ CCoeControl* CPodcastPlayContainer::ComponentControl(TInt aIndex) const
 			break;
 		case 3:
 			return iShowInfoTitle;
+		case 4:
+			return iTimeLabel;
         default:
             return NULL;
         }
@@ -197,7 +202,6 @@ void CPodcastPlayContainer::SizeChanged()
 
 	}
 
-
 	if(iPlayProgressbar != NULL)
 	{
 		iPlayProgressbar->SetSize(TSize(Size().iWidth, iDownloadProgressInfo->MinimumSize().iHeight));
@@ -205,6 +209,12 @@ void CPodcastPlayContainer::SizeChanged()
 		playprogressHeight = iPlayProgressbar->Size().iHeight;
 	}
 
+	if(iTimeLabel != NULL)
+		{
+		iTimeLabel->SetSize(TSize(Size().iWidth, iPlayProgressbar->MinimumSize().iHeight));
+		iTimeLabel->SetPosition(TPoint(0,Size().iHeight-(iPlayProgressbar->Size().iHeight+iTimeLabel->Size().iHeight)));
+		}
+	
 	if(iShowInfoTitle != NULL)
 	{
 		iShowInfoTitle->SetSize(TSize(Size().iWidth, iShowInfoTitle->MinimumSize().iHeight));
@@ -317,13 +327,24 @@ void CPodcastPlayContainer::ConstructL( const TRect& aRect)
 	iCoverImageCtrl->CreatePictureFromFileL(iEikonEnv->EikAppUi()->Application()->BitmapStoreName(), EMbmPodcastEmptyimage);
 	iCoverImageCtrl->SetAlignment(TGulAlignment(CGraphicsContext::ECenter, EVCenter));
 	iCoverImageCtrl->SetSize(TSize(100,100));
-	iPlayProgressbar = new (ELeave) CEikProgressInfo;
+	//TResourceReader reader;
+	//iEikonEnv->CreateResourceReaderLC(reader, R_PODCAST_PLAYVIEW_SLIDER);
+	
+	iPlayProgressbar = new (ELeave) CEikProgressInfo;//CAknSlider;	
 	iPlayProgressbar->SetContainerWindowL(*this);
 	iPlayProgressbar->ConstructL();
+	
+	//iPlayProgressbar->ConstructFromResourceL(this, 0, reader);
+	//CleanupStack::PopAndDestroy();//close reader
 
 	iPlayProgressbar->SetSize(iPlayProgressbar->MinimumSize());
 	iPlayProgressbar->SetFinalValue(100);
 
+	iTimeLabel = new (ELeave) CEikLabel;
+	iTimeLabel->SetContainerWindowL(*this);
+	iTimeLabel->SetTextL(KZeroTime());
+	iTimeLabel->SetSize(iTimeLabel->MinimumSize());
+	iTimeLabel->SetLabelAlignment(ELayoutAlignCenter);
 
 	iShowInfoTitle = new (ELeave) CEikLabel;
 	iShowInfoTitle->SetContainerWindowL(*this);
@@ -334,7 +355,7 @@ void CPodcastPlayContainer::ConstructL( const TRect& aRect)
 	iShowInfoLabel->SetContainerWindowL(*this);
 	iShowInfoLabel->SetTextL(_L("HELLO THIS IS A TEST"));
 	iShowInfoLabel->SetSize(iShowInfoLabel->MinimumSize());
-
+	iShowInfoLabel->SetLabelAlignment(ELayoutAlignLeft);
 	iShowInfoLabel->ActivateL();
 	iDownloadProgressInfo = new (ELeave) CEikProgressInfo;
 	iDownloadProgressInfo->SetContainerWindowL(*this);
@@ -365,6 +386,13 @@ CPodcastPlayContainer::~CPodcastPlayContainer()
 {
 	delete iNaviDecorator;
 	delete iBgContext;
+	delete iCoverImageCtrl;
+	delete iPlayProgressbar;
+	delete iTimeLabel;
+	delete iShowInfoTitle;
+	delete iShowInfoLabel;
+	delete iDownloadProgressInfo;
+	delete iPlaybackTicker;
 }
 
 TInt CPodcastPlayContainer::PlayingUpdateStaticCallbackL(TAny* aPlayView)
@@ -453,30 +481,215 @@ void CPodcastPlayContainer::ShowDownloadUpdatedL(
 void CPodcastPlayContainer::UpdateMaxProgressValueL(TInt aDuration)
 {
 	iMaxProgressValue = aDuration;
+	if (iMaxProgressValue>120)
+			{
+			iPlayProgressbar->SetFinalValue(iMaxProgressValue);
+			//iPlayProgressbar->SetNumberOfMarkersL(iMaxProgressValue/60);
+			}
+		else
+			{
+			if (iMaxProgressValue == 0)
+				{
+				iMaxProgressValue++;
+				}
+
+			iMaxProgressValue = iMaxProgressValue*10;
+
+			iPlayProgressbar->SetFinalValue(iMaxProgressValue);		
+			//iPlayProgressbar->SetNumberOfMarkersL(10);
+			}
+	iPlayProgressbar->ActivateL();
+	iPlayProgressbar->MakeVisible(ETrue);
+		iPlayProgressbar->DrawNow();
 }
 void CPodcastPlayContainer::UpdatePlayStatusL()
 {
-}
+	TBuf<KTimeLabelSize> time= KZeroTime();
+	TUint pos = 0;
 
-
-/**
-
-  	comMan.SetInvisible(*this, EPodcastMarkAsPlayed, iShowInfo->PlayState()
-			!= ENeverPlayed);
-		comMan.SetInvisible(*this, EPodcastMarkAsUnplayed,
-			iShowInfo->PlayState() == ENeverPlayed);
-		comMan.SetInvisible(*this, EPodcastResumeDownloads, ETrue);
-
-  	if (iShowInfo->DownloadState() == ENotDownloaded)
+	if (iPodcastModel.PlayingPodcast() != NULL && iPodcastModel.PlayingPodcast()->Uid() == iShowInfo->Uid())
 		{
-			comMan.SetInvisible(*this, EPodcastDownloadShow, EFalse);
-			comMan.SetInvisible(*this, EPodcastPlay, ETrue);
-			comMan.SetInvisible(*this, EPodcastRemoveDownload, ETrue);
-			comMan.SetInvisible(*this, EPodcastSetVolume, ETrue);
-			iDownloadProgressInfo->MakeVisible(EFalse);
-			iPlayProgressbar->MakeVisible(EFalse);
+
+		if (iPodcastModel.SoundEngine().State() == ESoundEnginePlaying)
+			{
+			//comMan.SetTextL(*this, EPodcastPlay, R_PODCAST_PLAYER_PAUSE_CMD);
+			iPlayProgressbar->SetFocusing(EFalse);
+			//RequestFocusL(iScrollableContainer);
+			}
+		else
+			{
+			//comMan.SetTextL(*this, EPodcastPlay, R_PODCAST_PLAYER_PLAY_CMD);
+			iPlayProgressbar->SetFocusing(EFalse);
+			}
+
+		//	comMan.SetDimmed(*this, EPodcastPlay, iPodcastModel.SoundEngine().State() == ESoundEngineNotInitialized);
+		/*comMan.SetDimmed(*this, EPodcastStop, (iPodcastModel.SoundEngine().State() == ESoundEngineNotInitialized
+				|| iPodcastModel.SoundEngine().State() == ESoundEngineStopped
+						&& iPodcastModel.PlayingPodcast()->Position() == 0));*/
+		if (iPlayProgressbar != NULL)
+			{
+			iPlayProgressbar->SetDimmed(iPodcastModel.SoundEngine().State() <= ESoundEngineOpening);
+
+			if (iPodcastModel.SoundEngine().PlayTime()>0)
+				{
+				if (iPodcastModel.SoundEngine().State() == ESoundEnginePlaying
+						|| iPodcastModel.SoundEngine().State() == ESoundEnginePaused
+						|| iPodcastModel.SoundEngine().State() == ESoundEngineStopped)
+					{
+					TUint duration = iPodcastModel.SoundEngine().PlayTime();
+					pos = iPodcastModel.SoundEngine().Position().Int64()/1000000;
+					iPlayProgressbar->SetAndDraw((iMaxProgressValue*pos)/duration);
+					iPlayProgressbar->DrawDeferred();
+					}
+				}
+			else
+				{
+				if (iShowInfo->PlayTime()>0)
+					{
+					TUint duration = iShowInfo->PlayTime();
+					pos = iShowInfo->Position().Int64()/1000000;
+					iPlayProgressbar->SetAndDraw((iMaxProgressValue*pos)/duration);
+					}
+				else
+					{
+					iPlayProgressbar->SetAndDraw(0);
+					}
+				iPlayProgressbar->DrawDeferred();
+				}
+			}
 		}
-*/
+	else
+		{
+		//comMan.SetTextL(*this, EPodcastPlay, R_PODCAST_PLAYER_PLAY_CMD);
+		//comMan.SetDimmed(*this, EPodcastPlay, EFalse);
+		//comMan.SetDimmed(*this, EPodcastStop, ETrue);
+
+		if (iShowInfo)
+			{
+/*			comMan.SetInvisible(*this, EPodcastStop,
+					!(iShowInfo->DownloadState() == EDownloaded));*/
+			}
+
+		// not sure why we end up here, but this prevents crashing (teknolog)
+		if (iPlayProgressbar == NULL)
+			{
+			return;
+			}
+
+		iPlayProgressbar->SetDimmed(ETrue);
+
+		if (iShowInfo && iShowInfo->PlayTime()>0)
+			{
+			TUint duration = iShowInfo->PlayTime();
+			pos = iShowInfo->Position().Int64()/1000000;
+
+			UpdateMaxProgressValueL(duration);
+			iPlayProgressbar->SetAndDraw((iMaxProgressValue*pos)/duration);
+			}
+		else
+			{
+			iPlayProgressbar->SetAndDraw(0);
+			UpdateMaxProgressValueL(0);
+			}
+
+		iPlayProgressbar->DrawDeferred();
+		}
+
+	if (iShowInfo != NULL)
+		{
+		if (iShowInfo->DownloadState() != EDownloaded)
+			{
+			if (iBytesDownloaded > 0)
+				{
+				const TInt KSizeBufLen = 64;
+				TBuf<KSizeBufLen> dlSize;
+				TBuf<KSizeBufLen> totSize;
+				_LIT(KSizeDownloadingOf, "%S/%S");
+
+				totSize.Format(KShowsSizeFormat(), (float)iShowInfo->ShowSize()
+						/ (float) KSizeMb);
+				dlSize.Format(KShowsSizeFormat(), (float) iBytesDownloaded
+						/ (float) KSizeMb);
+				time.Format(KSizeDownloadingOf(), &dlSize, &totSize);
+				time.Append(KShowsSizeUnit());
+				}
+			else
+				{
+				time.Format(KShowsSizeFormat(), (float)iShowInfo->ShowSize()
+						/ (float)KSizeMb);
+				time.Append(KShowsSizeUnit());
+				}
+			}
+		else
+			{
+			CShowInfo* showInfo = iPodcastModel.PlayingPodcast();
+
+			if (showInfo != NULL)
+				{
+				TUint playtime = 0;
+				TBuf<KTimeLabelSize> totTime= _L("00:00");
+
+				if (showInfo->Uid() == iShowInfo->Uid()
+						&& iShowInfo->PlayTime() == 0)
+					{
+					playtime = iPodcastModel.SoundEngine().PlayTime();
+					}
+				else
+					{
+					playtime = iShowInfo->PlayTime();
+					}
+
+				if (playtime >= 0)
+					{
+					TInt hour = playtime/3600;
+					playtime = playtime-(hour*3600);
+
+					TInt sec = (playtime%60);
+					TInt min = (playtime/60);
+					totTime.Format(_L("%01d:%02d:%02d"),hour, min, sec);
+					}
+				else
+					{
+					totTime = KZeroTime();
+					}
+
+				if (pos >= 0)
+					{
+					TInt hour = pos/3600;
+					pos = pos-(hour*3600);
+
+					TInt sec = (pos%60);
+					TInt min = (pos/60);
+					time.Format(_L("%01d:%02d:%02d"),hour, min, sec);
+					}
+				time.Append(_L("/"));
+				time.Append(totTime);
+
+				if (iShowInfo->ShowType() == EAudioBook && iShowInfo->TrackNo()
+						!= KMaxTUint)
+					{
+					totTime.Format(_L("%03d - "), iShowInfo->TrackNo());
+					time.Insert(0, totTime);
+					}
+				}
+			else
+				if (showInfo == NULL) // No other show playing start to init this one
+					{
+					iPodcastModel.PlayPausePodcastL(iShowInfo);
+					}
+			}
+		}
+
+	
+	if (iTimeLabel != NULL)
+		{
+		iTimeLabel->SetTextL(time);
+		iTimeLabel->SetSize(TSize(Size().iWidth, iTimeLabel->MinimumSize().iHeight));
+		iTimeLabel->DrawDeferred();
+		}
+
+	}
+
 void CPodcastPlayContainer::UpdateViewL()
 {
 	if (iShowInfo != NULL)
@@ -487,9 +700,7 @@ void CPodcastPlayContainer::UpdateViewL()
 		{
 			iShowInfoTitle->SetTextL(iShowInfo->Title());
 		}
-		
-	
-		
+				
 		if (iShowInfo->DownloadState() == ENotDownloaded)
 		{
 			/*comMan.SetInvisible(*this, EPodcastDownloadShow, EFalse);
@@ -608,19 +819,14 @@ void CPodcastPlayContainer::UpdateViewL()
 		}
 		
 		UpdatePlayStatusL();
-		
-	/*	if (iProgressBB != NULL)
-		{
-			iProgressBB->RequestRelayout(iProgressBB);
-		}*/
-		
-		
+			
 		if (iPodcastModel.PlayingPodcast() != NULL && iPodcastModel.PlayingPodcast()->Uid() == iShowInfo->Uid() && iPodcastModel.SoundEngine().State() == ESoundEnginePlaying)
 		{
 			iPlaybackTicker->Cancel();
 			iPlaybackTicker->Start(KAudioTickerPeriod, KAudioTickerPeriod,
 				TCallBack(PlayingUpdateStaticCallbackL, this));
 		}
+		
 		iCoverImageCtrl->SetSize(TSize(Size().iWidth, iCoverImageCtrl->MinimumSize().iHeight));
 
 		SetSize(Size());
@@ -783,7 +989,7 @@ void CPodcastPlayView::HandleCommandL(TInt aCommand)
 					if (iPodcastModel.SoundEngine().State() == ESoundEnginePlaying)
 					{
 						iPodcastModel.SoundEngine().Pause();
-				//		iPlayProgressbar->SetFocusing(EFalse);
+						//iPlayProgressbar->SetFocusing(EFalse);
 /*						comMan.SetTextL(*this, EPodcastPlay,
 							R_PODCAST_PLAYER_PLAY_CMD);*/
 //						RequestFocusL(iScrollableContainer);
@@ -807,7 +1013,7 @@ void CPodcastPlayView::HandleCommandL(TInt aCommand)
 	case EPodcastStop:
 		{
 //			comMan.SetTextL(*this, EPodcastPlay, R_PODCAST_PLAYER_PLAY_CMD);
-		//	iPlayProgressbar->SetFocusing(EFalse);
+			//iPlayProgressbar->SetFocusing(EFalse);
 			iPodcastModel.SoundEngine().Stop();
 			iPodcastModel.PlayingPodcast()->SetPosition(0);
 			iPodcastModel.SetPlayingPodcast(NULL);
@@ -852,3 +1058,59 @@ void CPodcastPlayView::HandleCommandL(TInt aCommand)
 		break;
 	}
 }
+
+void CPodcastPlayView::DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane)
+	{
+	if(aResourceId == R_PODCAST_PLAYVIEW_MENU)
+		{
+		if (iPodcastModel.SoundEngine().State() == ESoundEnginePlaying)
+			{
+			aMenuPane->SetItemTextL(EPodcastPlay, R_PODCAST_PLAYER_PAUSE_CMD);					
+			}		
+
+		aMenuPane->SetItemDimmed(EPodcastMarkAsPlayed, iPlayContainer->ShowInfo()->PlayState()
+				!= ENeverPlayed);
+		aMenuPane->SetItemDimmed(EPodcastMarkAsUnplayed,
+				iPlayContainer->ShowInfo()->PlayState() == ENeverPlayed);
+		aMenuPane->SetItemDimmed(EPodcastResumeDownloads, ETrue);
+		
+		if (iPlayContainer->ShowInfo()->DownloadState() == ENotDownloaded)
+			{
+			aMenuPane->SetItemDimmed(EPodcastPlay, ETrue);
+			aMenuPane->SetItemDimmed(EPodcastRemoveDownload, ETrue);
+			aMenuPane->SetItemDimmed(EPodcastSetVolume, ETrue);
+			}
+		else
+			if (iPlayContainer->ShowInfo()->DownloadState() != EDownloaded) // Qued or downloading.
+				{
+				aMenuPane->SetItemDimmed(EPodcastPlay, ETrue);
+				aMenuPane->SetItemDimmed(EPodcastDownloadShow, ETrue);
+
+				if (iPlayContainer->ShowInfo()->DownloadState() == EDownloading)
+					{
+					aMenuPane->SetItemTextL(EPodcastRemoveDownload,
+							R_PODCAST_PLAYER_SUSPEND_DL_CMD);							
+					}
+				else
+					{
+					aMenuPane->SetItemTextL(EPodcastRemoveDownload,
+							R_PODCAST_PLAYER_REMOVE_DL_CMD);		
+
+					if (iPodcastModel.ShowEngine().DownloadsStopped())
+						{
+						aMenuPane->SetItemDimmed(EPodcastResumeDownloads,EFalse);
+						}
+					}
+
+				aMenuPane->SetItemDimmed(EPodcastSetVolume, ETrue);														
+				}
+			else // Downloaded
+				{
+				aMenuPane->SetItemDimmed(EPodcastPlay, EFalse);
+				aMenuPane->SetItemDimmed(EPodcastSetVolume, EFalse);
+				aMenuPane->SetItemDimmed(EPodcastDownloadShow, ETrue);
+				aMenuPane->SetItemDimmed(EPodcastRemoveDownload, ETrue);					
+				}	
+		}
+	}	
+
