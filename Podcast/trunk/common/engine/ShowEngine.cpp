@@ -101,9 +101,12 @@ void CShowEngine::StopDownloads()
 void CShowEngine::ResumeDownloads() 
 	{
 	DP("ResumeDownloads");
-	iDownloadsSuspended = EFalse;
-	iDownloadErrors = 0;
-	DownloadNextShow();
+	if(iDownloadsSuspended)
+		{
+		iDownloadsSuspended = EFalse;
+		iDownloadErrors = 0;
+		DownloadNextShow();
+		}
 	}
 
 TBool CShowEngine::DownloadsStopped()
