@@ -23,13 +23,14 @@ class CPodcastAppUi : public CAknViewAppUi
     	CPodcastAppUi(CPodcastModel* aPodcastModel);
         void ConstructL();
        ~CPodcastAppUi();
-        void DBTest();
+       
     private:
         // From MEikMenuObserver
         void DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane);
 
     private:
         void HandleCommandL(TInt aCommand);
+
     private:
     	CPodcastMainView *iMainView;
 		CPodcastFeedView* iFeedView;

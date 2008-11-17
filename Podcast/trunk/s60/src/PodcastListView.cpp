@@ -12,6 +12,7 @@
 #include <podcast.rsg>
 #include <aknlists.h> 
 #include <aknviewappui.h>
+#include <aknnotedialog.h> 
 
 const TInt KDefaultGran = 5;
 CPodcastListContainer::CPodcastListContainer()
@@ -187,8 +188,24 @@ void CPodcastListView::HandleCommandL(TInt aCommand)
 	case EPodcastZoomSetting:
 		break;
 	case EPodcastAbout:
+		RunAboutDialogL();
 		break;
 	default:
 		break;
 	}
 }
+
+
+void CPodcastListView::RunAboutDialogL()
+{
+    // Create dialog
+	CAknNoteDialog* dlg = new(ELeave) CAknNoteDialog(
+	    CAknNoteDialog::EConfirmationTone,
+	    CAknNoteDialog::ELongTimeout);
+    CleanupStack::PushL(dlg);
+
+    // Show dialog
+    CleanupStack::Pop(dlg);
+    dlg->ExecuteLD(R_DLG_ABOUT);
+}
+

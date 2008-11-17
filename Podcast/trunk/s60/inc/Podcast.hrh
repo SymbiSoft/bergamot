@@ -74,7 +74,8 @@ enum TPodcastControl
 	EPodcastSettingMaxsimdls,
 	EPodcastSettingConnection,
 	EPodcastSettingIAPList,
-	EPodcastSettingsVolume	
+	EPodcastSettingsVolume,
+	EPodcastAboutDlg
 	};
 enum TPodcastClientShowCategory
 	{
