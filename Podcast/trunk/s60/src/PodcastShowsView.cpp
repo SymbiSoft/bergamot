@@ -515,6 +515,7 @@ void CPodcastShowsView::UpdateListboxItemsL()
 				iListContainer->Listbox()->ItemDrawer()->ClearAllPropertiesL();
 				iListContainer->Listbox()->Reset();
 				iItemIdArray.Reset();
+				iItemArray->Reset();
 				// Informs the list box model that there will be an update of the data.
 				// Notify the list box model that changes will be made after this point.
 				// Observe that a cleanupitem has been put on the cleanupstack and 
