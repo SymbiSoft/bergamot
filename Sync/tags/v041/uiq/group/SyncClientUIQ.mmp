@@ -1,0 +1,73 @@
+TARGET            SyncClient.exe
+TARGETTYPE        exe
+UID               0x100039CE 0xE0983801
+VENDORID          0
+
+SYSTEMINCLUDE   \epoc32\include
+
+SOURCEPATH      ..\src
+
+USERINCLUDE     ..\inc
+USERINCLUDE     ..\..\common\inc
+
+SOURCE          SyncClientAppUi.cpp
+SOURCE			SyncClientDocument.cpp 
+SOURCE			SyncClientApplication.cpp
+SOURCE 			SyncClientView.cpp 
+
+SOURCEPATH      ..\..\common\src
+
+SOURCE			RSyncServerSession.cpp
+
+LIBRARY         euser.lib
+LIBRARY         apparc.lib
+LIBRARY         cone.lib
+LIBRARY         eikcore.lib
+LIBRARY         eikcoctl.lib
+LIBRARY         qikcore.lib
+LIBRARY         apgrfx.lib
+LIBRARY         ws32.lib
+LIBRARY         fbscli.lib
+LIBRARY         bafl.lib
+LIBRARY         gdi.lib
+LIBRARY         quiconfigclient.lib
+LIBRARY			qikctl.lib
+LIBRARY			eikctl.lib
+LIBRARY			qikdlg.lib
+LIBRARY			qikallocdll.lib 
+LIBRARY			SmlClient.lib
+LIBRARY			eikdlg.lib
+LIBRARY			flogger.lib
+
+START BITMAP SyncClient.mbm
+	TARGETPATH \resource\apps
+	HEADER
+	SOURCEPATH ..\images
+	SOURCE c16 SyncClient_18x18.bmp
+	SOURCE 8 SyncClient_18x18_mask.bmp
+	SOURCE c16 SyncClient_40x40.bmp
+	SOURCE 8 SyncClient_40x40_mask.bmp
+	SOURCE c16 SyncClient_64x64.bmp
+	SOURCE 8 SyncClient_64x64_mask.bmp
+END
+
+SOURCEPATH ..\group
+START RESOURCE SyncClient_loc.rss
+	TARGETPATH \resource\apps
+	HEADER
+	LANG SC
+END
+
+START RESOURCE SyncClient_reg.rss
+	TARGETPATH \private\10003A3F\apps
+END
+
+
+SYSTEMINCLUDE ..\..\common\group
+
+START RESOURCE SyncClient.rss
+	TARGETPATH \resource\apps
+	HEADER
+END
+
+CAPABILITY LocalServices NetworkServices ReadDeviceData WriteDeviceData

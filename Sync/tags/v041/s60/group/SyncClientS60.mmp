@@ -1,0 +1,62 @@
+TARGET            SyncClientS60.exe
+TARGETTYPE        exe
+UID		  		  0x100039CE 0xE0983804
+
+EPOCSTACKSIZE	  0x10000
+
+SYSTEMINCLUDE     \epoc32\include
+USERINCLUDE       ..\inc
+USERINCLUDE		..\..\common\inc
+
+SOURCEPATH 		..\src
+SOURCE			SyncClient.cpp
+SOURCE			SyncClientDocument.cpp
+SOURCE			SyncClientApplication.cpp
+SOURCE			SyncClientAppUi.cpp
+SOURCE			SyncClientAppView.cpp
+
+SOURCEPATH 		..\..\common\src
+SOURCE 			RSyncServerSession.cpp
+
+SYSTEMINCLUDE ..\..\common\group
+
+SOURCEPATH      .
+START RESOURCE    SyncClientS60.rss
+HEADER
+TARGETPATH resource\apps
+END //RESOURCE
+
+START RESOURCE    SyncClientS60_reg.rss
+#ifdef WINSCW
+TARGETPATH 	  \private\10003a3f\apps
+#else
+TARGETPATH 	  \private\10003a3f\import\apps
+#endif
+END //RESOURCE
+
+// For Nokia Startup List API
+
+
+LIBRARY           euser.lib
+LIBRARY           apparc.lib
+LIBRARY           cone.lib
+LIBRARY           eikcore.lib
+LIBRARY           avkon.lib
+LIBRARY           commonengine.lib
+LIBRARY		  	  efsrv.lib 
+LIBRARY           estor.lib
+LIBRARY	     	  flogger.lib
+LIBRARY			  eikcoctl.lib 
+
+#if defined(__UIQ3_SDK__)
+LIBRARY			SmlClient.lib 
+#elif defined(WINSCW)
+#else  
+LIBRARY			syncmlclientapi.lib 
+#endif
+
+LANG SC
+
+CAPABILITY LocalServices NetworkServices WriteDeviceData ReadDeviceData ReadUserData WriteUserData
+SOURCEPATH ..\src
+SOURCE SyncSetting.cpp

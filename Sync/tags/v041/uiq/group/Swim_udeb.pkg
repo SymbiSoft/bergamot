@@ -1,0 +1,23 @@
+%{"Bergamot Project"}
+:"Bergamot Project"
+#{"Swim"}, (0xE0983800), 0, 40, 0, TYPE=SA
+(0x101F6300), 3, 0, 0, {"UIQ30ProductID"}
+
+; Freeware installation "warning" required by Symbian signed
+"..\..\common\group\FreewareWarningEN.txt"-"",FT 
+
+"\epoc32\release\gcce\udeb\SyncServer.exe"-"!:\sys\bin\SyncServer.exe"
+
+"\epoc32\data\z\resource\apps\SyncClient.rsc"-"!:\resource\apps\SyncClient.rsc"
+"\epoc32\data\z\resource\apps\SyncClient.mbm"-"!:\resource\apps\SyncClient.mbm"
+"\epoc32\data\z\resource\apps\SyncClient_loc.RSC"-"!:\resource\apps\SyncClient_loc.RSC"
+"\epoc32\data\z\private\10003a3f\apps\SyncClient_reg.rsc"-"!:\private\10003a3f\import\apps\SyncClient_reg.rsc"
+
+; settings to be removed on uninstall
+;""-"!:\private\e0983802\config.dat"
+
+; Recognizer for auto start
+"\epoc32\release\gcce\udeb\SyncServerRecognizer.dll" -"!:\sys\bin\SyncServerRecognizer.dll"
+"\epoc32\data\z\resource\Plugins\SyncServerRecognizer.rsc" -"!:\resource\Plugins\SyncServerRecognizer.rsc"
+
+"\epoc32\release\gcce\udeb\SyncClient.exe"-"!:\sys\bin\SyncClient.exe", FR, RI

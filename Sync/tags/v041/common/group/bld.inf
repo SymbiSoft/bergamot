@@ -1,0 +1,46 @@
+#if defined(__UIQ3_SDK__)
+PRJ_MMPFILES
+
+..\..\uiq\group\SyncClientUIQ.mmp
+..\..\uiq\group\SyncServerRecognizer.mmp
+
+PRJ_EXPORTS
+
+// these seem to be missing from some SDKs
+..\..\uiq\syncml\syncmldef.h
+..\..\uiq\syncml\syncmlclient.h
+..\..\uiq\syncml\syncmlclientds.h
+..\..\uiq\syncml\syncmldatafilter.h
+..\..\uiq\syncml\syncmlhistory.h
+
+#else
+PRJ_MMPFILES
+
+..\..\s60\group\SyncClientS60.mmp
+gnumakefile ..\..\s60\group\icons_bitmaps_dc.mk
+
+PRJ_EXPORTS
+
+// syncml extensions api
+..\..\s60\syncml\epoc32\include\syncmldef.h
+..\..\s60\syncml\epoc32\include\syncmlclient.h
+..\..\s60\syncml\epoc32\include\syncmlclientds.h
+..\..\s60\syncml\epoc32\include\syncmldatafilter.h
+..\..\s60\syncml\epoc32\include\syncmlhistory.h
+
+..\..\s60\syncml\epoc32\release\armv5\lib\syncmlclientapi.dso \epoc32\release\armv5\lib\syncmlclientapi.dso
+..\..\s60\syncml\epoc32\release\armv5\lib\syncmlclientapi.lib \epoc32\release\armv5\lib\syncmlclientapi.lib
+..\..\s60\syncml\epoc32\release\armv5\lib\syncmlclientapi{000a0000}.dso \epoc32\release\armv5\lib\syncmlclientapi{000a0000}.dso
+..\..\s60\syncml\epoc32\release\armv5\lib\syncmlclientapi{000a0000}.lib \epoc32\release\armv5\lib\syncmlclientapi{000a0000}.lib
+
+#endif
+
+PRJ_MMPFILES
+SyncServer.mmp
+
+PRJ_PLATFORMS
+GCCE
+WINSCW
+
+
+

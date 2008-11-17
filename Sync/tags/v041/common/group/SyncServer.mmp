@@ -1,0 +1,36 @@
+TARGET            SyncServer.exe
+TARGETTYPE        exe
+UID 			  0x100039CE 0xE0983802
+
+VENDORID          0
+EPOCSTACKSIZE	  0x10000
+EPOCHEAPSIZE	  0x5000 0x20000
+
+SYSTEMINCLUDE   \epoc32\include
+
+SOURCEPATH      ..\src
+USERINCLUDE     ..\inc
+
+SOURCE			SyncServerTimer.cpp 
+SOURCE			SyncServer.cpp 
+SOURCE			CSyncServerSession.cpp 
+SOURCE			SyncServerData.cpp
+
+LIBRARY         euser.lib
+LIBRARY         ws32.lib
+LIBRARY         fbscli.lib
+LIBRARY         bafl.lib
+
+#if defined(__UIQ3_SDK__)
+LIBRARY			SmlClient.lib 
+#elif defined(WINSCW)
+#else  
+LIBRARY			syncmlclientapi.lib 
+#endif
+
+LIBRARY 		estor.lib
+LIBRARY			efsrv.lib
+LIBRARY			flogger.lib
+
+CAPABILITY LocalServices NetworkServices WriteDeviceData ReadDeviceData ReadUserData WriteUserData
+

@@ -1,0 +1,13 @@
+#include <appinfo.rh>
+
+UID2 KUidAppRegistrationResourceFile
+UID3 0xE0983801
+
+RESOURCE APP_REGISTRATION_INFO
+{
+    app_file="SyncClient";
+    localisable_resource_file="\\resource\\apps\\SyncClient_loc";
+    }
+
+
+

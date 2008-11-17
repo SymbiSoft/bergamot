@@ -1,0 +1,22 @@
+%{"Bergamot Project"}
+:"Bergamot Project"
+#{"Swim"}, (0xE0983805), 0, 41, 0, TYPE=SA
+[0x101F7961], 0, 0, 0, {"Series60ProductID"}
+
+; Freeware installation "warning" required by Symbian signed
+"..\..\common\group\FreewareWarningEN.txt"-"",FT 
+
+"\epoc32\release\gcce\udeb\SyncServer.exe"-"!:\sys\bin\SyncServer.exe"
+
+"\epoc32\data\z\resource\apps\SyncClientS60.rsc"-"!:\resource\apps\SyncClientS60.rsc"
+"\epoc32\data\z\resource\apps\SyncClientS60.mif"-"!:\resource\apps\SyncClientS60.mif"
+"\Epoc32\Data\z\private\10003a3f\import\apps\SyncClientS60_reg.rsc"-"!:\private\10003a3f\import\apps\SyncClientS60_reg.rsc"
+
+; settings to be removed on uninstall
+""-"!:\private\e0983802\config.dat",FN
+
+; auto start file
+"\epoc32\data\E0983805.rsc"- "c:\private\101f875a\import\[E0983805].rsc"
+
+; application UI
+"\epoc32\release\gcce\udeb\SyncClientS60.exe"-"!:\sys\bin\SyncClientS60.exe", FR, RI
