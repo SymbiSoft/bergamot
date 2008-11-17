@@ -120,7 +120,7 @@ void CPodcastPlayContainer::Draw( const TRect& aRect ) const
 
 TInt CPodcastPlayContainer::CountComponentControls() const
     {
-    return 5; // return number of controls inside this container
+    return 4; // return number of controls inside this container
     }
 
 CCoeControl* CPodcastPlayContainer::ComponentControl(TInt aIndex) const
@@ -128,11 +128,15 @@ CCoeControl* CPodcastPlayContainer::ComponentControl(TInt aIndex) const
     switch ( aIndex )
         {
         case 0:
-            return iDownloadProgressInfo;
-		case 1:
+        	if (iShowInfo != NULL)
+        			{
+        			if (iShowInfo->DownloadState() != EDownloaded)
+        				{
+        				 return iDownloadProgressInfo;
+        				}
+        			}           	
 			return iPlayProgressbar;
-
-		case 2:
+		case 1:
 			if(iTabGroup && iTabGroup->ActiveTabIndex() == 0)
 			{
 				return iCoverImageCtrl;
@@ -142,9 +146,9 @@ CCoeControl* CPodcastPlayContainer::ComponentControl(TInt aIndex) const
 				return iShowInfoLabel;
 			}
 			break;
-		case 3:
+		case 2:
 			return iShowInfoTitle;
-		case 4:
+		case 3:
 			return iTimeLabel;
         default:
             return NULL;
@@ -190,16 +194,11 @@ void CPodcastPlayContainer::ViewActivatedL(TInt aCurrentShowUid)
 void CPodcastPlayContainer::SizeChanged()
 {
 	TInt playprogressHeight = 0;
-	TInt downloadprogressHeight = 0;
 	TInt titleHeight = 0;
 	if(iDownloadProgressInfo != NULL)
 	{
 		iDownloadProgressInfo->SetSize(TSize(Size().iWidth, iDownloadProgressInfo->MinimumSize().iHeight));
-		if(iDownloadProgressInfo->IsVisible())
-		{
-		downloadprogressHeight = iDownloadProgressInfo->Size().iHeight;
-		}
-
+		iDownloadProgressInfo->SetPosition(TPoint(0,Size().iHeight-iDownloadProgressInfo->Size().iHeight));		
 	}
 
 	if(iPlayProgressbar != NULL)
@@ -218,20 +217,20 @@ void CPodcastPlayContainer::SizeChanged()
 	if(iShowInfoTitle != NULL)
 	{
 		iShowInfoTitle->SetSize(TSize(Size().iWidth, iShowInfoTitle->MinimumSize().iHeight));
-		iShowInfoTitle->SetPosition(TPoint(0, downloadprogressHeight));
+		iShowInfoTitle->SetPosition(TPoint(0, 0));
 		titleHeight = iShowInfoTitle->Size().iHeight;
 	}
 
 	if(iCoverImageCtrl)
 	{
 		iCoverImageCtrl->SetSize(TSize(Size().iWidth, iCoverImageCtrl->MinimumSize().iHeight));
-		iCoverImageCtrl->SetPosition(TPoint(0, titleHeight+downloadprogressHeight));
+		iCoverImageCtrl->SetPosition(TPoint(0, titleHeight));
 	}
 
 	if(iShowInfoLabel != NULL)
 	{
 		iShowInfoLabel->SetSize(TSize(Size().iWidth, Size().iHeight - playprogressHeight-titleHeight));
-		iShowInfoLabel->SetPosition(TPoint(0, titleHeight+downloadprogressHeight));
+		iShowInfoLabel->SetPosition(TPoint(0, titleHeight));
 	}
 	
 	if ( iBgContext )
@@ -339,16 +338,19 @@ void CPodcastPlayContainer::ConstructL( const TRect& aRect)
 
 	iPlayProgressbar->SetSize(iPlayProgressbar->MinimumSize());
 	iPlayProgressbar->SetFinalValue(100);
+	iPlayProgressbar->ActivateL();
 
 	iTimeLabel = new (ELeave) CEikLabel;
 	iTimeLabel->SetContainerWindowL(*this);
 	iTimeLabel->SetTextL(KZeroTime());
+	iTimeLabel->SetFont(iEikonEnv->AnnotationFont());
 	iTimeLabel->SetSize(iTimeLabel->MinimumSize());
 	iTimeLabel->SetLabelAlignment(ELayoutAlignCenter);
 
 	iShowInfoTitle = new (ELeave) CEikLabel;
 	iShowInfoTitle->SetContainerWindowL(*this);
 	iShowInfoTitle->SetTextL(_L("Title"));
+	iShowInfoTitle->SetFont(iEikonEnv->TitleFont());
 	iShowInfoTitle->SetSize(iShowInfoTitle->MinimumSize());
 
 	iShowInfoLabel = new (ELeave) CEikLabel;
@@ -356,6 +358,7 @@ void CPodcastPlayContainer::ConstructL( const TRect& aRect)
 	iShowInfoLabel->SetTextL(_L("HELLO THIS IS A TEST"));
 	iShowInfoLabel->SetSize(iShowInfoLabel->MinimumSize());
 	iShowInfoLabel->SetLabelAlignment(ELayoutAlignLeft);
+	iShowInfoLabel->SetFont(iEikonEnv->DenseFont());
 	iShowInfoLabel->ActivateL();
 	iDownloadProgressInfo = new (ELeave) CEikProgressInfo;
 	iDownloadProgressInfo->SetContainerWindowL(*this);
@@ -363,6 +366,7 @@ void CPodcastPlayContainer::ConstructL( const TRect& aRect)
 
 	iDownloadProgressInfo->SetSize(iDownloadProgressInfo->MinimumSize());
 	iDownloadProgressInfo->SetFinalValue(100);
+	iDownloadProgressInfo->ActivateL();
 	iPlaybackTicker = CPeriodic::NewL(CActive::EPriorityStandard);
 	iPodcastModel.SoundEngine().AddObserver(this);
 	iPodcastModel.ShowEngine().AddObserver(this);
