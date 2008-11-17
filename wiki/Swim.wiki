@@ -40,6 +40,9 @@ To use Swim, you need to do three things:
 
 The complete source code is found in the [http://bergamot.googlecode.com/svn/Sync/trunk subversion repository]. Compiled binaries for each release can be found on our [http://code.google.com/p/bergamot/downloads/list Downloads page]. Note that the unsigned binaries are unusable without signing them yourself!
 
+  * 0.41 (S60 Only) (2008-11-17) [http://bergamot.googlecode.com/svn/Sync/tags/v041 Source]
+    * Fix for S60 problem with sync every 30 minutes
+
   * 0.40 (2008-11-06) [http://bergamot.googlecode.com/svn/Sync/tags/v040 Source]
     * First S60 version
     * Bug fix for UIQ
