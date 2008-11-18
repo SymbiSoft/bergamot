@@ -7,19 +7,15 @@
 const TInt KFeedTitleLength=256;
 const TInt KFeedUrlLength=1024;
 const TInt KFeedDescriptionLength=2048;
-const TInt KFeedInfoVersion = 5;
 
 class CFeedInfo : public CBase
 	{
 	public:
-		static CFeedInfo* NewL(TInt aVersion=KFeedInfoVersion);
-		static CFeedInfo* NewLC(TInt aVersion=KFeedInfoVersion);
+		static CFeedInfo* NewL();
+		static CFeedInfo* NewLC();
 	
 		~CFeedInfo();
 		
-		void ExternalizeL(RWriteStream& aStream) const;
-		void InternalizeL(RReadStream& aStream);
-	
 		const TDesC& Url() const;
 		void SetUrlL(const TDesC &aUrl);
 		const TDesC& Title() const;
@@ -44,7 +40,7 @@ class CFeedInfo : public CBase
 		void SetCustomTitle();
 		TBool CustomTitle();
 	private:
-		CFeedInfo(TInt aVersion);
+		CFeedInfo();
 		void ConstructL();
 
 	private:
@@ -59,7 +55,6 @@ class CFeedInfo : public CBase
 		TUint iUid;
 		TBool iIsBookFeed;
 		TBool iCustomTitle;
-		TInt iVersion;
 	};
 
 typedef RPointerArray<CFeedInfo> RFeedInfoArray;

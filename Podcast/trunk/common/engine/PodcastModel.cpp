@@ -33,13 +33,14 @@ CPodcastModel::~CPodcastModel()
 	delete iSettingsEngine;
 	iActiveShowList.Close();
 	delete iShowEngine;
-	
+
 	delete iIapNameArray;
 	iIapIdArray.Close();
 	delete iCommDB;
 	iConnection.Close();
 	iSocketServ.Close();
 	delete iRemConListener;
+	sqlite3_close(iDB);
 }
 
 CPodcastModel::CPodcastModel()
@@ -55,6 +56,14 @@ void CPodcastModel::ConstructL()
 	iIapNameArray = new (ELeave) CDesCArrayFlat(KDefaultGranu);
 
 	UpdateIAPListL();
+	
+	// connect to DB
+    int rc = rc = sqlite3_open("c:\\escarpod.sqlite", &iDB);
+	if( rc != SQLITE_OK){
+		DP("Error loading feed DB");
+		User::Leave(KErrNotFound);
+	}
+
 
 	iSettingsEngine = CSettingsEngine::NewL(*this);
 	iFeedEngine = CFeedEngine::NewL(*this);
@@ -235,6 +244,12 @@ TConnPref& CPodcastModel::ConnPref()
 {
 	return iConnPref;
 }
+
+sqlite3* CPodcastModel::DB()
+{
+	return iDB;
+}
+
 
 class CConnectionWaiter:public CActive
 {

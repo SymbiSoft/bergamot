@@ -25,45 +25,32 @@ void CFeedEngine::ConstructL()
 	
 	RunFeedTimer();
 	
-    TFileName defaultFile = iPodcastModel.SettingsEngine().DefaultFeedsFileName();
-    
-    TRAPD(err, LoadFeedsL());
-    
-    if (err != KErrNone) {
-    	DP("Error, loading feed DB backup");
-		TRAP(err, LoadFeedsL(ETrue));
-    	
-    	if (err == KErrNone) {
-    		SaveFeedsL();
-    	}
-    }
-    
-    if (err != KErrNone && BaflUtils::FileExists(iFs, defaultFile)) {
-    	ImportFeedsL(defaultFile);
-    }
+	
+    if (DBGetFeedCount() > 0) {
+		DP("Loading feeds from DB");
+		LoadFeedsL();
+    } else {
+    	DP("No shows in DB, loading default feeds");
+    	 TFileName defaultFile = iPodcastModel.SettingsEngine().DefaultFeedsFileName();
 
+	    if (BaflUtils::FileExists(iFs, defaultFile)) {
+	    	DP("Loading default feeds");
+	    	ImportFeedsL(defaultFile);
+	    }
+    }
+    
     TFileName importFile = iPodcastModel.SettingsEngine().ImportFeedsFileName();
     if (BaflUtils::FileExists(iFs, importFile)) {
+    	DP("Importing feeds");
     	ImportFeedsL(importFile);
     }
 
-    
-    TRAP(err, LoadBooksL());
-    
-    if (err != KErrNone) {
-		DP("Error, loading book DB backup");
-		TRAP(err,LoadBooksL(ETrue));
-    	
-    	if (err == KErrNone) {
-    		SaveBooksL();
-    	}
-    }
-    
 	}
 
 CFeedEngine::CFeedEngine(CPodcastModel& aPodcastModel) : iFeedTimer(this), iPodcastModel(aPodcastModel)
 	{
 	iClientState = ENotUpdating;
+	iDB = aPodcastModel.DB();
 	}
 
 CFeedEngine::~CFeedEngine()
@@ -311,7 +298,6 @@ void CFeedEngine::ReplaceString(TDes & aString, const TDesC& aStringToReplace,
 
 	}
 
-
 TBool CFeedEngine::AddFeed(CFeedInfo *aItem) 
 	{
 	DP2("CFeedEngine::AddFeed, title=%S, URL=%S", &aItem->Title(), &aItem->Url());
@@ -330,8 +316,46 @@ TBool CFeedEngine::AddFeed(CFeedInfo *aItem)
 	iSortedFeeds.InsertInOrder(aItem, sortOrder);
 
 	// Save the feeds into DB
-	SaveFeeds();
+	DBAddFeed(aItem);
 	return ETrue;
+	}
+
+TBool CFeedEngine::DBAddFeed(CFeedInfo *aItem)
+	{
+	DP2("CFeedEngine::DBAddFeed, title=%S, URL=%S", &aItem->Title(), &aItem->Url());
+	
+	if (GetFeedInfoByUid(aItem->Uid()) != NULL) {
+		DP("Feed already exists!");
+		return EFalse;
+	}
+
+	TBuf<2048> sql;
+
+	sql.Format(_L("insert into feeds (url, title, description, imageurl, imagefile, link, built, lastupdated, uid, feedtype, customtitle)"
+			" values (\"%S\",\"%S\", \"%S\", \"%S\", \"%S\", \"%S\", \"%Ld\", \"%Ld\", \"%u\", \"%u\", \"%u\")"),
+			&aItem->Url(), &aItem->Title(), &aItem->Description(), &aItem->ImageUrl(), &aItem->ImageFileName(), &aItem->Link(),
+			aItem->BuildDate().Int64(), aItem->LastUpdated().Int64(), aItem->Uid(), aItem->IsBookFeed(), aItem->CustomTitle());
+
+	sqlite3_stmt *st;
+	 
+	DP1("SQL statement length=%d", sql.Length());
+	int rc = sqlite3_prepare16_v2(iDB, (const void*)sql.PtrZ() , -1, &st,	(const void**) NULL);
+	
+	if (rc==SQLITE_OK)
+		{
+		rc = sqlite3_step(st);
+
+		if (rc == SQLITE_DONE)
+			{
+			sqlite3_finalize(st);
+			return ETrue;
+			}
+		else {
+			sqlite3_finalize(st);
+		}
+	}
+
+	return EFalse;
 	}
 
 void CFeedEngine::RemoveFeed(TUint aUid) 
@@ -360,12 +384,45 @@ void CFeedEngine::RemoveFeed(TUint aUid)
 			iSortedFeeds.Remove(i);
 			delete feedToRemove;
 			
-			DP("Removed feed");
-			SaveFeeds();
+			DP("Removed feed from array");
+			
+			// now remove it from DB
+			DBRemoveFeed(aUid);
+
 			return;
 		}
 	}
 }
+
+
+TBool CFeedEngine::DBRemoveFeed(TUint aUid)
+	{
+	TBuf<2048> sql;
+
+	sql.Format(_L("delete from feeds where where uid=%u"), aUid);
+
+	sqlite3_stmt *st;
+	 
+	int rc = sqlite3_prepare16_v2(iDB, (const void*)sql.PtrZ() , -1, &st,	(const void**) NULL);
+	
+	if (rc==SQLITE_OK)
+		{
+		rc = sqlite3_step(st);
+
+		if (rc == SQLITE_DONE)
+			{
+			sqlite3_finalize(st);
+			DP("Feed removed from DB");
+			return ETrue;
+			}
+		else {
+			sqlite3_finalize(st);
+			DP("Error when removing feed from DB");
+
+		}
+	}
+	return EFalse;	
+	}
 
 void CFeedEngine::ParsingComplete(CFeedInfo *item)
 	{
@@ -446,7 +503,7 @@ void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TBool aSuccessful)
 		TTime time;
 		time.HomeTime();
 		iActiveFeed->SetLastUpdated(time);
-		SaveFeedsL();
+
 		iPodcastModel.ShowEngine().SaveShowsL();
 
 		// if the feed has specified a image url. download it if we dont already have it
@@ -602,108 +659,11 @@ TBool CFeedEngine::ExportFeedsL(TFileName& aFile)
 	
 	return ETrue;
 	}
-	
-void CFeedEngine::LoadFeedsL(TBool aUseBackup)
-	{
-	DP("LoadFeedsL");
-	TFileName path;
-	TParse	filestorename;
-	
-	TBuf<100> privatePath;
-	iFs.PrivatePath(privatePath);
-	BaflUtils::EnsurePathExistsL(iFs, privatePath);
-	privatePath.Append(KFeedDB);
-	
-	if (aUseBackup) {
-		privatePath.Append(_L(".old"));
-	}
-	
-	iFs.Parse(privatePath, filestorename);
 
-	if (!BaflUtils::FileExists(iFs, privatePath)) {
-		DP("No feed DB file");	
-		User::Leave(KErrNotFound);
-	}
-	
-	CFileStore* store = NULL;
-	TRAPD(error, store = CDirectFileStore::OpenL(iFs,filestorename.FullName(),EFileRead));
-	CleanupStack::PushL(store);
-	
-	if (error != KErrNone) {
-		DP1("error=%d", error);
-		CleanupStack::Pop(store);
-		User::Leave(error);
-	}
-	
-	RStoreReadStream instream;
-	instream.OpenLC(*store, store->Root());
-
-	TInt version = instream.ReadInt32L();
-	DP1("Read version: %d", version);
-
-	//if (version != KFeedInfoVersion) {
-	//	DP("Wrong version, discarding"));
-	//	CleanupStack::PopAndDestroy(2); // instream and store
-	//	return EFalse;
-	//}
-	
-	TInt count = instream.ReadInt32L();
-	DP1("Read count: %d", count);
-	CFeedInfo *readData;
-	TLinearOrder<CFeedInfo> sortOrder( CFeedEngine::CompareFeedsByTitle);
-	for (TInt i=0;i<count;i++) {
-		readData = CFeedInfo::NewL(version);
-		TRAP(error, instream  >> *readData);
-		//DP1("error: %d", error);
-		iSortedFeeds.InsertInOrder(readData, sortOrder);
-	}
-	CleanupStack::PopAndDestroy(2); // instream and store
-	}
-
-void CFeedEngine::SaveFeeds()
-	{
-	TRAP_IGNORE(SaveFeedsL());
-	}
-
-void CFeedEngine::SaveFeedsL()
-	{
-	DP("SaveFeeds");
-	TFileName path;
-	TParse	filestorename;
-
-	TBuf<100> privatePath;
-	iFs.PrivatePath(privatePath);
-	BaflUtils::EnsurePathExistsL(iFs, privatePath);
-	privatePath.Append(KFeedDB);
-	
-	DP1("File: %S", &privatePath);
-	iFs.Parse(privatePath, filestorename);
-	DP("Saving backup...");
-	TFileName backupFile;
-	backupFile.Copy(filestorename.FullName());
-	backupFile.Append(_L(".old"));
-	BaflUtils::CopyFile(iFs,filestorename.FullName(),backupFile);
-
-	CFileStore* store = CDirectFileStore::ReplaceLC(iFs, filestorename.FullName(), EFileWrite);
-	store->SetTypeL(KDirectFileStoreLayoutUid);
-	
-	RStoreWriteStream outstream;
-	TStreamId id = outstream.CreateLC(*store);
-	outstream.WriteInt32L(KFeedInfoVersion);
-	DP1("Saving %d feeds", iSortedFeeds.Count());
-	outstream.WriteInt32L(iSortedFeeds.Count());
-	for (TInt i=0;i<iSortedFeeds.Count();i++) {
-//		DP1("Storing feed %i", i);
-		outstream  << *iSortedFeeds[i];
-	}
-	
-	outstream.CommitL();
-	store->SetRootL(id);
-	store->CommitL();
-	CleanupStack::PopAndDestroy(); // outstream
-	CleanupStack::PopAndDestroy(store);		
-	}
-
+void CFeedEngine::LoadFeedsL()
+{
+	DBLoadFeeds();
+}
 
 CFeedInfo* CFeedEngine::GetFeedInfoByUid(TUint aFeedUid)
 	{
@@ -727,8 +687,8 @@ CFeedInfo* CFeedEngine::GetFeedInfoByUid(TUint aFeedUid)
 	
 	return NULL;
 	}
-
-const RFeedInfoArray& CFeedEngine::GetSortedFeeds() const 
+		
+const RFeedInfoArray& CFeedEngine::GetSortedFeeds() const
 {
 	return iSortedFeeds;
 }
@@ -812,7 +772,7 @@ void CFeedEngine::AddBookL(const TDesC& aBookTitle, CDesCArrayFlat* aFileNameArr
 		CleanupStack::Pop(item);
 	    
 		// Save the feeds into DB
-		SaveBooksL();
+		//SaveBooksL();
 		
 		AddBookChaptersL(*item, aFileNameArray);				
 		}
@@ -839,99 +799,11 @@ void CFeedEngine::RemoveBookL(TUint aUid)
 			iSortedBooks.Remove(i);
 			delete feedToRemove;
 			
-			SaveBooksL();
+			DBRemoveFeed(aUid);
 			return;
 			}
 		}
 	}
-
-void CFeedEngine::LoadBooksL(TBool aUseBackup)
-	{
-	TFileName path;
-	TParse	filestorename;
-	
-	TBuf<100> privatePath;
-	iFs.PrivatePath(privatePath);
-	BaflUtils::EnsurePathExistsL(iFs, privatePath);
-	privatePath.Append(KBookDB);
-	
-	if (aUseBackup) {
-		privatePath.Append(_L(".old"));
-	}
-	
-	iFs.Parse(privatePath, filestorename);
-
-	if (!BaflUtils::FileExists(iFs, privatePath)) {
-		DP("No books DB file");	
-		User::Leave(KErrNotFound);
-	}
-	
-	CFileStore* store = NULL;
-	TRAPD(error, store = CDirectFileStore::OpenL(iFs,filestorename.FullName(),EFileRead));
-	CleanupStack::PushL(store);
-	
-	if (error != KErrNone) {
-		CleanupStack::Pop(store);
-		User::Leave(error);
-	}
-	
-	RStoreReadStream instream;
-	instream.OpenLC(*store, store->Root());
-
-	TInt version = instream.ReadInt32L();
-
-	if (version != KFeedInfoVersion) {
-		CleanupStack::PopAndDestroy(2); // instream and store
-		User::Leave(KErrCorrupt);
-	}
-	
-	TInt count = instream.ReadInt32L();
-	CFeedInfo *readData;
-	TLinearOrder<CFeedInfo> sortOrder( CFeedEngine::CompareFeedsByTitle);
-	for (TInt i=0;i<count;i++) {
-		readData = CFeedInfo::NewL();
-		TRAP(error, instream  >> *readData);
-		readData->SetIsBookFeed();
-		iSortedBooks.InsertInOrder(readData, sortOrder);
-	}
-	CleanupStack::PopAndDestroy(2); // instream and store
-	}
-
-void CFeedEngine::SaveBooks()
-	{
-	TRAP_IGNORE(SaveBooksL());
-	}
-
-void CFeedEngine::SaveBooksL()
-	{
-	TFileName path;
-	TParse	filestorename;
-
-	TBuf<100> privatePath;
-	iFs.PrivatePath(privatePath);
-	BaflUtils::EnsurePathExistsL(iFs, privatePath);
-	privatePath.Append(KBookDB);
-	
-	iFs.Parse(privatePath, filestorename);
-	CFileStore* store = CDirectFileStore::ReplaceLC(iFs, filestorename.FullName(), EFileWrite);
-	store->SetTypeL(KDirectFileStoreLayoutUid);
-	
-	RStoreWriteStream outstream;
-	TStreamId id = outstream.CreateLC(*store);
-	outstream.WriteInt32L(KFeedInfoVersion);
-	outstream.WriteInt32L(iSortedBooks.Count());
-	for (TInt i=0;i<iSortedBooks.Count();i++) {
-		outstream  << *iSortedBooks[i];
-	}
-	
-	outstream.CommitL();
-	store->SetRootL(id);
-	store->CommitL();
-	CleanupStack::PopAndDestroy(); // outstream
-	CleanupStack::PopAndDestroy(store);		
-	}
-
-
 
 const RFeedInfoArray& CFeedEngine::GetSortedBooks() const 
 {
@@ -990,4 +862,174 @@ void CFeedEngine::SetCatchupMode(TBool aCatchup)
 	{
 	iCatchupMode = aCatchup;
 	}
+
+
+TUint CFeedEngine::DBGetFeedCount()
+	{
+	 DP("DBGetFeedCount BEGIN");
+	 sqlite3_stmt *st;
+	 char *sqlstr =  "select count(*) from feeds";
+	 int rc = sqlite3_prepare_v2(iDB,(const char*)sqlstr , -1, &st, (const char**) NULL);
+	 TUint size = 0;
+	 
+	 if( rc==SQLITE_OK ){
+	  	rc = sqlite3_step(st);
+	  	
+	  	if (rc == SQLITE_ROW) {
+	  		size = sqlite3_column_int(st, 0);
+	  	}
+	  }
+	  
+	  sqlite3_finalize(st);
+	  DP1("DBGetFeedCount END=%d", size);
+	  return size;
+}
+
+void CFeedEngine::DBLoadFeeds()
+	{
+	DP("DBLoadFeeds BEGIN");
+	iSortedFeeds.Reset();
+	TBuf<2048> sql;
+	CFeedInfo *feedInfo = NULL;
+	sql.Format(_L("select url, title, description, imageurl, imagefile, link, built, lastupdated, uid, feedtype, customtitle from feeds order by title"));
+
+	sqlite3_stmt *st;
+	 
+	TLinearOrder<CFeedInfo> sortOrder( CFeedEngine::CompareFeedsByTitle);
+
+	int rc = sqlite3_prepare16_v2(iDB, (const void*)sql.PtrZ() , -1, &st,	(const void**) NULL);
+	
+	if (rc==SQLITE_OK) {
+		rc = sqlite3_step(st);
+		while(rc == SQLITE_ROW) {
+			TRAPD(err, feedInfo = CFeedInfo::NewL());
+			
+			const void *urlz = sqlite3_column_text16(st, 0);
+			TPtrC16 url((const TUint16*)urlz);
+			feedInfo->SetUrlL(url);
+
+			const void *titlez = sqlite3_column_text16(st, 1);
+			TPtrC16 title((const TUint16*)titlez);
+			feedInfo->SetTitleL(title);
+
+			const void *descz = sqlite3_column_text16(st, 2);
+			TPtrC16 desc((const TUint16*)descz);
+			feedInfo->SetDescriptionL(desc);
+
+			const void *imagez = sqlite3_column_text16(st, 3);
+			TPtrC16 image((const TUint16*)imagez);
+			feedInfo->SetImageUrlL(image);
+
+			const void *imagefilez = sqlite3_column_text16(st, 4);
+			TPtrC16 imagefile((const TUint16*)imagefilez);
+			feedInfo->SetDescriptionL(imagefile);
+			
+			const void *linkz = sqlite3_column_text16(st, 5);
+			TPtrC16 link((const TUint16*)linkz);
+			feedInfo->SetDescriptionL(link);
+					
+			sqlite3_int64 built = sqlite3_column_int64(st, 6);
+			TTime buildtime(built);
+			feedInfo->SetBuildDate(buildtime);
+
+			sqlite3_int64 lastupdated = sqlite3_column_int64(st, 7);
+			TTime lastupdatedtime(lastupdated);
+			feedInfo->SetLastUpdated(lastupdatedtime);
+
+			sqlite3_int64 uid = sqlite3_column_int64(st, 8);
+			// don't need to set UID, it will be set properly from URL
+			
+			sqlite3_int64 customtitle = sqlite3_column_int64(st, 10);
+			if (customtitle) {
+				feedInfo->SetCustomTitle();
+			}
+			
+			sqlite3_int64 feedtype = sqlite3_column_int64(st, 9);
+			if (feedtype) {
+				feedInfo->SetIsBookFeed();
+				// feeds are alredy sorted by SQLite
+				iSortedBooks.Append(feedInfo);
+			} else {
+				// feeds are alredy sorted by SQLite
+				iSortedFeeds.Append(feedInfo);		
+			}
+			
+				
+			rc = sqlite3_step(st);
+		}
+			
+		sqlite3_finalize(st);
+	}
+	
+	DP("DBLoadFeeds END");
+	}
+
+CFeedInfo* CFeedEngine::DBGetFeedInfoByUid(TUint aFeedUid)
+	{
+	TBuf<2048> sql;
+	CFeedInfo *feedInfo = NULL;
+	sql.Format(_L("select url, title, description, imageurl, imagefile, link, built, lastupdated, uid, feedtype, customtitle from feeds where uid=%u"), aFeedUid);
+
+	sqlite3_stmt *st;
+	 
+	DP1("SQL statement length=%d", sql.Length());
+
+	int rc = sqlite3_prepare16_v2(iDB, (const void*)sql.PtrZ() , -1, &st,	(const void**) NULL);
+	
+	if (rc==SQLITE_OK) {
+		rc = sqlite3_step(st);
+		if (rc == SQLITE_ROW) {
+			TRAPD(err, feedInfo = CFeedInfo::NewL());
+			
+			const void *urlz = sqlite3_column_text16(st, 0);
+			TPtrC16 url((const TUint16*)urlz);
+			feedInfo->SetUrlL(url);
+
+			const void *titlez = sqlite3_column_text16(st, 1);
+			TPtrC16 title((const TUint16*)titlez);
+			feedInfo->SetTitleL(title);
+
+			const void *descz = sqlite3_column_text16(st, 2);
+			TPtrC16 desc((const TUint16*)descz);
+			feedInfo->SetDescriptionL(desc);
+
+			const void *imagez = sqlite3_column_text16(st, 3);
+			TPtrC16 image((const TUint16*)imagez);
+			feedInfo->SetImageUrlL(image);
+
+			const void *imagefilez = sqlite3_column_text16(st, 4);
+			TPtrC16 imagefile((const TUint16*)imagefilez);
+			feedInfo->SetDescriptionL(imagefile);
+			
+			const void *linkz = sqlite3_column_text16(st, 5);
+			TPtrC16 link((const TUint16*)linkz);
+			feedInfo->SetDescriptionL(link);
+					
+			sqlite3_int64 built = sqlite3_column_int64(st, 6);
+			TTime buildtime(built);
+			feedInfo->SetBuildDate(buildtime);
+
+			sqlite3_int64 lastupdated = sqlite3_column_int64(st, 7);
+			TTime lastupdatedtime(lastupdated);
+			feedInfo->SetLastUpdated(lastupdatedtime);
+
+			sqlite3_int64 uid = sqlite3_column_int64(st, 8);
+			// don't need to set UID, it will be set properly from URL
+			
+			sqlite3_int64 feedtype = sqlite3_column_int64(st, 9);
+			if (feedtype) {
+				feedInfo->SetIsBookFeed();
+			}
+			
+			sqlite3_int64 customtitle = sqlite3_column_int64(st, 10);
+			if (customtitle) {
+				feedInfo->SetCustomTitle();
+			}
+		}
+			
+		sqlite3_finalize(st);
+	}
+	
+	return feedInfo;
+}
 

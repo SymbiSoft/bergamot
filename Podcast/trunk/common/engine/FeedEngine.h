@@ -10,6 +10,8 @@
 #include "Constants.h"
 #include "FeedEngineObserver.h"
 #include "FeedTimer.h"
+#include "sqlite3.h"
+
 
 class CPodcastModel;
 
@@ -75,13 +77,8 @@ private:
 	void ConstructL();
 	CFeedEngine(CPodcastModel& aPodcastModel);
 
-	void LoadFeedsL(TBool aUseBackup=EFalse);
-	void SaveFeedsL();
-	void SaveFeeds();
-	
-	void LoadBooksL(TBool aUseBackup=EFalse);
-	void SaveBooksL();
-	void SaveBooks();
+	void LoadFeedsL();
+
 	// from HttpClientObserver
 	void Connected(CHttpClient* aClient);
 	void Disconnected(CHttpClient* aClient);
@@ -99,13 +96,22 @@ private:
 	
 	void UpdateNextFeedL();
 	void NotifyFeedUpdateComplete();
-	
+
+private:
+	void DBLoadFeeds();
+	TBool DBRemoveFeed(TUint aUid);
+	TBool DBAddFeed(CFeedInfo *item);
+	CFeedInfo* DBGetFeedInfoByUid(TUint aFeedUid);	
+	TUint DBGetFeedCount();
+		
 private:
 	CHttpClient* iFeedClient;
 	TClientState iClientState;
 	CFeedTimer iFeedTimer;
 
 	CPodcastModel& iPodcastModel;
+	
+	RFs iFs;
 	
 	// RSS parser
 	CFeedParser* iParser;
@@ -119,8 +125,6 @@ private:
 
 	CFeedInfo *iActiveFeed;
 	TFileName iUpdatingFeedFileName;
-	// the file session used to read and write settings
-	RFs iFs;
 
 	RFeedInfoArray iFeedsUpdating;
 	
@@ -129,5 +133,7 @@ private:
     
     // flag to set all new shows played, and not to auto download 
     TBool iCatchupMode;
+    
+    sqlite3* iDB;
 };
 #endif /*FEEDENGINE_H_*/

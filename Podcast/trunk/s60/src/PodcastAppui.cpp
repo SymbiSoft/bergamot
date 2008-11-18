@@ -11,11 +11,6 @@
 
 #include <avkon.hrh>
 
-#include "sqlite3.h"
-#include "debug.h"
-#include "libc\string.h"
-#include "libc\stdio.h"
-
 CPodcastAppUi::CPodcastAppUi(CPodcastModel* aPodcastModel):iPodcastModel(aPodcastModel)
 	{
 	

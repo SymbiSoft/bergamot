@@ -11,6 +11,7 @@
 #include "TelephonyListener.h"
 #include "RemoteControlListener.h"
 #include "debug.h"
+#include "sqlite3.h"
 
 class CFeedEngine;
 class CSoundEngine;
@@ -63,6 +64,8 @@ public:
 	void GetProxyInformationForConnectionL(TBool& aIsUsed, HBufC*& aServerName, TUint32& aPort);
 	TInt GetIapId();
 	
+	 sqlite3* DB();
+	
 	
 protected:
 	CPodcastModel();
@@ -91,6 +94,8 @@ private:
    
    CTelephonyListener *iTelephonyListener;
    CRemoteControlListener *iRemConListener;
+   
+   sqlite3* iDB;
 };
 
 #endif // PODCASTMODEL_H

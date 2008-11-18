@@ -15,6 +15,7 @@ _LIT(KConfigFile, "config.db");
 _LIT(KShowDB, "shows.db");
 _LIT(KFeedDB, "feeds.db");
 _LIT(KBookDB, "books.db");
+_LIT(KEscarpodDB, "escarpod.sqlite");
 
 // constants
 const TInt KSettingsUid = 1000;

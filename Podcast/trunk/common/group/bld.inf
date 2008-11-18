@@ -19,3 +19,6 @@ WINSCW
 
 PRJ_EXPORTS
 
+..\..\common\config\escarpod.sqlite \epoc32\winscw\c\escarpod.sqlite
+
+

@@ -36,6 +36,8 @@ USERINCLUDE     ..\inc
 USERINCLUDE		..\..\common\libid3tag
 USERINCLUDE		..\..\common
 USERINCLUDE		..\..\common\engine
+SYSTEMINCLUDE   \epoc32\include\libc
+USERINCLUDE ..\..\common\sqlite\src
 
 SOURCE          PodcastClientAppUi.cpp
 SOURCE          PodcastClientDocument.cpp
@@ -94,6 +96,7 @@ LIBRARY         remconcoreapi.lib
 LIBRARY 		remconinterfacebase.lib
 LIBRARY			flogger.lib
 LIBRARY			apmime.lib 
+STATICLIBRARY	sqlite.lib
 
 START BITMAP PodcastClient.mbm
 	TARGETPATH \resource\apps

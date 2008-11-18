@@ -2,24 +2,24 @@
 #include <e32hashtab.h>
 
 
-CFeedInfo* CFeedInfo::NewL(TInt aVersion)
+CFeedInfo* CFeedInfo::NewL()
 	{
-	CFeedInfo* self = new (ELeave) CFeedInfo(aVersion);
+	CFeedInfo* self = new (ELeave) CFeedInfo();
 	CleanupStack::PushL(self);
 	self->ConstructL();
 	CleanupStack::Pop();
 	return self;
 	}
 
-CFeedInfo* CFeedInfo::NewLC(TInt aVersion)
+CFeedInfo* CFeedInfo::NewLC()
 	{
-	CFeedInfo* self = new (ELeave) CFeedInfo(aVersion);
+	CFeedInfo* self = new (ELeave) CFeedInfo();
 	CleanupStack::PushL(self);
 	self->ConstructL();
 	return self;
 	}
 
-CFeedInfo::CFeedInfo(TInt aVersion) : iVersion(aVersion)
+CFeedInfo::CFeedInfo()
 	{
 	iCustomTitle = EFalse;
 	}
@@ -36,124 +36,6 @@ CFeedInfo::~CFeedInfo()
 
 void CFeedInfo::ConstructL()
 	{
-	}
-
-void CFeedInfo::ExternalizeL(RWriteStream& aStream) const 
-	{
-	if (iTitle == NULL) 
-		{
-		aStream.WriteInt32L(0);		
-		} 
-	else 
-		{
-		aStream.WriteInt32L(iTitle->Length());
-		aStream.WriteL(*iTitle);
-		}
-
-	if (iUrl == NULL) 
-		{
-		aStream.WriteInt32L(0);		
-		}
-	else 
-		{
-		aStream.WriteInt32L(iUrl->Length());
-		aStream.WriteL(*iUrl);
-		}
-
-	if (iDescription == NULL) 
-		{
-		aStream.WriteInt32L(0);		
-		} 
-	else 
-		{
-		aStream.WriteInt32L(iDescription->Length());
-		aStream.WriteL(*iDescription);
-		}
-
-	if (iImageFileName == NULL) 
-		{
-		aStream.WriteInt32L(0);		
-		}
-	else 
-		{
-		aStream.WriteInt32L(iImageFileName->Length());
-		aStream.WriteL(*iImageFileName);
-		}
-
-	aStream.WriteInt32L(I64LOW(iBuildDate.Int64()));
-	aStream.WriteInt32L(I64HIGH(iBuildDate.Int64()));
-	
-	aStream.WriteInt32L(I64LOW(iLastUpdated.Int64()));
-	aStream.WriteInt32L(I64HIGH(iLastUpdated.Int64()));
-	
-	aStream.WriteInt32L(iUid);
-	
-	aStream.WriteInt32L(iCustomTitle);
-	}
-
-void CFeedInfo::InternalizeL(RReadStream& aStream) 
-	{
-	const TUint KBufSize = 2048;
-	TBuf<KBufSize> buffer;
-
-	TInt len = aStream.ReadInt32L(); 
-	if (len > KBufSize) {
-		User::Leave(KErrOverflow);
-	}
-	
-	if (len > 0) 
-		{
-		aStream.ReadL(buffer, len);
-		SetTitleL(buffer);
-		}
-	
-	len = aStream.ReadInt32L();
-	if (len > KBufSize) {
-		User::Leave(KErrOverflow);
-	}
-	
-	if (len > 0) 
-		{
-		aStream.ReadL(buffer, len);
-		SetUrlL(buffer);
-		}
-
-	len = aStream.ReadInt32L();
-	if (len > KBufSize) {
-		User::Leave(KErrOverflow);
-	}
-	
-	if (len > 0) 
-		{
-		aStream.ReadL(buffer, len);
-		SetDescriptionL(buffer);
-		}
-		
-	len = aStream.ReadInt32L();
-	if (len > KBufSize) {
-		User::Leave(KErrOverflow);
-	}
-	
-	if (len > 0) 
-		{
-		aStream.ReadL(buffer, len);
-		SetImageFileNameL(buffer);
-		}
-	
-	TInt low = aStream.ReadInt32L();
-	TInt high = aStream.ReadInt32L();
-	iBuildDate = MAKE_TINT64(high, low);
-	
-	low = aStream.ReadInt32L();
-	high = aStream.ReadInt32L();
-	iLastUpdated = MAKE_TINT64(high, low);
-	
-	iUid = aStream.ReadInt32L();
-	
-	if (iVersion < 5) {
-		return;
-	}
-		iCustomTitle = aStream.ReadInt32L();
 	}
 
 const TDesC& CFeedInfo::Url() const
