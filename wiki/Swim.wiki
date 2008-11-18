@@ -36,6 +36,8 @@ To use Swim, you need to do three things:
   # Swim now automatically starts with the phone, and runs invisibly in the background
   # Enjoy your synchronized data!
 
+The sync timer is set relative to the time of day when you enable it. So if you enable hourly sync at 12:03, it will sync at 13:03, 14:03 etc. Similarly, if you set it for daily sync, it will sync at 12:03 every day. This part could certainly be improved :)
+
 == Releases ==
 
 The complete source code is found in the [http://bergamot.googlecode.com/svn/Sync/trunk subversion repository]. Compiled binaries for each release can be found on our [http://code.google.com/p/bergamot/downloads/list Downloads page]. Note that the unsigned binaries are unusable without signing them yourself!
