@@ -135,5 +135,7 @@ private:
     TBool iCatchupMode;
     
     sqlite3* iDB;
+    
+    TBuf<4096> iSqlBuffer;
 };
 #endif /*FEEDENGINE_H_*/
