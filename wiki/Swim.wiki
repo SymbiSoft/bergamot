@@ -29,7 +29,7 @@ To use Swim, you need to do three things:
     * Select the following capabilities: `LocalServices NetworkServices WriteDeviceData ReadDeviceData ReadUserData WriteUserData ProtServ`, or simply select all.
   # Install the signed SIS file on your phone.
 
-Note that there have been reports about maintenance breaks causing Symbian signed to report that the file may have been "flagged as a potential virus by our scanning or because the format of your sis file is incorrect or corrupt." This is incorrect and submitting it at a later point will work just fine.
+Note that there have been reports about "maintenance breaks" causing Symbian signed to report that the file may have been "flagged as a potential virus by our scanning or because the format of your sis file is incorrect or corrupt." [http://developer.symbian.com/forum/thread.jspa?threadID=27993&tstart=0 This is a Symbian Signed error] and submitting it at a later point will work just fine.
 
 == How to Use ==
 
