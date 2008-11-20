@@ -7,7 +7,7 @@ http://bergamot.googlecode.com/svn/wiki/escarpod_large.jpg
 
 Escarpod is a [Podcast podcatcher] for cell phones that run the Symbian operating system.
 
-Presently Escarpod is only available for the UI graphical environment. This includes all newer phones in the Sony Ericsson P-, M- and G-series, as well as W950 and W960 and Motorola Z8 and Z10. See supported phones below for a list of phones Escarpod is known to work on.
+Presently Escarpod is only available for the UIQ graphical environment. This includes all newer phones in the Sony Ericsson P-, M- and G-series, as well as W950 and W960 and Motorola Z8 and Z10. See supported phones below for a list of phones Escarpod is known to work on.
 
 A version of Escarpod for the S60 graphical environment, including all Nokia N- and E-series phones is under construction and will be released before the end of the year.
 
@@ -55,7 +55,8 @@ To download binaries of Escarpod to use on your phone, visit our [http://code.go
 
   * Escarpod 1.20 (~ December 2008)
     * First S60 version
-    * Improvements and bugfixes
+    * New SQLite based backend with massive performance and stability improvements
+    * Other improvements based on user suggestions
 
   * Escarpod 1.10 (July 29th) [http://bergamot.googlecode.com/svn/Podcast/tags/v110 code]
     * Spanish language (new)
