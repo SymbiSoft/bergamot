@@ -79,7 +79,7 @@ class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver, p
 		CEikProgressInfo* iPlayProgressbar;
 		CEikProgressInfo* iDownloadProgressInfo;
 		CEikLabel* iShowInfoTitle;
-		CEikLabel* iShowInfoLabel;
+		CEikEdwin* iShowInfoLabel;
 		CEikLabel* iTimeLabel;
 	
 		CShowInfo* iShowInfo;
@@ -326,13 +326,14 @@ void CPodcastPlayContainer::ConstructL( const TRect& aRect)
 	iCoverImageCtrl->CreatePictureFromFileL(iEikonEnv->EikAppUi()->Application()->BitmapStoreName(), EMbmPodcastEmptyimage);
 	iCoverImageCtrl->SetAlignment(TGulAlignment(CGraphicsContext::ECenter, EVCenter));
 	iCoverImageCtrl->SetSize(TSize(100,100));
+	iCoverImageCtrl->SetMopParent(this);
 	//TResourceReader reader;
 	//iEikonEnv->CreateResourceReaderLC(reader, R_PODCAST_PLAYVIEW_SLIDER);
 	
 	iPlayProgressbar = new (ELeave) CEikProgressInfo;//CAknSlider;	
 	iPlayProgressbar->SetContainerWindowL(*this);
 	iPlayProgressbar->ConstructL();
-	
+	iPlayProgressbar->SetMopParent(this);
 	//iPlayProgressbar->ConstructFromResourceL(this, 0, reader);
 	//CleanupStack::PopAndDestroy();//close reader
 
@@ -346,24 +347,26 @@ void CPodcastPlayContainer::ConstructL( const TRect& aRect)
 	iTimeLabel->SetFont(iEikonEnv->AnnotationFont());
 	iTimeLabel->SetSize(iTimeLabel->MinimumSize());
 	iTimeLabel->SetLabelAlignment(ELayoutAlignCenter);
-
+	iTimeLabel->SetMopParent(this);
 	iShowInfoTitle = new (ELeave) CEikLabel;
 	iShowInfoTitle->SetContainerWindowL(*this);
 	iShowInfoTitle->SetTextL(_L("Title"));
 	iShowInfoTitle->SetFont(iEikonEnv->TitleFont());
 	iShowInfoTitle->SetSize(iShowInfoTitle->MinimumSize());
-
-	iShowInfoLabel = new (ELeave) CEikLabel;
+	iShowInfoTitle->SetMopParent(this);
+	iShowInfoLabel = new (ELeave) CEikEdwin;//CEikLabel;
 	iShowInfoLabel->SetContainerWindowL(*this);
-	iShowInfoLabel->SetTextL(_L("HELLO THIS IS A TEST"));
+	iShowInfoLabel->ConstructL(EEikEdwinNoHorizScrolling|EEikEdwinDisplayOnly|EEikEdwinResizable);
+	iShowInfoLabel->SetTextL(&_L("HELLO THIS IS A TEST"));
 	iShowInfoLabel->SetSize(iShowInfoLabel->MinimumSize());
-	iShowInfoLabel->SetLabelAlignment(ELayoutAlignLeft);
-	iShowInfoLabel->SetFont(iEikonEnv->DenseFont());
+//	iShowInfoLabel->SetLabelAlignment(ELayoutAlignLeft);
+//	iShowInfoLabel->SetFontL(iEikonEnv->DenseFont());
+	iShowInfoLabel->SetMopParent(this);
 	iShowInfoLabel->ActivateL();
 	iDownloadProgressInfo = new (ELeave) CEikProgressInfo;
 	iDownloadProgressInfo->SetContainerWindowL(*this);
 	iDownloadProgressInfo->ConstructL();
-
+	iDownloadProgressInfo->SetMopParent(this);
 	iDownloadProgressInfo->SetSize(iDownloadProgressInfo->MinimumSize());
 	iDownloadProgressInfo->SetFinalValue(100);
 	iDownloadProgressInfo->ActivateL();
@@ -698,8 +701,8 @@ void CPodcastPlayContainer::UpdateViewL()
 {
 	if (iShowInfo != NULL)
 	{
-		iShowInfoLabel->SetTextL(iShowInfo->Description());
-		
+		iShowInfoLabel->SetTextL(&iShowInfo->Description());
+		iShowInfoLabel->UpdateAllFieldsL();
 		if (iShowInfoTitle != NULL)
 		{
 			iShowInfoTitle->SetTextL(iShowInfo->Title());
