@@ -135,6 +135,9 @@ LIBRARY mmfcontrollerframework.lib
 LIBRARY apgrfx.lib
 LIBRARY CommonDialogs.lib
 LIBRARY aknskins.lib 
+LIBRARY imageconversion.lib 
+LIBRARY fbscli.lib 
+
 STATICLIBRARY	engine.lib
 STATICLIBRARY	libid3tag.lib
 STATICLIBRARY	sqlite.lib

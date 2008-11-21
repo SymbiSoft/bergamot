@@ -25,10 +25,46 @@
 #include <gulalign.h>
 #include <aknsbasicbackgroundcontrolcontext.h>
 #include <aknslider.h>
+#include <imageconversion.h>
 const TInt KAudioTickerPeriod = 1000000;
 const TInt KMaxCoverImageWidth = 200;
 const TInt KTimeLabelSize = 64;
 _LIT(KZeroTime,"0:00:00/0:00:00");
+
+
+class CImageWaiter:public CActive
+	{
+	public:
+	CImageWaiter(CEikImage* aImageCtrl):CActive(0), iImageCtrl(aImageCtrl)
+		{
+		CActiveScheduler::Add(this);
+		}
+	~CImageWaiter()
+		{
+		Cancel();
+		}
+	void Start()
+		{
+		SetActive();
+		}
+	void RunL()
+		{
+		if(iStatus == KErrNone)
+			{
+			iImageCtrl->SetSize(iImageCtrl->MinimumSize());
+			iImageCtrl->MakeVisible(ETrue);
+			iImageCtrl->DrawNow();
+			//iImageCtrl->Bitmap()->Save(_L("C:\\savedbitmap.mbm"));
+			delete this;
+			}
+		}
+	
+	void DoCancel()
+		{
+		}
+	private:
+	CEikImage* iImageCtrl;
+	};
 
 class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver, public MShowEngineObserver
     {
@@ -76,6 +112,7 @@ class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver, p
 		CAknNavigationDecorator* iNaviDecorator;
 		CPeriodic* iPlaybackTicker;
 		CEikImage* iCoverImageCtrl;
+		CFbsBitmap* iCurrentCoverImage;
 		CEikProgressInfo* iPlayProgressbar;
 		CEikProgressInfo* iDownloadProgressInfo;
 		CEikLabel* iShowInfoTitle;
@@ -90,6 +127,8 @@ class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver, p
 		CAknTabGroup* iTabGroup;
 		TFileName iLastImageFileName;
         CAknsBasicBackgroundControlContext* iBgContext;
+        CImageDecoder* iBitmapConverter;
+        CImageWaiter* iImageWaiter;
 	};
 
 // -----------------------------------------------------------------------------
@@ -404,6 +443,7 @@ CPodcastPlayContainer::~CPodcastPlayContainer()
 	delete iShowInfoLabel;
 	delete iDownloadProgressInfo;
 	delete iPlaybackTicker;
+	delete iCurrentCoverImage;
 }
 
 TInt CPodcastPlayContainer::PlayingUpdateStaticCallbackL(TAny* aPlayView)
@@ -767,21 +807,26 @@ void CPodcastPlayContainer::UpdateViewL()
 						iLastImageFileName = feedInfo->ImageFileName();
 						iCoverImageCtrl->CreatePictureFromFileL(iEikonEnv->EikAppUi()->Application()->BitmapStoreName(), EMbmPodcastEmptyimage, EMbmPodcastEmptyimage);
 						iCoverImageCtrl->DrawDeferred();
-					/*	if (!iBitmapConverter->IsActive())
-						{
-							TRAPD(err, iBitmapConverter->LoadImageDataL(feedInfo->ImageFileName()))
-								;
-							if (err == KErrNone)
+						delete iBitmapConverter;
+						iBitmapConverter = NULL;
+						TRAPD(err,iBitmapConverter = CImageDecoder::FileNewL(iEikonEnv->FsSession(), feedInfo->ImageFileName()));
+						if(err == KErrNone)
 							{
-								iBitmapConverter->ConvertToBitmapL(
-									iCurrentCoverImage, 0);
-								iCoverImageCtrl->MakeVisible(ETrue);
+							//delete iImageWaiter;
+							iImageWaiter  = new (ELeave) CImageWaiter(iCoverImageCtrl);
+							TRequestStatus status = KRequestPending;
+							delete iCurrentCoverImage;
+							iCurrentCoverImage = NULL;
+							iCurrentCoverImage = new (ELeave) CFbsBitmap;
+							iCurrentCoverImage->Create(iBitmapConverter->FrameInfo(0).iOverallSizeInPixels, iBitmapConverter->FrameInfo(0).iFrameDisplayMode);
+							iCoverImageCtrl->SetBitmap(iCurrentCoverImage);
+							iBitmapConverter->Convert(&iImageWaiter->iStatus,*iCurrentCoverImage);
+							iImageWaiter->Start();
 							}
-							else
+						else
 							{
-								iLastImageFileName = KNullDesC();
-							}
-						}*/
+							iLastImageFileName = KNullDesC();
+							}						
 					}
 				}
 				else // no cover art file
