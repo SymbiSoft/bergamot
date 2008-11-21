@@ -35,7 +35,7 @@ _LIT(KZeroTime,"0:00:00/0:00:00");
 class CImageWaiter:public CActive
 	{
 	public:
-	CImageWaiter(CEikImage* aImageCtrl):CActive(0), iImageCtrl(aImageCtrl)
+	CImageWaiter(CEikImage* aImageCtrl, CFbsBitmap* aBitmap):CActive(0), iImageCtrl(aImageCtrl), iBitmap(aBitmap)
 		{
 		CActiveScheduler::Add(this);
 		}
@@ -51,10 +51,9 @@ class CImageWaiter:public CActive
 		{
 		if(iStatus == KErrNone)
 			{
-			iImageCtrl->SetSize(iImageCtrl->MinimumSize());
+			iImageCtrl->SetSize(TSize(iImageCtrl->Size().iWidth,iImageCtrl->MinimumSize().iHeight));
 			iImageCtrl->MakeVisible(ETrue);
-			iImageCtrl->DrawNow();
-			//iImageCtrl->Bitmap()->Save(_L("C:\\savedbitmap.mbm"));
+			iImageCtrl->DrawDeferred();
 			delete this;
 			}
 		}
@@ -64,6 +63,7 @@ class CImageWaiter:public CActive
 		}
 	private:
 	CEikImage* iImageCtrl;
+	CFbsBitmap* iBitmap;
 	};
 
 class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver, public MShowEngineObserver
@@ -812,14 +812,13 @@ void CPodcastPlayContainer::UpdateViewL()
 						TRAPD(err,iBitmapConverter = CImageDecoder::FileNewL(iEikonEnv->FsSession(), feedInfo->ImageFileName()));
 						if(err == KErrNone)
 							{
-							//delete iImageWaiter;
-							iImageWaiter  = new (ELeave) CImageWaiter(iCoverImageCtrl);
-							TRequestStatus status = KRequestPending;
+							//delete iImageWaiter;							
 							delete iCurrentCoverImage;
 							iCurrentCoverImage = NULL;
 							iCurrentCoverImage = new (ELeave) CFbsBitmap;
 							iCurrentCoverImage->Create(iBitmapConverter->FrameInfo(0).iOverallSizeInPixels, iBitmapConverter->FrameInfo(0).iFrameDisplayMode);
-							iCoverImageCtrl->SetBitmap(iCurrentCoverImage);
+							iCoverImageCtrl->SetNewBitmaps(iCurrentCoverImage, NULL);
+							iImageWaiter  = new (ELeave) CImageWaiter(iCoverImageCtrl, iCurrentCoverImage);
 							iBitmapConverter->Convert(&iImageWaiter->iStatus,*iCurrentCoverImage);
 							iImageWaiter->Start();
 							}
