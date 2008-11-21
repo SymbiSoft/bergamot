@@ -195,6 +195,8 @@ void CPodcastPlayContainer::SizeChanged()
 {
 	TInt playprogressHeight = 0;
 	TInt titleHeight = 0;
+	TInt timeSizeHeight = 0;
+	
 	if(iDownloadProgressInfo != NULL)
 	{
 		iDownloadProgressInfo->SetSize(TSize(Size().iWidth, iDownloadProgressInfo->MinimumSize().iHeight));
@@ -212,6 +214,7 @@ void CPodcastPlayContainer::SizeChanged()
 		{
 		iTimeLabel->SetSize(TSize(Size().iWidth, iPlayProgressbar->MinimumSize().iHeight));
 		iTimeLabel->SetPosition(TPoint(0,Size().iHeight-(iPlayProgressbar->Size().iHeight+iTimeLabel->Size().iHeight)));
+		timeSizeHeight = iTimeLabel->Size().iHeight;
 		}
 	
 	if(iShowInfoTitle != NULL)
@@ -229,7 +232,7 @@ void CPodcastPlayContainer::SizeChanged()
 
 	if(iShowInfoLabel != NULL)
 	{
-		iShowInfoLabel->SetSize(TSize(Size().iWidth, Size().iHeight - playprogressHeight-titleHeight));
+		iShowInfoLabel->SetSize(TSize(Size().iWidth, Size().iHeight - (playprogressHeight+titleHeight+timeSizeHeight)));
 		iShowInfoLabel->SetPosition(TPoint(0, titleHeight));
 	}
 	
