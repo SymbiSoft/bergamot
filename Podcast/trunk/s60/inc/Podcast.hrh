@@ -6,8 +6,7 @@
 enum TPodcastCommandIds
 	{
 	EPodcastView = 0x1000,
-	EPodcastViewMain,
-	//EPodcastViewAllShows,
+	EPodcastViewMain,	
 	EPodcastViewNewShows,
 	EPodcastViewDownloadedShows,
 	EPodcastViewPendingShows,

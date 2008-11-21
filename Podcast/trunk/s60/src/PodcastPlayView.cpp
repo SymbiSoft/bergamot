@@ -359,8 +359,9 @@ void CPodcastPlayContainer::ConstructL( const TRect& aRect)
 	iShowInfoTitle->SetMopParent(this);
 	iShowInfoLabel = new (ELeave) CEikEdwin;//CEikLabel;
 	iShowInfoLabel->SetContainerWindowL(*this);
-	iShowInfoLabel->ConstructL(EEikEdwinNoHorizScrolling|EEikEdwinDisplayOnly|EEikEdwinResizable);
-	iShowInfoLabel->SetTextL(&_L("HELLO THIS IS A TEST"));
+	iShowInfoLabel->ConstructL(EEikEdwinNoHorizScrolling|EEikEdwinDisplayOnly|EEikEdwinNoAutoSelection);
+	iShowInfoLabel->CreateScrollBarFrameL();
+	iShowInfoLabel->ScrollBarFrame()->SetScrollBarVisibilityL(CEikScrollBarFrame::EOff, CEikScrollBarFrame::EOn);
 	iShowInfoLabel->SetSize(iShowInfoLabel->MinimumSize());
 //	iShowInfoLabel->SetLabelAlignment(ELayoutAlignLeft);
 //	iShowInfoLabel->SetFontL(iEikonEnv->DenseFont());
@@ -469,8 +470,11 @@ void CPodcastPlayContainer::ShowDownloadUpdatedL(
 
 {
 	if (iShowInfo != iPodcastModel.ShowEngine().ShowDownloading()) {
-		iBytesDownloaded = 0;
-		UpdateViewL();
+		if(iBytesDownloaded != 0)
+			{
+			iBytesDownloaded = 0;
+			UpdateViewL();
+			}
 		return;
 	}
 	
@@ -492,25 +496,23 @@ void CPodcastPlayContainer::UpdateMaxProgressValueL(TInt aDuration)
 {
 	iMaxProgressValue = aDuration;
 	if (iMaxProgressValue>120)
+		{
+		iPlayProgressbar->SetFinalValue(iMaxProgressValue);
+		}
+	else
+		{
+		if (iMaxProgressValue == 0)
 			{
-			iPlayProgressbar->SetFinalValue(iMaxProgressValue);
-			//iPlayProgressbar->SetNumberOfMarkersL(iMaxProgressValue/60);
+			iMaxProgressValue++;
 			}
-		else
-			{
-			if (iMaxProgressValue == 0)
-				{
-				iMaxProgressValue++;
-				}
 
-			iMaxProgressValue = iMaxProgressValue*10;
-
-			iPlayProgressbar->SetFinalValue(iMaxProgressValue);		
-			//iPlayProgressbar->SetNumberOfMarkersL(10);
-			}
+		iMaxProgressValue = iMaxProgressValue*10;
+		iPlayProgressbar->SetFinalValue(iMaxProgressValue);
+		}
+	
 	iPlayProgressbar->ActivateL();
 	iPlayProgressbar->MakeVisible(ETrue);
-		iPlayProgressbar->DrawNow();
+	iPlayProgressbar->DrawNow();
 }
 void CPodcastPlayContainer::UpdatePlayStatusL()
 {
@@ -534,8 +536,8 @@ void CPodcastPlayContainer::UpdatePlayStatusL()
 
 		//	comMan.SetDimmed(*this, EPodcastPlay, iPodcastModel.SoundEngine().State() == ESoundEngineNotInitialized);
 		/*comMan.SetDimmed(*this, EPodcastStop, (iPodcastModel.SoundEngine().State() == ESoundEngineNotInitialized
-				|| iPodcastModel.SoundEngine().State() == ESoundEngineStopped
-						&& iPodcastModel.PlayingPodcast()->Position() == 0));*/
+		 || iPodcastModel.SoundEngine().State() == ESoundEngineStopped
+		 && iPodcastModel.PlayingPodcast()->Position() == 0));*/
 		if (iPlayProgressbar != NULL)
 			{
 			iPlayProgressbar->SetDimmed(iPodcastModel.SoundEngine().State() <= ESoundEngineOpening);
@@ -548,7 +550,8 @@ void CPodcastPlayContainer::UpdatePlayStatusL()
 					{
 					TUint duration = iPodcastModel.SoundEngine().PlayTime();
 					pos = iPodcastModel.SoundEngine().Position().Int64()/1000000;
-					iPlayProgressbar->SetAndDraw((iMaxProgressValue*pos)/duration);
+					iPlayProgressbar->SetAndDraw((iMaxProgressValue*pos)
+							/duration);
 					iPlayProgressbar->DrawDeferred();
 					}
 				}
@@ -558,7 +561,8 @@ void CPodcastPlayContainer::UpdatePlayStatusL()
 					{
 					TUint duration = iShowInfo->PlayTime();
 					pos = iShowInfo->Position().Int64()/1000000;
-					iPlayProgressbar->SetAndDraw((iMaxProgressValue*pos)/duration);
+					iPlayProgressbar->SetAndDraw((iMaxProgressValue*pos)
+							/duration);
 					}
 				else
 					{
@@ -570,16 +574,6 @@ void CPodcastPlayContainer::UpdatePlayStatusL()
 		}
 	else
 		{
-		//comMan.SetTextL(*this, EPodcastPlay, R_PODCAST_PLAYER_PLAY_CMD);
-		//comMan.SetDimmed(*this, EPodcastPlay, EFalse);
-		//comMan.SetDimmed(*this, EPodcastStop, ETrue);
-
-		if (iShowInfo)
-			{
-/*			comMan.SetInvisible(*this, EPodcastStop,
-					!(iShowInfo->DownloadState() == EDownloaded));*/
-			}
-
 		// not sure why we end up here, but this prevents crashing (teknolog)
 		if (iPlayProgressbar == NULL)
 			{
@@ -598,11 +592,12 @@ void CPodcastPlayContainer::UpdatePlayStatusL()
 			}
 		else
 			{
-			iPlayProgressbar->SetAndDraw(0);
-			UpdateMaxProgressValueL(0);
-			}
-
-		iPlayProgressbar->DrawDeferred();
+			if(iMaxProgressValue != 0)
+				{
+				iPlayProgressbar->SetAndDraw(0);
+				UpdateMaxProgressValueL(0);
+				}
+			}		
 		}
 
 	if (iShowInfo != NULL)
@@ -690,7 +685,6 @@ void CPodcastPlayContainer::UpdatePlayStatusL()
 			}
 		}
 
-	
 	if (iTimeLabel != NULL)
 		{
 		iTimeLabel->SetTextL(time);
@@ -698,7 +692,7 @@ void CPodcastPlayContainer::UpdatePlayStatusL()
 		iTimeLabel->DrawDeferred();
 		}
 
-	}
+}
 
 void CPodcastPlayContainer::UpdateViewL()
 {
