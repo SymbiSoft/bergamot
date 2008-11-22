@@ -34,6 +34,7 @@ To use Swim, you need to do three things:
 == How to Use ==
 
   # Set up one or more SyncML accounts in your agenda manager (UIQ)/sync settings (S60)
+    * Tip: In the SyncML settings you can choose which internet account to use
   # Run Swim, and set up a timer
   # Swim now automatically starts with the phone, and runs invisibly in the background
   # Enjoy your synchronized data!
