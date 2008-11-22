@@ -136,6 +136,7 @@ LIBRARY apgrfx.lib
 LIBRARY CommonDialogs.lib
 LIBRARY aknskins.lib 
 LIBRARY imageconversion.lib 
+LIBRARY bitmaptransforms.lib 
 LIBRARY fbscli.lib 
 
 STATICLIBRARY	engine.lib

@@ -26,6 +26,8 @@
 #include <aknsbasicbackgroundcontrolcontext.h>
 #include <aknslider.h>
 #include <imageconversion.h>
+#include <bitmaptransforms.h>
+
 const TInt KAudioTickerPeriod = 1000000;
 const TInt KMaxCoverImageWidth = 200;
 const TInt KTimeLabelSize = 64;
@@ -42,6 +44,7 @@ class CImageWaiter:public CActive
 	~CImageWaiter()
 		{
 		Cancel();
+		delete iBitmapScaler;
 		}
 	void Start()
 		{
@@ -49,21 +52,41 @@ class CImageWaiter:public CActive
 		}
 	void RunL()
 		{
-		if(iStatus == KErrNone)
+		if (iStatus == KErrNone)
 			{
-			iImageCtrl->SetSize(TSize(iImageCtrl->Size().iWidth,iImageCtrl->MinimumSize().iHeight));
-			iImageCtrl->MakeVisible(ETrue);
-			iImageCtrl->DrawDeferred();
+			if (iBitmap->SizeInPixels().iWidth <= iImageCtrl->Size().iWidth && iBitmap->SizeInPixels().iHeight <= iImageCtrl->Size().iHeight || iScaling )
+				{
+				iImageCtrl->SetSize(TSize(iImageCtrl->Size().iWidth, iImageCtrl->MinimumSize().iHeight));
+				iImageCtrl->MakeVisible(ETrue);
+				iImageCtrl->DrawDeferred();
+				delete this;
+				}
+			else
+				{
+				iScaling = ETrue;
+				iBitmapScaler = CBitmapScaler::NewL();			
+				iBitmapScaler->Scale(&iStatus, *iBitmap, iImageCtrl->Size());
+				SetActive();
+				}				
+			}
+		else
+			{
 			delete this;
 			}
 		}
 	
 	void DoCancel()
 		{
+		if(iBitmapScaler)
+			{
+			iBitmapScaler->Cancel();
+			}
 		}
 	private:
 	CEikImage* iImageCtrl;
 	CFbsBitmap* iBitmap;
+	TBool iScaling;
+	CBitmapScaler* iBitmapScaler;
 	};
 
 class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver, public MShowEngineObserver
@@ -85,6 +108,7 @@ class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver, p
 			return iShowInfo;
 		}
 	protected:
+		void UpdateControlVisibility();
 		void ShowListUpdated(){};  
 		void ShowDownloadUpdatedL(TInt aPercentOfCurrentDownload, TInt aBytesOfCurrentDownload, TInt aBytesTotal);
 		void DownloadQueueUpdated(TInt /*aDownloadingShows*/, TInt /*aQueuedShows*/) {}
@@ -127,7 +151,7 @@ class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver, p
 		CAknTabGroup* iTabGroup;
 		TFileName iLastImageFileName;
         CAknsBasicBackgroundControlContext* iBgContext;
-        CImageDecoder* iBitmapConverter;
+        CImageDecoder* iBitmapConverter;        
         CImageWaiter* iImageWaiter;
 	};
 
@@ -144,6 +168,23 @@ TTypeUid::Ptr CPodcastPlayContainer::MopSupplyObject( TTypeUid aId )
         }
     return CCoeControl::MopSupplyObject( aId );
     }
+
+void CPodcastPlayContainer::UpdateControlVisibility()
+{
+	switch(iTabGroup->ActiveTabIndex())
+	{
+	case 0:
+		{
+		iCoverImageCtrl->MakeVisible(ETrue);
+		iShowInfoLabel->MakeVisible(EFalse);
+		}break;
+	case 1:
+		{
+		iCoverImageCtrl->MakeVisible(EFalse);
+		iShowInfoLabel->MakeVisible(ETrue);
+		}break;
+	}
+}
 
 void CPodcastPlayContainer::Draw( const TRect& aRect ) const
 {
@@ -265,7 +306,7 @@ void CPodcastPlayContainer::SizeChanged()
 
 	if(iCoverImageCtrl)
 	{
-		iCoverImageCtrl->SetSize(TSize(Size().iWidth, iCoverImageCtrl->MinimumSize().iHeight));
+		iCoverImageCtrl->SetSize(TSize(Size().iWidth, Size().iHeight - (playprogressHeight+titleHeight+timeSizeHeight)));
 		iCoverImageCtrl->SetPosition(TPoint(0, titleHeight));
 	}
 
@@ -306,7 +347,8 @@ TKeyResponse CPodcastPlayContainer::OfferKeyEventL(const TKeyEvent& aKeyEvent,TE
 				IndexNum = 1;
 			
 			iTabGroup->SetActiveTabByIndex(IndexNum);
-						
+			UpdateControlVisibility();
+								
 			DrawNow();
 		}
 		break;
@@ -321,6 +363,7 @@ TKeyResponse CPodcastPlayContainer::OfferKeyEventL(const TKeyEvent& aKeyEvent,TE
 				IndexNum = 0;
 			
 			iTabGroup->SetActiveTabByIndex(IndexNum);
+			UpdateControlVisibility();
 			
 			DrawNow();
 		}
@@ -332,16 +375,13 @@ TKeyResponse CPodcastPlayContainer::OfferKeyEventL(const TKeyEvent& aKeyEvent,TE
 			switch(iTabGroup->ActiveTabIndex())
 			{
 			case 1:
-/*				if(iSecondControl)
+				if(iShowInfoLabel)
 				{
-					Ret = iSecondControl->OfferKeyEventL(aKeyEvent,aEventCode);
-				}*/
+					Ret = iShowInfoLabel->OfferKeyEventL(aKeyEvent, aType);
+				}
 				break;
-			default:
-				/*if(iFirstControl)
-				{
-					Ret = iFirstControl->OfferKeyEventL(aKeyEvent,aEventCode);
-				}*/
+			default:			
+					Ret = CCoeControl::OfferKeyEventL(aKeyEvent, aType);			
 				break;
 			}	
 		}
@@ -426,7 +466,6 @@ void CPodcastPlayContainer::ConstructL( const TRect& aRect)
 	iTabGroup->AddTabL(1,_L("2"));
  
 	iTabGroup->SetActiveTabByIndex(0);
-
 	SetRect( aRect );  
     // Activate the window, which makes it ready to be drawn
     ActivateL();   
@@ -444,7 +483,7 @@ CPodcastPlayContainer::~CPodcastPlayContainer()
 	delete iDownloadProgressInfo;
 	delete iPlaybackTicker;
 	delete iCurrentCoverImage;
-}
+	}
 
 TInt CPodcastPlayContainer::PlayingUpdateStaticCallbackL(TAny* aPlayView)
 	{
@@ -507,7 +546,6 @@ void CPodcastPlayContainer::PlaybackStoppedL()
 void CPodcastPlayContainer::ShowDownloadUpdatedL(
 		TInt aPercentOfCurrentDownload, TInt aBytesOfCurrentDownload,
 		TInt aBytesTotal)
-
 {
 	if (iShowInfo != iPodcastModel.ShowEngine().ShowDownloading()) {
 		if(iBytesDownloaded != 0)
@@ -738,8 +776,11 @@ void CPodcastPlayContainer::UpdateViewL()
 {
 	if (iShowInfo != NULL)
 	{
+		UpdateControlVisibility();
+		
 		iShowInfoLabel->SetTextL(&iShowInfo->Description());
 		iShowInfoLabel->UpdateAllFieldsL();
+		
 		if (iShowInfoTitle != NULL)
 		{
 			iShowInfoTitle->SetTextL(iShowInfo->Title());
