@@ -13,12 +13,11 @@ const TUint KMaxDownloadErrors=3;
 CShowEngine::CShowEngine(CPodcastModel& aPodcastModel) : iPodcastModel(aPodcastModel)
 	{
 	iDownloadsSuspended = ETrue;
+	iDB = aPodcastModel.DB();
 	}
 
 CShowEngine::~CShowEngine()
 	{
-	iShows.ResetAndDestroy();
-	iShows.Close();
 	iSelectedShows.Close();
 	iShowsDownloading.Close();
 	iFs.Close();
@@ -72,7 +71,7 @@ void CShowEngine::ConstructL()
 	// if failure, try to load backup
 	if (err != KErrNone) {
 		DP("Loading show database backup");
-		iShows.Reset();
+		//iShows.Reset();
 		TRAP(err,LoadShowsL(ETrue));
 		if( err == KErrNone) {
 			// and if successfull, save the backup as the real thing
@@ -272,15 +271,14 @@ void CShowEngine::GetShowL(CShowInfo *info)
 
 TBool CShowEngine::AddShow(CShowInfo *item) 
 	{
-	const TInt count = iShows.Count();
-	for (TInt i=0; i<count; i++) 
-		{
-		if (iShows[i]->Url().Compare(item->Url()) == 0) 
-			{
-			return EFalse;
-			}
-		}
-	iShows.Append(item);
+	CShowInfo *showInfo = DBGetShowByUid(item->Uid());
+	
+	
+	if (showInfo == NULL) {
+		DBAddShow(item);
+	} else {
+		delete showInfo;
+	}
 
 	return ETrue;
 	}
@@ -359,6 +357,210 @@ CShowInfo* CShowEngine::GetShowByUidL(TUint aShowUid)
 		}
 
 	return NULL;
+	}
+
+CShowInfo* CShowEngine::DBGetShowByUid(TUint aUid)
+	{
+	CShowInfo *showInfo = NULL;
+	iSqlBuffer.Format(_L("select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows where uid=%u"), aUid);
+
+	sqlite3_stmt *st;
+	 
+	DP1("SQL statement length=%d", iSqlBuffer.Length());
+
+	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
+	
+	if (rc==SQLITE_OK) {
+		rc = sqlite3_step(st);
+		if (rc == SQLITE_ROW) {
+			TRAPD(err, showInfo = CShowInfo::NewL());
+			DBFillShowInfoFromStmt(st, showInfo);
+		}
+			
+		sqlite3_finalize(st);
+	}
+	
+	return showInfo;
+}
+
+void CShowEngine::DBGetAllShows(RShowInfoArray& aShowArray)
+	{
+	CShowInfo *showInfo = NULL;
+	iSqlBuffer.Format(_L("select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows"));
+
+	sqlite3_stmt *st;
+
+	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
+	
+	if (rc==SQLITE_OK) {
+		rc = sqlite3_step(st);
+		if (rc == SQLITE_ROW) {
+			TRAPD(err, showInfo = CShowInfo::NewL());
+			DBFillShowInfoFromStmt(st, showInfo);
+			aShowArray.Append(showInfo);
+		}
+			
+		sqlite3_finalize(st);
+	}
+	
+	}
+
+void CShowEngine::DBGetShowsByFeed(RShowInfoArray& aShowArray, TUint aFeedUid)
+	{
+	CShowInfo *showInfo = NULL;
+	iSqlBuffer.Format(_L("select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows where feeduid=%u"), aFeedUid);
+
+	sqlite3_stmt *st;
+	 
+	DP1("SQL statement length=%d", iSqlBuffer.Length());
+
+	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
+	
+	if (rc==SQLITE_OK) {
+		rc = sqlite3_step(st);
+		if (rc == SQLITE_ROW) {
+			TRAPD(err, showInfo = CShowInfo::NewL());
+			DBFillShowInfoFromStmt(st, showInfo);
+			aShowArray.Append(showInfo);
+		}
+			
+		sqlite3_finalize(st);
+	}
+	
+}
+
+
+void CShowEngine::DBGetDownloadedShows(RShowInfoArray& aShowArray)
+	{
+	CShowInfo *showInfo = NULL;
+	iSqlBuffer.Format(_L("select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows where downloadstate=%u or showtype=%u order by title"), EDownloaded, EAudioBook);
+
+	sqlite3_stmt *st;
+	 
+	DP1("SQL statement length=%d", iSqlBuffer.Length());
+
+	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
+	
+	if (rc==SQLITE_OK) {
+		rc = sqlite3_step(st);
+		if (rc == SQLITE_ROW) {
+			TRAPD(err, showInfo = CShowInfo::NewL());
+			DBFillShowInfoFromStmt(st, showInfo);
+			aShowArray.Append(showInfo);
+		}
+			
+		sqlite3_finalize(st);
+	}
+	
+}
+void CShowEngine::DBGetNewShows(RShowInfoArray& aShowArray)
+	{
+	CShowInfo *showInfo = NULL;
+	iSqlBuffer.Format(_L("select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows where playstate=%u"), ENeverPlayed);
+
+	sqlite3_stmt *st;
+	 
+	DP1("SQL statement length=%d", iSqlBuffer.Length());
+
+	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
+	
+	if (rc==SQLITE_OK) {
+		rc = sqlite3_step(st);
+		if (rc == SQLITE_ROW) {
+			TRAPD(err, showInfo = CShowInfo::NewL());
+			DBFillShowInfoFromStmt(st, showInfo);
+			aShowArray.Append(showInfo);
+		}
+			
+		sqlite3_finalize(st);
+	}
+	
+}
+
+
+void CShowEngine::DBFillShowInfoFromStmt(sqlite3_stmt *st, CShowInfo* showInfo)
+{
+	const void *urlz = sqlite3_column_text16(st, 0);
+	TPtrC16 url((const TUint16*)urlz);
+	showInfo->SetUrlL(url);
+
+	const void *titlez = sqlite3_column_text16(st, 1);
+	TPtrC16 title((const TUint16*)titlez);
+	showInfo->SetTitleL(title);
+
+	const void *descz = sqlite3_column_text16(st, 2);
+	TPtrC16 desc((const TUint16*)descz);
+	showInfo->SetDescriptionL(desc);
+
+	const void *filez = sqlite3_column_text16(st, 3);
+	TPtrC16 file((const TUint16*)filez);
+	showInfo->SetFileNameL(file);
+
+	sqlite3_int64 pos = sqlite3_column_int64(st, 4);
+	TTimeIntervalMicroSeconds position(pos);
+	showInfo->SetPosition(position);
+	
+	TUint playtime = sqlite3_column_int(st, 5);
+	showInfo->SetPlayTime(playtime);
+	
+	TUint playstate = sqlite3_column_int(st, 6);
+	showInfo->SetPlayState((TPlayState)playstate);
+	
+	TUint downloadstate = sqlite3_column_int(st, 7);
+	showInfo->SetDownloadState((TDownloadState)downloadstate);
+				
+	TUint feeduid = sqlite3_column_int(st, 8);
+	showInfo->SetFeedUid(feeduid);
+							
+	TUint uid = sqlite3_column_int(st, 9);
+	showInfo->SetUid(uid);
+
+	TUint showsize = sqlite3_column_int(st, 10);
+	showInfo->SetShowSize(showsize);
+
+	TUint trackno = sqlite3_column_int(st, 11);
+	showInfo->SetTrackNo((TShowType)trackno);
+	
+	sqlite3_int64 pubdate = sqlite3_column_int64(st, 12);
+	TTime timepubdate(pubdate);
+	showInfo->SetPubDate(timepubdate);
+	
+	TUint showtype = sqlite3_column_int(st, 13);
+	showInfo->SetShowType((TShowType)showtype);
+}
+
+TBool CShowEngine::DBAddShow(CShowInfo *aItem)
+	{
+	DP2("CShowEngine::DBAddShow, title=%S, URL=%S", &aItem->Title(), &aItem->Url());
+
+	iSqlBuffer.Format(_L("insert into shows (url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype)"
+			" values (\"%S\",\"%S\", \"%S\", \"%S\", \"%Lu\", \"%u\", \"%u\", \"%u\", \"%u\", \"%u\", \"%u\", \"%u\", \"%Lu\", \"%u\")"),
+			&aItem->Url(), &aItem->Title(), &aItem->Description(), &aItem->FileName(), aItem->Position().Int64(), aItem->PlayTime(),
+			aItem->PlayState(), aItem->DownloadState(), aItem->FeedUid(), aItem->Uid(), aItem->ShowSize(), aItem->TrackNo(), aItem->PubDate(), aItem->ShowType());
+
+	sqlite3_stmt *st;
+	 
+	DP1("SQL statement length=%d", iSqlBuffer.Length());
+	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
+	
+	if (rc==SQLITE_OK)
+		{
+		rc = sqlite3_step(st);
+
+		if (rc == SQLITE_DONE)
+			{
+			sqlite3_finalize(st);
+			return ETrue;
+			}
+		else {
+			sqlite3_finalize(st);
+		}
+	} else {
+		DP1("SQLite rc=%d", rc);
+	}
+
+	return EFalse;
+
 	}
 
 CShowInfo* CShowEngine::GetNextShowByTrackL(CShowInfo* aShowInfo)
@@ -534,12 +736,7 @@ void CShowEngine::SaveShowsL()
 void CShowEngine::SelectAllShows()
 	{
 	iSelectedShows.Reset();
-	
-	const TInt count = iShows.Count();
-	for (TInt i=0;i<count;i++)
-		{
-			iSelectedShows.Append(iShows[i]);
-		}
+	DBGetAllShows(iSelectedShows);
 	}
 
 TInt CShowEngine::CompareShowsByDate(const CShowInfo &a, const CShowInfo &b)
@@ -666,17 +863,8 @@ void CShowEngine::SelectShowsByFeed(TUint aFeedUid)
 	{
 	DP2("SelectShowsByFeed: %u, unplayed only=%d", aFeedUid, iPodcastModel.SettingsEngine().SelectUnplayedOnly());
 	iSelectedShows.Reset();
-	iGrossSelectionLength = 0;
-	for (TInt i=0;i<iShows.Count();i++)
-		{
-		if (iShows[i]->FeedUid() == aFeedUid)
-			{
-			iGrossSelectionLength++;
-			if (!iPodcastModel.SettingsEngine().SelectUnplayedOnly() || (iPodcastModel.SettingsEngine().SelectUnplayedOnly() && iShows[i]->PlayState() == ENeverPlayed) ) {
-				iSelectedShows.Append(iShows[i]);
-			}
-			}
-		}
+
+	DBGetShowsByFeed(iSelectedShows, aFeedUid);
 		
 	if (iSelectedShows.Count() == 0) {
 		return;
@@ -708,37 +896,15 @@ void CShowEngine::SelectShowsByFeed(TUint aFeedUid)
 void CShowEngine::SelectNewShows()
 	{
 	iSelectedShows.Reset();
-	for (TInt i=0;i<iShows.Count();i++)
-		{
-		if (iShows[i]->PlayState() == ENeverPlayed)
-			{
-			iSelectedShows.Append(iShows[i]);
-			}
-		}
-	
-	TLinearOrder<CShowInfo> sortOrder(CShowEngine::CompareShowsByDate);
-	iSelectedShows.Sort(sortOrder);
-
+	DBGetNewShows(iSelectedShows);
 	iGrossSelectionLength = iSelectedShows.Count();
 	}
 
 void CShowEngine::SelectShowsDownloaded()
 	{
 	iSelectedShows.Reset();
-	iGrossSelectionLength = 0;
-	for (TInt i=0;i<iShows.Count();i++)
-		{
-		if (iShows[i]->DownloadState() == EDownloaded && !(iShows[i]->ShowType() == EAudioBook))
-			{
-			iGrossSelectionLength++;
-			if (!iPodcastModel.SettingsEngine().SelectUnplayedOnly() || (iPodcastModel.SettingsEngine().SelectUnplayedOnly() && iShows[i]->PlayState() == ENeverPlayed) ) {
-				iSelectedShows.Append(iShows[i]);
-				}			
-			}
-		}
-	
-	TLinearOrder<CShowInfo> sortOrder(CShowEngine::CompareShowsByTitle);
-	iSelectedShows.Sort(sortOrder);
+	DBGetDownloadedShows(iSelectedShows);
+	iGrossSelectionLength = 0;	
 	}
 
 
@@ -772,16 +938,7 @@ void CShowEngine::SelectShowsDownloading()
 
 void CShowEngine::GetShowsForFeedL(RShowInfoArray& aShowArray, TUint aFeedUid)
 	{
-	TInt cnt = iShows.Count();
-	aShowArray.Reset();
-
-	for(TInt loop = 0;loop<cnt;loop++)
-		{
-		if(iShows[loop]->FeedUid() == aFeedUid)
-			{
-			aShowArray.AppendL(iShows[loop]);
-			}
-		}	
+	DBGetShowsByFeed(aShowArray, aFeedUid);
 	}
 
 TInt CShowEngine::GetNumDownloadingShowsL() const 
@@ -1014,3 +1171,4 @@ void CShowEngine::FileError(TUint /*aError*/)
 	//StopDownloads();
 	iDownloadErrors=KMaxDownloadErrors;
 	}
+

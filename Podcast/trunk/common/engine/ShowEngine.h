@@ -8,6 +8,7 @@
 #include "HttpClient.h"
 #include "ShowEngineObserver.h"
 #include "MetaDataReader.h"
+#include "sqlite3.h"
 
 class CShowEngine : public CBase, public MHttpClientObserver, public MMetaDataReaderObserver
 {
@@ -85,12 +86,26 @@ private:
 	static TBool CompareShowsByUid(const CShowInfo &a, const CShowInfo &b);
 	static TInt CompareShowsByTitle(const CShowInfo &a, const CShowInfo &b);
 	static TInt CompareShowsByTrackNo(const CShowInfo &a, const CShowInfo &b);
+	
+private:
+	// DB methods
+	CShowInfo* DBGetShowByUid(TUint aUid);
+	void DBFillShowInfoFromStmt(sqlite3_stmt *st, CShowInfo* showInfo);
+	TBool DBAddShow(CShowInfo *aItem);
+	void DBGetShowsByFeed(RShowInfoArray& aShowArray, TUint aFeedUid);
+	void DBGetAllShows(RShowInfoArray& aShowArray);
+	void DBGetNewShows(RShowInfoArray& aShowArray);
+	void DBGetDownloadedShows(RShowInfoArray& aShowArray);
+
+
+
+	
 private:
 	CHttpClient* iShowClient;
 
-	// the complete database of shows
+	// REMOVE THIS
 	RShowInfoArray iShows;
-
+	
 	// the current selection of shows
 	RShowInfoArray iSelectedShows;
 	
@@ -117,6 +132,9 @@ private:
     TUint iGrossSelectionLength;
     RApaLsSession iApaSession;
 	TBuf8<512> iRecogBuffer;
+	
+	sqlite3* iDB;
+    TBuf<4096> iSqlBuffer;
 };
 
 #endif /*SHOWENGINE_H_*/
