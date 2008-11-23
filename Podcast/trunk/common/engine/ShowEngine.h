@@ -40,7 +40,6 @@ public:
 
 	void CompleteL(CHttpClient* aClient, TBool aSuccessful);
 	TBool AddShow(CShowInfo *item);
-	void SaveShowsL();
 	void SaveShows();
 	void DeletePlayedShows();
 	void DeleteAllShowsByFeed(TUint aFeedUid,TBool aDeleteFiles=ETrue);
@@ -74,7 +73,6 @@ private:
 	void ConstructL();
 
 	void GetShowL(CShowInfo *info);
-	void LoadShowsL(TBool aUseBackup = EFalse);
 
 	void NotifyDownloadQueueUpdated();
 	void NotifyShowDownloadUpdated(TInt aPercentOfCurrentDownload, TInt aBytesOfCurrentDownload, TInt aBytesTotal);
@@ -92,6 +90,7 @@ private:
 	CShowInfo* DBGetShowByUid(TUint aUid);
 	void DBFillShowInfoFromStmt(sqlite3_stmt *st, CShowInfo* showInfo);
 	TBool DBAddShow(CShowInfo *aItem);
+	TBool DBUpdateShow(CShowInfo *aItem);
 	void DBGetShowsByFeed(RShowInfoArray& aShowArray, TUint aFeedUid);
 	void DBGetAllShows(RShowInfoArray& aShowArray);
 	void DBGetNewShows(RShowInfoArray& aShowArray);

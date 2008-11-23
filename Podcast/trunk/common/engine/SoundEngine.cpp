@@ -221,7 +221,7 @@ void CSoundEngine::Pause(TBool aOverrideState)
 		if (iPodcastModel.PlayingPodcast() != NULL) {
 			iPodcastModel.PlayingPodcast()->SetPosition(iMaxPos);
 			// really wasteful saving EVERYTHING every time
-			TRAP_IGNORE(iPodcastModel.ShowEngine().SaveShowsL());
+			//TRAP_IGNORE(iPodcastModel.ShowEngine().SaveShowsL());
 		}
 	}
 }

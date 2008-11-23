@@ -65,20 +65,6 @@ void CShowEngine::ConstructL()
 	iMetaDataReader->ConstructL();
 	iApaSession.Connect();
 	
-	// Try to load the database.
-	TRAPD(err, LoadShowsL());
-	
-	// if failure, try to load backup
-	if (err != KErrNone) {
-		DP("Loading show database backup");
-		//iShows.Reset();
-		TRAP(err,LoadShowsL(ETrue));
-		if( err == KErrNone) {
-			// and if successfull, save the backup as the real thing
-			SaveShowsL();
-		}
-	}
-
 	DownloadNextShow();
 	
 	// maybe this is a bad idea?
@@ -319,7 +305,7 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TBool aSuccessful)
 			iShowDownloading->SetDownloadState(EDownloaded);
 			iShowsDownloading.Remove(0);
 			
-			SaveShowsL();
+			//SaveShowsL();
 			NotifyShowDownloadUpdated(100,0,1);
 		}
 		else 
@@ -563,6 +549,42 @@ TBool CShowEngine::DBAddShow(CShowInfo *aItem)
 
 	}
 
+TBool CShowEngine::DBUpdateShow(CShowInfo *aItem)
+	{
+	DP2("CShowEngine::DBAddShow, title=%S, URL=%S", &aItem->Title(), &aItem->Url());
+
+	iSqlBuffer.Format(_L("update shows set url=\"%S\", title=\"%S\", description=\"%S\", filename=\"%S\", position=\"%Lu\"," \
+			"playtime=\"%u\", playstate=\"%u\", downloadstate=\"%u\", feeduid=\"%u\", showsize=\"%u\", trackno=\"%u\"," \
+			"pubdate=\"%Lu\", showtype=\"%u\" where uid=\"%u\""),
+			&aItem->Url(), &aItem->Title(), &aItem->Description(), &aItem->FileName(), aItem->Position().Int64(), aItem->PlayTime(),
+			aItem->PlayState(), aItem->DownloadState(), aItem->FeedUid(), aItem->ShowSize(), aItem->TrackNo(), aItem->PubDate(), 
+			aItem->ShowType(),aItem->Uid());
+
+	sqlite3_stmt *st;
+	 
+	DP1("SQL statement length=%d", iSqlBuffer.Length());
+	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
+	
+	if (rc==SQLITE_OK)
+		{
+		rc = sqlite3_step(st);
+
+		if (rc == SQLITE_DONE)
+			{
+			sqlite3_finalize(st);
+			return ETrue;
+			}
+		else {
+			sqlite3_finalize(st);
+		}
+	} else {
+		DP1("SQLite rc=%d", rc);
+	}
+
+	return EFalse;
+
+	}
+
 CShowInfo* CShowEngine::GetNextShowByTrackL(CShowInfo* aShowInfo)
 	{
 	TInt cnt = iShows.Count();
@@ -589,148 +611,13 @@ TBool CShowEngine::CompareShowsByUid(const CShowInfo &a, const CShowInfo &b)
 	return a.Uid() == b.Uid();
 }
 
-void CShowEngine::LoadShowsL(TBool aUseBackup)
-	{
-	DP("CShowEngine::LoadShowsL\tLoad shows from database file");
-	TFileName path;
-	TParse	filestorename;
-	
-	TBuf<100> privatePath;
-	iFs.PrivatePath(privatePath);
-	BaflUtils::EnsurePathExistsL(iFs, privatePath);
-	privatePath.Append(KShowDB);
-	
-	if (aUseBackup) {
-		privatePath.Append(_L(".old"));
-	}
-	
-	iFs.Parse(privatePath, filestorename);
-
-	if (!BaflUtils::FileExists(iFs, privatePath)) 
-		{
-		DP("The show database does not exist");	
-		User::Leave(KErrNotFound);
-		}
-	
-	CFileStore* store = NULL;
-	TRAPD(error, store = CDirectFileStore::OpenL(iFs,filestorename.FullName(),EFileRead));
-	CleanupStack::PushL(store);
-	
-	if (error != KErrNone) 
-		{
-		User::Leave(error);
-		}
-	
-	RStoreReadStream instream;
-	instream.OpenLC(*store, store->Root());
-
-	
-	TInt version = instream.ReadInt32L();
-	DP1("CShowEngine::LoadShowsL\tVersion of database file = %d", version);
-
-	
-	if (version != KShowInfoVersion) 
-		{
-		DP("CShowEngine::LoadShowsL\tWrong version, discarding");
-		User::Leave(KErrGeneral);
-		return;
-		}
-	
-	CShowInfo *readData;
-	//TUint lastUid = 0;
-	TInt count = instream.ReadInt32L();
-	DP1("CShowEngine::LoadShowsL\t%d Shows present in database", count);
-		
-	for (TInt i=0 ; i < count ; i++) 
-		{
-		readData = CShowInfo::NewL(version);
-		instream  >> *readData;
-		
-		TBool isAdded = AddShow(readData);
-		
-		if (isAdded == EFalse)
-			{
-			delete readData;
-			readData = NULL;
-			}
-		else
-			{
-			if ((readData->DownloadState() == EQueued) || (readData->DownloadState() == EDownloading)) 
-				{
-				readData->SetDownloadState(EQueued);
-				iShowsDownloading.Append(readData);
-				}
-			}
-		}
-	CleanupStack::PopAndDestroy(2); // instream and store
-	}
-
 void CShowEngine::SaveShows()
 	{
-	TRAP_IGNORE(SaveShowsL());
-	}
-
-void CShowEngine::SaveShowsL()
-	{
 	DP("void CShowEngine::SaveShows\tAttempt to store shows to db.");
-	
-	TParse	filestorename;
 
-	TBuf<100> privatePath;
-	iFs.PrivatePath(privatePath);
-	BaflUtils::EnsurePathExistsL(iFs, privatePath);
-	privatePath.Append(KShowDB);
-	
-	DP("Saving backup...");
-	TFileName backupFile;
-	backupFile.Copy(privatePath);
-	backupFile.Append(_L(".old"));
-	BaflUtils::CopyFile(iFs,privatePath,backupFile);
-
-	
-	//DP1("File: %S", &privatePath);
-	iFs.Parse(privatePath, filestorename);
-	CFileStore* store = CDirectFileStore::ReplaceLC(iFs, filestorename.FullName(), EFileWrite);
-	store->SetTypeL(KDirectFileStoreLayoutUid);
-	
-	RStoreWriteStream outstream;
-	TStreamId id = outstream.CreateLC(*store);
-	
-	outstream.WriteInt32L(KShowInfoVersion);
-	
-	const TInt numberOfShows = iShows.Count();
-	DP1("CShowEngine::SaveShows\tDatabase has %d shows entries", numberOfShows);
-	
-	//We need to purge the array for entries that should not be saved.
-	RShowInfoArray tempArray;
-	CleanupClosePushL(tempArray);
-	
-	// Move all non delete entries into the new array
-	for (TInt j = 0; j < numberOfShows ; j++)
-		{
-		if (!iShows[j]->Delete() && iPodcastModel.FeedEngine().GetFeedInfoByUid(iShows[j]->FeedUid()) != NULL)
-			{
-			tempArray.Append(iShows[j]);
-			}
-		}
-	
-	const TInt countTempArray = tempArray.Count();
-	DP1("CShowEngine::SaveShows\tDatabase has %d entries marked for delete", numberOfShows - countTempArray);	
-	DP1("CShowEngine::SaveShows\tSaving %d show entries", countTempArray);
-	
-	outstream.WriteInt32L(countTempArray);
-	for (TInt i=0 ; i < countTempArray ; i++) 
-		{
-		outstream  << *tempArray[i];
-		}
-	
-	CleanupStack::PopAndDestroy(&tempArray);
-	
-	outstream.CommitL();
-	store->SetRootL(id);
-	store->CommitL();
-	CleanupStack::PopAndDestroy(); // outstream
-	CleanupStack::PopAndDestroy(store);	
+	for (int i=0;i<iSelectedShows.Count();i++) {
+		DBUpdateShow(iSelectedShows[i]);
+	}
 	}
 
 void CShowEngine::SelectAllShows()

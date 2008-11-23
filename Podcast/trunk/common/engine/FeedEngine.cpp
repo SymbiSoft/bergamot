@@ -502,7 +502,7 @@ void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TBool aSuccessful)
 		time.HomeTime();
 		iActiveFeed->SetLastUpdated(time);
 
-		iPodcastModel.ShowEngine().SaveShowsL();
+		//iPodcastModel.ShowEngine().SaveShowsL();
 
 		// if the feed has specified a image url. download it if we dont already have it
 		if ( iActiveFeed->ImageUrl().Length() > 0 && ((iActiveFeed->ImageFileName().Length() == 0) || (!BaflUtils::FileExists(iFs,iActiveFeed->ImageFileName()) )))
@@ -731,7 +731,7 @@ void CFeedEngine::AddBookChaptersL(CFeedInfo& aFeedInfo, CDesCArrayFlat* aFileNa
 	}
 
 	// Save the shows	
-	iPodcastModel.ShowEngine().SaveShowsL();
+	//iPodcastModel.ShowEngine().SaveShows();
 }
 
 
