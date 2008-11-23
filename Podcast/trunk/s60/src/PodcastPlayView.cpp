@@ -182,6 +182,7 @@ void CPodcastPlayContainer::UpdateControlVisibility()
 		{
 		iCoverImageCtrl->MakeVisible(EFalse);
 		iShowInfoLabel->MakeVisible(ETrue);
+		iShowInfoLabel->UpdateAllFieldsL();
 		}break;
 	}
 }
@@ -438,7 +439,7 @@ void CPodcastPlayContainer::ConstructL( const TRect& aRect)
 	iShowInfoTitle->SetMopParent(this);
 	iShowInfoLabel = new (ELeave) CEikEdwin;//CEikLabel;
 	iShowInfoLabel->SetContainerWindowL(*this);
-	iShowInfoLabel->ConstructL(EEikEdwinNoHorizScrolling|EEikEdwinDisplayOnly|EEikEdwinNoAutoSelection);
+	iShowInfoLabel->ConstructL(EEikEdwinNoHorizScrolling|EEikEdwinReadOnly|EEikEdwinNoAutoSelection);
 	iShowInfoLabel->CreateScrollBarFrameL();
 	iShowInfoLabel->ScrollBarFrame()->SetScrollBarVisibilityL(CEikScrollBarFrame::EOff, CEikScrollBarFrame::EOn);
 	iShowInfoLabel->SetSize(iShowInfoLabel->MinimumSize());
@@ -778,9 +779,9 @@ void CPodcastPlayContainer::UpdateViewL()
 	{
 		UpdateControlVisibility();
 		
-		iShowInfoLabel->SetTextL(&iShowInfo->Description());
-		iShowInfoLabel->UpdateAllFieldsL();
-		
+		iShowInfoLabel->SetTextL(&iShowInfo->Description());		
+		iShowInfoLabel->ForceScrollBarUpdateL();
+		iShowInfoLabel->HandleTextChangedL();
 		if (iShowInfoTitle != NULL)
 		{
 			iShowInfoTitle->SetTextL(iShowInfo->Title());
