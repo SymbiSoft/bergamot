@@ -103,6 +103,7 @@ private:
 	TBool DBAddFeed(CFeedInfo *item);
 	CFeedInfo* DBGetFeedInfoByUid(TUint aFeedUid);	
 	TUint DBGetFeedCount();
+	TBool DBUpdateFeed(CFeedInfo *aItem);
 		
 private:
 	CHttpClient* iFeedClient;

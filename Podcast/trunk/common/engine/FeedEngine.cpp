@@ -30,7 +30,7 @@ void CFeedEngine::ConstructL()
 		DP("Loading feeds from DB");
 		LoadFeedsL();
     } else {
-    	DP("No shows in DB, loading default feeds");
+    	DP("No feeds in DB, loading default feeds");
     	 TFileName defaultFile = iPodcastModel.SettingsEngine().DefaultFeedsFileName();
 
 	    if (BaflUtils::FileExists(iFs, defaultFile)) {
@@ -326,8 +326,10 @@ TBool CFeedEngine::DBAddFeed(CFeedInfo *aItem)
 	{
 	DP2("CFeedEngine::DBAddFeed, title=%S, URL=%S", &aItem->Title(), &aItem->Url());
 	
-	if (GetFeedInfoByUid(aItem->Uid()) != NULL) {
+	CFeedInfo *info;
+	if ((info = DBGetFeedInfoByUid(aItem->Uid())) != NULL) {
 		DP("Feed already exists!");
+		delete info;
 		return EFalse;
 	}
 
@@ -420,6 +422,40 @@ TBool CFeedEngine::DBRemoveFeed(TUint aUid)
 		}
 	}
 	return EFalse;	
+	}
+
+TBool CFeedEngine::DBUpdateFeed(CFeedInfo *aItem)
+	{
+	DP2("CShowEngine::DBUpdateFeed, title=%S, URL=%S", &aItem->Title(), &aItem->Url());
+
+	iSqlBuffer.Format(_L("update feeds set url=\"%S\", title=\"%S\", description=\"%S\", imageurl=\"%S\", imagefile=\"%S\"," \
+			"link=\"%S\", built=\"%Lu\", lastupdated=\"%Lu\", feedtype=\"%u\", customtitle=\"%u\" where uid=\"%u\""),
+			&aItem->Url(), &aItem->Title(), &aItem->Description(), &aItem->ImageUrl(), &aItem->ImageFileName(), &aItem->Link(),
+			aItem->BuildDate().Int64(), aItem->LastUpdated().Int64(), aItem->IsBookFeed(), aItem->CustomTitle(), aItem->Uid());
+
+	sqlite3_stmt *st;
+	 
+	DP1("SQL statement length=%d", iSqlBuffer.Length());
+	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
+	
+	if (rc==SQLITE_OK)
+		{
+		rc = sqlite3_step(st);
+
+		if (rc == SQLITE_DONE)
+			{
+			sqlite3_finalize(st);
+			return ETrue;
+			}
+		else {
+			sqlite3_finalize(st);
+		}
+	} else {
+		DP1("SQLite rc=%d", rc);
+	}
+
+	return EFalse;
+	
 	}
 
 void CFeedEngine::ParsingComplete(CFeedInfo *item)
@@ -537,6 +573,7 @@ void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TBool aSuccessful)
 
 void CFeedEngine::NotifyFeedUpdateComplete()
 	{
+	DBUpdateFeed(iActiveFeed);
 	for (TInt i=0;i<iObservers.Count();i++) 
 		{
 		TRAP_IGNORE(iObservers[i]->FeedUpdateCompleteL(iActiveFeed->Uid()));

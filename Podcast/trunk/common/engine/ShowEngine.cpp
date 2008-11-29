@@ -551,7 +551,7 @@ TBool CShowEngine::DBAddShow(CShowInfo *aItem)
 
 TBool CShowEngine::DBUpdateShow(CShowInfo *aItem)
 	{
-	DP2("CShowEngine::DBAddShow, title=%S, URL=%S", &aItem->Title(), &aItem->Url());
+	DP2("CShowEngine::DBUpdateShow, title=%S, URL=%S", &aItem->Title(), &aItem->Url());
 
 	iSqlBuffer.Format(_L("update shows set url=\"%S\", title=\"%S\", description=\"%S\", filename=\"%S\", position=\"%Lu\"," \
 			"playtime=\"%u\", playstate=\"%u\", downloadstate=\"%u\", feeduid=\"%u\", showsize=\"%u\", trackno=\"%u\"," \

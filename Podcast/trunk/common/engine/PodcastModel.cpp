@@ -6,6 +6,8 @@
 #include "ShowEngine.h"
 
 const TInt KDefaultGranu = 5;
+_LIT(KDBFileName, "escarpod.sqlite");
+
 #define EQikCmdZoomLevel1							0x0800
 /** @publishedAll @released */
 #define EQikCmdZoomLevel2							0x0801
@@ -58,9 +60,17 @@ void CPodcastModel::ConstructL()
 	UpdateIAPListL();
 	
 	// connect to DB
-    int rc = rc = sqlite3_open("c:\\escarpod.sqlite", &iDB);
+	RFs fs;
+	fs.Connect();
+	TFileName dbFileName;
+	fs.PrivatePath(dbFileName);
+	dbFileName.Append(KDBFileName);
+	DP1("DB is at %S", &dbFileName);
+	TBuf8<KMaxFileName> filename8;
+	filename8.Copy(dbFileName);
+    int rc = rc = sqlite3_open((const char*) filename8.PtrZ(), &iDB);
 	if( rc != SQLITE_OK){
-		DP("Error loading feed DB");
+		DP("Error loading DB");
 		User::Leave(KErrNotFound);
 	}
 

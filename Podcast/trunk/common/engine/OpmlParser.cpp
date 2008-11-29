@@ -146,32 +146,32 @@ void COpmlParser::OnEndElementL(const RTagInfo& aElement, TInt /*aErrorCode*/)
 
 void COpmlParser::OnContentL(const TDesC8& /*aBytes*/, TInt /*aErrorCode*/)
 	{
-	DP("OnContentL()");
+	//DP("OnContentL()");
 	}
 
 void COpmlParser::OnStartPrefixMappingL(const RString& /*aPrefix*/, const RString& /*aUri*/, TInt /*aErrorCode*/)
 	{
-	DP("OnStartPrefixMappingL()");
+	//DP("OnStartPrefixMappingL()");
 	}
 
 void COpmlParser::OnEndPrefixMappingL(const RString& /*aPrefix*/, TInt /*aErrorCode*/)
 	{
-	DP("OnEndPrefixMappingL()");
+	//DP("OnEndPrefixMappingL()");
 	}
 
 void COpmlParser::OnIgnorableWhiteSpaceL(const TDesC8& /*aBytes*/, TInt /*aErrorCode*/)
 	{
-	DP("OnIgnorableWhiteSpaceL()");
+	//DP("OnIgnorableWhiteSpaceL()");
 	}
 
 void COpmlParser::OnSkippedEntityL(const RString& /*aName*/, TInt /*aErrorCode*/)
 	{
-	DP("OnSkippedEntityL()");
+	//DP("OnSkippedEntityL()");
 	}
 
 void COpmlParser::OnProcessingInstructionL(const TDesC8& /*aTarget*/, const TDesC8& /*aData*/, TInt /*aErrorCode*/)
 	{
-	DP("OnProcessingInstructionL()");
+	//DP("OnProcessingInstructionL()");
 	}
 
 void COpmlParser::OnError(TInt aErrorCode)
@@ -181,6 +181,6 @@ void COpmlParser::OnError(TInt aErrorCode)
 
 TAny* COpmlParser::GetExtendedInterface(const TInt32 /*aUid*/)
 	{
-	DP("GetExtendedInterface()");
+	//DP("GetExtendedInterface()");
 	return NULL;
 	}

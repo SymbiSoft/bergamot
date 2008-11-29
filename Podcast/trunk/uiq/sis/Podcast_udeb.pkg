@@ -16,6 +16,7 @@
 "$(EPOCROOT)/epoc32/data/z/private/10003A3F/apps/PodcastClient_reg.rsc"-"!:\private\10003a3f\import\apps\PodcastClient_reg.rsc"
 "../../common/config/config.cfg"-"c:\private\A00046ae\config.cfg"
 "../../common/config/defaultfeeds.xml"-"c:\private\A00046ae\defaultfeeds.xml"
+"../../common/config/escarpod.sqlite"-"c:\private\A00046ae\escarpod.sqlite"
 
 {
 "$(EPOCROOT)/epoc32/data/z/resource/apps/PodcastClient.R01"
