@@ -18,6 +18,7 @@ CShowEngine::CShowEngine(CPodcastModel& aPodcastModel) : iPodcastModel(aPodcastM
 
 CShowEngine::~CShowEngine()
 	{
+	iSelectedShows.ResetAndDestroy();
 	iSelectedShows.Close();
 	iShowsDownloading.Close();
 	iFs.Close();
@@ -372,6 +373,10 @@ void CShowEngine::DBGetAllShows(RShowInfoArray& aShowArray)
 	DP("CShowEngine::DBGetAllShows");
 	CShowInfo *showInfo = NULL;
 	iSqlBuffer.Format(_L("select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows"));
+	
+	if (iPodcastModel.SettingsEngine().SelectUnplayedOnly()) {
+		iSqlBuffer.Append(_L(" where playstate=0"));
+	}
 	//DP1("SQL: %S", &iSqlBuffer.Left(KSqlDPLen));
 
 	sqlite3_stmt *st;
@@ -393,11 +398,15 @@ void CShowEngine::DBGetAllShows(RShowInfoArray& aShowArray)
 
 void CShowEngine::DBGetShowsByFeed(RShowInfoArray& aShowArray, TUint aFeedUid)
 	{
-	DP("CShowEngine::DBGetShowsByFeed");
+	DP1("CShowEngine::DBGetShowsByFeed, feedUid=%d", aFeedUid);
 	CShowInfo *showInfo = NULL;
 	iSqlBuffer.Format(_L("select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows where feeduid=%u"), aFeedUid);
 	//DP1("SQL: %S", &iSqlBuffer.Left(KSqlDPLen));
 
+	if (iPodcastModel.SettingsEngine().SelectUnplayedOnly()) {
+		iSqlBuffer.Append(_L(" and playstate=0"));
+	}
+	
 	sqlite3_stmt *st;
 	 
 	//DP1("SQL statement length=%d", iSqlBuffer.Length());
@@ -423,8 +432,12 @@ void CShowEngine::DBGetDownloadedShows(RShowInfoArray& aShowArray)
 	{
 	DP("CShowEngine::DBGetDownloadedShows");
 	CShowInfo *showInfo = NULL;
-	iSqlBuffer.Format(_L("select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows where downloadstate=%u or showtype=%u order by title"), EDownloaded, EAudioBook);
+	iSqlBuffer.Format(_L("select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows where downloadstate=%u or showtype=%u"), EDownloaded, EAudioBook);
 
+	if (iPodcastModel.SettingsEngine().SelectUnplayedOnly()) {
+		iSqlBuffer.Append(_L(" and playstate=0"));
+	}
+	
 	sqlite3_stmt *st;
 	 
 	//DP1("SQL: %S", &iSqlBuffer.Left(KSqlDPLen));
@@ -448,7 +461,7 @@ void CShowEngine::DBGetNewShows(RShowInfoArray& aShowArray)
 	DP("CShowEngine::DBGetNewShows");
 	CShowInfo *showInfo = NULL;
 	iSqlBuffer.Format(_L("select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows where playstate=%u"), ENeverPlayed);
-
+	
 	sqlite3_stmt *st;
 	 
 	//DP1("SQL: %S", &iSqlBuffer.Left(KSqlDPLen));
@@ -690,7 +703,8 @@ void CShowEngine::UpdateSelectedShows()
 
 void CShowEngine::SelectAllShows()
 	{
-	iSelectedShows.Reset();
+	DP("CShowEngine::SelectAllShows");
+	ResetSelection();
 	DBGetAllShows(iSelectedShows);
 	}
 
@@ -816,7 +830,7 @@ TUint CShowEngine::GetGrossSelectionLength()
 void CShowEngine::SelectShowsByFeed(TUint aFeedUid)
 	{
 	DP2("SelectShowsByFeed: %u, unplayed only=%d", aFeedUid, iPodcastModel.SettingsEngine().SelectUnplayedOnly());
-	iSelectedShows.Reset();
+	ResetSelection();
 
 	DBGetShowsByFeed(iSelectedShows, aFeedUid);
 		
@@ -985,6 +999,12 @@ void CShowEngine::SetSelectionPlayed()
 	UpdateSelectedShows();
 	}
 
+void CShowEngine::SetShowPlayState(CShowInfo* aShowInfo, TPlayState aPlayState)
+	{
+	aShowInfo->SetPlayState(aPlayState);
+	DBUpdateShow(aShowInfo);
+	}
+
 
 void CShowEngine::ListDirL(TFileName &folder) {
 	CDirScan *dirScan = CDirScan::NewLC(iFs);
@@ -1087,7 +1107,7 @@ void CShowEngine::CheckFilesL()
 
 void CShowEngine::ReadMetaData(CShowInfo *aShowInfo)
 	{
-	DP1("Read %S", &(aShowInfo->Title()));
+	//DP1("Read %S", &(aShowInfo->Title()));
 	DBUpdateShow(aShowInfo);
 	}
 

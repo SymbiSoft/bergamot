@@ -29,6 +29,7 @@ public:
 	CShowInfo* ShowDownloading();
 	CShowInfo* GetShowByUidL(TUint aShowUid);
 	CShowInfo* GetNextShowByTrackL(CShowInfo* aShowInfo);
+	void SetShowPlayState(CShowInfo* aShowInfo, TPlayState aPlayState);
 	
 	// show selection methods
 	void SelectAllShows();

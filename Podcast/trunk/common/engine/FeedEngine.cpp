@@ -28,7 +28,9 @@ void CFeedEngine::ConstructL()
 	
     if (DBGetFeedCount() > 0) {
 		DP("Loading feeds from DB");
+		
 		LoadFeedsL();
+
     } else {
     	DP("No feeds in DB, loading default feeds");
     	 TFileName defaultFile = iPodcastModel.SettingsEngine().DefaultFeedsFileName();
