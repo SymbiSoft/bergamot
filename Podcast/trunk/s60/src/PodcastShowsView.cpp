@@ -834,15 +834,7 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 			iDisableCatchupMode = EFalse;
 			if (iPodcastModel.ActiveFeedInfo()->LastUpdated().Int64() == 0)
 				{
-				TBuf<200> message;
-				TBuf<100> title;
-				CEikonEnv::Static()->ReadResourceL(message, R_CATCHUP_FEED);
-				CEikonEnv::Static()->ReadResourceL(title, R_CATCHUP_FEED_TITLE);
-				if (CEikonEnv::Static()->QueryWinL(title, message))
-					{
-					iPodcastModel.FeedEngine().SetCatchupMode(ETrue);
-					iDisableCatchupMode = ETrue;
-					}
+				iPodcastModel.FeedEngine().SetCatchupMode(ETrue);
 				}
 
 			if (iPodcastModel.ActiveFeedInfo()->Url().Length()>0)

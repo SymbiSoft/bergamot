@@ -102,7 +102,8 @@ private:
 	void DBGetDownloadedShows(RShowInfoArray& aShowArray);
 	TBool DBDeleteAllShowsByFeed(TUint aFeedUid);
 	TBool DBDeleteShow(TUint aUid);
-	
+	void DBGetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed);
+
 private:
 	CHttpClient* iShowClient;
 	

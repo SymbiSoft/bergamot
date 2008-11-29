@@ -715,13 +715,7 @@ void CPodcastClientFeedView::HandleCommandL(CQikCommand& aCommand)
 			}
 			
 			if (hasNewFeed) {
-					TBuf<200> message;
-					TBuf<100> title;
-					iEikonEnv->ReadResourceL(message, R_CATCHUP_FEED);
-					iEikonEnv->ReadResourceL(title, R_CATCHUP_FEED_TITLE);
-					if (iEikonEnv->QueryWinL(title, message)) {
-						iPodcastModel.FeedEngine().SetCatchupMode(ETrue);
-					}
+				iPodcastModel.FeedEngine().SetCatchupMode(ETrue);
 			}
 
 			iUpdatingAllRunning = ETrue;

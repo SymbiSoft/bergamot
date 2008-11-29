@@ -132,8 +132,8 @@ private:
 	// observers that will receive callbacks
     RArray<MFeedEngineObserver*> iObservers;
     
-    // flag to set all new shows played, and not to auto download 
     TBool iCatchupMode;
+    TUint iCatchupCounter;
     
     sqlite3* iDB;
     

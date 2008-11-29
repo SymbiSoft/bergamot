@@ -181,34 +181,7 @@ void CShowEngine::DownloadInfo(CHttpClient* aHttpClient, TInt aTotalBytes)
 
 void CShowEngine::GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed, TBool aIsBookFeed)
 	{
-	TInt showsCount = 0;
-	TInt unplayedCount = 0;
-	
-	RShowInfoArray array;
-	DBGetShowsByFeed(array, aFeedUid);
-
-	showsCount = array.Count();
-	for (TInt i=0;i<array.Count();i++) 
-		{
-		if (array[i]->PlayState() == ENeverPlayed) 
-			{
-			unplayedCount++;
-			}
-
-		if(aIsBookFeed)
-			{
-			aNumShows = showsCount;
-			aNumUnplayed = unplayedCount;
-			}
-		else
-			{
-			TInt max = iPodcastModel.SettingsEngine().MaxListItems();
-			aNumShows = showsCount < max ? showsCount : max;
-			aNumUnplayed = unplayedCount < max ? unplayedCount : max;
-			}
-		}
-	array.ResetAndDestroy();
-	
+	DBGetStatsByFeed(aFeedUid, aNumShows, aNumUnplayed);
 	}
 
 void CShowEngine::GetStatsForDownloaded(TUint &aNumShows, TUint &aNumUnplayed )
@@ -425,6 +398,43 @@ void CShowEngine::DBGetShowsByFeed(RShowInfoArray& aShowArray, TUint aFeedUid)
 		sqlite3_finalize(st);
 	}
 	
+}
+
+void CShowEngine::DBGetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed)
+	{
+	DP1("CShowEngine::DBGetStatsByFeed, feedUid=%d", aFeedUid);
+	CShowInfo *showInfo = NULL;
+	iSqlBuffer.Format(_L("select count(*) from shows where feeduid=%u"), aFeedUid);
+
+	sqlite3_stmt *st;
+	 
+	//DP1("SQL statement length=%d", iSqlBuffer.Length());
+
+	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
+	
+	if( rc==SQLITE_OK ){
+	  	rc = sqlite3_step(st);
+	  	
+	  	if (rc == SQLITE_ROW) {
+	  		aNumShows = sqlite3_column_int(st, 0);
+	  	}
+	}
+		  
+	sqlite3_finalize(st);
+
+	iSqlBuffer.Format(_L("select count(*) from shows where feeduid=%u and playstate=0"), aFeedUid);
+
+	rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
+		
+	if( rc==SQLITE_OK ){
+	  	rc = sqlite3_step(st);
+	  	
+	  	if (rc == SQLITE_ROW) {
+	  		aNumUnplayed = sqlite3_column_int(st, 0);
+	  	}
+	}
+		  
+	sqlite3_finalize(st);
 }
 
 

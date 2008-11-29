@@ -165,7 +165,7 @@ void CFeedEngine::UpdateNextFeedL()
 TBool CFeedEngine::UpdateFeedL(TUint aFeedUid)
 	{
 	iActiveFeed = GetFeedInfoByUid(aFeedUid);
-
+	iCatchupCounter = 0;
 	TFileName filePath;
 	filePath.Copy (iPodcastModel.SettingsEngine().PrivatePath ());
 	TBuf<20> feedUidNum;
@@ -206,7 +206,10 @@ TBool CFeedEngine::NewShow(CShowInfo *item)
 	//DP1("Description: %S", &description);
 
 	if (iCatchupMode) {
-		item->SetPlayState(EPlayed);
+		// in catchup mode, we let one show be unplayed
+		if (++iCatchupCounter > 1) {
+			item->SetPlayState(EPlayed);
+		}
 	}
 	
 	TBool isShowAdded = iPodcastModel.ShowEngine().AddShow(item);
