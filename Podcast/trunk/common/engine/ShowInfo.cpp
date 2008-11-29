@@ -161,15 +161,6 @@ const TDesC& CShowInfo::FileName() const
 	{
 	return iFileName ? *iFileName : KNullDesC();
 	}
-void CShowInfo::SetDelete()
-	{
-	iDelete = ETrue;
-	}
-
-TBool CShowInfo::Delete()
-	{
-	return iDelete;
-	}
 
 void CShowInfo::SetFileNameL(const TDesC &aFileName)
 	{
@@ -216,7 +207,6 @@ CShowInfo::CShowInfo(CShowInfo *aInfo)
 	iShowSize = aInfo->ShowSize();
 	iTrackNo = aInfo->TrackNo();
 	iPubDate = aInfo->PubDate();
-	iDelete = aInfo->Delete();
 	iShowType = aInfo->ShowType();
 	}
 

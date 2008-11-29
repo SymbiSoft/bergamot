@@ -36,17 +36,21 @@ public:
 	void SelectShowsDownloaded();
 	void SelectNewShows();
 	void SelectShowsDownloading();
+	
+	// operations on selected shows
+	RShowInfoArray& GetSelectedShows();
+	void SetSelectionPlayed();
+	void ResetSelection();
+	void UpdateSelectedShows();
+	
 	void GetShowsForFeedL(RShowInfoArray& aShowArray, TUint aFeedUid);
 
 	void CompleteL(CHttpClient* aClient, TBool aSuccessful);
 	TBool AddShow(CShowInfo *item);
-	void SaveShows();
 	void DeletePlayedShows();
 	void DeleteAllShowsByFeed(TUint aFeedUid,TBool aDeleteFiles=ETrue);
 	void DeleteShow(TUint aShowUid, TBool aRemoveFile=ETrue);
 	
-	RShowInfoArray& GetSelectedShows();
-	void SetSelectionPlayed();
 	void CheckFilesL();
 	void GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed, TBool aIsBookFeed );
 	void GetStatsForDownloaded(TUint &aNumShows, TUint &aNumUnplayed );
@@ -96,14 +100,10 @@ private:
 	void DBGetNewShows(RShowInfoArray& aShowArray);
 	void DBGetDownloadedShows(RShowInfoArray& aShowArray);
 	TBool DBDeleteAllShowsByFeed(TUint aFeedUid);
-	TBool CShowEngine::DBDeleteShow(TUint aUid);
-
+	TBool DBDeleteShow(TUint aUid);
 	
 private:
 	CHttpClient* iShowClient;
-
-	// REMOVE THIS
-	//RShowInfoArray iShows;
 	
 	// the current selection of shows
 	RShowInfoArray iSelectedShows;
@@ -128,7 +128,6 @@ private:
     
     CMetaDataReader* iMetaDataReader;
     
-    TUint iGrossSelectionLength;
     RApaLsSession iApaSession;
 	TBuf8<512> iRecogBuffer;
 	

@@ -106,16 +106,16 @@ void CShowEngine::RemoveAllDownloads() {
 	
 	for (int i=0;i<iShowsDownloading.Count();i++) {
 		iShowsDownloading[i]->SetDownloadState(ENotDownloaded);
+		DBUpdateShow(&iShowDownloading[i]);
 	}
 	
 	iShowsDownloading.Reset();
-	SaveShows();
 }
 
 TBool CShowEngine::RemoveDownload(TUint aUid) 
 	{
-	//DP("CShowEngine::RemoveDownload\t Trying to remove download");
-	//DP1("Title: %S", &iPodcastModel.ShowEngine().GetShowByUidL(aUid)->Title());
+	DP("CShowEngine::RemoveDownload\t Trying to remove download");
+	
 	TBool retVal = EFalse;
 	// if trying to remove the present download, we first stop it
 	if (!iDownloadsSuspended && iShowDownloading != NULL && iShowDownloading->Uid() == aUid) {
@@ -131,13 +131,13 @@ TBool CShowEngine::RemoveDownload(TUint aUid)
 				//DP1("Removing by title: %S", &iShowsDownloading[i]->Title());
 				iShowsDownloading[i]->SetDownloadState(ENotDownloaded);
 				BaflUtils::DeleteFile(iFs, iShowsDownloading[i]->FileName());
+				DBUpdateShow(iShowsDownloading[i]);
 				iShowsDownloading.Remove(i);
 	
 				DP("CShowEngine::RemoveDownload\tDownload removed.");
 				
 				NotifyShowDownloadUpdated(-1,-1,-1);
 				NotifyDownloadQueueUpdated();
-				SaveShows();
 				DownloadNextShow();
 				retVal = ETrue;	
 				break;
@@ -679,7 +679,7 @@ TBool CShowEngine::CompareShowsByUid(const CShowInfo &a, const CShowInfo &b)
 	return a.Uid() == b.Uid();
 }
 
-void CShowEngine::SaveShows()
+void CShowEngine::UpdateSelectedShows()
 	{
 	DP("void CShowEngine::SaveShows\tAttempt to store shows to db.");
 
@@ -760,7 +760,7 @@ void CShowEngine::DeletePlayedShows()
 			iSelectedShows[i]->SetDownloadState(ENotDownloaded);
 			}
 		}
-	SaveShows();
+	UpdateSelectedShows();
 	}
 
 void CShowEngine::DeleteAllShowsByFeed(TUint aFeedUid, TBool aDeleteFiles)
@@ -781,7 +781,6 @@ void CShowEngine::DeleteAllShowsByFeed(TUint aFeedUid, TBool aDeleteFiles)
 		}
 	array.ResetAndDestroy();
 	DBDeleteAllShowsByFeed(aFeedUid);
-	//SaveShows();
 	}
 
 void CShowEngine::DeleteShow(TUint aShowUid, TBool aRemoveFile)
@@ -802,8 +801,16 @@ void CShowEngine::DeleteShow(TUint aShowUid, TBool aRemoveFile)
 
 TUint CShowEngine::GetGrossSelectionLength()
 	{
-	int max = iPodcastModel.SettingsEngine().MaxListItems();	
-	return iGrossSelectionLength < max ? iGrossSelectionLength : max;;
+	if (iPodcastModel.SettingsEngine().SelectUnplayedOnly()) {
+		TUint count=0;
+		for (int i=0;i<iSelectedShows.Count();i++) {
+			if (iSelectedShows[i]->PlayState() == ENeverPlayed) {
+				count++;
+			}
+		}
+	} else {
+		return iSelectedShows.Count();
+	}
 	}
 
 void CShowEngine::SelectShowsByFeed(TUint aFeedUid)
@@ -842,50 +849,34 @@ void CShowEngine::SelectShowsByFeed(TUint aFeedUid)
 
 void CShowEngine::SelectNewShows()
 	{
-	iSelectedShows.Reset();
+	DP("CShowEngine::SelectNewShows");
+	ResetSelection();
 	DBGetNewShows(iSelectedShows);
-	iGrossSelectionLength = iSelectedShows.Count();
 	}
 
 void CShowEngine::SelectShowsDownloaded()
 	{
 	DP("CShowEngine::SelectShowsDownloaded");
-	iSelectedShows.Reset();
+	ResetSelection();
 	DBGetDownloadedShows(iSelectedShows);
-	iGrossSelectionLength = 0;	
 	}
 
 
 void CShowEngine::SelectShowsDownloading()
 	{
-	iSelectedShows.Reset();
+	DP("CShowEngine::SelectShowsDownloading");
+	ResetSelection();
 	
-	/*for (TInt i=0;i<iShows.Count();i++)
-		{
-		if (iShows[i]->DownloadState() == EDownloading)
-				{
-				iSelectedShows.Append(iShows[i]);
-				}
-		}
-
-	for (TInt i=0;i<iShows.Count();i++)
-		{
-		if (iShows[i]->DownloadState() == EQueued)
-				{
-				iSelectedShows.Append(iShows[i]);
-				}
-		}
-*/
 	const TInt count = iShowsDownloading.Count();
 	for (TInt i=0 ; i < count ;i++) 
 		{
 		iSelectedShows.Append(iShowsDownloading[i]);
 		}
-	iGrossSelectionLength = iSelectedShows.Count();
 	}
 
 void CShowEngine::GetShowsForFeedL(RShowInfoArray& aShowArray, TUint aFeedUid)
 	{
+	DP("CShowEngine::GetShowsForFeedL");
 	DBGetShowsByFeed(aShowArray, aFeedUid);
 	}
 
@@ -907,7 +898,7 @@ void CShowEngine::AddDownload(CShowInfo *info)
 	
 	info->SetDownloadState(EQueued);
 	iShowsDownloading.Append(info);
-	SaveShows();
+	DBUpdateShow(info);
 	DownloadNextShow();
 	}
 
@@ -991,7 +982,7 @@ void CShowEngine::SetSelectionPlayed()
 		//DP1("Setting %d played", iSelectedShows[i]->Uid());
 		iSelectedShows[i]->SetPlayState(EPlayed);
 		}
-	SaveShows();
+	UpdateSelectedShows();
 	}
 
 
@@ -1038,10 +1029,9 @@ void CShowEngine::ListDirL(TFileName &folder) {
 				continue;
 			}
 
-/*
 			TBool exists = EFalse;
-			for (TInt i=0;i<iShows.Count();i++) {
-				if (iShows[i]->FileName().Compare(pathName) == 0) {
+			for (TInt i=0;i<iSelectedShows.Count();i++) {
+				if (iSelectedShows[i]->FileName().Compare(pathName) == 0) {
 					DP1("Already listed %S", &pathName);
 					exists = ETrue;
 					break;
@@ -1065,10 +1055,10 @@ void CShowEngine::ListDirL(TFileName &folder) {
 			iFs.Entry(pathName, entry);
 			info->SetShowSize(entry.iSize);
 			info->SetPubDate(entry.iModified);
-			info->SetDelete();  			// so that we do not save the entry in the DB.
 			
 			iMetaDataReader->SubmitShowL(info);
-			iShows.Append(info);*/
+			iSelectedShows.Append(info);
+			DBAddShow(info);
 		}
 	}
 	delete dirPtr;
@@ -1077,33 +1067,32 @@ void CShowEngine::ListDirL(TFileName &folder) {
 
 void CShowEngine::CheckFilesL()
 	{
-	// check to see if any files were removed
-	/*for (TInt i=0;i<iShows.Count();i++) {
-		if(iShows[i]->DownloadState() == EDownloaded) {
-			if(!BaflUtils::FileExists(iFs, iShows[i]->FileName())) {
-				DP1("%S was removed, delisting", &iShows[i]->FileName());
-				if (iShows[i]->FeedUid() == 0) {
-					iShows[i]->SetDelete();
-				} 
-				iShows[i]->SetDownloadState(ENotDownloaded);
-			}
+	// check to see if any downloaded files were removed
+	SelectShowsDownloaded();
+	for (TInt i=0;i<iSelectedShows.Count();i++) {
+		if(!BaflUtils::FileExists(iFs, iSelectedShows[i]->FileName())) {
+			DP1("%S was removed, delisting", &iSelectedShows[i]->FileName()); 
+			iSelectedShows[i]->SetDownloadState(ENotDownloaded);
 		}
 	}
 
 	// check if any new files were added
-	ListDirL(iPodcastModel.SettingsEngine().BaseDir());*/	
-	SaveShows();
+	ListDirL(iPodcastModel.SettingsEngine().BaseDir());	
+
+	UpdateSelectedShows();
+	ResetSelection();
+
 	NotifyShowListUpdated();
 }
 
 void CShowEngine::ReadMetaData(CShowInfo *aShowInfo)
 	{
 	DP1("Read %S", &(aShowInfo->Title()));
+	DBUpdateShow(aShowInfo);
 	}
 
 void CShowEngine::ReadMetaDataComplete()
 	{
-	SaveShows();
 	NotifyShowListUpdated();
 	MetaDataReader().SetIgnoreTrackNo(EFalse);
 	}
@@ -1120,3 +1109,7 @@ void CShowEngine::FileError(TUint /*aError*/)
 	iDownloadErrors=KMaxDownloadErrors;
 	}
 
+void CShowEngine::ResetSelection()
+	{
+	iSelectedShows.ResetAndDestroy();
+	}

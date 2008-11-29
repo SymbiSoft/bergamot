@@ -69,9 +69,6 @@ public:
 	
 	const TDesC &FileName() const;
 	void SetFileNameL(const TDesC &aFileName);
-
-	void SetDelete();
-	TBool Delete();
 	
 	void SetShowType(TShowType aShowType);
 	TShowType ShowType();
