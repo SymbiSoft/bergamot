@@ -183,40 +183,48 @@ void CShowEngine::GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUn
 	TInt showsCount = 0;
 	TInt unplayedCount = 0;
 	
-	for (TInt i=0;i<iShows.Count();i++) {
-		if (iShows[i]->FeedUid() == aFeedUid)
-			{
-			showsCount++;
-			if (iShows[i]->PlayState() == ENeverPlayed) {
-				unplayedCount++;
-			}
-			}
-		}
+	RShowInfoArray array;
+	DBGetShowsByFeed(array, aFeedUid);
 
-	if(aIsBookFeed)
+	showsCount = array.Count();
+	for (TInt i=0;i<array.Count();i++) 
 		{
-		aNumShows = showsCount;
-		aNumUnplayed = unplayedCount;
+		if (array[i]->PlayState() == ENeverPlayed) 
+			{
+			unplayedCount++;
+			}
+
+		if(aIsBookFeed)
+			{
+			aNumShows = showsCount;
+			aNumUnplayed = unplayedCount;
+			}
+		else
+			{
+			TInt max = iPodcastModel.SettingsEngine().MaxListItems();
+			aNumShows = showsCount < max ? showsCount : max;
+			aNumUnplayed = unplayedCount < max ? unplayedCount : max;
+			}
 		}
-	else
-		{
-		TInt max = iPodcastModel.SettingsEngine().MaxListItems();
-		aNumShows = showsCount < max ? showsCount : max;
-		aNumUnplayed = unplayedCount < max ? unplayedCount : max;
-		}
+	array.ResetAndDestroy();
 	
 	}
 
 void CShowEngine::GetStatsForDownloaded(TUint &aNumShows, TUint &aNumUnplayed )
 	{
+	DP("CShowEngine::GetStatsForDownloaded");
 	TInt showsCount = 0;
 	TInt unplayedCount = 0;
 	
-	for (TInt i=0;i<iShows.Count();i++) {
-		if (iShows[i]->DownloadState() == EDownloaded && !(iShows[i]->ShowType() == EAudioBook))
+	RShowInfoArray array;
+	DBGetDownloadedShows(array);
+	
+	
+	for (TInt i=0;i<array.Count();i++) {
+		if (!(array[i]->ShowType() == EAudioBook))
 			{
 			showsCount++;
-			if (iShows[i]->PlayState() == ENeverPlayed) {
+			if (array[i]->PlayState() == ENeverPlayed) {
 				unplayedCount++;
 			}
 			}
@@ -224,7 +232,7 @@ void CShowEngine::GetStatsForDownloaded(TUint &aNumShows, TUint &aNumUnplayed )
 	
 	aNumShows = showsCount;
 	aNumUnplayed = unplayedCount;
-	
+	array.ResetAndDestroy();
 	}
 
 void CShowEngine::GetShowL(CShowInfo *info)
@@ -331,28 +339,18 @@ CShowInfo* CShowEngine::ShowDownloading()
 
 CShowInfo* CShowEngine::GetShowByUidL(TUint aShowUid)
 	{
-	CShowInfo* infoToFind = CShowInfo::NewL();
-	CleanupStack::PushL(infoToFind);
-	infoToFind->SetUid(aShowUid);
-	TIdentityRelation<CShowInfo> comparison(CompareShowsByUid);
-	TInt index = iShows.Find(infoToFind, comparison);
-	CleanupStack::PopAndDestroy(infoToFind);
-	if(index != KErrNotFound)
-		{
-		return iShows[index];
-		}
-
-	return NULL;
+	return DBGetShowByUid(aShowUid);
 	}
 
 CShowInfo* CShowEngine::DBGetShowByUid(TUint aUid)
 	{
+	DP("CShowEngine::DBGetShowByUid");
 	CShowInfo *showInfo = NULL;
 	iSqlBuffer.Format(_L("select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows where uid=%u"), aUid);
 
 	sqlite3_stmt *st;
 	 
-	DP1("SQL statement length=%d", iSqlBuffer.Length());
+	//DP1("SQL: %S", &iSqlBuffer.Left(KSqlDPLen));
 
 	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
 	
@@ -371,8 +369,10 @@ CShowInfo* CShowEngine::DBGetShowByUid(TUint aUid)
 
 void CShowEngine::DBGetAllShows(RShowInfoArray& aShowArray)
 	{
+	DP("CShowEngine::DBGetAllShows");
 	CShowInfo *showInfo = NULL;
 	iSqlBuffer.Format(_L("select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows"));
+	//DP1("SQL: %S", &iSqlBuffer.Left(KSqlDPLen));
 
 	sqlite3_stmt *st;
 
@@ -393,21 +393,24 @@ void CShowEngine::DBGetAllShows(RShowInfoArray& aShowArray)
 
 void CShowEngine::DBGetShowsByFeed(RShowInfoArray& aShowArray, TUint aFeedUid)
 	{
+	DP("CShowEngine::DBGetShowsByFeed");
 	CShowInfo *showInfo = NULL;
 	iSqlBuffer.Format(_L("select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows where feeduid=%u"), aFeedUid);
+	//DP1("SQL: %S", &iSqlBuffer.Left(KSqlDPLen));
 
 	sqlite3_stmt *st;
 	 
-	DP1("SQL statement length=%d", iSqlBuffer.Length());
+	//DP1("SQL statement length=%d", iSqlBuffer.Length());
 
 	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
 	
 	if (rc==SQLITE_OK) {
 		rc = sqlite3_step(st);
-		if (rc == SQLITE_ROW) {
+		while (rc == SQLITE_ROW) {
 			TRAPD(err, showInfo = CShowInfo::NewL());
 			DBFillShowInfoFromStmt(st, showInfo);
 			aShowArray.Append(showInfo);
+			rc = sqlite3_step(st);
 		}
 			
 		sqlite3_finalize(st);
@@ -418,12 +421,13 @@ void CShowEngine::DBGetShowsByFeed(RShowInfoArray& aShowArray, TUint aFeedUid)
 
 void CShowEngine::DBGetDownloadedShows(RShowInfoArray& aShowArray)
 	{
+	DP("CShowEngine::DBGetDownloadedShows");
 	CShowInfo *showInfo = NULL;
 	iSqlBuffer.Format(_L("select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows where downloadstate=%u or showtype=%u order by title"), EDownloaded, EAudioBook);
 
 	sqlite3_stmt *st;
 	 
-	DP1("SQL statement length=%d", iSqlBuffer.Length());
+	//DP1("SQL: %S", &iSqlBuffer.Left(KSqlDPLen));
 
 	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
 	
@@ -441,12 +445,13 @@ void CShowEngine::DBGetDownloadedShows(RShowInfoArray& aShowArray)
 }
 void CShowEngine::DBGetNewShows(RShowInfoArray& aShowArray)
 	{
+	DP("CShowEngine::DBGetNewShows");
 	CShowInfo *showInfo = NULL;
 	iSqlBuffer.Format(_L("select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows where playstate=%u"), ENeverPlayed);
 
 	sqlite3_stmt *st;
 	 
-	DP1("SQL statement length=%d", iSqlBuffer.Length());
+	//DP1("SQL: %S", &iSqlBuffer.Left(KSqlDPLen));
 
 	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
 	
@@ -519,20 +524,21 @@ TBool CShowEngine::DBAddShow(CShowInfo *aItem)
 	{
 	DP2("CShowEngine::DBAddShow, title=%S, URL=%S", &aItem->Title(), &aItem->Url());
 
+	DP("Before Format");
 	iSqlBuffer.Format(_L("insert into shows (url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype)"
 			" values (\"%S\",\"%S\", \"%S\", \"%S\", \"%Lu\", \"%u\", \"%u\", \"%u\", \"%u\", \"%u\", \"%u\", \"%u\", \"%Lu\", \"%u\")"),
 			&aItem->Url(), &aItem->Title(), &aItem->Description(), &aItem->FileName(), aItem->Position().Int64(), aItem->PlayTime(),
-			aItem->PlayState(), aItem->DownloadState(), aItem->FeedUid(), aItem->Uid(), aItem->ShowSize(), aItem->TrackNo(), aItem->PubDate(), aItem->ShowType());
-
+			aItem->PlayState(), aItem->DownloadState(), aItem->FeedUid(), aItem->Uid(), aItem->ShowSize(), aItem->TrackNo(), aItem->PubDate().Int64(), aItem->ShowType());
+	DP("After Format");
 	sqlite3_stmt *st;
 	 
-	DP1("SQL statement length=%d", iSqlBuffer.Length());
+	//DP1("SQL: %S", &iSqlBuffer.Left(KSqlDPLen));
 	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
-	
+	DP("After prepare");
 	if (rc==SQLITE_OK)
 		{
 		rc = sqlite3_step(st);
-
+		DP("After step");
 		if (rc == SQLITE_DONE)
 			{
 			sqlite3_finalize(st);
@@ -562,7 +568,68 @@ TBool CShowEngine::DBUpdateShow(CShowInfo *aItem)
 
 	sqlite3_stmt *st;
 	 
-	DP1("SQL statement length=%d", iSqlBuffer.Length());
+	//DP1("SQL: %S", &iSqlBuffer.Left(KSqlDPLen));
+	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
+	
+	if (rc==SQLITE_OK)
+		{
+		rc = sqlite3_step(st);
+
+		if (rc == SQLITE_DONE)
+			{
+			sqlite3_finalize(st);
+			return ETrue;
+			}
+		else {
+			sqlite3_finalize(st);
+		}
+	} else {
+		DP1("SQLite rc=%d", rc);
+	}
+
+	return EFalse;
+
+	}
+
+TBool CShowEngine::DBDeleteShow(TUint aUid)
+	{
+	DP("CShowEngine::DBDeleteShow");
+
+	iSqlBuffer.Format(_L("delete from shows where uid=%u"), aUid);
+
+	sqlite3_stmt *st;
+	 
+	//DP1("SQL: %S", &iSqlBuffer.Left(KSqlDPLen));
+	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
+	
+	if (rc==SQLITE_OK)
+		{
+		rc = sqlite3_step(st);
+
+		if (rc == SQLITE_DONE)
+			{
+			sqlite3_finalize(st);
+			return ETrue;
+			}
+		else {
+			sqlite3_finalize(st);
+		}
+	} else {
+		DP1("SQLite rc=%d", rc);
+	}
+
+	return EFalse;
+	}
+
+TBool CShowEngine::DBDeleteAllShowsByFeed(TUint aFeedUid)
+	{
+	DP("CShowEngine::DBDeleteAllShowsByFeed");
+
+	iSqlBuffer.Format(_L("delete from shows where feeduid=%u"), aFeedUid);
+
+	sqlite3_stmt *st;
+	 
+	//DP1("SQL: %S", &iSqlBuffer.Left(KSqlDPLen));
 	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
 	
 	if (rc==SQLITE_OK)
@@ -587,17 +654,18 @@ TBool CShowEngine::DBUpdateShow(CShowInfo *aItem)
 
 CShowInfo* CShowEngine::GetNextShowByTrackL(CShowInfo* aShowInfo)
 	{
-	TInt cnt = iShows.Count();
 	CShowInfo* nextShow = NULL;
+	RShowInfoArray array;
+	DBGetShowsByFeed(array, aShowInfo->FeedUid());
 	TUint diff = KMaxTInt;
-	for(TInt loop = 0; loop<cnt; loop++)
+	for(TInt loop = 0; loop<array.Count(); loop++)
 		{
-			if(aShowInfo->FeedUid() == iShows[loop]->FeedUid() && aShowInfo->TrackNo() < iShows[loop]->TrackNo())
+			if(aShowInfo->TrackNo() < array[loop]->TrackNo())
 				{
-				if((iShows[loop]->TrackNo() - aShowInfo->TrackNo()) < diff)
+				if((array[loop]->TrackNo() - aShowInfo->TrackNo()) < diff)
 					{
-					diff = iShows[loop]->TrackNo() - aShowInfo->TrackNo();
-					nextShow = iShows[loop];
+					diff = array[loop]->TrackNo() - aShowInfo->TrackNo();
+					nextShow = array[loop];
 					}
 				}
 		}
@@ -697,47 +765,39 @@ void CShowEngine::DeletePlayedShows()
 
 void CShowEngine::DeleteAllShowsByFeed(TUint aFeedUid, TBool aDeleteFiles)
 	{
-	const TInt count = iShows.Count();
+	RShowInfoArray array;
+	DBGetShowsByFeed(array, aFeedUid);
+	
+	const TInt count = array.Count();
 	
 	for (TInt i=count-1 ; i >= 0; i--)
 		{
-		if (iShows[i]->FeedUid() == aFeedUid)
+		if (array[i]->FileName().Length() > 0) 
 			{
-			if (iShows[i]->FileName().Length() > 0) 
-				{
-				if (aDeleteFiles) {
-					BaflUtils::DeleteFile(iFs, iShows[i]->FileName());
-				}
-				iShows[i]->SetDownloadState(ENotDownloaded);
-				}
-			CShowInfo* show = iShows[i];
-			iShows.Remove(i);
-			delete show;
+			if (aDeleteFiles) {
+				BaflUtils::DeleteFile(iFs, array[i]->FileName());
+			}
 			}
 		}
-	SaveShows();
+	array.ResetAndDestroy();
+	DBDeleteAllShowsByFeed(aFeedUid);
+	//SaveShows();
 	}
 
 void CShowEngine::DeleteShow(TUint aShowUid, TBool aRemoveFile)
 	{
-	const TInt count = iShows.Count();
 	
-	for (TInt i=count-1 ; i >= 0; i--)
-		{
-		if (iShows[i]->Uid() == aShowUid)
-			{
-			if (iShows[i]->FileName().Length() > 0 && aRemoveFile) 
+	CShowInfo *info = DBGetShowByUid(aShowUid);
+	
+	if (info != NULL) {
+		if (info->FileName().Length() > 0 && aRemoveFile) 
 				{
-				BaflUtils::DeleteFile(iFs, iShows[i]->FileName());			
+				BaflUtils::DeleteFile(iFs, info->FileName());			
 				}
-
-			iShows[i]->SetDownloadState(ENotDownloaded);
-			iShows[i]->SetPlayState(EPlayed);
-			break;
-			}
 		}
 	
-	SaveShows();
+	DBDeleteShow(aShowUid);
+	delete info;
 	}
 
 TUint CShowEngine::GetGrossSelectionLength()
@@ -767,7 +827,7 @@ void CShowEngine::SelectShowsByFeed(TUint aFeedUid)
 		iSelectedShows.Sort(sortOrder);
 	
 		// now purge if more than limit
-		TInt count = iSelectedShows.Count();
+		/*TInt count = iSelectedShows.Count();
 		while (count > iPodcastModel.SettingsEngine().MaxListItems()) {
 			DP("Too many items, Removing");
 			//delete iSelectedShows[count-1];
@@ -776,7 +836,7 @@ void CShowEngine::SelectShowsByFeed(TUint aFeedUid)
 			iSelectedShows.Remove(count-1);
 			iGrossSelectionLength--;
 			count = iSelectedShows.Count();
-		}
+		}*/
 	}
 }
 
@@ -789,6 +849,7 @@ void CShowEngine::SelectNewShows()
 
 void CShowEngine::SelectShowsDownloaded()
 	{
+	DP("CShowEngine::SelectShowsDownloaded");
 	iSelectedShows.Reset();
 	DBGetDownloadedShows(iSelectedShows);
 	iGrossSelectionLength = 0;	
@@ -977,7 +1038,7 @@ void CShowEngine::ListDirL(TFileName &folder) {
 				continue;
 			}
 
-
+/*
 			TBool exists = EFalse;
 			for (TInt i=0;i<iShows.Count();i++) {
 				if (iShows[i]->FileName().Compare(pathName) == 0) {
@@ -1007,7 +1068,7 @@ void CShowEngine::ListDirL(TFileName &folder) {
 			info->SetDelete();  			// so that we do not save the entry in the DB.
 			
 			iMetaDataReader->SubmitShowL(info);
-			iShows.Append(info);
+			iShows.Append(info);*/
 		}
 	}
 	delete dirPtr;
@@ -1017,7 +1078,7 @@ void CShowEngine::ListDirL(TFileName &folder) {
 void CShowEngine::CheckFilesL()
 	{
 	// check to see if any files were removed
-	for (TInt i=0;i<iShows.Count();i++) {
+	/*for (TInt i=0;i<iShows.Count();i++) {
 		if(iShows[i]->DownloadState() == EDownloaded) {
 			if(!BaflUtils::FileExists(iFs, iShows[i]->FileName())) {
 				DP1("%S was removed, delisting", &iShows[i]->FileName());
@@ -1030,7 +1091,7 @@ void CShowEngine::CheckFilesL()
 	}
 
 	// check if any new files were added
-	ListDirL(iPodcastModel.SettingsEngine().BaseDir());	
+	ListDirL(iPodcastModel.SettingsEngine().BaseDir());*/	
 	SaveShows();
 	NotifyShowListUpdated();
 }

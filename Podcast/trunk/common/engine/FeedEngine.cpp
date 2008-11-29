@@ -340,7 +340,7 @@ TBool CFeedEngine::DBAddFeed(CFeedInfo *aItem)
 
 	sqlite3_stmt *st;
 	 
-	DP1("SQL statement length=%d", iSqlBuffer.Length());
+	//DP1("SQL statement length=%d", iSqlBuffer.Length());
 	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
 	
 	if (rc==SQLITE_OK)
@@ -399,6 +399,7 @@ void CFeedEngine::RemoveFeed(TUint aUid)
 
 TBool CFeedEngine::DBRemoveFeed(TUint aUid)
 	{
+	DP("CFeedEngine::DBRemoveFeed");
 	iSqlBuffer.Format(_L("delete from feeds where where uid=%u"), aUid);
 
 	sqlite3_stmt *st;
@@ -435,7 +436,7 @@ TBool CFeedEngine::DBUpdateFeed(CFeedInfo *aItem)
 
 	sqlite3_stmt *st;
 	 
-	DP1("SQL statement length=%d", iSqlBuffer.Length());
+	//DP1("SQL statement length=%d", iSqlBuffer.Length());
 	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
 	
 	if (rc==SQLITE_OK)
@@ -464,7 +465,7 @@ void CFeedEngine::ParsingComplete(CFeedInfo *item)
 	title.Copy(item->Title());
 	CleanHtml(title);
 	TRAP_IGNORE(item->SetTitleL(title));
-
+	DBUpdateFeed(item);
 	for (int i=0;i<iObservers.Count();i++) {
 		iObservers[i]->FeedInfoUpdated(item);
 	}
@@ -1001,12 +1002,13 @@ void CFeedEngine::DBLoadFeeds()
 
 CFeedInfo* CFeedEngine::DBGetFeedInfoByUid(TUint aFeedUid)
 	{
+	DP("CFeedEngine::DBGetFeedInfoByUid");
 	CFeedInfo *feedInfo = NULL;
 	iSqlBuffer.Format(_L("select url, title, description, imageurl, imagefile, link, built, lastupdated, uid, feedtype, customtitle from feeds where uid=%u"), aFeedUid);
 
 	sqlite3_stmt *st;
 	 
-	DP1("SQL statement length=%d", iSqlBuffer.Length());
+	//DP1("SQL statement length=%d", iSqlBuffer.Length());
 
 	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
 	

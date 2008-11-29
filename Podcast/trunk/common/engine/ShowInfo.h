@@ -31,8 +31,7 @@ class CShowInfo: public CBase {
 public:
 	static CShowInfo* NewL(TUint aVersion=KShowInfoVersion);
 	~CShowInfo();
-	void ExternalizeL(RWriteStream& aStream) const;
-	void InternalizeL(RReadStream& aStream);
+	CShowInfo(CShowInfo *aInfo); // copy constructor
 
 public:
 	const TDesC& Title() const;
@@ -80,7 +79,7 @@ public:
 	void SetTrackNo(TUint aTrackNo);
 	TUint TrackNo() const;
 private:
-	CShowInfo(TUint aVersion);
+	CShowInfo();
 	void ConstructL();
 
 private:
@@ -99,7 +98,6 @@ private:
 	TTime iPubDate;
 	TBool iDelete;
 	TShowType iShowType;
-	TUint iVersion;
 };
 
 typedef RPointerArray<CShowInfo> RShowInfoArray;

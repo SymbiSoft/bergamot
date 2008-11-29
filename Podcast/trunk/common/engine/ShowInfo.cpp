@@ -3,7 +3,7 @@
 
 CShowInfo* CShowInfo::NewL(TUint aVersion)
 	{
-	CShowInfo* self = new (ELeave) CShowInfo(aVersion);
+	CShowInfo* self = new (ELeave) CShowInfo();
 	CleanupStack::PushL(self);
 	self->ConstructL();
 	CleanupStack::Pop(self);
@@ -17,7 +17,7 @@ void CShowInfo::ConstructL()
 	iShowType = EAudioPodcast;
 	}
 
-CShowInfo::CShowInfo(TUint aVersion) : iVersion(aVersion)
+CShowInfo::CShowInfo()
 	{
 	iTrackNo = KMaxTUint; 
 	}
@@ -28,134 +28,6 @@ CShowInfo::~CShowInfo()
 	delete iUrl;
 	delete iDescription;
 	delete iFileName;
-	}
-
-void CShowInfo::ExternalizeL(RWriteStream& aStream) const 
-	{
-	if (iTitle == NULL) 
-		{
-		aStream.WriteInt32L(0);
-		} 
-	else 
-		{
-		aStream.WriteInt32L(iTitle->Length());
-		aStream.WriteL(*iTitle);
-		}
-	
-	if (iUrl == NULL) 
-		{
-		aStream.WriteInt32L(0);
-		}
-	else 
-		{
-		aStream.WriteInt32L(iUrl->Length());
-		aStream.WriteL(*iUrl);
-		}
-
-	if (iDescription == NULL) 
-		{
-		aStream.WriteInt32L(0);
-		} 
-	else 
-		{
-		aStream.WriteInt32L(iDescription->Length());
-		aStream.WriteL(*iDescription);
-		}
-	
-	if (iFileName == NULL) 
-		{
-		aStream.WriteInt32L(0);
-		} 
-	else 
-		{
-		aStream.WriteInt32L(iFileName->Length());
-		aStream.WriteL(*iFileName);
-		}
-	
-	aStream.WriteInt32L(iFeedUid);
-	aStream.WriteInt32L(iDownloadState);
-	aStream.WriteInt32L(iPlayState == ENeverPlayed ? ENeverPlayed : EPlayed);
-	aStream.WriteInt32L(iUid);
-	aStream.WriteInt32L(iShowSize);
-	aStream.WriteInt32L(I64LOW(iPosition.Int64()));
-	aStream.WriteInt32L(I64HIGH(iPosition.Int64()));
-	aStream.WriteInt32L(I64LOW(iPubDate.Int64()));
-	aStream.WriteInt32L(I64HIGH(iPubDate.Int64()));
-	aStream.WriteUint32L(iPlayTime);
-	aStream.WriteUint32L(iShowType);
-	aStream.WriteUint32L(iTrackNo);
-	}
-
-
-void CShowInfo::InternalizeL(RReadStream& aStream) 
-	{
-	const TUint KBufSize = 2048;
-	TBuf<KBufSize> buffer;
-	
-	TInt len = aStream.ReadInt32L();
-	if (len > KBufSize) {
-		User::Leave(KErrOverflow);
-	}
-	
-	if (len > 0) 
-		{
-		aStream.ReadL(buffer, len);
-		SetTitleL(buffer);
-		}
-	
-	len = aStream.ReadInt32L();
-	if (len > KBufSize) {
-		User::Leave(KErrOverflow);
-	}
-
-	if (len > 0) 
-		{
-		aStream.ReadL(buffer, len);
-		SetUrlL(buffer);
-		}
-	
-	len = aStream.ReadInt32L();
-	if (len > KBufSize) {
-		User::Leave(KErrOverflow);
-	}
-
-	if (len > 0) 
-		{
-		aStream.ReadL(buffer, len);
-		SetDescriptionL(buffer);
-		}
-
-	len = aStream.ReadInt32L();
-	if (len > KBufSize) {
-		User::Leave(KErrOverflow);
-	}
-
-	if (len > 0) 
-		{
-		aStream.ReadL(buffer, len);
-		SetFileNameL(buffer);
-		}
-	
-	iFeedUid = aStream.ReadInt32L();
-	iDownloadState = (TDownloadState) aStream.ReadInt32L();
-	iPlayState = (TPlayState) aStream.ReadInt32L();
-	iUid = aStream.ReadInt32L();
-	iShowSize = aStream.ReadInt32L();
-
-	TInt low = aStream.ReadInt32L();
-	TInt high = aStream.ReadInt32L();
-	iPosition = MAKE_TINT64(high, low);
-
-	low = aStream.ReadInt32L();
-	high = aStream.ReadInt32L();
-	iPubDate = MAKE_TINT64(high, low);
-	
-	if (iVersion < 8) {
-		return;
-	}
-	TRAP_IGNORE(iPlayTime = aStream.ReadUint32L());
-	TRAP_IGNORE(iShowType = (TShowType) aStream.ReadUint32L());
-	TRAP_IGNORE(iTrackNo = aStream.ReadUint32L());
 	}
 
 const TDesC& CShowInfo::Title() const
@@ -329,5 +201,22 @@ TUint CShowInfo::TrackNo() const
 	return iTrackNo;
 	}
 
-
+CShowInfo::CShowInfo(CShowInfo *aInfo)
+	{
+	iTitle = aInfo->Title().Alloc();
+	iUrl = aInfo->Url().Alloc();
+	iDescription = aInfo->Description().Alloc();
+	iFileName = aInfo->FileName().Alloc();
+	iPosition = aInfo->Position();
+	iPlayTime = aInfo->PlayTime();
+	iPlayState = aInfo->PlayState();
+	iDownloadState = aInfo->DownloadState();
+	iFeedUid = aInfo->FeedUid();
+	iUid = aInfo->Uid();
+	iShowSize = aInfo->ShowSize();
+	iTrackNo = aInfo->TrackNo();
+	iPubDate = aInfo->PubDate();
+	iDelete = aInfo->Delete();
+	iShowType = aInfo->ShowType();
+	}
 

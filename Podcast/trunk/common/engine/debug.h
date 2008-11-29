@@ -28,6 +28,7 @@
 #ifndef ___DBG_DP_H
 #define ___DBG_DP_H
 
+const TUint KSqlDPLen = 100;
 // This file may be included butThese defines may be individual
 
 //#if defined (_DEBUG) && (__WINS__)

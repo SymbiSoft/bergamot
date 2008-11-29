@@ -95,15 +95,15 @@ private:
 	void DBGetAllShows(RShowInfoArray& aShowArray);
 	void DBGetNewShows(RShowInfoArray& aShowArray);
 	void DBGetDownloadedShows(RShowInfoArray& aShowArray);
-
-
+	TBool DBDeleteAllShowsByFeed(TUint aFeedUid);
+	TBool CShowEngine::DBDeleteShow(TUint aUid);
 
 	
 private:
 	CHttpClient* iShowClient;
 
 	// REMOVE THIS
-	RShowInfoArray iShows;
+	//RShowInfoArray iShows;
 	
 	// the current selection of shows
 	RShowInfoArray iSelectedShows;
