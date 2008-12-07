@@ -906,8 +906,43 @@ TInt CFeedEngine::CompareFeedsByTitle(const CFeedInfo &a, const CFeedInfo &b)
 		return a.Title().CompareF(b.Title());
 	}
 
+void CFeedEngine::GetDownloadedStats(TUint &aNumShows, TUint &aNumUnplayed)
+	{
+	DP("CFeedEngine::GetDownloadedStats");
+	iSqlBuffer.Format(_L("select count(*) from shows where downloadstate=%u"), EDownloaded);
+
+	sqlite3_stmt *st;
+	 
+	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
+	
+	if( rc==SQLITE_OK ){
+	  	rc = sqlite3_step(st);
+	  	
+	  	if (rc == SQLITE_ROW) {
+	  		aNumShows = sqlite3_column_int(st, 0);
+	  	}
+	}
+		  
+	sqlite3_finalize(st);
+
+	iSqlBuffer.Format(_L("select count(*) from shows where downloadstate=%u and playstate=%u"), EDownloaded, EPlayed);
+
+	rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
+		
+	if( rc==SQLITE_OK ){
+	  	rc = sqlite3_step(st);
+	  	
+	  	if (rc == SQLITE_ROW) {
+	  		aNumUnplayed = sqlite3_column_int(st, 0);
+	  	}
+	}
+		  
+	sqlite3_finalize(st);
+	}
+
 void CFeedEngine::GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed, TBool aIsBookFeed)
 	{
+	DP1("CFeedEngine::GetStatsByFeed, aFeedUid=%u", aFeedUid);
 	DBGetStatsByFeed(aFeedUid, aNumShows, aNumUnplayed);
 	}
 

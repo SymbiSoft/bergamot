@@ -580,7 +580,15 @@ void CPodcastClientShowsView::UpdateShowItemDataL(CShowInfo* aShowInfo, MQikList
 void CPodcastClientShowsView::UpdateShowItemL(CShowInfo* aShowInfo, TInt aSizeDownloaded)
 {
 	// First find the item
-	TInt index = iPodcastModel.ActiveShowList().Find(aShowInfo);
+
+	RShowInfoArray &array = iPodcastModel.ActiveShowList();
+	TInt index = KErrNotFound;
+
+	for (int i=0;i<array.Count();i++) {
+		if (array[i]->Uid() == aShowInfo->Uid()) {
+			index = i;
+		}
+	}
 	MQikListBoxModel& model(iListbox->Model());
 
 	if(index != KErrNotFound && index < model.Count())
@@ -941,8 +949,11 @@ void CPodcastClientShowsView::UpdateCommandsL()
 		}
 		HBufC* titleFormat=  iEikonEnv->AllocReadResourceLC(R_PODCAST_SHOWS_TITLE_FORMAT);
 		HBufC* titleBuffer = HBufC::NewL(titleFormat->Length()+8);
-		
-		iPodcastModel.FeedEngine().GetStatsByFeed(iPodcastModel.ActiveFeedInfo()->Uid(), numShows, numUnplayed, EFalse);
+		if (iPodcastModel.ActiveFeedInfo()) {
+			iPodcastModel.FeedEngine().GetStatsByFeed(iPodcastModel.ActiveFeedInfo()->Uid(), numShows, numUnplayed, EFalse);
+		} else {
+			iPodcastModel.FeedEngine().GetDownloadedStats(numShows, numUnplayed);		
+		}
 		titleBuffer->Des().Format(*titleFormat, numUnplayed, numShows);
 		CleanupStack::PopAndDestroy(titleFormat);
 		CleanupStack::PushL(titleBuffer);

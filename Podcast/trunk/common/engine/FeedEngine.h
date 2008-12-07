@@ -42,6 +42,7 @@ public:
 	const RFeedInfoArray& GetSortedFeeds() const;
 	CFeedInfo* GetFeedInfoByUid(TUint aFeedUid);	
 	void GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed, TBool aIsBookFeed );
+	void GetDownloadedStats(TUint &aNumShows, TUint &aNumUnplayed);
 
 	void AddBookL(const TDesC& aBookTitle, CDesCArrayFlat* aFileNameArray);
 	void AddBookChaptersL(CFeedInfo& aFeedInfo, CDesCArrayFlat* aFileNameArray);

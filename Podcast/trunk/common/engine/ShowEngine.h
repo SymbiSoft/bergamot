@@ -98,6 +98,8 @@ private:
 	void DBGetAllDownloads(RShowInfoArray& aShowArray);
 	TUint DBGetDownloadsCount();
 	void DBAddDownload(TUint aUid);
+	CShowInfo* DBGetNextDownload();
+	
 private:
 	CHttpClient* iShowClient;
 		

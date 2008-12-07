@@ -357,6 +357,29 @@ void CShowEngine::DBGetAllDownloads(RShowInfoArray& aShowArray)
 	
 	}
 
+CShowInfo* CShowEngine::DBGetNextDownload()
+	{
+	DP("CShowEngine::DBGetNextDownload");
+	CShowInfo *showInfo = NULL;
+	iSqlBuffer.Format(_L("select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, shows.uid, showsize, trackno, pubdate, showtype from downloads, shows where downloads.uid=shows.uid order by dl_index limit 1"));
+
+	sqlite3_stmt *st;
+
+	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
+	
+	if (rc==SQLITE_OK) {
+		rc = sqlite3_step(st);
+		if (rc == SQLITE_ROW) {
+			TRAPD(err, showInfo = CShowInfo::NewL());
+			DBFillShowInfoFromStmt(st, showInfo);
+		}
+			
+		sqlite3_finalize(st);
+	}
+	
+	return showInfo;
+	}
+
 void CShowEngine::DBGetShowsByFeed(RShowInfoArray& aShowArray, TUint aFeedUid)
 	{
 	DP1("CShowEngine::DBGetShowsByFeed, feedUid=%u", aFeedUid);
@@ -367,7 +390,7 @@ void CShowEngine::DBGetShowsByFeed(RShowInfoArray& aShowArray, TUint aFeedUid)
 		iSqlBuffer.Append(_L(" and playstate=0"));
 	}
 	
-	//iSqlBuffer.Append(_L(" order by pubdate desc"));
+	iSqlBuffer.Append(_L(" order by pubdate desc"));
 	
 	sqlite3_stmt *st;
 
@@ -971,14 +994,16 @@ void CShowEngine::DownloadNextShow()
 			{
 			
 			// Start the download
-			/*CShowInfo *info = iShowsDownloading[0];
-			DP1("CShowEngine::DownloadNextShow\tDownloading: %S", &(info->Title()));
-			info->SetDownloadState(EDownloading);
-			iShowDownloading = info;
-			TRAPD(error,GetShowL(info));
-			if (error != KErrNone) {
-				iDownloadsSuspended = ETrue;
-			}*/
+			CShowInfo *info = DBGetNextDownload();
+			if (info != NULL) {
+				DP1("CShowEngine::DownloadNextShow\tDownloading: %S", &(info->Title()));
+				info->SetDownloadState(EDownloading);
+				iShowDownloading = info;
+				TRAPD(error,GetShowL(info));
+				if (error != KErrNone) {
+					iDownloadsSuspended = ETrue;
+				}
+			}
 			}
 		}
 	else
@@ -994,7 +1019,7 @@ void CShowEngine::NotifyDownloadQueueUpdated()
 	const TInt count = iObservers.Count();
 	for (TInt i=0;i < count; i++) 
 		{
-		//TRAP_IGNORE(iObservers[i]->DownloadQueueUpdated(1, iShowsDownloading.Count() -1));
+		TRAP_IGNORE(iObservers[i]->DownloadQueueUpdated(1, DBGetDownloadsCount() - 1));
 		}	
 	}
 
