@@ -254,7 +254,6 @@ void CPodcastFeedView::FeedUpdateCompleteL(TUint aFeedUid)
 
 void CPodcastFeedView::FeedUpdateAllCompleteL()
 {
-	iPodcastModel.FeedEngine().SetCatchupMode(EFalse);
 	iUpdatingAllRunning = EFalse;
 }
 
@@ -708,19 +707,6 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			}
 		case EPodcastUpdateAllFeeds:
 			{
-			const RFeedInfoArray& array = iPodcastModel.FeedEngine().GetSortedFeeds();
-			TBool hasNewFeed = EFalse;
-			for (int i=0;i<array.Count();i++) {
-			if (array[i]->LastUpdated().Int64() == 0) {
-			hasNewFeed = ETrue;
-			break;
-			}
-			}
-
-			if (hasNewFeed) {
-				iPodcastModel.FeedEngine().SetCatchupMode(ETrue);
-			}
-
 			iUpdatingAllRunning = ETrue;			
 			iPodcastModel.FeedEngine().UpdateAllFeedsL();
 			HBufC* str = iEikonEnv->AllocReadResourceLC(R_PODCAST_FEEDS_UPDATE_MESSAGE);

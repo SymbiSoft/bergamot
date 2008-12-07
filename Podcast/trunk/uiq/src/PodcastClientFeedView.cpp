@@ -154,7 +154,7 @@ void CPodcastClientFeedView::UpdateFeedInfoDataL(CFeedInfo* aFeedInfo,  MQikList
 		}
 	else
 	{
-		iPodcastModel.ShowEngine().GetStatsByFeed(aFeedInfo->Uid(), showCount, unplayedCount, aFeedInfo->IsBookFeed());
+		iPodcastModel.FeedEngine().GetStatsByFeed(aFeedInfo->Uid(), showCount, unplayedCount, aFeedInfo->IsBookFeed());
 		
 		if (aFeedInfo->IsBookFeed()) {
 			unplayedShows.Format(*iBooksFormat, unplayedCount, showCount);
@@ -282,7 +282,6 @@ void CPodcastClientFeedView::FeedUpdateCompleteL(TUint aFeedUid)
 
 void CPodcastClientFeedView::FeedUpdateAllCompleteL()
 {
-	iPodcastModel.FeedEngine().SetCatchupMode(EFalse);
 	iUpdatingAllRunning = EFalse;
 	UpdateCommandsL();
 }
@@ -394,7 +393,7 @@ void CPodcastClientFeedView::UpdateListboxItemsL()
 
 					TUint unplayedCount = 0;
 					TUint showCount = 0;
-					iPodcastModel.ShowEngine().GetStatsByFeed(fi->Uid(), showCount, unplayedCount, fi->IsBookFeed());
+					iPodcastModel.FeedEngine().GetStatsByFeed(fi->Uid(), showCount, unplayedCount, fi->IsBookFeed());
 					if (fi->IsBookFeed()) {
 						unplayedShows.Format(*iBooksFormat, unplayedCount, showCount);
 					} else {
@@ -494,7 +493,7 @@ void CPodcastClientFeedView::UpdateListboxItemsL()
 
 void CPodcastClientFeedView::HandleListBoxEventL(CQikListBox* /*aListBox*/, TQikListBoxEvent aEventType, TInt aItemIndex, TInt aSlotId)
 	{
-	RDebug::Print(_L("HandleListBoxEvent, itemIndex=%d, slotId=%d, aEventType=%d"), aItemIndex, aSlotId, aEventType);
+	//RDebug::Print(_L("HandleListBoxEvent, itemIndex=%d, slotId=%d, aEventType=%d"), aItemIndex, aSlotId, aEventType);
 	
 	switch (aEventType)
 		{
@@ -705,19 +704,6 @@ void CPodcastClientFeedView::HandleCommandL(CQikCommand& aCommand)
 			}
 		case EPodcastUpdateAllFeeds:
 		{
-			const RFeedInfoArray& array = iPodcastModel.FeedEngine().GetSortedFeeds();
-			TBool hasNewFeed = EFalse;
-			for (int i=0;i<array.Count();i++) {
-				if (array[i]->LastUpdated().Int64() == 0) {
-					hasNewFeed = ETrue;
-					break;
-				}
-			}
-			
-			if (hasNewFeed) {
-				iPodcastModel.FeedEngine().SetCatchupMode(ETrue);
-			}
-
 			iUpdatingAllRunning = ETrue;
 			UpdateCommandsL();
 			iPodcastModel.FeedEngine().UpdateAllFeedsL();

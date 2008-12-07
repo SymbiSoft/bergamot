@@ -45,7 +45,6 @@ public:
 	void DeleteShow(TUint aShowUid, TBool aRemoveFile=ETrue);
 	
 	void CheckFilesL();
-	void GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed, TBool aIsBookFeed );
 	void GetStatsForDownloaded(TUint &aNumShows, TUint &aNumUnplayed );
 	void AddObserver(MShowEngineObserver *observer);
 	void RemoveObserver(MShowEngineObserver *observer);
@@ -94,7 +93,6 @@ private:
 	void DBGetDownloadedShows(RShowInfoArray& aShowArray);
 	TBool DBDeleteAllShowsByFeed(TUint aFeedUid);
 	TBool DBDeleteShow(TUint aUid);
-	void DBGetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed);
 	void DBRemoveAllDownloads();
 	void DBRemoveDownload(TUint aUid);
 	void DBGetAllDownloads(RShowInfoArray& aShowArray);

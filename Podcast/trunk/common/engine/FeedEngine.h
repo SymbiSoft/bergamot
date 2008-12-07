@@ -41,6 +41,7 @@ public:
 	void CancelUpdateAllFeedsL();
 	const RFeedInfoArray& GetSortedFeeds() const;
 	CFeedInfo* GetFeedInfoByUid(TUint aFeedUid);	
+	void GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed, TBool aIsBookFeed );
 
 	void AddBookL(const TDesC& aBookTitle, CDesCArrayFlat* aFileNameArray);
 	void AddBookChaptersL(CFeedInfo& aFeedInfo, CDesCArrayFlat* aFileNameArray);
@@ -57,8 +58,6 @@ public:
 	void FileNameFromUrl(const TDesC &aUrl, TFileName &aFileName);
 	void EnsureProperPathName(TFileName &aPath);
 
-	void SetCatchupMode(TBool aCatchup);
-	
 	/**
 	 * Returns the current internal state of the feed engine4
 	 */
@@ -102,6 +101,8 @@ private:
 	CFeedInfo* DBGetFeedInfoByUid(TUint aFeedUid);	
 	TUint DBGetFeedCount();
 	TBool DBUpdateFeed(CFeedInfo *aItem);
+	void DBGetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed);
+
 		
 private:
 	CHttpClient* iFeedClient;

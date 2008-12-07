@@ -828,14 +828,6 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 			break;
 		case EPodcastUpdateFeed:
 			{
-			// flag to know whether to disable catchup mode here or not,
-			// otherwise we might disable an Update All initiated from
-			// the feed view
-			iDisableCatchupMode = EFalse;
-			if (iPodcastModel.ActiveFeedInfo()->LastUpdated().Int64() == 0)
-				{
-				iPodcastModel.FeedEngine().SetCatchupMode(ETrue);
-				}
 
 			if (iPodcastModel.ActiveFeedInfo()->Url().Length()>0)
 				{

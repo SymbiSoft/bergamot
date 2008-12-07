@@ -53,10 +53,10 @@ TInt CPodcastClientBaseView::StaticCheckForQuedDownloadsL(TAny* aBaseView)
 
 void CPodcastClientBaseView::CheckForQuedDownloadsL()
 {
-	delete iStartupCallBack;
+/*	delete iStartupCallBack;
 	iStartupCallBack = NULL;
 
-	/*iPodcastModel.ShowEngine().SelectShowsDownloading();
+	iPodcastModel.ShowEngine().SelectShowsDownloading();
 	if (iPodcastModel.ShowEngine().GetSelectedShows().Count() > 0) {
 		if(iEikonEnv->QueryWinL(R_PODCAST_ENABLE_DOWNLOADS_TITLE, R_PODCAST_ENABLE_DOWNLOADS_PROMPT))
 		{
@@ -228,7 +228,7 @@ void CPodcastClientBaseView::UpdateListboxItemsL()
 
 void CPodcastClientBaseView::HandleListBoxEventL(CQikListBox * /*aListBox*/, TQikListBoxEvent aEventType, TInt aItemIndex, TInt aSlotId)
 {
-	RDebug::Print(_L("HandleListBoxEvent, itemIndex=%d, slotId=%d, aEventType=%d"), aItemIndex, aSlotId, aEventType);
+	//RDebug::Print(_L("HandleListBoxEvent, itemIndex=%d, slotId=%d, aEventType=%d"), aItemIndex, aSlotId, aEventType);
 
 	switch (aEventType)
 	{

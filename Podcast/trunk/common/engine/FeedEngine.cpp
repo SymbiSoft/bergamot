@@ -166,15 +166,21 @@ TBool CFeedEngine::UpdateFeedL(TUint aFeedUid)
 	{
 	iActiveFeed = GetFeedInfoByUid(aFeedUid);
 	iCatchupCounter = 0;
+
+	if (iActiveFeed->LastUpdated() == 0) {
+		iCatchupMode = ETrue;
+	}
+
 	TFileName filePath;
 	filePath.Copy (iPodcastModel.SettingsEngine().PrivatePath ());
 	TBuf<20> feedUidNum;
 	feedUidNum.Format(_L("%lu"), aFeedUid);
 	filePath.Append(feedUidNum);
 	filePath.Append(_L(".xml"));
-	//filePath.Append(_L("feed.xml"));
+
 	iUpdatingFeedFileName.Copy(filePath);
 
+	
 	if(iFeedClient->GetL(iActiveFeed->Url(), iUpdatingFeedFileName, iPodcastModel.SettingsEngine().SpecificIAP()))
 	{
 		iClientState = EUpdatingFeed;
@@ -886,6 +892,11 @@ void CFeedEngine::CleanHtml(TDes &str)
 		ReplaceString(str, _L("&nbsp;"), _L(""));
 		ReplaceString(str, _L("&copy;"), _L("(c)"));
 	}
+	
+	if (str.Locate('"') != KErrNotFound) {
+		ReplaceString(str, _L("\""), _L("'"));
+	}
+	
 	CleanupStack::PopAndDestroy(tmpBuf);
 }
 
@@ -895,11 +906,46 @@ TInt CFeedEngine::CompareFeedsByTitle(const CFeedInfo &a, const CFeedInfo &b)
 		return a.Title().CompareF(b.Title());
 	}
 
-void CFeedEngine::SetCatchupMode(TBool aCatchup)
+void CFeedEngine::GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed, TBool aIsBookFeed)
 	{
-	iCatchupMode = aCatchup;
+	DBGetStatsByFeed(aFeedUid, aNumShows, aNumUnplayed);
 	}
 
+void CFeedEngine::DBGetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed)
+	{
+	DP1("CFeedEngine::DBGetStatsByFeed, feedUid=%d", aFeedUid);
+	iSqlBuffer.Format(_L("select count(*) from shows where feeduid=%u"), aFeedUid);
+
+	sqlite3_stmt *st;
+	 
+	//DP1("SQL statement length=%d", iSqlBuffer.Length());
+
+	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
+	
+	if( rc==SQLITE_OK ){
+	  	rc = sqlite3_step(st);
+	  	
+	  	if (rc == SQLITE_ROW) {
+	  		aNumShows = sqlite3_column_int(st, 0);
+	  	}
+	}
+		  
+	sqlite3_finalize(st);
+
+	iSqlBuffer.Format(_L("select count(*) from shows where feeduid=%u and playstate=0"), aFeedUid);
+
+	rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
+		
+	if( rc==SQLITE_OK ){
+	  	rc = sqlite3_step(st);
+	  	
+	  	if (rc == SQLITE_ROW) {
+	  		aNumUnplayed = sqlite3_column_int(st, 0);
+	  	}
+	}
+		  
+	sqlite3_finalize(st);
+}
 
 TUint CFeedEngine::DBGetFeedCount()
 	{

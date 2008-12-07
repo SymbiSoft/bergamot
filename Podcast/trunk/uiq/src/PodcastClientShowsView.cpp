@@ -254,9 +254,6 @@ void CPodcastClientShowsView::HandleCommandL(CQikCommand& aCommand)
 			// otherwise we might disable an Update All initiated from
 			// the feed view
 			iDisableCatchupMode = EFalse;
-			if (iPodcastModel.ActiveFeedInfo()->LastUpdated().Int64() == 0) {
-				iPodcastModel.FeedEngine().SetCatchupMode(ETrue);
-			}
 				
 			if (iPodcastModel.ActiveFeedInfo()->Url().Length()>0) {
 					HBufC* str = CEikonEnv::Static()->AllocReadResourceLC(R_PODCAST_FEEDS_UPDATE_MESSAGE);
@@ -344,9 +341,6 @@ void CPodcastClientShowsView::FeedUpdateCompleteL(TUint aFeedUid)
 	if(iPodcastModel.ActiveFeedInfo() != NULL && iPodcastModel.ActiveFeedInfo()->Uid() == aFeedUid)
 	{
 		UpdateFeedUpdateStateL();		
-	}
-	if (iDisableCatchupMode) {
-		iPodcastModel.FeedEngine().SetCatchupMode(EFalse);
 	}
 }
 
@@ -938,23 +932,18 @@ void CPodcastClientShowsView::UpdateCommandsL()
 		CleanupStack::PopAndDestroy(titleBuffer);
 		
 	} else {
-		TUint unplayed = 0;
+		TUint numUnplayed = 0;
+		TUint numShows = 0;
+				
 		if(itemCnt == 0)
 		{
 			ViewContext()->ChangeTextL(EPodcastListViewContextLabel, KNullDesC());
 		}
-		else
-		{
-			
-		
-			for (TInt loop = 0;loop<itemCnt;loop++)
-			{
-				unplayed+=(iPodcastModel.ActiveShowList()[loop]->PlayState() == ENeverPlayed);
-			}
-		}
 		HBufC* titleFormat=  iEikonEnv->AllocReadResourceLC(R_PODCAST_SHOWS_TITLE_FORMAT);
 		HBufC* titleBuffer = HBufC::NewL(titleFormat->Length()+8);
-		titleBuffer->Des().Format(*titleFormat, unplayed, iPodcastModel.ShowEngine().GetGrossSelectionLength());
+		
+		iPodcastModel.FeedEngine().GetStatsByFeed(iPodcastModel.ActiveFeedInfo()->Uid(), numShows, numUnplayed, EFalse);
+		titleBuffer->Des().Format(*titleFormat, numUnplayed, numShows);
 		CleanupStack::PopAndDestroy(titleFormat);
 		CleanupStack::PushL(titleBuffer);
 		ViewContext()->ChangeTextL(EPodcastListViewContextLabel, *titleBuffer);
@@ -965,7 +954,7 @@ void CPodcastClientShowsView::UpdateCommandsL()
 
 void CPodcastClientShowsView::HandleListBoxEventL(CQikListBox * /*aListBox*/, TQikListBoxEvent aEventType, TInt aItemIndex, TInt aSlotId)
 {
-	RDebug::Print(_L("HandleListBoxEvent, itemIndex=%d, slotId=%d, aEventType=%d"), aItemIndex, aSlotId, aEventType);
+	//RDebug::Print(_L("HandleListBoxEvent, itemIndex=%d, slotId=%d, aEventType=%d"), aItemIndex, aSlotId, aEventType);
 	
 	switch (aEventType)
 	{
