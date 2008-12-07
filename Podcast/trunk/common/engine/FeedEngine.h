@@ -77,8 +77,6 @@ private:
 	void ConstructL();
 	CFeedEngine(CPodcastModel& aPodcastModel);
 
-	void LoadFeedsL();
-
 	// from HttpClientObserver
 	void Connected(CHttpClient* aClient);
 	void Disconnected(CHttpClient* aClient);
@@ -137,6 +135,6 @@ private:
     
     sqlite3* iDB;
     
-    TBuf<4096> iSqlBuffer;
+    TBuf<2048> iSqlBuffer;
 };
 #endif /*FEEDENGINE_H_*/

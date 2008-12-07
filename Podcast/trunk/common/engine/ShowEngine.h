@@ -25,26 +25,18 @@ public:
 	void ResumeDownloads();
 	TBool DownloadsStopped();
 
-	TInt GetNumDownloadingShowsL() const;
+	TInt GetNumDownloadingShowsL();
 	CShowInfo* ShowDownloading();
 	CShowInfo* GetShowByUidL(TUint aShowUid);
 	CShowInfo* GetNextShowByTrackL(CShowInfo* aShowInfo);
 	void SetShowPlayState(CShowInfo* aShowInfo, TPlayState aPlayState);
 	
-	// show selection methods
-	void SelectAllShows();
-	void SelectShowsByFeed(TUint aFeedUid);
-	void SelectShowsDownloaded();
-	void SelectNewShows();
-	void SelectShowsDownloading();
-	
-	// operations on selected shows
-	RShowInfoArray& GetSelectedShows();
-	void SetSelectionPlayed();
-	void ResetSelection();
-	void UpdateSelectedShows();
-	
-	void GetShowsForFeedL(RShowInfoArray& aShowArray, TUint aFeedUid);
+	// show access methods
+	void GetAllShows(RShowInfoArray &aArray);
+	void GetShowsByFeed(RShowInfoArray &aArray, TUint aFeedUid);
+	void GetShowsDownloaded(RShowInfoArray &aArray);
+	void GetNewShows(RShowInfoArray &aArray);
+	void GetShowsDownloading(RShowInfoArray &aArray);
 
 	void CompleteL(CHttpClient* aClient, TBool aSuccessful);
 	TBool AddShow(CShowInfo *item);
@@ -103,29 +95,25 @@ private:
 	TBool DBDeleteAllShowsByFeed(TUint aFeedUid);
 	TBool DBDeleteShow(TUint aUid);
 	void DBGetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed);
-
+	void DBRemoveAllDownloads();
+	void DBRemoveDownload(TUint aUid);
+	void DBGetAllDownloads(RShowInfoArray& aShowArray);
+	TUint DBGetDownloadsCount();
+	void DBAddDownload(TUint aUid);
 private:
 	CHttpClient* iShowClient;
-	
-	// the current selection of shows
-	RShowInfoArray iSelectedShows;
-	
-	// list of shows waiting to download
-	RShowInfoArray iShowsDownloading;
-	
+		
 	// the file session used to read and write settings
 	RFs iFs;
-	
-	// The show we are currently downloading
-	CShowInfo* iShowDownloading;
-	
+		
 	CPodcastModel& iPodcastModel;
 
 	// observers that will receive callbacks
     RArray<MShowEngineObserver*> iObservers;
 
+	// The show we are currently downloading
+	CShowInfo* iShowDownloading;
     TBool iDownloadsSuspended;
-        
     TUint iDownloadErrors;
     
     CMetaDataReader* iMetaDataReader;
@@ -134,7 +122,7 @@ private:
 	TBuf8<512> iRecogBuffer;
 	
 	sqlite3* iDB;
-    TBuf<4096> iSqlBuffer;
+    TBuf<2048> iSqlBuffer;
 };
 
 #endif /*SHOWENGINE_H_*/

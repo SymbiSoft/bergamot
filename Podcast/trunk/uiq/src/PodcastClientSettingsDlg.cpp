@@ -90,7 +90,7 @@ void CPodcastClientSetAudioBookOrderDlg::PreLayoutDynInitL()
 	iSetLabel = static_cast<CEikLabel*>(ControlOrNull(EPodcastSetAudioBookPlayOrderLabel));
 
 	iListbox = static_cast<CQikListBox*>(ControlOrNull(EPodcastSetAudioBookPlayOrderListbox));
-	iPodcastModel.ShowEngine().GetShowsForFeedL(iShowInfoArray, iFeedId); 
+	iPodcastModel.ShowEngine().GetShowsByFeed(iShowInfoArray, iFeedId); 
 
 	PopulateListboxL();
 }

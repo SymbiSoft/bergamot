@@ -29,7 +29,7 @@ void CFeedEngine::ConstructL()
     if (DBGetFeedCount() > 0) {
 		DP("Loading feeds from DB");
 		
-		LoadFeedsL();
+		DBLoadFeeds();
 
     } else {
     	DP("No feeds in DB, loading default feeds");
@@ -701,11 +701,6 @@ TBool CFeedEngine::ExportFeedsL(TFileName& aFile)
 	return ETrue;
 	}
 
-void CFeedEngine::LoadFeedsL()
-{
-	DBLoadFeeds();
-}
-
 CFeedInfo* CFeedEngine::GetFeedInfoByUid(TUint aFeedUid)
 	{
 	TInt cnt = iSortedFeeds.Count();
@@ -741,7 +736,7 @@ void CFeedEngine::AddBookChaptersL(CFeedInfo& aFeedInfo, CDesCArrayFlat* aFileNa
 	TEntry fileInfo;
 	RShowInfoArray showArray;
 	CleanupClosePushL(showArray);
-	iPodcastModel.ShowEngine().GetShowsForFeedL(showArray, aFeedInfo.Uid());
+	iPodcastModel.ShowEngine().GetShowsByFeed(showArray, aFeedInfo.Uid());
 	TInt offset = showArray.Count();
 	CleanupStack::PopAndDestroy();// close showArray
 
@@ -932,7 +927,9 @@ void CFeedEngine::DBLoadFeeds()
 	DP("DBLoadFeeds BEGIN");
 	iSortedFeeds.Reset();
 	CFeedInfo *feedInfo = NULL;
-	iSqlBuffer.Format(_L("select url, title, description, imageurl, imagefile, link, built, lastupdated, uid, feedtype, customtitle from feeds order by title"));
+	
+	// note, "order by title" leaks memory, had to remove it!
+	iSqlBuffer.Format(_L("select url, title, description, imageurl, imagefile, link, built, lastupdated, uid, feedtype, customtitle from feeds"));
 
 	sqlite3_stmt *st;
 	 
@@ -997,11 +994,13 @@ void CFeedEngine::DBLoadFeeds()
 			
 				
 			rc = sqlite3_step(st);
+			DP1("step rc=%d", rc);
 		}
-			
-		sqlite3_finalize(st);
+
 	}
-	
+
+	sqlite3_finalize(st);
+
 	DP("DBLoadFeeds END");
 	}
 

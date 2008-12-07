@@ -83,10 +83,6 @@ rls_string STRING_r_category_new "Nepřehrané"
 rls_string STRING_r_category_dled "Šou v telefonu"
 rls_string STRING_r_category_pending "Stahování"
 
-// Application caption
-rls_string STRING_r_caption "Escarpod"
-rls_string STRING_r_short_caption "Podkast"
-
 // View titles
 rls_string STRING_r_view_feeds_title "Zdroje"
 rls_string STRING_r_view_audiobooks_title "Zvukové knihy"

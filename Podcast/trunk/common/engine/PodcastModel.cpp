@@ -30,6 +30,7 @@ CPodcastModel::~CPodcastModel()
 #else
 	delete iTelephonyListener;
 #endif
+	iActiveShowList.ResetAndDestroy();
 	delete iFeedEngine;
 	delete iSoundEngine;
 	delete iSettingsEngine;
@@ -59,22 +60,6 @@ void CPodcastModel::ConstructL()
 
 	UpdateIAPListL();
 	
-	// connect to DB
-	RFs fs;
-	fs.Connect();
-	TFileName dbFileName;
-	fs.PrivatePath(dbFileName);
-	dbFileName.Append(KDBFileName);
-	DP1("DB is at %S", &dbFileName);
-	TBuf8<KMaxFileName> filename8;
-	filename8.Copy(dbFileName);
-    int rc = rc = sqlite3_open((const char*) filename8.PtrZ(), &iDB);
-	if( rc != SQLITE_OK){
-		DP("Error loading DB");
-		User::Leave(KErrNotFound);
-	}
-
-
 	iSettingsEngine = CSettingsEngine::NewL(*this);
 	iFeedEngine = CFeedEngine::NewL(*this);
 	iShowEngine = CShowEngine::NewL(*this);
@@ -257,6 +242,24 @@ TConnPref& CPodcastModel::ConnPref()
 
 sqlite3* CPodcastModel::DB()
 {
+	if (iDB == NULL) {
+		RFs fs;
+		fs.Connect();
+
+		TFileName dbFileName;
+		fs.PrivatePath(dbFileName);
+		dbFileName.Append(KDBFileName);
+		DP1("DB is at %S", &dbFileName);
+		TBuf8<KMaxFileName> filename8;
+		filename8.Copy(dbFileName);
+		int rc = rc = sqlite3_open((const char*) filename8.PtrZ(), &iDB);
+		if( rc != SQLITE_OK){
+			DP("Error loading DB");
+			User::Panic(_L("Escarpod"), 10);
+		}
+		fs.Close();
+
+	}
 	return iDB;
 }
 
@@ -414,4 +417,39 @@ TInt CPodcastModel::GetIapId()
 	TUint32 iapId = 0;
 	iConnection.GetIntSetting(KSetting, iapId);
 	return iapId;
+	}
+
+void CPodcastModel::GetAllShows()
+	{
+	iActiveShowList.ResetAndDestroy();
+	iShowEngine->GetAllShows(iActiveShowList);
+	}
+
+void CPodcastModel::GetNewShows()
+	{
+	iActiveShowList.ResetAndDestroy();
+	iShowEngine->GetNewShows(iActiveShowList);	
+	}
+
+void CPodcastModel::GetShowsDownloaded()
+	{
+	iActiveShowList.ResetAndDestroy();
+	iShowEngine->GetShowsDownloaded(iActiveShowList);
+	}
+
+void CPodcastModel::GetShowsDownloading()
+	{
+	iActiveShowList.ResetAndDestroy();
+	iShowEngine->GetShowsDownloading(iActiveShowList);
+	}
+
+void CPodcastModel::GetShowsByFeed(TUint aFeedUid)
+	{
+	iActiveShowList.ResetAndDestroy();
+	iShowEngine->GetShowsByFeed(iActiveShowList, aFeedUid);
+	}
+
+void CPodcastModel::MarkSelectionPlayed()
+	{
+	
 	}

@@ -9,7 +9,6 @@
 
 <!-- problematic feeds -->
   <outline xmlUrl="http://video.google.com/videofeed?type=search&amp;q=baseball&amp;num=20&amp;output=rss"/>
-  <outline xmlUrl="http://www.mobile-review.com/podcasts/rss.xml"/>
 
 <!-- previously broken feeds, uncomment for regression testing
   <outline xmlUrl="http://www.cnet.com/i/pod/cnet_buzz.xml"/>

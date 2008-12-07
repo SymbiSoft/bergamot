@@ -64,8 +64,14 @@ public:
 	void GetProxyInformationForConnectionL(TBool& aIsUsed, HBufC*& aServerName, TUint32& aPort);
 	TInt GetIapId();
 	
-	 sqlite3* DB();
+	sqlite3* DB();
 	
+	void GetAllShows();
+	void GetNewShows();
+	void GetShowsDownloaded();
+	void GetShowsDownloading();
+	void GetShowsByFeed(TUint aFeedUid);
+	void MarkSelectionPlayed();
 	
 protected:
 	CPodcastModel();

@@ -771,10 +771,10 @@ void CPodcastClientFeedView::HandleCommandL(CQikCommand& aCommand)
 					TBool aUnplayedOnlyState = iPodcastModel.SettingsEngine().SelectUnplayedOnly();
 					// we only select unplayed chapters
 					iPodcastModel.SettingsEngine().SetSelectUnplayedOnly(ETrue);
-					iPodcastModel.ShowEngine().SelectShowsByFeed(feedInfo->Uid());
+					iPodcastModel.GetShowsByFeed(feedInfo->Uid());
 					iPodcastModel.SettingsEngine().SetSelectUnplayedOnly(aUnplayedOnlyState);
 
-					RShowInfoArray& showArray = iPodcastModel.ShowEngine().GetSelectedShows();
+					RShowInfoArray& showArray = iPodcastModel.ActiveShowList();
 
 					if(showArray.Count() == 0 || showArray[0] == NULL) {
 						// can't play empty books...

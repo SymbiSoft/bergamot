@@ -227,7 +227,7 @@ void CPodcastClientShowsView::HandleCommandL(CQikCommand& aCommand)
 			UpdateListboxItemsL();
 			}break;
 		case EPodcastMarkAllPlayed:
-			iPodcastModel.ShowEngine().SetSelectionPlayed();
+			iPodcastModel.MarkSelectionPlayed();
 			UpdateListboxItemsL();
 			break;
 		case EPodcastDownloadShow:
@@ -617,30 +617,29 @@ void CPodcastClientShowsView::UpdateListboxItemsL()
 		{
 		case EShowAllShows:
 			SelectCategoryL(EShowAllShows);
-			iPodcastModel.ShowEngine().SelectAllShows();
+			iPodcastModel.GetAllShows();
 			break;
 		case EShowNewShows:
 			SelectCategoryL(EShowNewShows);
-			iPodcastModel.ShowEngine().SelectNewShows();
+			iPodcastModel.GetNewShows();
 			break;		
 		case EShowDownloadedShows:
 			SelectCategoryL(EShowDownloadedShows);
-			iPodcastModel.ShowEngine().SelectShowsDownloaded();
+			iPodcastModel.GetShowsDownloaded();
 			break;
 		case EShowPendingShows:
 			SelectCategoryL(EShowPendingShows);
-			iPodcastModel.ShowEngine().SelectShowsDownloading();
+			iPodcastModel.GetShowsDownloading();
 			break;
 		default:
 			
 			iCategories->RenameCategoryL(EShowFeedShows, iPodcastModel.ActiveFeedInfo()->Title());
 			
-			iPodcastModel.ShowEngine().SelectShowsByFeed(iPodcastModel.ActiveFeedInfo()->Uid());
+			iPodcastModel.GetShowsByFeed(iPodcastModel.ActiveFeedInfo()->Uid());
 			SelectCategoryL(EShowFeedShows);
 			break;
 		}
 		
-		iPodcastModel.SetActiveShowList(iPodcastModel.ShowEngine().GetSelectedShows());
 		RShowInfoArray &fItems = iPodcastModel.ActiveShowList();
 		len = fItems.Count();
 		
