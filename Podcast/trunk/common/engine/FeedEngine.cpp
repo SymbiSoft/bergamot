@@ -411,7 +411,7 @@ void CFeedEngine::RemoveFeed(TUint aUid)
 TBool CFeedEngine::DBRemoveFeed(TUint aUid)
 	{
 	DP("CFeedEngine::DBRemoveFeed");
-	iSqlBuffer.Format(_L("delete from feeds where where uid=%u"), aUid);
+	iSqlBuffer.Format(_L("delete from feeds where uid=%u"), aUid);
 
 	sqlite3_stmt *st;
 	 
@@ -1154,3 +1154,7 @@ CFeedInfo* CFeedEngine::DBGetFeedInfoByUid(TUint aFeedUid)
 	return feedInfo;
 }
 
+void CFeedEngine::UpdateFeed(CFeedInfo *aItem)
+	{
+	DBUpdateFeed(aItem);
+	}

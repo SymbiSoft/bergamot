@@ -451,7 +451,11 @@ void CPodcastModel::GetShowsByFeed(TUint aFeedUid)
 
 void CPodcastModel::MarkSelectionPlayed()
 	{
-	
+	for (int i=0;i<iActiveShowList.Count();i++) {
+		if(iActiveShowList[i]->PlayState() != EPlayed) {
+			iShowEngine->SetShowPlayState(iActiveShowList[i],EPlayed);
+		}
+	}
 	}
 
 TInt CPodcastModel::FindActiveShowByUid(TUint aUid)

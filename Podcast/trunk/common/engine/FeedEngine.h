@@ -59,6 +59,7 @@ public:
 	void FileNameFromUrl(const TDesC &aUrl, TFileName &aFileName);
 	void EnsureProperPathName(TFileName &aPath);
 
+	void UpdateFeed(CFeedInfo *aItem);
 	/**
 	 * Returns the current internal state of the feed engine4
 	 */

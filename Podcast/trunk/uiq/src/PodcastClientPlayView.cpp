@@ -534,7 +534,7 @@ void CPodcastClientPlayView::ShowDownloadUpdatedL(
 
 	{
 	//RDebug::Print(_L("CPodcastClientPlayView::ShowDownloadUpdatedL"));
-	if (iShowInfo && iShowInfo->Uid() != iPodcastModel.ShowEngine().ShowDownloading()->Uid()) {
+	if (iShowInfo && iPodcastModel.ShowEngine().ShowDownloading() && iShowInfo->Uid() != iPodcastModel.ShowEngine().ShowDownloading()->Uid()) {
 		iBytesDownloaded = 0;
 		UpdateViewL();
 		return;
@@ -660,7 +660,7 @@ void CPodcastClientPlayView::UpdateViewL()
 				comMan.SetInvisible(*this, EPodcastPlay, ETrue);
 				comMan.SetInvisible(*this, EPodcastDownloadShow, ETrue);
 				comMan.SetInvisible(*this, EPodcastRemoveDownload, EFalse);
-				if (iShowInfo->DownloadState() == EDownloading)
+				if (!iPodcastModel.ShowEngine().DownloadsStopped())
 					{
 					comMan.SetTextL(*this, EPodcastRemoveDownload,
 							R_PODCAST_PLAYER_SUSPEND_DL_CMD);

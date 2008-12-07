@@ -108,9 +108,14 @@ TBool CShowEngine::RemoveDownload(TUint aUid)
 	if (!iDownloadsSuspended && iShowDownloading != NULL && iShowDownloading->Uid() == aUid) {
 		DP("CShowEngine::RemoveDownload\t This is the active download, we suspend downloading");
 		StopDownloads();
-	} else if (iShowDownloading != NULL) {
-		BaflUtils::DeleteFile(iFs, iShowDownloading->FileName());
-
+	} else {
+		DBRemoveDownload(aUid);
+		
+		// partial downloads should be removed
+		if (iShowDownloading) {
+			BaflUtils::DeleteFile(iFs, iShowDownloading->FileName());
+		}
+		
 		NotifyShowDownloadUpdated(-1,-1,-1);
 		NotifyDownloadQueueUpdated();
 		DownloadNextShow();
@@ -472,8 +477,6 @@ void CShowEngine::DBGetDownloadedShows(RShowInfoArray& aShowArray)
 	}
 	
 	sqlite3_stmt *st;
-	 
-	//DP1("SQL: %S", &iSqlBuffer.Left(KSqlDPLen));
 
 	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
 	
@@ -916,6 +919,7 @@ TInt CShowEngine::GetNumDownloadingShowsL()
 
 void CShowEngine::AddDownload(CShowInfo *info)
 	{
+	info->SetDownloadState(EQueued);
 	DBAddDownload(info->Uid());
 	DownloadNextShow();
 	}
@@ -951,6 +955,7 @@ void CShowEngine::DownloadNextShow()
 			if (info != NULL) {
 				DP1("CShowEngine::DownloadNextShow\tDownloading: %S", &(info->Title()));
 				info->SetDownloadState(EDownloading);
+				DBUpdateShow(info);
 				iShowDownloading = info;
 				TRAPD(error,GetShowL(info));
 				if (error != KErrNone) {
