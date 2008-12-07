@@ -205,11 +205,11 @@ TBool CShowEngine::AddShow(CShowInfo *item)
 	{
 	CShowInfo *showInfo = DBGetShowByUid(item->Uid());
 	
-	
 	if (showInfo == NULL) {
 		DBAddShow(item);
 	} else {
 		delete showInfo;
+		return EFalse;
 	}
 
 	return ETrue;
@@ -249,10 +249,12 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TBool aSuccessful)
 		if (aSuccessful) 
 		{
 			iShowDownloading->SetDownloadState(EDownloaded);
+			NotifyShowDownloadUpdated(100,0,1);
+
+			DBUpdateShow(iShowDownloading);
 			DBRemoveDownload(iShowDownloading->Uid());
 			
-			//SaveShowsL();
-			NotifyShowDownloadUpdated(100,0,1);
+			delete iShowDownloading;
 		}
 		else 
 		{
@@ -289,6 +291,29 @@ CShowInfo* CShowEngine::DBGetShowByUid(TUint aUid)
 	sqlite3_stmt *st;
 	 
 	//DP1("SQL: %S", &iSqlBuffer.Left(KSqlDPLen));
+
+	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
+	
+	if (rc==SQLITE_OK) {
+		rc = sqlite3_step(st);
+		if (rc == SQLITE_ROW) {
+			TRAPD(err, showInfo = CShowInfo::NewL());
+			DBFillShowInfoFromStmt(st, showInfo);
+		}
+			
+		sqlite3_finalize(st);
+	}
+	
+	return showInfo;
+}
+
+CShowInfo* CShowEngine::DBGetShowByFileName(TFileName aFileName)
+	{
+	DP("CShowEngine::DBGetShowByUid");
+	CShowInfo *showInfo = NULL;
+	iSqlBuffer.Format(_L("select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows where filename=\"%S\""), &aFileName);
+
+	sqlite3_stmt *st;
 
 	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
 	
@@ -440,7 +465,7 @@ void CShowEngine::DBGetDownloadedShows(RShowInfoArray& aShowArray)
 	{
 	DP("CShowEngine::DBGetDownloadedShows");
 	CShowInfo *showInfo = NULL;
-	iSqlBuffer.Format(_L("select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows where downloadstate=%u or showtype=%u"), EDownloaded, EAudioBook);
+	iSqlBuffer.Format(_L("select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows where downloadstate=%u"), EDownloaded);
 
 	if (iPodcastModel.SettingsEngine().SelectUnplayedOnly()) {
 		iSqlBuffer.Append(_L(" and playstate=0"));
@@ -454,10 +479,11 @@ void CShowEngine::DBGetDownloadedShows(RShowInfoArray& aShowArray)
 	
 	if (rc==SQLITE_OK) {
 		rc = sqlite3_step(st);
-		if (rc == SQLITE_ROW) {
+		while (rc == SQLITE_ROW) {
 			TRAPD(err, showInfo = CShowInfo::NewL());
 			DBFillShowInfoFromStmt(st, showInfo);
 			aShowArray.Append(showInfo);
+			rc = sqlite3_step(st);
 		}
 			
 		sqlite3_finalize(st);
@@ -853,79 +879,6 @@ void CShowEngine::DeleteShow(TUint aShowUid, TBool aRemoveFile)
 	delete info;
 	}
 
-TUint CShowEngine::GetGrossSelectionLength()
-	{
-	/*if (iPodcastModel.SettingsEngine().SelectUnplayedOnly()) {
-		TUint count=0;
-		for (int i=0;i<iSelectedShows.Count();i++) {
-			if (iSelectedShows[i]->PlayState() == ENeverPlayed) {
-				count++;
-			}
-		}
-	} else {
-		return iSelectedShows.Count();
-	}*/
-	return 0;
-	}
-/*
-void CShowEngine::SelectShowsByFeed(TUint aFeedUid)
-	{
-	DP2("SelectShowsByFeed: %u, unplayed only=%d", aFeedUid, iPodcastModel.SettingsEngine().SelectUnplayedOnly());
-	/*ResetSelection();
-
-	DBGetShowsByFeed(iSelectedShows, aFeedUid);
-		
-	if (iSelectedShows.Count() == 0) {
-		return;
-	}
-	
-	if (iSelectedShows[0]->ShowType() == EAudioBook) {
-		// sort by track number
-		TLinearOrder<CShowInfo> sortOrder(CShowEngine::CompareShowsByTrackNo);
-		iSelectedShows.Sort(sortOrder);	 
-	} else {
-		// sort by date falling
-		TLinearOrder<CShowInfo> sortOrder(CShowEngine::CompareShowsByDate);
-		iSelectedShows.Sort(sortOrder);
-	
-		// now purge if more than limit
-		/*TInt count = iSelectedShows.Count();
-		while (count > iPodcastModel.SettingsEngine().MaxListItems()) {
-			DP("Too many items, Removing");
-			//delete iSelectedShows[count-1];
-			iSelectedShows[count-1]->SetDelete();
-			iSelectedShows[count-1]->SetPlayState(EPlayed);
-			iSelectedShows.Remove(count-1);
-			iGrossSelectionLength--;
-			count = iSelectedShows.Count();
-		}
-	}
-}
-
-void CShowEngine::SelectNewShows()
-	{
-	DP("CShowEngine::SelectNewShows");
-	//DBGetNewShows(iSelectedShows);
-	}
-
-void CShowEngine::SelectShowsDownloaded()
-	{
-	DP("CShowEngine::SelectShowsDownloaded");
-	//DBGetDownloadedShows(iSelectedShows);
-	}
-
-
-void CShowEngine::SelectShowsDownloading()
-	{
-	DP("CShowEngine::SelectShowsDownloading");
-	
-	const TInt count = iShowsDownloading.Count();
-	for (TInt i=0 ; i < count ;i++) 
-		{
-	//	iSelectedShows.Append(iShowsDownloading[i]);
-		}
-	}*/
-
 void CShowEngine::GetShowsByFeed(RShowInfoArray& aShowArray, TUint aFeedUid)
 	{
 	DP("CShowEngine::GetShowsByFeed");
@@ -1089,17 +1042,11 @@ void CShowEngine::ListDirL(TFileName &folder) {
 			} else {
 				continue;
 			}
-/*
-			TBool exists = EFalse;
-			for (TInt i=0;i<iSelectedShows.Count();i++) {
-				if (iSelectedShows[i]->FileName().Compare(pathName) == 0) {
-					DP1("Already listed %S", &pathName);
-					exists = ETrue;
-					break;
-				}
-			}
+
+			CShowInfo *exists = DBGetShowByFileName(pathName);
 			
 			if (exists) {
+				delete exists;
 				continue;
 			}
 			
@@ -1118,8 +1065,9 @@ void CShowEngine::ListDirL(TFileName &folder) {
 			info->SetPubDate(entry.iModified);
 			
 			iMetaDataReader->SubmitShowL(info);
-			iSelectedShows.Append(info);
-			DBAddShow(info);*/
+			DBAddShow(info);
+			
+			delete info;
 		}
 	}
 	delete dirPtr;
@@ -1129,14 +1077,23 @@ void CShowEngine::ListDirL(TFileName &folder) {
 void CShowEngine::CheckFilesL()
 	{
 	// check to see if any downloaded files were removed
-	//SelectShowsDownloaded();
-	/*for (TInt i=0;i<iSelectedShows.Count();i++) {
-		if(!BaflUtils::FileExists(iFs, iSelectedShows[i]->FileName())) {
-			DP1("%S was removed, delisting", &iSelectedShows[i]->FileName()); 
-			iSelectedShows[i]->SetDownloadState(ENotDownloaded);
-		}
-	}*/
 
+	RShowInfoArray array;
+	GetShowsDownloaded(array);
+	for (TInt i=0;i<array.Count();i++) {
+		if(!BaflUtils::FileExists(iFs, array[i]->FileName())) {
+			DP1("%S was removed, delisting", &array[i]->FileName()); 
+			if (array[i]->FeedUid() == 0) {
+				DBDeleteShow(array[i]->Uid());
+			} else {
+				array[i]->SetDownloadState(ENotDownloaded);
+				DBUpdateShow(array[i]);
+			}
+		}
+	}
+
+	array.ResetAndDestroy();
+	
 	// check if any new files were added
 	ListDirL(iPodcastModel.SettingsEngine().BaseDir());	
 

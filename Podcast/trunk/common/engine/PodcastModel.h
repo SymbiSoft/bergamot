@@ -73,6 +73,8 @@ public:
 	void GetShowsByFeed(TUint aFeedUid);
 	void MarkSelectionPlayed();
 	
+	TInt FindActiveShowByUid(TUint aUid);
+	
 protected:
 	CPodcastModel();
 	void ConstructL();

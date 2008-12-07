@@ -453,3 +453,14 @@ void CPodcastModel::MarkSelectionPlayed()
 	{
 	
 	}
+
+TInt CPodcastModel::FindActiveShowByUid(TUint aUid)
+	{
+	for (int i=0;i<iActiveShowList.Count();i++) {
+		if (iActiveShowList[i]->Uid() == aUid) {
+			return i;
+		}
+	}
+	
+	return KErrNotFound;
+	}

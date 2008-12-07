@@ -420,7 +420,7 @@ void CPodcastClientShowsView::ShowDownloadUpdatedL(TInt aPercentOfCurrentDownloa
 			if(iCurrentCategory == EShowPendingShows && iPodcastModel.ShowEngine().ShowDownloading() != NULL)
 			{
 				// First find the item, to remove it if we are in the pending show list
-				TInt index = iPodcastModel.ActiveShowList().Find(iPodcastModel.ShowEngine().ShowDownloading());
+				TInt index = iPodcastModel.FindActiveShowByUid(iPodcastModel.ShowEngine().ShowDownloading()->Uid());
 				
 				if(index != KErrNotFound)
 				{

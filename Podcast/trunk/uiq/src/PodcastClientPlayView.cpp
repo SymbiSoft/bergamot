@@ -534,7 +534,7 @@ void CPodcastClientPlayView::ShowDownloadUpdatedL(
 
 	{
 	//RDebug::Print(_L("CPodcastClientPlayView::ShowDownloadUpdatedL"));
-	if (iShowInfo != iPodcastModel.ShowEngine().ShowDownloading()) {
+	if (iShowInfo && iShowInfo->Uid() != iPodcastModel.ShowEngine().ShowDownloading()->Uid()) {
 		iBytesDownloaded = 0;
 		UpdateViewL();
 		return;
@@ -555,7 +555,7 @@ void CPodcastClientPlayView::ShowDownloadUpdatedL(
 
 	if (aPercentOfCurrentDownload == KOneHundredPercent)
 		{
-		if (iPodcastModel.PlayingPodcast() == iPodcastModel.ShowEngine().ShowDownloading())
+		if (iPodcastModel.PlayingPodcast()->Uid() == iPodcastModel.ShowEngine().ShowDownloading()->Uid())
 			{
 			// To update icon list status and commands
 			CShowInfo* playingPodcast = iPodcastModel.PlayingPodcast();

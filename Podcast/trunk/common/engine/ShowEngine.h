@@ -37,7 +37,8 @@ public:
 	void GetShowsDownloaded(RShowInfoArray &aArray);
 	void GetNewShows(RShowInfoArray &aArray);
 	void GetShowsDownloading(RShowInfoArray &aArray);
-
+	CShowInfo* DBGetShowByFileName(TFileName aFileName);
+	
 	void CompleteL(CHttpClient* aClient, TBool aSuccessful);
 	TBool AddShow(CShowInfo *item);
 	void DeletePlayedShows();
@@ -51,7 +52,6 @@ public:
 
 	void NotifyShowListUpdated();
 	
-	TUint GetGrossSelectionLength();
 	CMetaDataReader& MetaDataReader();
 protected:
 	// from HttpClientObserver, dont have to be public
