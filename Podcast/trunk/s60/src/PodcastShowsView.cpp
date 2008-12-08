@@ -269,10 +269,6 @@ void CPodcastShowsView::FeedUpdateCompleteL(TUint aFeedUid)
 		{
 		UpdateFeedUpdateStateL();
 		}
-	if (iDisableCatchupMode)
-		{
-		iPodcastModel.FeedEngine().SetCatchupMode(EFalse);
-		}
 	}
 
 void CPodcastShowsView::FeedUpdateAllCompleteL()
@@ -460,26 +456,25 @@ void CPodcastShowsView::UpdateListboxItemsL()
 			{
 			case EShowAllShows:
 
-				iPodcastModel.ShowEngine().SelectAllShows();
+				iPodcastModel.GetAllShows();
 				break;
 			case EShowNewShows:
 
-				iPodcastModel.ShowEngine().SelectNewShows();
+				iPodcastModel.GetNewShows();
 				break;
 			case EShowDownloadedShows:
 
-				iPodcastModel.ShowEngine().SelectShowsDownloaded();
+				iPodcastModel.GetShowsDownloaded();
 				break;
 			case EShowPendingShows:
 
-				iPodcastModel.ShowEngine().SelectShowsDownloading();
+				iPodcastModel.GetShowsDownloading();
 				break;
 			default:
-				iPodcastModel.ShowEngine().SelectShowsByFeed(iPodcastModel.ActiveFeedInfo()->Uid());
+				iPodcastModel.GetShowsByFeed(iPodcastModel.ActiveFeedInfo()->Uid());
 				break;
 			}
 
-		iPodcastModel.SetActiveShowList(iPodcastModel.ShowEngine().GetSelectedShows());
 		RShowInfoArray &fItems = iPodcastModel.ActiveShowList();
 		len = fItems.Count();
 
@@ -650,7 +645,8 @@ void CPodcastShowsView::UpdateListboxItemsL()
 			}
 		else
 			{
-			TUint unplayed = 0;
+			TUint numUnplayed = 0;
+			TUint numShows = 0;
 			if (len == 0)
 				{
 				if (iNaviPane != NULL)
@@ -660,16 +656,15 @@ void CPodcastShowsView::UpdateListboxItemsL()
 					iNaviDecorator = NULL;
 					}
 				}
-			else
-				{
-				for (TInt loop = 0; loop<len; loop++)
-					{
-					unplayed+=(iPodcastModel.ActiveShowList()[loop]->PlayState() == ENeverPlayed);
-					}
-				}
 			HBufC* titleFormat=  iEikonEnv->AllocReadResourceLC(R_PODCAST_SHOWS_TITLE_FORMAT);
 			HBufC* titleBuffer = HBufC::NewL(titleFormat->Length()+8);
-			titleBuffer->Des().Format(*titleFormat, unplayed, iPodcastModel.ShowEngine().GetGrossSelectionLength());
+			
+			if (iPodcastModel.ActiveFeedInfo()) {
+				iPodcastModel.FeedEngine().GetStatsByFeed(iPodcastModel.ActiveFeedInfo()->Uid(), numShows, numUnplayed, EFalse);
+			} else {
+				iPodcastModel.FeedEngine().GetDownloadedStats(numShows, numUnplayed);		
+			}
+			titleBuffer->Des().Format(*titleFormat, numUnplayed, numShows);
 			CleanupStack::PopAndDestroy(titleFormat);
 			CleanupStack::PushL(titleBuffer);
 
@@ -804,7 +799,7 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 			}
 			break;
 		case EPodcastMarkAllPlayed:
-			iPodcastModel.ShowEngine().SetSelectionPlayed();
+			iPodcastModel.MarkSelectionPlayed();
 			UpdateListboxItemsL();
 			break;
 		case EPodcastDownloadShow:

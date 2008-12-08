@@ -82,7 +82,6 @@ protected:
 private:
 	TPodcastClientShowCategory iCurrentCategory;
 	CPodcastModel& iPodcastModel;
-	TBool iDisableCatchupMode;
 	TBool iProgressAdded;
 	};
 

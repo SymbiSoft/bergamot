@@ -333,7 +333,7 @@ void CPodcastFeedView::UpdateFeedInfoDataL(CFeedInfo* aFeedInfo, TInt aIndex, TB
 		}
 	else
 	{
-		iPodcastModel.ShowEngine().GetStatsByFeed(aFeedInfo->Uid(), showCount, unplayedCount, aFeedInfo->IsBookFeed());
+		iPodcastModel.FeedEngine().GetStatsByFeed(aFeedInfo->Uid(), showCount, unplayedCount, aFeedInfo->IsBookFeed());
 		
 		if (aFeedInfo->IsBookFeed()) {
 		    iconIndex = 2;
@@ -448,7 +448,7 @@ void CPodcastFeedView::UpdateListboxItemsL()
 					TInt iconIndex = 0;
 					TUint unplayedCount = 0;
 					TUint showCount = 0;
-					iPodcastModel.ShowEngine().GetStatsByFeed(fi->Uid(), showCount, unplayedCount, fi->IsBookFeed());
+					iPodcastModel.FeedEngine().GetStatsByFeed(fi->Uid(), showCount, unplayedCount, fi->IsBookFeed());
 					if (fi->IsBookFeed()) {
 						unplayedShows.Format(*iBooksFormat, unplayedCount, showCount);
 					} else {
@@ -756,10 +756,10 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 					TBool aUnplayedOnlyState = iPodcastModel.SettingsEngine().SelectUnplayedOnly();
 					// we only select unplayed chapters
 					iPodcastModel.SettingsEngine().SetSelectUnplayedOnly(ETrue);
-					iPodcastModel.ShowEngine().SelectShowsByFeed(feedInfo->Uid());
+					iPodcastModel.GetShowsByFeed(feedInfo->Uid());
 					iPodcastModel.SettingsEngine().SetSelectUnplayedOnly(aUnplayedOnlyState);
 
-					RShowInfoArray& showArray = iPodcastModel.ShowEngine().GetSelectedShows();
+					RShowInfoArray& showArray = iPodcastModel.ActiveShowList();
 
 					if(showArray.Count() == 0 || showArray[0] == NULL) {
 					// can't play empty books...

@@ -206,7 +206,7 @@ void CPodcastMainView::CheckForQuedDownloadsL()
 	delete iStartupCallBack;
 	iStartupCallBack = NULL;
 
-	iPodcastModel.ShowEngine().SelectShowsDownloading();
+	/*iPodcastModel.ShowEngine().SelectShowsDownloading();
 	if (iPodcastModel.ShowEngine().GetSelectedShows().Count() > 0) {
 		if(iEikonEnv->QueryWinL(R_PODCAST_ENABLE_DOWNLOADS_TITLE, R_PODCAST_ENABLE_DOWNLOADS_PROMPT))
 		{
@@ -215,7 +215,7 @@ void CPodcastMainView::CheckForQuedDownloadsL()
 			iPodcastModel.ShowEngine().StopDownloads();
 		}
 		UpdateListboxItemsL();
-	}
+	}*/
 }
 
 
