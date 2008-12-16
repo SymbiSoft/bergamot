@@ -47,6 +47,7 @@ The complete source code is found in the [http://bergamot.googlecode.com/svn/Syn
 
   * 0.41 (S60 Only) (2008-11-17) [http://bergamot.googlecode.com/svn/Sync/tags/v041 Source]
     * Fix for S60 problem with sync every 30 minutes
+    * *Note that this version seems not to be compatible with Feature Pack 2*
 
   * 0.40 (2008-11-06) [http://bergamot.googlecode.com/svn/Sync/tags/v040 Source]
     * First S60 version
