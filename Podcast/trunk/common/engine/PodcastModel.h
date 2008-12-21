@@ -35,46 +35,53 @@ class CPodcastModel : public CBase
 public:
 	static CPodcastModel* NewL();
 	~CPodcastModel();
+	
+	// Infrastructure
 	CFeedEngine& FeedEngine();
 	CShowEngine& ShowEngine();
 	CSoundEngine& SoundEngine();
 	CSettingsEngine& SettingsEngine();
-	CShowInfo* PlayingPodcast();
-	void SetPlayingPodcast(CShowInfo* aPodcast);
-	void PlayPausePodcastL(CShowInfo * aPodcast, TBool aPlayOnInit = EFalse);
-	CFeedInfo* ActiveFeedInfo();
-	void SetActiveFeedInfo(CFeedInfo* aFeedInfo);
+	sqlite3* DB();
 	CEikonEnv* EikonEnv();
-	RShowInfoArray& ActiveShowList();
-	void SetActiveShowList(RShowInfoArray& aShowArray);
 
+	// Zoom settings
 	TBool SetZoomState(TInt aZoomState);
 	TInt ZoomState();
 
+	// IAP and connection management
 	void UpdateIAPListL();
 	CDesCArrayFlat* IAPNames();
 	RArray<TPodcastIAPItem>& IAPIds();
-	
 	void SetIap(TInt aIap);
 	RConnection& Connection();
 	TConnPref& ConnPref();
 	TBool ConnectHttpSessionL(RHTTPSession& aSession);
-	
 	void SetProxyUsageIfNeeded(RHTTPSession& aSession);
 	void GetProxyInformationForConnectionL(TBool& aIsUsed, HBufC*& aServerName, TUint32& aPort);
 	TInt GetIapId();
 	
-	sqlite3* DB();
-	
+	// Show access methods
 	void GetAllShows();
 	void GetNewShows();
 	void GetShowsDownloaded();
 	void GetShowsDownloading();
 	void GetShowsByFeed(TUint aFeedUid);
 	void MarkSelectionPlayed();
-	
+	RShowInfoArray& ActiveShowList();
+		
+	// Feed access methods
+	void GetFeedList();
+	void GetBookList();
+	RFeedInfoArray& ActiveFeedList();
+	CFeedInfo* ActiveFeedInfo();
+
+	void SetActiveFeedInfo(CFeedInfo* aFeedInfo);
 	TInt FindActiveShowByUid(TUint aUid);
 	
+	CShowInfo* PlayingPodcast();
+	void SetPlayingPodcast(CShowInfo* aPodcast);
+	void PlayPausePodcastL(CShowInfo * aPodcast, TBool aPlayOnInit = EFalse);
+
 protected:
 	CPodcastModel();
 	void ConstructL();
@@ -87,6 +94,7 @@ private:
    CSettingsEngine *iSettingsEngine;
    
    RShowInfoArray iActiveShowList;
+   RFeedInfoArray iActiveFeedList;
    CFeedInfo *iActiveFeed;
    TInt iZoomState;
    

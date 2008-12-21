@@ -8,6 +8,11 @@ const TInt KFeedTitleLength=256;
 const TInt KFeedUrlLength=1024;
 const TInt KFeedDescriptionLength=2048;
 
+enum TFeedType {
+	EShowFeed,
+	EBookFeed
+};
+
 class CFeedInfo : public CBase
 	{
 	public:
@@ -34,8 +39,8 @@ class CFeedInfo : public CBase
 		const TDesC& ImageFileName() const;
 		void SetImageFileNameL(const TDesC &aFileName);
 	
-		TBool IsBookFeed();
-		void SetIsBookFeed();
+		TFeedType FeedType();
+		void SetFeedType(TFeedType aFeedType);
 		
 		void SetCustomTitle();
 		TBool CustomTitle();
@@ -53,7 +58,7 @@ class CFeedInfo : public CBase
 		TTime iBuildDate;
 		TTime iLastUpdated;
 		TUint iUid;
-		TBool iIsBookFeed;
+		TFeedType iFeedType;
 		TBool iCustomTitle;
 	};
 

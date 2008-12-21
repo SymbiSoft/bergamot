@@ -39,15 +39,15 @@ public:
 	TBool UpdateFeedL(TUint aFeedUid);
 	void UpdateAllFeedsL();
 	void CancelUpdateAllFeedsL();
-	const RFeedInfoArray& GetSortedFeeds() const;
+	void GetFeedsByType(RFeedInfoArray& aFeedList, TFeedType aFeedType);
 	CFeedInfo* GetFeedInfoByUid(TUint aFeedUid);	
-	void GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed, TBool aIsBookFeed );
+	void GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed);
 	void GetDownloadedStats(TUint &aNumShows, TUint &aNumUnplayed);
-
+	TUint GetFeedCountByType(TFeedType aFeedType);
+	
 	void AddBookL(const TDesC& aBookTitle, CDesCArrayFlat* aFileNameArray);
 	void AddBookChaptersL(CFeedInfo& aFeedInfo, CDesCArrayFlat* aFileNameArray);
 	void RemoveBookL(TUint aUid);
-	const RFeedInfoArray& GetSortedBooks() const;
 	void ImportBookL(const TDesC& aTitle, const TDesC& aFile);
 
 
@@ -97,16 +97,17 @@ private:
 	void NotifyFeedUpdateComplete();
 
 private:
-	void DBLoadFeeds();
 	TBool DBRemoveFeed(TUint aUid);
 	TBool DBAddFeed(CFeedInfo *item);
 	CFeedInfo* DBGetFeedInfoByUid(TUint aFeedUid);	
-	TUint DBGetFeedCount();
+	TUint DBGetFeedCountByType(TFeedType aFeedType);
+	void DBGetFeedsByType(RFeedInfoArray& aFeedArray, TFeedType aFeedType);
 	TBool DBUpdateFeed(CFeedInfo *aItem);
 	void DBGetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed);
 
 		
 private:
+	// HTTP client and download state
 	CHttpClient* iFeedClient;
 	TClientState iClientState;
 	CFeedTimer iFeedTimer;
@@ -117,14 +118,8 @@ private:
 	
 	// RSS parser
 	CFeedParser* iParser;
-	
-	// the list of feeds
-	RFeedInfoArray iSortedFeeds;
 
-	// the list of Books
-	RFeedInfoArray iSortedBooks;
-
-
+	// Active feed when updating
 	CFeedInfo *iActiveFeed;
 	TFileName iUpdatingFeedFileName;
 

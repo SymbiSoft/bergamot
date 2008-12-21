@@ -31,10 +31,12 @@ CPodcastModel::~CPodcastModel()
 	delete iTelephonyListener;
 #endif
 	iActiveShowList.ResetAndDestroy();
+	iActiveFeedList.ResetAndDestroy();
 	delete iFeedEngine;
 	delete iSoundEngine;
 	delete iSettingsEngine;
 	iActiveShowList.Close();
+	iActiveFeedList.Close();
 	delete iShowEngine;
 
 	delete iIapNameArray;
@@ -201,18 +203,6 @@ RShowInfoArray& CPodcastModel::ActiveShowList()
 {
 	return iActiveShowList;
 }
-
-void CPodcastModel::SetActiveShowList(RShowInfoArray& aShowArray)
-{
-	iActiveShowList.Reset();
-	TInt cnt = aShowArray.Count();
-
-	for(TInt loop = 0;loop < cnt; loop++)
-	{
-		iActiveShowList.Append(aShowArray[loop]);
-	}
-}
-
 
 TBool CPodcastModel::SetZoomState(TInt aZoomState)
 {
@@ -467,4 +457,21 @@ TInt CPodcastModel::FindActiveShowByUid(TUint aUid)
 	}
 	
 	return KErrNotFound;
+	}
+
+void CPodcastModel::GetFeedList()
+	{
+	iActiveFeedList.ResetAndDestroy();
+	iFeedEngine->GetFeedsByType(iActiveFeedList, EShowFeed);
+	}
+
+void CPodcastModel::GetBookList()
+	{
+	iActiveFeedList.ResetAndDestroy();
+	iFeedEngine->GetFeedsByType(iActiveFeedList, EBookFeed);
+	}
+
+RFeedInfoArray& CPodcastModel::ActiveFeedList()
+	{
+	return iActiveFeedList;
 	}

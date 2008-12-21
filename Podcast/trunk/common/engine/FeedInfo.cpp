@@ -157,14 +157,14 @@ void CFeedInfo::SetImageFileNameL(const TDesC& aFileName)
 	}
 
 
-TBool CFeedInfo::IsBookFeed()
+TFeedType CFeedInfo::FeedType()
 	{
-	return iIsBookFeed;
+	return iFeedType;
 	}
 
-void CFeedInfo::SetIsBookFeed()
+void CFeedInfo::SetFeedType(TFeedType aFeedType)
 	{
-	iIsBookFeed = ETrue;
+	iFeedType = aFeedType;
 	}
 
 TBool CFeedInfo::CustomTitle()
