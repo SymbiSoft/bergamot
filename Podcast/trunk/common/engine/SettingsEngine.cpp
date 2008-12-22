@@ -308,7 +308,7 @@ TInt CSettingsEngine::UpdateFeedInterval()
 void CSettingsEngine::SetUpdateFeedInterval(TInt aInterval)
 	{
 	iUpdateFeedInterval = aInterval;
-	iPodcastModel.FeedEngine().RunFeedTimer();
+	//iPodcastModel.FeedEngine().RunFeedTimer();
 	}
 
 TInt CSettingsEngine::MaxSimultaneousDownloads() 
@@ -349,7 +349,7 @@ TTime CSettingsEngine::UpdateFeedTime()
 void CSettingsEngine::SetUpdateFeedTime(TTime aUpdateTime)
 	{
 	iUpdateFeedTime = aUpdateTime;
-	iPodcastModel.FeedEngine().RunFeedTimer();
+	//iPodcastModel.FeedEngine().RunFeedTimer();
 	}
 
 TInt CSettingsEngine::SpecificIAP()

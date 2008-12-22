@@ -519,7 +519,7 @@ void CPodcastClientFeedView::HandleListBoxEventL(CQikListBox* /*aListBox*/, TQik
 			if(aItemIndex >= 0 && aItemIndex < sortedItems->Count())
 				{
 				iPodcastModel.ActiveShowList().Reset();
-				iPodcastModel.SetActiveFeedInfo((*sortedItems)[aItemIndex]);
+				iPodcastModel.SetActiveFeedUid((*sortedItems)[aItemIndex]->Uid());
 				TVwsViewId showsView = TVwsViewId(KUidPodcastClientID, KUidPodcastShowsViewID);
 				iQikAppUi.ActivateViewL(showsView,  TUid::Uid(EShowFeedShows), KNullDesC8());
 				}
@@ -756,7 +756,7 @@ void CPodcastClientFeedView::HandleCommandL(CQikCommand& aCommand)
 				CFeedInfo *feedInfo = iPodcastModel.FeedEngine().GetFeedInfoByUid(data->ItemId());
 				
 				if (feedInfo != NULL) {
-					iPodcastModel.SetActiveFeedInfo(feedInfo);
+					iPodcastModel.SetActiveFeedUid(feedInfo->Uid());
 					TBool aUnplayedOnlyState = iPodcastModel.SettingsEngine().SelectUnplayedOnly();
 					// we only select unplayed chapters
 					iPodcastModel.SettingsEngine().SetSelectUnplayedOnly(ETrue);
@@ -777,7 +777,7 @@ void CPodcastClientFeedView::HandleCommandL(CQikCommand& aCommand)
 					showUid() = startShow->Uid();
 					TVwsViewId viewId = TVwsViewId(KUidPodcastClientID, KUidPodcastPlayViewID);
 					iQikAppUi.ActivateViewL(viewId, TUid::Uid(KActiveShowUIDCmd), showUid);											
-					iPodcastModel.PlayPausePodcastL(startShow, ETrue);
+					iPodcastModel.PlayPausePodcastL(startShow->Uid(), ETrue);
 				}
 				data->Close();
 				}

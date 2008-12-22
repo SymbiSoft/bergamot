@@ -123,24 +123,19 @@ CEikonEnv* CPodcastModel::EikonEnv()
 	return iEnv;
 }
 
-void CPodcastModel::SetPlayingPodcast(CShowInfo* aPodcast)
+void CPodcastModel::SetPlayingShowUid(TUint aShowUid)
 {
-	iPlayingPodcast = aPodcast;
+	iPlayingShowUid = aShowUid;
 }
 
 CShowInfo* CPodcastModel::PlayingPodcast()
 {
-	return iPlayingPodcast;
+	return iShowEngine->GetShowByUid(iPlayingShowUid);
 }
 
-CFeedEngine& CPodcastModel::FeedEngine()
+TUint CPodcastModel::PlayingShowUid()
 {
-	return *iFeedEngine;
-}
-	
-CShowEngine& CPodcastModel::ShowEngine()
-{
-	return *iShowEngine;
+	return iPlayingShowUid;
 }
 
 CSoundEngine& CPodcastModel::SoundEngine()
@@ -153,50 +148,54 @@ CSettingsEngine& CPodcastModel::SettingsEngine()
 	return *iSettingsEngine;
 }
 
-void CPodcastModel::PlayPausePodcastL(CShowInfo* aPodcast, TBool aPlayOnInit) 
+void CPodcastModel::PlayPausePodcastL(TUint aShowUid, TBool aPlayOnInit) 
 	{
 	
-	// special treatment if this podcast is already active
-	if (iPlayingPodcast == aPodcast && SoundEngine().State() > ESoundEngineOpening ) {
-		if (aPodcast->PlayState() == EPlaying) {
+	// special treatment if this show is already active
+	CShowInfo *playing = PlayingPodcast();
+	if (iPlayingShowUid == aShowUid && SoundEngine().State() > ESoundEngineOpening ) {
+
+		if (playing->PlayState() == EPlaying) {
 			SoundEngine().Pause();
-			aPodcast->SetPosition(iSoundEngine->Position());
-			aPodcast->SetPlayState(EPlayed);
+			playing->SetPosition(iSoundEngine->Position());
+			playing->SetPlayState(EPlayed);
+			iShowEngine->UpdateShow(playing);
 		} else {
 			iSoundEngine->Play();
 		}
 	} else {
 		// switching file, so save position
 		iSoundEngine->Pause();
-		if (iPlayingPodcast != NULL) {
-			iPlayingPodcast->SetPosition(iSoundEngine->Position());
+		if (playing != NULL) {
+			playing->SetPosition(iSoundEngine->Position());
 		}
 		
 		iSoundEngine->Stop(EFalse);
-
+		CShowInfo *toBePlayed = iShowEngine->GetShowByUid(aShowUid);
 		// we play video podcasts through the external player
-		if(aPodcast != NULL && aPodcast->ShowType() != EVideoPodcast) {
-			DP1("Starting: %S", &(aPodcast->FileName()));
-			TRAPD( error, iSoundEngine->OpenFileL(aPodcast->FileName(), aPlayOnInit) );
+		if(toBePlayed != NULL && toBePlayed->ShowType() != EVideoPodcast) {
+			DP1("Starting: %S", &(toBePlayed->FileName()));
+			TRAPD( error, iSoundEngine->OpenFileL(toBePlayed->FileName(), aPlayOnInit) );
 			if (error != KErrNone) {
 				DP1("Error: %d", error);
 			} else {
-				iSoundEngine->SetPosition(aPodcast->Position().Int64() / 1000000);
+				iSoundEngine->SetPosition(toBePlayed->Position().Int64() / 1000000);
+				iShowEngine->UpdateShow(toBePlayed);
 			}
 		}
 
-		iPlayingPodcast = aPodcast;		
+		iPlayingShowUid = aShowUid;		
 	}
 }
 
 CFeedInfo* CPodcastModel::ActiveFeedInfo()
 {
-	return iActiveFeed;
+	return iFeedEngine->GetFeedInfoByUid(iActiveFeedUid);
 }
 
-void CPodcastModel::SetActiveFeedInfo(CFeedInfo* aFeedInfo)
+void CPodcastModel::SetActiveFeedUid(TUint aFeedUid)
 {
-	iActiveFeed = aFeedInfo;
+	iActiveFeedUid = aFeedUid;
 }
 
 RShowInfoArray& CPodcastModel::ActiveShowList()
@@ -443,7 +442,7 @@ void CPodcastModel::MarkSelectionPlayed()
 	{
 	for (int i=0;i<iActiveShowList.Count();i++) {
 		if(iActiveShowList[i]->PlayState() != EPlayed) {
-			iShowEngine->SetShowPlayState(iActiveShowList[i],EPlayed);
+			//iShowEngine->SetShowPlayState(iActiveShowList[i],EPlayed);
 		}
 	}
 	}
@@ -474,4 +473,54 @@ void CPodcastModel::GetBookList()
 RFeedInfoArray& CPodcastModel::ActiveFeedList()
 	{
 	return iActiveFeedList;
+	}
+
+void CPodcastModel::RemoveFeed(TUint aUid) 
+	{
+	/*CFeedInfo *feedToRemove = GetFeedInfoByUid(aUid);
+	
+	if (feedToRemove != NULL) {
+		iShowEngine.DeleteAllShowsByFeed(aUid);
+						
+		//delete the image file if it exists
+		if ( (feedToRemove->ImageFileName().Length() >0) && BaflUtils::FileExists(iFs, feedToRemove->ImageFileName() ))
+			{
+			iFs.Delete(feedToRemove->ImageFileName());
+			}
+			
+		//delete the folder. It has the same name as the title.
+		TFileName filePath;
+		filePath.Copy(iSettingsEngine().BaseDir());
+		filePath.Append(feedToRemove->Title());
+		filePath.Append(_L("\\"));
+		iFs.RmDir(filePath);
+
+		delete feedToRemove;
+		
+		DP("Removed feed from array");
+		
+		// now remove it from DB
+		iFeedEngine.RemoveFeed(aUid);
+
+		return;
+	}*/
+}
+
+TUint CPodcastModel::GetShowsDownloadingCount()
+	{
+	return iShowEngine->GetNumDownloadingShows();
+	}
+
+void CPodcastModel::ResumeDownloads()
+	{
+	iShowEngine->ResumeDownloads();
+	}
+
+void CPodcastModel::StopDownloads()
+	{
+	iShowEngine->StopDownloads();
+	}
+void CPodcastModel::AddShowEngineObserver(MShowEngineObserver *aObserver)
+	{
+	iShowEngine->AddObserver(aObserver);
 	}

@@ -281,13 +281,13 @@ void CPodcastClientPlayView::HandleCommandL(CQikCommand& aCommand)
 		{
 		case EPodcastMarkAsPlayed:
 			{
-			iPodcastModel.ShowEngine().SetShowPlayState(iShowInfo, EPlayed);
+			//iPodcastModel.ShowEngine().SetShowPlayState(iShowInfo, EPlayed);
 			UpdateViewL();
 			}
 			break;
 		case EPodcastMarkAsUnplayed:
 			{
-			iPodcastModel.ShowEngine().SetShowPlayState(iShowInfo, ENeverPlayed);
+			//iPodcastModel.ShowEngine().SetShowPlayState(iShowInfo, ENeverPlayed);
 			UpdateViewL();
 			}
 			break;
@@ -353,7 +353,7 @@ void CPodcastClientPlayView::HandleCommandL(CQikCommand& aCommand)
 				}
 			else
 				{
-				iPodcastModel.PlayPausePodcastL(iShowInfo, ETrue);
+				iPodcastModel.PlayPausePodcastL(iShowInfo->Uid(), ETrue);
 				}
 			UpdateViewL();
 			}
@@ -364,7 +364,7 @@ void CPodcastClientPlayView::HandleCommandL(CQikCommand& aCommand)
 			iPlayProgressbar->SetFocusing(EFalse);
 			iPodcastModel.SoundEngine().Stop();
 			iPodcastModel.PlayingPodcast()->SetPosition(0);
-			iPodcastModel.SetPlayingPodcast(NULL);
+			//iPodcastModel.SetPlayingPodcast(NULL);
 			}
 			break;
 		case EPodcastResumeDownloads:
@@ -381,7 +381,7 @@ void CPodcastClientPlayView::HandleCommandL(CQikCommand& aCommand)
 			break;
 		case EPodcastDownloadShow:
 			{
-			iPodcastModel.ShowEngine().AddDownload(iShowInfo);
+			//iPodcastModel.ShowEngine().AddDownload(iShowInfo);
 			UpdateViewL();
 			}
 			break;
@@ -500,7 +500,7 @@ void CPodcastClientPlayView::ViewActivatedL(const TVwsViewId &aPrevViewId,
 		SetZoomFactorL(CQikAppUi::ZoomFactorL(iLastZoomLevel, *iEikonEnv));
 		}
 
-	iShowInfo = iPodcastModel.ShowEngine().GetShowByUidL(iCurrentViewShowUid);
+	//iShowInfo = iPodcastModel.GetShowByUid(iCurrentViewShowUid);
 
 	UpdateViewL();
 
@@ -518,7 +518,7 @@ void CPodcastClientPlayView::ViewActivatedL(const TVwsViewId &aPrevViewId,
 					|| (iPodcastModel.PlayingPodcast() != NULL
 							&& iPodcastModel.PlayingPodcast()->Uid() == iShowInfo->Uid())))
 		{
-		iPodcastModel.PlayPausePodcastL(iShowInfo);
+		iPodcastModel.PlayPausePodcastL(iShowInfo->Uid());
 		}
 	}
 
@@ -555,13 +555,13 @@ void CPodcastClientPlayView::ShowDownloadUpdatedL(
 
 	if (aPercentOfCurrentDownload == KOneHundredPercent)
 		{
-		if (iPodcastModel.PlayingPodcast()->Uid() == iPodcastModel.ShowEngine().ShowDownloading()->Uid())
+		if (iPodcastModel.PlayingPodcast() != NULL && iPodcastModel.PlayingPodcast()->Uid() == iPodcastModel.ShowEngine().ShowDownloading()->Uid())
 			{
 			// To update icon list status and commands
 			CShowInfo* playingPodcast = iPodcastModel.PlayingPodcast();
 			// Reset current podcast statsus
 			iPodcastModel.PlayPausePodcastL(NULL);
-			iPodcastModel.PlayPausePodcastL(playingPodcast);
+			iPodcastModel.PlayPausePodcastL(playingPodcast->Uid());
 			}
 		iBytesDownloaded = 0;
 		UpdateViewL();
@@ -951,7 +951,7 @@ void CPodcastClientPlayView::UpdatePlayStatusL()
 			else
 				if (showInfo == NULL) // No other show playing start to init this one
 					{
-					iPodcastModel.PlayPausePodcastL(iShowInfo);
+					iPodcastModel.PlayPausePodcastL(iShowInfo->Uid());
 					}
 			}
 		}

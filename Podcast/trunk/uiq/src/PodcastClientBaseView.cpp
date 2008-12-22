@@ -7,7 +7,6 @@
 #include "PodcastClientFeedView.h"
 #include "PodcastModel.h"
 #include "SoundEngine.h"
-#include "ShowEngine.h"
 
 /**
 Creates and constructs the view.
@@ -56,12 +55,12 @@ void CPodcastClientBaseView::CheckForQuedDownloadsL()
 	delete iStartupCallBack;
 	iStartupCallBack = NULL;
 
-	if (iPodcastModel.ShowEngine().GetNumDownloadingShowsL() > 0) {
+	if (iPodcastModel.GetShowsDownloadingCount() > 0) {
 		if(iEikonEnv->QueryWinL(R_PODCAST_ENABLE_DOWNLOADS_TITLE, R_PODCAST_ENABLE_DOWNLOADS_PROMPT))
 		{
-			iPodcastModel.ShowEngine().ResumeDownloads();
+			iPodcastModel.ResumeDownloads();
 		} else {
-			iPodcastModel.ShowEngine().StopDownloads();
+			iPodcastModel.StopDownloads();
 		}
 		UpdateListboxItemsL();
 	}
@@ -114,7 +113,7 @@ void CPodcastClientBaseView::ViewConstructL()
 CPodcastClientBaseView::CPodcastClientBaseView(CQikAppUi& aAppUi, CPodcastModel& aPodcastModel):CPodcastClientView(aAppUi, aPodcastModel)
 {
 	iCheckForQuedDownloads = ETrue;
-	iPodcastModel.ShowEngine().AddObserver(this);
+	iPodcastModel.AddShowEngineObserver(this);
 }
 
 CPodcastClientBaseView::~CPodcastClientBaseView()
@@ -189,7 +188,7 @@ void CPodcastClientBaseView::UpdateListboxItemsL()
 					} else {
 						iEikonEnv->ReadResourceL(formatting, R_PODCAST_PENDING_STATUS_ACTIVE);				
 					}
-					statusText.Format(formatting, iPodcastModel.ShowEngine().GetNumDownloadingShowsL());
+					statusText.Format(formatting, iPodcastModel.ShowEngine().GetNumDownloadingShows());
 					data->SetTextL(statusText, EQikListBoxSlotText2);				
 					model.DataUpdatedL(loop);
 				}break;

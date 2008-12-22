@@ -4,11 +4,13 @@
 #include <e32base.h>
 #include <APGCLI.H>
 #include "ShowInfo.h"
-#include "PodcastModel.h"
+//#include "PodcastModel.h"
 #include "HttpClient.h"
 #include "ShowEngineObserver.h"
 #include "MetaDataReader.h"
 #include "sqlite3.h"
+
+class CPodcastModel;
 
 class CShowEngine : public CBase, public MHttpClientObserver, public MMetaDataReaderObserver
 {
@@ -17,46 +19,52 @@ public:
 	virtual ~CShowEngine();
 	
 public:
-	void AddDownload(CShowInfo *info);
+	
+	// download management
+	void AddDownload(TUint aUid);
 	TBool RemoveDownload(TUint aUid);
 	void RemoveAllDownloads();
-
 	void StopDownloads();
 	void ResumeDownloads();
 	TBool DownloadsStopped();
-
-	TInt GetNumDownloadingShowsL();
+	TUint GetNumDownloadingShows();
 	CShowInfo* ShowDownloading();
-	CShowInfo* GetShowByUidL(TUint aShowUid);
-	CShowInfo* GetNextShowByTrackL(CShowInfo* aShowInfo);
-	void SetShowPlayState(CShowInfo* aShowInfo, TPlayState aPlayState);
-	
+	void GetStatsForDownloaded(TUint &aNumShows, TUint &aNumUnplayed );
+
 	// show access methods
+	CShowInfo* GetShowByUid(TUint aShowUid);
+	CShowInfo* GetNextShowByTrack(CShowInfo* aShowInfo);
+	TBool AddShow(CShowInfo *aItem);
+	TBool UpdateShow(CShowInfo *aItem);
+	TUint GetDownloadsCount();
+	CShowInfo* GetNextDownload();
 	void GetAllShows(RShowInfoArray &aArray);
 	void GetShowsByFeed(RShowInfoArray &aArray, TUint aFeedUid);
 	void GetShowsDownloaded(RShowInfoArray &aArray);
 	void GetNewShows(RShowInfoArray &aArray);
 	void GetShowsDownloading(RShowInfoArray &aArray);
-	CShowInfo* DBGetShowByFileName(TFileName aFileName);
-	
-	void CompleteL(CHttpClient* aClient, TBool aSuccessful);
-	TBool AddShow(CShowInfo *item);
+	CShowInfo* GetShowByFileName(TFileName aFileName);
+
+	// file management methods
 	void DeletePlayedShows();
 	void DeleteAllShowsByFeed(TUint aFeedUid,TBool aDeleteFiles=ETrue);
-	void DeleteShow(TUint aShowUid, TBool aRemoveFile=ETrue);
-	
+	TBool DeleteShow(TUint aUid, TBool aRemoveFile=ETrue);
 	void CheckFilesL();
-	void GetStatsForDownloaded(TUint &aNumShows, TUint &aNumUnplayed );
+
+
+	// callback handling
 	void AddObserver(MShowEngineObserver *observer);
 	void RemoveObserver(MShowEngineObserver *observer);
-
-	void NotifyShowListUpdated();
 	
 	CMetaDataReader& MetaDataReader();
+
+	void NotifyShowListUpdated();
+
 protected:
 	// from HttpClientObserver, dont have to be public
 	void Connected(CHttpClient* aClient);
 	void Disconnected(CHttpClient* aClient);
+	void CompleteL(CHttpClient* aClient, TBool aSuccessful);
 	void Progress(CHttpClient* aHttpClient, int aBytes, int aTotalBytes);
 	void DownloadInfo(CHttpClient* aClient, int aSize);
 	void FileError(TUint aError);
@@ -64,6 +72,7 @@ protected:
 	void ReadMetaData(CShowInfo *aShowInfo);
 	void ReadMetaDataComplete();
 	void GetMimeType(const TDesC& aFileName, TDes& aMimeType);
+
 private:
 	CShowEngine(CPodcastModel& aPodcastModel);
 	void ConstructL();
@@ -76,29 +85,7 @@ private:
 	void DownloadNextShow();
 	void ListDirL(TFileName &folder);
 
-	static TInt CompareShowsByDate(const CShowInfo &a, const CShowInfo &b);
-	static TBool CompareShowsByUid(const CShowInfo &a, const CShowInfo &b);
-	static TInt CompareShowsByTitle(const CShowInfo &a, const CShowInfo &b);
-	static TInt CompareShowsByTrackNo(const CShowInfo &a, const CShowInfo &b);
-	
-private:
-	// DB methods
-	CShowInfo* DBGetShowByUid(TUint aUid);
-	void DBFillShowInfoFromStmt(sqlite3_stmt *st, CShowInfo* showInfo);
-	TBool DBAddShow(CShowInfo *aItem);
-	TBool DBUpdateShow(CShowInfo *aItem);
-	void DBGetShowsByFeed(RShowInfoArray& aShowArray, TUint aFeedUid);
-	void DBGetAllShows(RShowInfoArray& aShowArray);
-	void DBGetNewShows(RShowInfoArray& aShowArray);
-	void DBGetDownloadedShows(RShowInfoArray& aShowArray);
-	TBool DBDeleteAllShowsByFeed(TUint aFeedUid);
-	TBool DBDeleteShow(TUint aUid);
-	void DBRemoveAllDownloads();
-	void DBRemoveDownload(TUint aUid);
-	void DBGetAllDownloads(RShowInfoArray& aShowArray);
-	TUint DBGetDownloadsCount();
-	void DBAddDownload(TUint aUid);
-	CShowInfo* DBGetNextDownload();
+	void FillShowInfoFromStmt(sqlite3_stmt *st, CShowInfo* showInfo);
 	
 private:
 	CHttpClient* iShowClient;

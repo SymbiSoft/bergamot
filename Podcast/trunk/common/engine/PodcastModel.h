@@ -6,6 +6,7 @@
 #include <CommDbConnPref.h>
 #include <es_sock.h>
 #include <http/rhttpsession.h>
+#include "ShowEngine.h"
 #include "FeedInfo.h"
 #include "ShowInfo.h"
 #include "TelephonyListener.h"
@@ -13,9 +14,10 @@
 #include "debug.h"
 #include "sqlite3.h"
 
+
 class CFeedEngine;
 class CSoundEngine;
-class CShowEngine;
+//class CShowEngine;
 class CSettingsEngine;
 class CCommsDatabase;
 
@@ -37,8 +39,8 @@ public:
 	~CPodcastModel();
 	
 	// Infrastructure
-	CFeedEngine& FeedEngine();
-	CShowEngine& ShowEngine();
+	CFeedEngine& FeedEngine() { return *iFeedEngine; };
+	CShowEngine& ShowEngine() { return *iShowEngine; };
 	CSoundEngine& SoundEngine();
 	CSettingsEngine& SettingsEngine();
 	sqlite3* DB();
@@ -65,9 +67,15 @@ public:
 	void GetNewShows();
 	void GetShowsDownloaded();
 	void GetShowsDownloading();
+	TUint GetShowsDownloadingCount();
 	void GetShowsByFeed(TUint aFeedUid);
 	void MarkSelectionPlayed();
 	RShowInfoArray& ActiveShowList();
+	
+	
+	void ResumeDownloads();
+	void StopDownloads();
+	void AddShowEngineObserver(MShowEngineObserver *aObserver);
 		
 	// Feed access methods
 	void GetFeedList();
@@ -75,43 +83,49 @@ public:
 	RFeedInfoArray& ActiveFeedList();
 	CFeedInfo* ActiveFeedInfo();
 
-	void SetActiveFeedInfo(CFeedInfo* aFeedInfo);
+	void SetActiveFeedUid(TUint aFeedUid);
 	TInt FindActiveShowByUid(TUint aUid);
 	
 	CShowInfo* PlayingPodcast();
-	void SetPlayingPodcast(CShowInfo* aPodcast);
-	void PlayPausePodcastL(CShowInfo * aPodcast, TBool aPlayOnInit = EFalse);
+	TUint PlayingShowUid();
+	void SetPlayingShowUid(TUint aShowUid);
+	void PlayPausePodcastL(TUint aShowUid, TBool aPlayOnInit = EFalse);
 
+	void RemoveFeed(TUint aUid);
 protected:
 	CPodcastModel();
 	void ConstructL();
-private:	
-   CShowInfo* iPlayingPodcast;
-   
+	
+private:	   
+	
+   // infrastructure
    CFeedEngine* iFeedEngine;
    CShowEngine* iShowEngine;
    CSoundEngine* iSoundEngine;
    CSettingsEngine *iSettingsEngine;
+   sqlite3* iDB;
+   CEikonEnv* iEnv;
    
+   // active data sets
    RShowInfoArray iActiveShowList;
    RFeedInfoArray iActiveFeedList;
-   CFeedInfo *iActiveFeed;
+
+   // UIDs to active and playing shows
+   TUint iActiveFeedUid;
+   TUint iPlayingShowUid;
+
    TInt iZoomState;
    
-   CEikonEnv* iEnv;
+   // connection
    RArray<TPodcastIAPItem> iIapIdArray;
    CDesCArrayFlat* iIapNameArray;
    CCommsDatabase* iCommDB;
-   
    RSocketServ iSocketServ;
-
    RConnection iConnection;
    TCommDbConnPref iConnPref;
    
    CTelephonyListener *iTelephonyListener;
    CRemoteControlListener *iRemConListener;
-   
-   sqlite3* iDB;
 };
 
 #endif // PODCASTMODEL_H

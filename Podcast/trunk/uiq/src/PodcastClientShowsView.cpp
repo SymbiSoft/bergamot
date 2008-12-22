@@ -133,7 +133,7 @@ void CPodcastClientShowsView::HandleCommandL(CQikCommand& aCommand)
 			TInt index = iListbox->CurrentItemIndex();
 			if(index >= 0 && index < iPodcastModel.ActiveShowList().Count())
 			{
-				iPodcastModel.ShowEngine().SetShowPlayState(iPodcastModel.ActiveShowList()[index], EPlayed);
+				//iPodcastModel.ShowEngine().SetShowPlayState(iPodcastModel.ActiveShowList()[index], EPlayed);
 				if (iPodcastModel.SettingsEngine().SelectUnplayedOnly()) {
 					MQikListBoxModel& model(iListbox->Model());
 					model.ModelBeginUpdateLC();
@@ -149,7 +149,7 @@ void CPodcastClientShowsView::HandleCommandL(CQikCommand& aCommand)
 			TInt index = iListbox->CurrentItemIndex();
 			if(index >= 0 && index < iPodcastModel.ActiveShowList().Count())
 			{
-				iPodcastModel.ShowEngine().SetShowPlayState(iPodcastModel.ActiveShowList()[index], ENeverPlayed);
+				//iPodcastModel.ShowEngine().SetShowPlayState(iPodcastModel.ActiveShowList()[index], ENeverPlayed);
 				UpdateListboxItemsL();
 			}
 			}break;
@@ -235,7 +235,7 @@ void CPodcastClientShowsView::HandleCommandL(CQikCommand& aCommand)
 				TInt index = iListbox->CurrentItemIndex();
 				if(index >= 0 && index < iPodcastModel.ActiveShowList().Count())
 				{
-					iPodcastModel.ShowEngine().AddDownload(iPodcastModel.ActiveShowList()[index]);
+					//iPodcastModel.ShowEngine().AddDownload(iPodcastModel.ActiveShowList()[index]);
 					UpdateShowItemL(iPodcastModel.ActiveShowList()[index]);
 				
 				}
@@ -329,7 +329,7 @@ void CPodcastClientShowsView::FeedInfoUpdated(CFeedInfo* aFeedInfo)
 {
 	if(iPodcastModel.ActiveFeedInfo() != NULL && aFeedInfo->Uid() == iPodcastModel.ActiveFeedInfo()->Uid())
 	{
-		iPodcastModel.SetActiveFeedInfo(aFeedInfo);
+		iPodcastModel.SetActiveFeedUid(aFeedInfo->Uid());
 		TRAP_IGNORE(UpdateFeedUpdateStateL());
 		// Title might have changed
 		TRAP_IGNORE(UpdateListboxItemsL());
@@ -390,7 +390,8 @@ void CPodcastClientShowsView::ShowDownloadUpdatedL(TInt aPercentOfCurrentDownloa
 		// we show progress bar only for pending shows and inside the feed to which
 	    // the active download belongs
 		if ((iCurrentCategory == EShowPendingShows && aBytesOfCurrentDownload != -1) ||
-				(iPodcastModel.ShowEngine().ShowDownloading()!= NULL && iPodcastModel.ActiveFeedInfo() != NULL && iPodcastModel.ShowEngine().ShowDownloading()->FeedUid() == iPodcastModel.ActiveFeedInfo()->Uid() &&
+				(iPodcastModel.ShowEngine().ShowDownloading()!= NULL && iPodcastModel.ActiveFeedInfo() != NULL && 
+				iPodcastModel.ShowEngine().ShowDownloading()->FeedUid() == iPodcastModel.ActiveFeedInfo()->Uid() &&
 				aPercentOfCurrentDownload>=0 && aPercentOfCurrentDownload < KOneHundredPercent))
 		{
 			if(!iProgressAdded)
@@ -419,15 +420,9 @@ void CPodcastClientShowsView::ShowDownloadUpdatedL(TInt aPercentOfCurrentDownloa
 			UpdateCommandsL();
 			if(iCurrentCategory == EShowPendingShows && iPodcastModel.ShowEngine().ShowDownloading() != NULL)
 			{
-				// First find the item, to remove it if we are in the pending show list
-				TInt index = iPodcastModel.FindActiveShowByUid(iPodcastModel.ShowEngine().ShowDownloading()->Uid());
-				
-				if(index != KErrNotFound)
-				{
-					iListbox->RemoveItemL(index);
-					iPodcastModel.ActiveShowList().Remove(index);
-					UpdateListboxItemsL();
-				}
+				iListbox->RemoveItemL(0);
+				iPodcastModel.GetShowsDownloading();
+				UpdateListboxItemsL();
 			}
 		}
 
@@ -489,7 +484,7 @@ void CPodcastClientShowsView::GetShowIcons(CShowInfo* aShowInfo, TInt& aImageId,
 		aImageId = EMbmPodcastclientAudiobookchapter_40x40;
 		aMaskId = EMbmPodcastclientAudiobookchapter_40x40m;
 	} else {
-		if (iPodcastModel.PlayingPodcast() == aShowInfo) { // && iPodcastModel.SoundEngine().State() == ESoundEnginePlaying) {
+		if (iPodcastModel.PlayingShowUid() == aShowInfo->Uid()) { // && iPodcastModel.SoundEngine().State() == ESoundEnginePlaying) {
 					aImageId = EMbmPodcastclientShow_playing_40x40;
 					aMaskId = EMbmPodcastclientShow_playing_40x40m;
 		} else {

@@ -1,5 +1,6 @@
 #include "FeedTimer.h"
 #include "FeedEngine.h"
+#include "debug.h"
 
 CFeedTimer::CFeedTimer(CFeedEngine *aFeedEngine) : CTimer(EPriorityIdle), iFeedEngine(aFeedEngine) 
 	{

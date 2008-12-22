@@ -11,6 +11,7 @@
 #include "FeedEngineObserver.h"
 #include "FeedTimer.h"
 #include "sqlite3.h"
+#include "badesca.h"
 
 
 class CPodcastModel;
@@ -35,7 +36,8 @@ public:
 	TBool AddFeed(CFeedInfo *item);
 	void ImportFeedsL(const TDesC& aFile);
 	TBool ExportFeedsL(TFileName& aFile);
-	void RemoveFeed(TUint aUid);
+	TBool RemoveFeed(TUint aUid);
+	TBool UpdateFeedInfo(CFeedInfo *aFeedInfo);
 	TBool UpdateFeedL(TUint aFeedUid);
 	void UpdateAllFeedsL();
 	void CancelUpdateAllFeedsL();
@@ -44,6 +46,7 @@ public:
 	void GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed);
 	void GetDownloadedStats(TUint &aNumShows, TUint &aNumUnplayed);
 	TUint GetFeedCountByType(TFeedType aFeedType);
+	
 	
 	void AddBookL(const TDesC& aBookTitle, CDesCArrayFlat* aFileNameArray);
 	void AddBookChaptersL(CFeedInfo& aFeedInfo, CDesCArrayFlat* aFileNameArray);
@@ -59,7 +62,6 @@ public:
 	void FileNameFromUrl(const TDesC &aUrl, TFileName &aFileName);
 	void EnsureProperPathName(TFileName &aPath);
 
-	void UpdateFeed(CFeedInfo *aItem);
 	/**
 	 * Returns the current internal state of the feed engine4
 	 */
@@ -85,6 +87,7 @@ private:
 	void DownloadInfo(CHttpClient* aClient, TInt aSize);
 	void CompleteL(CHttpClient* aClient, TBool aSuccessful);
 	void FileError(TUint /*aError*/) { }
+
 	// from FeedParser
 	TBool NewShow(CShowInfo *item);
 	void ParsingComplete(CFeedInfo *item);
@@ -95,16 +98,6 @@ private:
 	
 	void UpdateNextFeedL();
 	void NotifyFeedUpdateComplete();
-
-private:
-	TBool DBRemoveFeed(TUint aUid);
-	TBool DBAddFeed(CFeedInfo *item);
-	CFeedInfo* DBGetFeedInfoByUid(TUint aFeedUid);	
-	TUint DBGetFeedCountByType(TFeedType aFeedType);
-	void DBGetFeedsByType(RFeedInfoArray& aFeedArray, TFeedType aFeedType);
-	TBool DBUpdateFeed(CFeedInfo *aItem);
-	void DBGetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed);
-
 		
 private:
 	// HTTP client and download state

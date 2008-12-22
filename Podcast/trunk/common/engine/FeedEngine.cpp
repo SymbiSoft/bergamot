@@ -6,7 +6,6 @@
 #include "ShowEngine.h"
 #include <e32hashtab.h>
 #include "OpmlParser.h"
-#include "FeedInfo.h"
 
 CFeedEngine* CFeedEngine::NewL(CPodcastModel& aPodcastModel)
 	{
@@ -26,8 +25,7 @@ void CFeedEngine::ConstructL()
 	
 	RunFeedTimer();
 	
-	
-    if (DBGetFeedCountByType(EShowFeed) == 0) {
+	if (GetFeedCountByType(EShowFeed) == 0) {
     	DP("No feeds in DB, loading default feeds");
     	 TFileName defaultFile = iPodcastModel.SettingsEngine().DefaultFeedsFileName();
 
@@ -210,13 +208,13 @@ TBool CFeedEngine::NewShow(CShowInfo *item)
 		}
 	}
 	
-	TBool isShowAdded = iPodcastModel.ShowEngine().AddShow(item);
+	//TBool isShowAdded = iPodcastModel.ShowEngine().AddShow(item);
 
-	if (!iCatchupMode && isShowAdded && iPodcastModel.SettingsEngine().DownloadAutomatically()) 
+	//if (!iCatchupMode && isShowAdded && iPodcastModel.SettingsEngine().DownloadAutomatically()) 
 		{
-		iPodcastModel.ShowEngine().AddDownload(item);
+	//	iPodcastModel.ShowEngine().AddDownload(item);
 		}	
-	return isShowAdded;
+	//return isShowAdded;
 	}
 
 void CFeedEngine::GetFeedImageL(CFeedInfo *aFeedInfo)
@@ -303,31 +301,12 @@ void CFeedEngine::ReplaceString(TDes & aString, const TDesC& aStringToReplace,
 
 	}
 
-TBool CFeedEngine::AddFeed(CFeedInfo *aItem) 
-	{
-	DP2("CFeedEngine::AddFeed, title=%S, URL=S", &aItem->Title(), &aItem->Url());
-	
-	CFeedInfo *feed = DBGetFeedInfoByUid(aItem->Uid());
-	
-	if (feed != NULL ) {
-		DP1("Already have feed %S, discarding", &aItem->Url());
-		delete aItem;
-		aItem = NULL;
-		delete feed;
-		return EFalse;
-	}
-	
-	// Save the feeds into DB
-	DBAddFeed(aItem);
-	return ETrue;
-	}
-
-TBool CFeedEngine::DBAddFeed(CFeedInfo *aItem)
+TBool CFeedEngine::AddFeed(CFeedInfo *aItem)
 	{
 	DP2("CFeedEngine::DBAddFeed, title=%S, URL=%S", &aItem->Title(), &aItem->Url());
 	
 	CFeedInfo *info;
-	if ((info = DBGetFeedInfoByUid(aItem->Uid())) != NULL) {
+	if ((info = GetFeedInfoByUid(aItem->Uid())) != NULL) {
 		DP("Feed already exists!");
 		delete info;
 		return EFalse;
@@ -360,39 +339,7 @@ TBool CFeedEngine::DBAddFeed(CFeedInfo *aItem)
 	return EFalse;
 	}
 
-void CFeedEngine::RemoveFeed(TUint aUid) 
-	{
-	CFeedInfo *feedToRemove = DBGetFeedInfoByUid(aUid);
-	
-	if (feedToRemove != NULL) {
-		iPodcastModel.ShowEngine().DeleteAllShowsByFeed(aUid);
-						
-		//delete the image file if it exists
-		if ( (feedToRemove->ImageFileName().Length() >0) && BaflUtils::FileExists(iFs, feedToRemove->ImageFileName() ))
-			{
-			iFs.Delete(feedToRemove->ImageFileName());
-			}
-			
-		//delete the folder. It has the same name as the title.
-		TFileName filePath;
-		filePath.Copy(iPodcastModel.SettingsEngine().BaseDir());
-		filePath.Append(feedToRemove->Title());
-		filePath.Append(_L("\\"));
-		iFs.RmDir(filePath);
-
-		delete feedToRemove;
-		
-		DP("Removed feed from array");
-		
-		// now remove it from DB
-		DBRemoveFeed(aUid);
-
-		return;
-	}
-}
-
-
-TBool CFeedEngine::DBRemoveFeed(TUint aUid)
+TBool CFeedEngine::RemoveFeed(TUint aUid)
 	{
 	DP("CFeedEngine::DBRemoveFeed");
 	iSqlBuffer.Format(_L("delete from feeds where uid=%u"), aUid);
@@ -420,7 +367,7 @@ TBool CFeedEngine::DBRemoveFeed(TUint aUid)
 	return EFalse;	
 	}
 
-TBool CFeedEngine::DBUpdateFeed(CFeedInfo *aItem)
+TBool CFeedEngine::UpdateFeedInfo(CFeedInfo *aItem)
 	{
 	DP2("CShowEngine::DBUpdateFeed, title=%S, URL=%S", &aItem->Title(), &aItem->Url());
 
@@ -460,7 +407,7 @@ void CFeedEngine::ParsingComplete(CFeedInfo *item)
 	title.Copy(item->Title());
 	CleanHtml(title);
 	TRAP_IGNORE(item->SetTitleL(title));
-	DBUpdateFeed(item);
+	UpdateFeedInfo(item);
 	for (int i=0;i<iObservers.Count();i++) {
 		iObservers[i]->FeedInfoUpdated(item);
 	}
@@ -569,7 +516,7 @@ void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TBool aSuccessful)
 
 void CFeedEngine::NotifyFeedUpdateComplete()
 	{
-	DBUpdateFeed(iActiveFeed);
+	UpdateFeedInfo(iActiveFeed);
 	for (TInt i=0;i<iObservers.Count();i++) 
 		{
 		TRAP_IGNORE(iObservers[i]->FeedUpdateCompleteL(iActiveFeed->Uid()));
@@ -648,7 +595,7 @@ void CFeedEngine::ImportBookL(const TDesC& aTitle, const TDesC& aFile)
 		}
 	
 	rfile.Close();
-	iPodcastModel.ShowEngine().MetaDataReader().SetIgnoreTrackNo(ETrue);
+	//iPodcastModel.ShowEngine().MetaDataReader().SetIgnoreTrackNo(ETrue);
 	AddBookL(aTitle, files);
 	CleanupStack::PopAndDestroy(files);
 	}
@@ -676,7 +623,7 @@ TBool CFeedEngine::ExportFeedsL(TFileName& aFile)
 
 	tft.Write(KOpmlHeader());
 	RFeedInfoArray array;
-	DBGetFeedsByType(array, EShowFeed);
+	GetFeedsByType(array, EShowFeed);
 	for (int i=0; i<array.Count(); i++)
 		{
 		url.Copy(array[i]->Url());
@@ -693,11 +640,6 @@ TBool CFeedEngine::ExportFeedsL(TFileName& aFile)
 	return ETrue;
 	}
 
-CFeedInfo* CFeedEngine::GetFeedInfoByUid(TUint aFeedUid)
-	{
-	return DBGetFeedInfoByUid(aFeedUid);
-	}
-
 void CFeedEngine::AddBookChaptersL(CFeedInfo& aFeedInfo, CDesCArrayFlat* aFileNameArray)
 {
 	TInt cnt = aFileNameArray->Count();
@@ -705,7 +647,7 @@ void CFeedEngine::AddBookChaptersL(CFeedInfo& aFeedInfo, CDesCArrayFlat* aFileNa
 	TEntry fileInfo;
 	RShowInfoArray showArray;
 	CleanupClosePushL(showArray);
-	iPodcastModel.ShowEngine().GetShowsByFeed(showArray, aFeedInfo.Uid());
+	//iPodcastModel.ShowEngine().GetShowsByFeed(showArray, aFeedInfo.Uid());
 	TInt offset = showArray.Count();
 	CleanupStack::PopAndDestroy();// close showArray
 
@@ -730,8 +672,8 @@ void CFeedEngine::AddBookChaptersL(CFeedInfo& aFeedInfo, CDesCArrayFlat* aFileNa
 		}
 		
 		showInfo->SetPlayState(ENeverPlayed);
-		iPodcastModel.ShowEngine().AddShow(showInfo);			
-		iPodcastModel.ShowEngine().MetaDataReader().SubmitShowL(showInfo);
+		//iPodcastModel.ShowEngine().AddShow(showInfo);			
+		//iPodcastModel.ShowEngine().MetaDataReader().SubmitShowL(showInfo);
 		
 		CleanupStack::Pop(showInfo);
 		showInfo = NULL;
@@ -757,7 +699,7 @@ void CFeedEngine::AddBookL(const TDesC& aBookTitle, CDesCArrayFlat* aFileNameArr
 		item->SetUrlL(tempUrl);
 		item->SetFeedType(EBookFeed);
 
-		CFeedInfo *info = DBGetFeedInfoByUid(item->Uid());
+		CFeedInfo *info = GetFeedInfoByUid(item->Uid());
 		if (info != NULL) 
 			{
 			DP1("Already have book %S, discarding", &item->Url());
@@ -775,17 +717,17 @@ void CFeedEngine::AddBookL(const TDesC& aBookTitle, CDesCArrayFlat* aFileNameArr
 		TLinearOrder<CFeedInfo> sortOrder( CFeedEngine::CompareFeedsByTitle);
 		CleanupStack::Pop(item);
 
-		DBAddFeed(item);
+		AddFeed(item);
 		AddBookChaptersL(*item, aFileNameArray);				
 		}
 	}
 
 void CFeedEngine::RemoveBookL(TUint aUid)
 	{
-	CFeedInfo *feedToRemove = DBGetFeedInfoByUid(aUid);
+	CFeedInfo *feedToRemove = GetFeedInfoByUid(aUid);
 
 	if (feedToRemove != NULL) {
-		iPodcastModel.ShowEngine().DeleteAllShowsByFeed(aUid, EFalse);
+		//iPodcastModel.ShowEngine().DeleteAllShowsByFeed(aUid, EFalse);
 
 		//delete the folder. It has the same name as the title.
 		TFileName filePath;
@@ -795,15 +737,10 @@ void CFeedEngine::RemoveBookL(TUint aUid)
 
 		delete feedToRemove;
 		
-		DBRemoveFeed(aUid);
+		RemoveFeed(aUid);
 		return;
 	}	
 	}
-
-void CFeedEngine::GetFeedsByType(RFeedInfoArray& aFeedInfoArray, TFeedType aFeedType) 
-{
-	return DBGetFeedsByType(aFeedInfoArray, aFeedType);
-}
 
 void CFeedEngine::CleanHtml(TDes &str)
 {
@@ -895,12 +832,6 @@ void CFeedEngine::GetDownloadedStats(TUint &aNumShows, TUint &aNumUnplayed)
 
 void CFeedEngine::GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed)
 	{
-	DP1("CFeedEngine::GetStatsByFeed, aFeedUid=%u", aFeedUid);
-	DBGetStatsByFeed(aFeedUid, aNumShows, aNumUnplayed);
-	}
-
-void CFeedEngine::DBGetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed)
-	{
 	DP1("CFeedEngine::DBGetStatsByFeed, feedUid=%d", aFeedUid);
 	iSqlBuffer.Format(_L("select count(*) from shows where feeduid=%u"), aFeedUid);
 
@@ -935,7 +866,7 @@ void CFeedEngine::DBGetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNum
 	sqlite3_finalize(st);
 }
 
-TUint CFeedEngine::DBGetFeedCountByType(TFeedType aFeedType)
+TUint CFeedEngine::GetFeedCountByType(TFeedType aFeedType)
 	{
 	 DP("DBGetFeedCount BEGIN");
 	 sqlite3_stmt *st;
@@ -956,7 +887,7 @@ TUint CFeedEngine::DBGetFeedCountByType(TFeedType aFeedType)
 	  return size;
 }
 
-void CFeedEngine::DBGetFeedsByType(RFeedInfoArray& aFeedArray, TFeedType aFeedType)
+void CFeedEngine::GetFeedsByType(RFeedInfoArray& aFeedArray, TFeedType aFeedType)
 	{
 	DP("DBGetFeedsByType BEGIN");
 	CFeedInfo *feedInfo = NULL;
@@ -1031,7 +962,7 @@ void CFeedEngine::DBGetFeedsByType(RFeedInfoArray& aFeedArray, TFeedType aFeedTy
 	DP("DBGetFeedsByType END");
 	}
 
-CFeedInfo* CFeedEngine::DBGetFeedInfoByUid(TUint aFeedUid)
+CFeedInfo* CFeedEngine::GetFeedInfoByUid(TUint aFeedUid)
 	{
 	DP("CFeedEngine::DBGetFeedInfoByUid");
 	CFeedInfo *feedInfo = NULL;
@@ -1097,13 +1028,3 @@ CFeedInfo* CFeedEngine::DBGetFeedInfoByUid(TUint aFeedUid)
 	
 	return feedInfo;
 }
-
-void CFeedEngine::UpdateFeed(CFeedInfo *aItem)
-	{
-	DBUpdateFeed(aItem);
-	}
-
-TUint CFeedEngine::GetFeedCountByType(TFeedType aFeedType)
-	{
-	return DBGetFeedCountByType(aFeedType);
-	}

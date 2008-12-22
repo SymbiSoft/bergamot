@@ -180,7 +180,7 @@ TBool CPodcastClientAddFeedDlg::OkToExitL(TInt aCommandId)
 			{
 				iFeedInfo->SetTitleL(*title);
 				iFeedInfo->SetCustomTitle();	
-				iPodcastModel.FeedEngine().UpdateFeed(iFeedInfo);
+				//iPodcastModel.FeedEngine().UpdateFeed(iFeedInfo);
 			}
 			CleanupStack::PopAndDestroy(title);
 										

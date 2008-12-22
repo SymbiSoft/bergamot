@@ -1,7 +1,6 @@
 
 // HttpEventHandler.cpp
-#include <e32debug.h>
-
+#include "debug.h"
 #include "HttpEventHandler.h"
 #include "bautils.h"
 #include "Httpclient.h"
