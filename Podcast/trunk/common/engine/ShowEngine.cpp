@@ -621,20 +621,20 @@ void CShowEngine::DBAddDownload(TUint aUid)
 
 TBool CShowEngine::DBUpdateShow(CShowInfo *aItem)
 	{
-	DP2("CShowEngine::DBUpdateShow, title=%S, URL=%S", &aItem->Title(), &aItem->Url());
+	DP1("CShowEngine::DBUpdateShow, title='%S'", &aItem->Title());
 
 	iSqlBuffer.Format(_L("update shows set url=\"%S\", title=\"%S\", description=\"%S\", filename=\"%S\", position=\"%Lu\"," \
 			"playtime=\"%u\", playstate=\"%u\", downloadstate=\"%u\", feeduid=\"%u\", showsize=\"%u\", trackno=\"%u\"," \
 			"pubdate=\"%Lu\", showtype=\"%u\" where uid=\"%u\""),
 			&aItem->Url(), &aItem->Title(), &aItem->Description(), &aItem->FileName(), aItem->Position().Int64(), aItem->PlayTime(),
-			aItem->PlayState(), aItem->DownloadState(), aItem->FeedUid(), aItem->ShowSize(), aItem->TrackNo(), aItem->PubDate(), 
-			aItem->ShowType(),aItem->Uid());
+			aItem->PlayState(), aItem->DownloadState(), aItem->FeedUid(), aItem->ShowSize(), aItem->TrackNo(), aItem->PubDate().Int64(), 
+			aItem->ShowType(), aItem->Uid());
 
 	sqlite3_stmt *st;
 	 
 	//DP1("SQL: %S", &iSqlBuffer.Left(KSqlDPLen));
 	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
-	
+	DP("After prepare");
 	if (rc==SQLITE_OK)
 		{
 		rc = sqlite3_step(st);
