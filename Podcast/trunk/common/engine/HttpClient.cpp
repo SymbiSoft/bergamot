@@ -11,8 +11,6 @@
 #include <bautils.h>
 #include <CommDbConnPref.h>
 #include "debug.h"
-#include "PodcastModel.h"
-
 const TInt KTempBufferSize = 100;
 
 CHttpClient::~CHttpClient()
@@ -179,4 +177,3 @@ void CHttpClient::ClientRequestCompleteL(TBool aSuccessful) {
 		iSession.Close();
 	}
 }
-

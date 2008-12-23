@@ -97,7 +97,7 @@ void CPodcastClientFeedView::ViewActivatedL(const TVwsViewId &aPrevViewId, TUid 
 		
 		if(/*(aPrevViewId == TVwsViewId(KUidPodcastClientID, KUidPodcastShowsViewID) ||
 			aPrevViewId == TVwsViewId(KUidPodcastClientID, KUidPodcastFeedViewID)) &&*/	
-			iPodcastModel.ActiveFeedInfo() != NULL && (iPodcastModel.ActiveFeedInfo()->FeedType() == EBookFeed))
+			iPodcastModel.ActiveFeedInfo() != NULL && iPodcastModel.ActiveFeedInfo()->IsBookFeed())
 			{
 			iCurrentViewMode = EFeedsAudioBooksMode;
 			}
@@ -154,9 +154,9 @@ void CPodcastClientFeedView::UpdateFeedInfoDataL(CFeedInfo* aFeedInfo,  MQikList
 		}
 	else
 	{
-		iPodcastModel.FeedEngine().GetStatsByFeed(aFeedInfo->Uid(), showCount, unplayedCount);
+		iPodcastModel.FeedEngine().GetStatsByFeed(aFeedInfo->Uid(), showCount, unplayedCount, aFeedInfo->IsBookFeed());
 		
-		if (aFeedInfo->FeedType() == EBookFeed) {
+		if (aFeedInfo->IsBookFeed()) {
 			unplayedShows.Format(*iBooksFormat, unplayedCount, showCount);
 		} else {
 			unplayedShows.Format(*iFeedsFormat, unplayedCount, showCount);
@@ -213,9 +213,8 @@ void CPodcastClientFeedView::FeedInfoUpdatedL(CFeedInfo* aFeedInfo)
 
 
 	if(iCurrentViewMode == EFeedsNormalMode)
-	{	
-		iPodcastModel.GetFeedList();
-		const RFeedInfoArray feeds = iPodcastModel.ActiveFeedList();
+	{				
+		const RFeedInfoArray& feeds = iPodcastModel.FeedEngine().GetSortedFeeds();
 		
 		TInt index = feeds.Find(aFeedInfo);
 		MQikListBoxModel& model(iListbox->Model());
@@ -242,9 +241,8 @@ void CPodcastClientFeedView::UpdateFeedInfoStatusL(TUint aFeedUid, TBool aIsUpda
 	
 	if(iCurrentViewMode == EFeedsNormalMode)
 		{	
-		iPodcastModel.GetFeedList();
-		const RFeedInfoArray& feeds = iPodcastModel.ActiveFeedList();
-		
+		const RFeedInfoArray& feeds = iPodcastModel.FeedEngine().GetSortedFeeds();
+
 		TInt cnt = feeds.Count();
 		TInt index = KErrNotFound;
 		while(index == KErrNotFound && cnt>0)
@@ -326,15 +324,15 @@ void CPodcastClientFeedView::UpdateListboxItemsL()
 	{
 	if(IsVisible())
 		{		
+		const RFeedInfoArray* sortedItems = NULL;
 		if(iCurrentViewMode == EFeedsAudioBooksMode)
 			{
-			iPodcastModel.GetBookList();
+			sortedItems = &iPodcastModel.FeedEngine().GetSortedBooks();
 			}
 		else
 			{
-			iPodcastModel.GetFeedList();
+			sortedItems = &iPodcastModel.FeedEngine().GetSortedFeeds();
 			}
-		const RFeedInfoArray* sortedItems = &iPodcastModel.ActiveFeedList();
 		
 		TInt len = sortedItems->Count();
 		TBool allUidsMatch = EFalse;
@@ -395,8 +393,8 @@ void CPodcastClientFeedView::UpdateListboxItemsL()
 
 					TUint unplayedCount = 0;
 					TUint showCount = 0;
-					iPodcastModel.FeedEngine().GetStatsByFeed(fi->Uid(), showCount, unplayedCount);
-					if (fi->FeedType() == EBookFeed) {
+					iPodcastModel.FeedEngine().GetStatsByFeed(fi->Uid(), showCount, unplayedCount, fi->IsBookFeed());
+					if (fi->IsBookFeed()) {
 						unplayedShows.Format(*iBooksFormat, unplayedCount, showCount);
 					} else {
 						unplayedShows.Format(*iFeedsFormat, unplayedCount, showCount);
@@ -430,7 +428,7 @@ void CPodcastClientFeedView::UpdateListboxItemsL()
 					
 					CQikContent* content;
 					
-					if (fi->FeedType() == EBookFeed) {
+					if (fi->IsBookFeed()) {
 						content = CQikContent::NewL(this, _L("*"), EMbmPodcastclientAudiobookindividual_40x40, EMbmPodcastclientAudiobookindividual_40x40m);
 					} else {
 						content = CQikContent::NewL(this, _L("*"), EMbmPodcastclientFeed_40x40, EMbmPodcastclientFeed_40x40m);
@@ -506,20 +504,20 @@ void CPodcastClientFeedView::HandleListBoxEventL(CQikListBox* /*aListBox*/, TQik
 		case EEventItemConfirmed:
 		case EEventItemTapped:
 			{		
+			const RFeedInfoArray* sortedItems = NULL;
 			if(iCurrentViewMode == EFeedsAudioBooksMode)
 				{
-				iPodcastModel.GetBookList();
+				sortedItems = &iPodcastModel.FeedEngine().GetSortedBooks();
 				}
 			else
 				{
-				iPodcastModel.GetFeedList();
+				sortedItems = &iPodcastModel.FeedEngine().GetSortedFeeds();
 				}
-			const RFeedInfoArray* sortedItems = &iPodcastModel.ActiveFeedList();
-			
+
 			if(aItemIndex >= 0 && aItemIndex < sortedItems->Count())
 				{
 				iPodcastModel.ActiveShowList().Reset();
-				iPodcastModel.SetActiveFeedUid((*sortedItems)[aItemIndex]->Uid());
+				iPodcastModel.SetActiveFeedInfo((*sortedItems)[aItemIndex]);
 				TVwsViewId showsView = TVwsViewId(KUidPodcastClientID, KUidPodcastShowsViewID);
 				iQikAppUi.ActivateViewL(showsView,  TUid::Uid(EShowFeedShows), KNullDesC8());
 				}
@@ -558,17 +556,18 @@ void CPodcastClientFeedView::UpdateCommandsL()
 		return;
 	
 	TInt index = iListbox->CurrentItemIndex();
-	TBool isBookMode = iCurrentViewMode == EFeedsAudioBooksMode;
-	if(iCurrentViewMode == EFeedsAudioBooksMode)
-		{
-		iPodcastModel.GetBookList();
-		}
-	else
-		{
-		iPodcastModel.GetFeedList();
-		}
-	const RFeedInfoArray* sortedItems = &iPodcastModel.ActiveFeedList();
+	
 
+	TBool isBookMode = (iCurrentViewMode == EFeedsAudioBooksMode);
+	const RFeedInfoArray* sortedItems = NULL;
+	if(isBookMode)
+			{
+			sortedItems = &iPodcastModel.FeedEngine().GetSortedBooks();
+			}
+		else
+			{
+			sortedItems = &iPodcastModel.FeedEngine().GetSortedFeeds();
+			}
 	
 	// hide commands that should not be visible in no feeds
 	TUint cnt = sortedItems->Count();
@@ -666,10 +665,8 @@ void CPodcastClientFeedView::HandleCommandL(CQikCommand& aCommand)
 				{
 				TInt index = iListbox->CurrentItemIndex();
 
-				
-				iPodcastModel.GetFeedList();
-				const RFeedInfoArray& feeds = iPodcastModel.ActiveFeedList();
-				
+				const RFeedInfoArray& feeds = iPodcastModel.FeedEngine().GetSortedFeeds();
+
 				TInt cnt = feeds.Count();
 
 				if(index< cnt)
@@ -756,7 +753,7 @@ void CPodcastClientFeedView::HandleCommandL(CQikCommand& aCommand)
 				CFeedInfo *feedInfo = iPodcastModel.FeedEngine().GetFeedInfoByUid(data->ItemId());
 				
 				if (feedInfo != NULL) {
-					iPodcastModel.SetActiveFeedUid(feedInfo->Uid());
+					iPodcastModel.SetActiveFeedInfo(feedInfo);
 					TBool aUnplayedOnlyState = iPodcastModel.SettingsEngine().SelectUnplayedOnly();
 					// we only select unplayed chapters
 					iPodcastModel.SettingsEngine().SetSelectUnplayedOnly(ETrue);
@@ -777,7 +774,7 @@ void CPodcastClientFeedView::HandleCommandL(CQikCommand& aCommand)
 					showUid() = startShow->Uid();
 					TVwsViewId viewId = TVwsViewId(KUidPodcastClientID, KUidPodcastPlayViewID);
 					iQikAppUi.ActivateViewL(viewId, TUid::Uid(KActiveShowUIDCmd), showUid);											
-					iPodcastModel.PlayPausePodcastL(startShow->Uid(), ETrue);
+					iPodcastModel.PlayPausePodcastL(startShow, ETrue);
 				}
 				data->Close();
 				}
@@ -868,4 +865,3 @@ void CPodcastClientFeedView::HandleAddNewAudioBookL()
 	CleanupStack::PopAndDestroy(fileNameArray);
 	CleanupStack::PopAndDestroy(mimeArray);
 	}
-

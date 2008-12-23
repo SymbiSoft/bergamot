@@ -11,7 +11,6 @@
 #include "FeedEngineObserver.h"
 #include "FeedTimer.h"
 #include "sqlite3.h"
-#include "badesca.h"
 
 
 class CPodcastModel;
@@ -36,21 +35,19 @@ public:
 	TBool AddFeed(CFeedInfo *item);
 	void ImportFeedsL(const TDesC& aFile);
 	TBool ExportFeedsL(TFileName& aFile);
-	TBool RemoveFeed(TUint aUid);
-	TBool UpdateFeedInfo(CFeedInfo *aFeedInfo);
+	void RemoveFeed(TUint aUid);
 	TBool UpdateFeedL(TUint aFeedUid);
 	void UpdateAllFeedsL();
 	void CancelUpdateAllFeedsL();
-	void GetFeedsByType(RFeedInfoArray& aFeedList, TFeedType aFeedType);
+	const RFeedInfoArray& GetSortedFeeds() const;
 	CFeedInfo* GetFeedInfoByUid(TUint aFeedUid);	
-	void GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed);
+	void GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed, TBool aIsBookFeed );
 	void GetDownloadedStats(TUint &aNumShows, TUint &aNumUnplayed);
-	TUint GetFeedCountByType(TFeedType aFeedType);
-	
-	
+
 	void AddBookL(const TDesC& aBookTitle, CDesCArrayFlat* aFileNameArray);
 	void AddBookChaptersL(CFeedInfo& aFeedInfo, CDesCArrayFlat* aFileNameArray);
 	void RemoveBookL(TUint aUid);
+	const RFeedInfoArray& GetSortedBooks() const;
 	void ImportBookL(const TDesC& aTitle, const TDesC& aFile);
 
 
@@ -62,6 +59,7 @@ public:
 	void FileNameFromUrl(const TDesC &aUrl, TFileName &aFileName);
 	void EnsureProperPathName(TFileName &aPath);
 
+	void UpdateFeed(CFeedInfo *aItem);
 	/**
 	 * Returns the current internal state of the feed engine4
 	 */
@@ -87,7 +85,6 @@ private:
 	void DownloadInfo(CHttpClient* aClient, TInt aSize);
 	void CompleteL(CHttpClient* aClient, TBool aSuccessful);
 	void FileError(TUint /*aError*/) { }
-
 	// from FeedParser
 	TBool NewShow(CShowInfo *item);
 	void ParsingComplete(CFeedInfo *item);
@@ -98,9 +95,18 @@ private:
 	
 	void UpdateNextFeedL();
 	void NotifyFeedUpdateComplete();
+
+private:
+	void DBLoadFeeds();
+	TBool DBRemoveFeed(TUint aUid);
+	TBool DBAddFeed(CFeedInfo *item);
+	CFeedInfo* DBGetFeedInfoByUid(TUint aFeedUid);	
+	TUint DBGetFeedCount();
+	TBool DBUpdateFeed(CFeedInfo *aItem);
+	void DBGetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed);
+
 		
 private:
-	// HTTP client and download state
 	CHttpClient* iFeedClient;
 	TClientState iClientState;
 	CFeedTimer iFeedTimer;
@@ -111,8 +117,14 @@ private:
 	
 	// RSS parser
 	CFeedParser* iParser;
+	
+	// the list of feeds
+	RFeedInfoArray iSortedFeeds;
 
-	// Active feed when updating
+	// the list of Books
+	RFeedInfoArray iSortedBooks;
+
+
 	CFeedInfo *iActiveFeed;
 	TFileName iUpdatingFeedFileName;
 
@@ -129,3 +141,4 @@ private:
     TBuf<2048> iSqlBuffer;
 };
 #endif /*FEEDENGINE_H_*/
+

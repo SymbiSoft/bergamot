@@ -27,6 +27,7 @@ CPodcastClientAddFeedDlg::~CPodcastClientAddFeedDlg()
 	{
 	}
 
+
 void CPodcastClientAddFeedDlg::PreLayoutDynInitL()
 	{
 	CEikEdwin* edwin = static_cast<CEikEdwin*>(ControlOrNull(EPodcastAddEditFeedDlgUrl));
@@ -180,7 +181,7 @@ TBool CPodcastClientAddFeedDlg::OkToExitL(TInt aCommandId)
 			{
 				iFeedInfo->SetTitleL(*title);
 				iFeedInfo->SetCustomTitle();	
-				//iPodcastModel.FeedEngine().UpdateFeed(iFeedInfo);
+				iPodcastModel.FeedEngine().UpdateFeed(iFeedInfo);
 			}
 			CleanupStack::PopAndDestroy(title);
 										

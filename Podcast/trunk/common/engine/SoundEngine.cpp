@@ -57,18 +57,18 @@ void CSoundEngine::MapcPlayComplete(TInt aError) {
 	}
 
 	iState = ESoundEngineStopped;
-	//iPodcastModel.ShowEngine().NotifyShowListUpdated();
+	iPodcastModel.ShowEngine().NotifyShowListUpdated();
 	NotifyPlaybackStopped();
 
 	if(iPodcastModel.PlayingPodcast() != NULL && iPodcastModel.PlayingPodcast()->ShowType() == EAudioBook)
 	{
 		CShowInfo* nextShow = NULL;
 		
-		/*TRAP_IGNORE(nextShow = iPodcastModel.ShowEngine().GetNextShowByTrackL(iPodcastModel.PlayingPodcast()));
+		TRAP_IGNORE(nextShow = iPodcastModel.ShowEngine().GetNextShowByTrackL(iPodcastModel.PlayingPodcast()));
 		if(nextShow != NULL)
 		{
-			TRAP_IGNORE(iPodcastModel.PlayPausePodcastL(nextShow->Uid(), ETrue));
-		}*/
+			TRAP_IGNORE(iPodcastModel.PlayPausePodcastL(nextShow, ETrue));
+		}
 	}
 }	
 
@@ -105,7 +105,7 @@ void CSoundEngine::MapcInitComplete(TInt aError, const TTimeIntervalMicroSeconds
 		if(iPlayOnInit)
 			{
 			
-			TRAP_IGNORE(iPodcastModel.PlayPausePodcastL(iPodcastModel.PlayingShowUid()));
+			TRAP_IGNORE(iPodcastModel.PlayPausePodcastL(iPodcastModel.PlayingPodcast()));
 			}
 		}
 
@@ -261,5 +261,4 @@ void CSoundEngine::NotifyPlaybackInitialized()
 	for (int i=0;i<iObservers.Count();i++) {
 		TRAPD(err, iObservers[i]->PlaybackInitializedL());
 	}
-	
 	}

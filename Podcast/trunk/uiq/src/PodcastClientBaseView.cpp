@@ -7,6 +7,7 @@
 #include "PodcastClientFeedView.h"
 #include "PodcastModel.h"
 #include "SoundEngine.h"
+#include "ShowEngine.h"
 
 /**
 Creates and constructs the view.
@@ -52,18 +53,19 @@ TInt CPodcastClientBaseView::StaticCheckForQuedDownloadsL(TAny* aBaseView)
 
 void CPodcastClientBaseView::CheckForQuedDownloadsL()
 {
-	delete iStartupCallBack;
+/*	delete iStartupCallBack;
 	iStartupCallBack = NULL;
 
-	if (iPodcastModel.GetShowsDownloadingCount() > 0) {
+	iPodcastModel.ShowEngine().SelectShowsDownloading();
+	if (iPodcastModel.ShowEngine().GetSelectedShows().Count() > 0) {
 		if(iEikonEnv->QueryWinL(R_PODCAST_ENABLE_DOWNLOADS_TITLE, R_PODCAST_ENABLE_DOWNLOADS_PROMPT))
 		{
-			iPodcastModel.ResumeDownloads();
+			iPodcastModel.ShowEngine().ResumeDownloads();
 		} else {
-			iPodcastModel.StopDownloads();
+			iPodcastModel.ShowEngine().StopDownloads();
 		}
 		UpdateListboxItemsL();
-	}
+	}*/
 }
 
 void CPodcastClientBaseView::ViewConstructL()
@@ -113,7 +115,7 @@ void CPodcastClientBaseView::ViewConstructL()
 CPodcastClientBaseView::CPodcastClientBaseView(CQikAppUi& aAppUi, CPodcastModel& aPodcastModel):CPodcastClientView(aAppUi, aPodcastModel)
 {
 	iCheckForQuedDownloads = ETrue;
-	iPodcastModel.AddShowEngineObserver(this);
+	iPodcastModel.ShowEngine().AddObserver(this);
 }
 
 CPodcastClientBaseView::~CPodcastClientBaseView()
@@ -188,21 +190,21 @@ void CPodcastClientBaseView::UpdateListboxItemsL()
 					} else {
 						iEikonEnv->ReadResourceL(formatting, R_PODCAST_PENDING_STATUS_ACTIVE);				
 					}
-					statusText.Format(formatting, iPodcastModel.ShowEngine().GetNumDownloadingShows());
+					statusText.Format(formatting, iPodcastModel.ShowEngine().GetNumDownloadingShowsL());
 					data->SetTextL(statusText, EQikListBoxSlotText2);				
 					model.DataUpdatedL(loop);
 				}break;
 			case EBaseViewFeeds:
 				{
 					iEikonEnv->ReadResourceL(formatting, R_PODCAST_FEEDS_STATUS);
-					statusText.Format(formatting, iPodcastModel.FeedEngine().GetFeedCountByType(EShowFeed));
+					statusText.Format(formatting, iPodcastModel.FeedEngine().GetSortedFeeds().Count());
 					data->SetTextL(statusText, EQikListBoxSlotText2);				
 					model.DataUpdatedL(loop);
 				}break;
 			case EBaseViewAudioBooks:
 				{
 					iEikonEnv->ReadResourceL(formatting, R_PODCAST_BOOKS_STATUS);
-					statusText.Format(formatting, iPodcastModel.FeedEngine().GetFeedCountByType(EBookFeed));
+					statusText.Format(formatting, iPodcastModel.FeedEngine().GetSortedBooks().Count());
 					data->SetTextL(statusText, EQikListBoxSlotText2);				
 					model.DataUpdatedL(loop);
 				}break;
@@ -303,6 +305,3 @@ void CPodcastClientBaseView::DownloadQueueUpdated(TInt /*aDownloadingShows*/, TI
 	{
 	TRAP_IGNORE(UpdateListboxItemsL());
 	}
-
-
-

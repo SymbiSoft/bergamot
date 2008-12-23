@@ -1,6 +1,7 @@
 
 // HttpEventHandler.cpp
-#include "debug.h"
+#include <e32debug.h>
+
 #include "HttpEventHandler.h"
 #include "bautils.h"
 #include "Httpclient.h"
@@ -378,3 +379,4 @@ void CHttpEventHandler::CloseSaveFile()
 		iRespBodyFile.Close();
 	}
 }
+

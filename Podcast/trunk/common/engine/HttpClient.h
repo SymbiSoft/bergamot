@@ -4,12 +4,11 @@
 #include <http/rhttpsession.h>
 #include "HttpClientObserver.h"
 #include "HttpEventHandler.h"
+#include "PodcastModel.h"
 #include "es_sock.h"
 
 _LIT8(KUserAgent, "Escarpod/UIQ");
 _LIT8(KAccept, "*/*");
-
-class CPodcastModel;
 
 class CHttpClient : public CBase
 {
@@ -39,3 +38,4 @@ private:
 	TInt iTransactionCount;
 };
 #endif
+
