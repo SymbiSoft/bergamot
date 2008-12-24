@@ -13,7 +13,7 @@
 
 {
 "\epoc32\data\z\resource\apps\Podcast.R01"
-"\epoc32\data\z\resource\apps\Podcast.r02"
+"\epoc32\data\z\resource\apps\Podcast.R02"
 "\epoc32\data\z\resource\apps\Podcast.R03"
 "\epoc32\data\z\resource\apps\Podcast.R04"
 "\epoc32\data\z\resource\apps\Podcast.R05"
@@ -29,12 +29,12 @@
 
 "\epoc32\data\z\resource\apps\Podcastsvg.mif"-"!:\resource\apps\Podcastsvg.mif"
 "\epoc32\data\z\resource\apps\Podcast.mbm"-"!:\resource\apps\Podcast.mbm"
-"\Epoc32\Data\z\private\10003a3f\import\apps\Podcast_reg.rsc"-"!:\private\10003a3f\import\apps\Podcast_reg.rsc"
+"\epoc32\data\z\private\10003a3f\import\apps\Podcast_reg.rsc"-"!:\private\10003a3f\import\apps\Podcast_reg.rsc"
 
 ; configuration and DB
-"../../common/config/config.cfg"-"c:\private\A0009D00\config.cfg"
-"../../common/config/defaultfeeds.xml"-"c:\private\A0009D00\defaultfeeds.xml"
-"../../common/config/escarpod.sqlite"-"c:\private\A0009D00\escarpod.sqlite"
+"../../common/config/config.cfg"-"!:\private\A0009D00\config.cfg"
+"../../common/config/defaultfeeds.xml"-"!:\private\A0009D00\defaultfeeds.xml"
+"../../common/config/escarpod.sqlite"-"!:\private\A0009D00\escarpod.sqlite.template"
 
 ; application UI
-"\epoc32\release\gcce\udeb\Podcast.exe"-"!:\sys\bin\Podcast.exe", FR, RI
+"\epoc32\release\gcce\udeb\Podcast.exe"-"!:\sys\bin\Podcast.exe",FR,RI

@@ -33,8 +33,7 @@ void CFeedEngine::ConstructL()
 
     } else {
     	DP("No feeds in DB, loading default feeds");
-    	 TFileName defaultFile = iPodcastModel.SettingsEngine().DefaultFeedsFileName();
-
+    	TFileName defaultFile = iPodcastModel.SettingsEngine().DefaultFeedsFileName();
 	    if (BaflUtils::FileExists(iFs, defaultFile)) {
 	    	DP("Loading default feeds");
 	    	ImportFeedsL(defaultFile);

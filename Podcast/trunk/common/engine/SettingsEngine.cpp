@@ -257,6 +257,7 @@ TFileName CSettingsEngine::DefaultFeedsFileName()
 	TFileName defaultFeeds;
 	defaultFeeds.Append(PrivatePath());
 	defaultFeeds.Append(KDefaultFeedsFile);
+	DP1("Default feeds file: %S", &defaultFeeds);
 	return defaultFeeds;
 	}
 

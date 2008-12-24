@@ -4,9 +4,11 @@
 #include "SoundEngine.h"
 #include "SettingsEngine.h"
 #include "ShowEngine.h"
+#include <bautils.h>
 
 const TInt KDefaultGranu = 5;
 _LIT(KDBFileName, "escarpod.sqlite");
+_LIT(KDBTemplateFileName, "escarpod.sqlite.template");
 
 #define EQikCmdZoomLevel1							0x0800
 /** @publishedAll @released */
@@ -250,6 +252,14 @@ sqlite3* CPodcastModel::DB()
 		fs.PrivatePath(dbFileName);
 		dbFileName.Append(KDBFileName);
 		DP1("DB is at %S", &dbFileName);
+		if (!BaflUtils::FileExists(fs, dbFileName)) {
+			TFileName dbTemplate;
+			fs.PrivatePath(dbTemplate);
+			dbTemplate.Append(KDBTemplateFileName);
+			DP1("No DB found, copying template from %S", &dbTemplate);
+			BaflUtils::CopyFile(fs,dbTemplate,dbFileName);
+		}
+		
 		TBuf8<KMaxFileName> filename8;
 		filename8.Copy(dbFileName);
 		int rc = rc = sqlite3_open((const char*) filename8.PtrZ(), &iDB);
