@@ -85,13 +85,13 @@ RESOURCE MENU_PANE r_podcast_feedview_menu
 			{
 			command = EPodcastCancelUpdateAllFeeds;
 			txt = STRING_r_cancel_update_all_feeds_cmd;
-			},	        		
+			}//,	        		
      	// Other commands
-		MENU_ITEM
+		/*MENU_ITEM
 			{
 			command = EPodcastZoomSetting;
 			txt = STRING_r_zoom_cmd;
-			}
+			}*/
         };
     }
 
@@ -183,7 +183,7 @@ RESOURCE DIALOG r_podcast_new_audiobook_dlg
 RESOURCE FILESELECTIONDIALOG r_podcast_import_audiobook
 {
  title = STRING_r_view_import_book_title;
- root_path = "c:\\";
+ root_path = "e:\\";
  filters =
  {
   FILTER
@@ -198,7 +198,7 @@ RESOURCE FILESELECTIONDIALOG r_podcast_import_audiobook
 RESOURCE FILESELECTIONDIALOG r_podcast_import_podcast
 {
  title = STRING_r_view_import_feeds_title;
- root_path = "c:\\";
+ root_path = "e:\\";
  filters =
  {
   FILTER

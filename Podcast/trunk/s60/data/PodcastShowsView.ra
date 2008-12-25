@@ -104,13 +104,13 @@ RESOURCE MENU_PANE r_podcast_showsview_menu
 			//
 			command = EPodcastUpdateLibrary;
 			txt = STRING_r_update_feed_short_cmd;
-			},        		
+			}//,        		
 	// Other commands
-		MENU_ITEM
+		/*MENU_ITEM
 			{
 			command = EPodcastZoomSetting;
 			txt = STRING_r_zoom_cmd;
-			}			
+			}		*/	
    };
     }
 
