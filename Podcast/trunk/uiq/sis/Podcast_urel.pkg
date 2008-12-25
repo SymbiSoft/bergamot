@@ -14,9 +14,11 @@
 "/epoc32/release/gcce/urel/PodcastClient.exe"-"!:\sys\bin\PodcastClient.exe"
 "/epoc32/data/z/resource/apps/PodcastClient.mbm"-"!:\resource\apps\PodcastClient.mbm"
 "/epoc32/data/z/private/10003A3F/apps/PodcastClient_reg.rsc"-"!:\private\10003a3f\import\apps\PodcastClient_reg.rsc"
-"../../common/config/config.cfg"-"!:\private\A00046ae\config.cfg"
-"../../common/config/defaultfeeds.xml"-"!:\private\A00046ae\defaultfeeds.xml"
-"../../common/config/escarpod.sqlite"-"!:\private\A00046ae\escarpod.sqlite.template"
+
+; configuration and DB
+"../../common/config/config.cfg"-"c:\private\A00046ae\config.cfg"
+"../../common/config/defaultfeeds.xml"-"c:\private\A00046ae\defaultfeeds.xml"
+"../../common/config/escarpod.sqlite"-"c:\private\A00046ae\escarpod.sqlite.template"
 
 {
 "/epoc32/data/z/resource/apps/PodcastClient.R01"
