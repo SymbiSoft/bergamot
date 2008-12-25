@@ -1219,6 +1219,7 @@ void CPodcastPlayView::DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane
 		if (iPlayContainer->ShowInfo()->DownloadState() == ENotDownloaded)
 			{
 			aMenuPane->SetItemDimmed(EPodcastPlay, ETrue);
+			aMenuPane->SetItemDimmed(EPodcastStop, ETrue);
 			aMenuPane->SetItemDimmed(EPodcastRemoveDownload, ETrue);
 			aMenuPane->SetItemDimmed(EPodcastSetVolume, ETrue);
 			}

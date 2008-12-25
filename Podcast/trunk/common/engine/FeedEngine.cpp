@@ -1042,7 +1042,7 @@ void CFeedEngine::DBLoadFeeds()
 
 			const void *imagefilez = sqlite3_column_text16(st, 4);
 			TPtrC16 imagefile((const TUint16*)imagefilez);
-			feedInfo->SetDescriptionL(imagefile);
+			feedInfo->SetImageFileNameL(imagefile);
 			
 			const void *linkz = sqlite3_column_text16(st, 5);
 			TPtrC16 link((const TUint16*)linkz);

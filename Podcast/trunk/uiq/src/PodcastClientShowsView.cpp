@@ -325,11 +325,10 @@ void CPodcastClientShowsView::ShowListUpdated()
 	TRAP_IGNORE(UpdateListboxItemsL());
 }
 
-void CPodcastClientShowsView::FeedInfoUpdated(CFeedInfo* aFeedInfo)
+void CPodcastClientShowsView::FeedInfoUpdated(TUint aFeedUid)
 {
-	if(iPodcastModel.ActiveFeedInfo() != NULL && aFeedInfo->Uid() == iPodcastModel.ActiveFeedInfo()->Uid())
+	if(iPodcastModel.ActiveFeedInfo() != NULL && aFeedUid == iPodcastModel.ActiveFeedInfo()->Uid())
 	{
-		iPodcastModel.SetActiveFeedInfo(aFeedInfo);
 		TRAP_IGNORE(UpdateFeedUpdateStateL());
 		// Title might have changed
 		TRAP_IGNORE(UpdateListboxItemsL());

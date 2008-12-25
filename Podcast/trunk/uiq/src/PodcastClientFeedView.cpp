@@ -191,12 +191,12 @@ void CPodcastClientFeedView::UpdateFeedInfoDataL(CFeedInfo* aFeedInfo,  MQikList
 	aListboxData->SetTextL(updatedDate, EQikListBoxSlotText3);
 	}
 
-void CPodcastClientFeedView::FeedInfoUpdated(CFeedInfo* aFeedInfo)
+void CPodcastClientFeedView::FeedInfoUpdated(TUint aFeedUid)
 	{
-	TRAP_IGNORE(FeedInfoUpdatedL(aFeedInfo))
+	TRAP_IGNORE(FeedInfoUpdatedL(aFeedUid))
 	}
 
-void CPodcastClientFeedView::FeedInfoUpdatedL(CFeedInfo* aFeedInfo)
+void CPodcastClientFeedView::FeedInfoUpdatedL(TUint aFeedUid)
 	{
 	if (ViewContext() == NULL) 
 		{
@@ -216,7 +216,13 @@ void CPodcastClientFeedView::FeedInfoUpdatedL(CFeedInfo* aFeedInfo)
 	{				
 		const RFeedInfoArray& feeds = iPodcastModel.FeedEngine().GetSortedFeeds();
 		
-		TInt index = feeds.Find(aFeedInfo);
+		TInt index = KErrNotFound;
+		
+		for (int i=0;i<feeds.Count();i++) {
+			if (feeds[i]->Uid() == aFeedUid) {
+				index = i;
+			}
+		}
 		MQikListBoxModel& model(iListbox->Model());
 		
 		if(index != KErrNotFound && index<model.Count())
@@ -227,7 +233,7 @@ void CPodcastClientFeedView::FeedInfoUpdatedL(CFeedInfo* aFeedInfo)
 			if(data != NULL)
 			{
 				CleanupClosePushL(*data);
-				UpdateFeedInfoDataL(aFeedInfo, data);
+				UpdateFeedInfoDataL(feeds[index], data);
 				CleanupStack::PopAndDestroy(data);
 				model.DataUpdatedL(index);
 			}

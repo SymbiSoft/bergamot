@@ -274,8 +274,8 @@ void CPodcastShowsView::GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex)
 		}
 	else
 		{
-		if (iPodcastModel.PlayingPodcast() == aShowInfo)
-			{ // && iPodcastModel.SoundEngine().State() == ESoundEnginePlaying) {
+		if (iPodcastModel.PlayingPodcast() && iPodcastModel.PlayingPodcast()->Uid() == aShowInfo->Uid())
+			{
 			aIconIndex = EPlayingShowIcon;
 			}
 		else

@@ -21,7 +21,7 @@ protected:
 	void ViewConstructL();
 	void ConstructL();
 	void ShowListUpdated();
-    void FeedInfoUpdated(CFeedInfo* aFeedInfo);
+    void FeedInfoUpdated(TUint aFeedUid);
     void FeedUpdateCompleteL(TUint aFeedUid);
 	void FeedUpdateAllCompleteL();
 	void FeedDownloadUpdatedL(TUint /*aFeedUid*/, TInt /*aPercentOfCurrentDownload*/);

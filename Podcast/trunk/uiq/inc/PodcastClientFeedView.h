@@ -25,11 +25,11 @@ protected:
 	void ConstructL();
 	void UpdateCommandsL();
 
-    void FeedInfoUpdatedL(CFeedInfo* aFeedInfo);
+    void FeedInfoUpdatedL(TUint aFeedUid);
 
 	// from MFeedEngineObserver
 	void UpdateFeedInfoDataL(CFeedInfo* aFeedInfo,  MQikListBoxData* aListboxData, TBool aIsUpdating = EFalse); 
-    void FeedInfoUpdated(CFeedInfo* aFeedInfo);
+    void FeedInfoUpdated(TUint aFeedUid);
 	void UpdateFeedInfoStatusL(TUint aFeedUid, TBool aIsUpdating);
 	void FeedDownloadUpdatedL(TUint aFeedUid, TInt aPercentOfCurrentDownload);
 	void FeedUpdateCompleteL(TUint aFeeidUid);

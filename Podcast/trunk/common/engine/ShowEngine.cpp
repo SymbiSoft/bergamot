@@ -62,7 +62,7 @@ void CShowEngine::ConstructL()
 	iMetaDataReader = new (ELeave) CMetaDataReader(*this);
 	iMetaDataReader->ConstructL();
 	iApaSession.Connect();
-	
+	CheckFilesL();
 	DownloadNextShow();
 }
 
@@ -920,6 +920,7 @@ TInt CShowEngine::GetNumDownloadingShowsL()
 void CShowEngine::AddDownload(CShowInfo *info)
 	{
 	info->SetDownloadState(EQueued);
+	DBUpdateShow(info);
 	DBAddDownload(info->Uid());
 	DownloadNextShow();
 	}
