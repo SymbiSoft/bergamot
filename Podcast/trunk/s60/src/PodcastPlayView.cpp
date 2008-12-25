@@ -89,6 +89,46 @@ class CImageWaiter:public CActive
 	CBitmapScaler* iBitmapScaler;
 	};
 
+class CMyEdwin : public CEikEdwin
+	{
+public:
+	/**
+	* Set the Edwin background color
+	* @param aColor The RGB color to use as background
+	*/
+	void CMyEdwin::SetBackgroundColor(const TRgb& aColor)
+	{
+	 CParaFormatLayer*pFormatLayer = CEikonEnv::NewDefaultParaFormatLayerL();
+	 CleanupStack::PushL(pFormatLayer);
+	 CParaFormat* paraFormat=CParaFormat::NewLC();
+	 TParaFormatMask paraFormatMask;
+	 pFormatLayer->SenseL(paraFormat,paraFormatMask);
+	 paraFormat->iFillColor=aColor;
+	 paraFormatMask.SetAttrib(EAttFillColor);
+	 pFormatLayer->SetL(paraFormat, paraFormatMask);
+	 SetParaFormatLayer(pFormatLayer); // Edwin takes the ownership
+	 CleanupStack::PopAndDestroy(paraFormat);
+	 CleanupStack::Pop(pFormatLayer);
+	}
+	
+	/**
+	* Set the Edwin text color
+	* @param aColor The RGB color to use for text
+	*/
+	void CMyEdwin::SetTextColor(const TRgb& aColor)
+	{
+	 CCharFormatLayer* FormatLayer = CEikonEnv::NewDefaultCharFormatLayerL();
+	 TCharFormat charFormat;
+	 TCharFormatMask charFormatMask;
+	 FormatLayer->Sense(charFormat, charFormatMask);
+	 charFormat.iFontPresentation.iTextColor=aColor;
+	 charFormatMask.SetAttrib(EAttColor);
+	 FormatLayer->SetL(charFormat, charFormatMask);
+	 SetCharFormatLayer(FormatLayer);  // Edwin takes the ownership
+	}
+	
+	};
+
 class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver, public MShowEngineObserver
     {
     public: 
@@ -140,7 +180,7 @@ class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver, p
 		CEikProgressInfo* iPlayProgressbar;
 		CEikProgressInfo* iDownloadProgressInfo;
 		CEikLabel* iShowInfoTitle;
-		CEikEdwin* iShowInfoLabel;
+		CMyEdwin* iShowInfoLabel;
 		CEikLabel* iTimeLabel;
 	
 		CShowInfo* iShowInfo;
@@ -277,6 +317,7 @@ void CPodcastPlayContainer::SizeChanged()
 	TInt playprogressHeight = 0;
 	TInt titleHeight = 0;
 	TInt timeSizeHeight = 0;
+	const TInt vPadding = 5;
 	
 	if(iDownloadProgressInfo != NULL)
 	{
@@ -301,20 +342,20 @@ void CPodcastPlayContainer::SizeChanged()
 	if(iShowInfoTitle != NULL)
 	{
 		iShowInfoTitle->SetSize(TSize(Size().iWidth, iShowInfoTitle->MinimumSize().iHeight));
-		iShowInfoTitle->SetPosition(TPoint(0, 0));
+		iShowInfoTitle->SetPosition(TPoint(0, vPadding));
 		titleHeight = iShowInfoTitle->Size().iHeight;
 	}
 
 	if(iCoverImageCtrl)
 	{
 		iCoverImageCtrl->SetSize(TSize(Size().iWidth, Size().iHeight - (playprogressHeight+titleHeight+timeSizeHeight)));
-		iCoverImageCtrl->SetPosition(TPoint(0, titleHeight));
+		iCoverImageCtrl->SetPosition(TPoint(0, titleHeight+2*vPadding));
 	}
 
 	if(iShowInfoLabel != NULL)
 	{
 		iShowInfoLabel->SetSize(TSize(Size().iWidth, Size().iHeight - (playprogressHeight+titleHeight+timeSizeHeight)));
-		iShowInfoLabel->SetPosition(TPoint(0, titleHeight));
+		iShowInfoLabel->SetPosition(TPoint(0, titleHeight+2*vPadding));
 	}
 	
 	if ( iBgContext )
@@ -403,6 +444,13 @@ void CPodcastPlayContainer::ConstructL( const TRect& aRect)
 	    CAknsBasicBackgroundControlContext::NewL( KAknsIIDQsnBgAreaMain, 
 	                                              aRect, 
 	                                              ETrue );
+	
+	MAknsSkinInstance* skin = AknsUtils::SkinInstance();
+	TRgb textColor(0,0,0);
+	if (skin) {
+		AknsUtils::GetCachedColor(skin, textColor, KAknsIIDQsnTextColors, EAknsCIQsnTextColorsCG6);	
+	}
+	
 	iCoverImageCtrl = new (ELeave) CEikImage;
 	iCoverImageCtrl->SetContainerWindowL(*this);
 	
@@ -430,19 +478,23 @@ void CPodcastPlayContainer::ConstructL( const TRect& aRect)
 	iTimeLabel->SetFont(iEikonEnv->AnnotationFont());
 	iTimeLabel->SetSize(iTimeLabel->MinimumSize());
 	iTimeLabel->SetLabelAlignment(ELayoutAlignCenter);
+	iTimeLabel->OverrideColorL(EColorLabelText,textColor);
 	iTimeLabel->SetMopParent(this);
 	iShowInfoTitle = new (ELeave) CEikLabel;
 	iShowInfoTitle->SetContainerWindowL(*this);
 	iShowInfoTitle->SetTextL(_L("Title"));
 	iShowInfoTitle->SetFont(iEikonEnv->TitleFont());
 	iShowInfoTitle->SetSize(iShowInfoTitle->MinimumSize());
+	iShowInfoTitle->OverrideColorL(EColorLabelText,textColor);
 	iShowInfoTitle->SetMopParent(this);
-	iShowInfoLabel = new (ELeave) CEikEdwin;//CEikLabel;
+	iShowInfoLabel = new (ELeave) CMyEdwin;//CEikLabel;
 	iShowInfoLabel->SetContainerWindowL(*this);
 	iShowInfoLabel->ConstructL(EEikEdwinNoHorizScrolling|EEikEdwinReadOnly|EEikEdwinNoAutoSelection);
 	iShowInfoLabel->CreateScrollBarFrameL();
 	iShowInfoLabel->ScrollBarFrame()->SetScrollBarVisibilityL(CEikScrollBarFrame::EOff, CEikScrollBarFrame::EOn);
 	iShowInfoLabel->SetSize(iShowInfoLabel->MinimumSize());
+	iShowInfoLabel->SetTextColor(textColor);
+
 //	iShowInfoLabel->SetLabelAlignment(ELayoutAlignLeft);
 //	iShowInfoLabel->SetFontL(iEikonEnv->DenseFont());
 	iShowInfoLabel->SetMopParent(this);
