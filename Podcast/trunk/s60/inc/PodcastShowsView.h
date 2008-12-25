@@ -61,7 +61,7 @@ protected:
 	void ShowDownloadUpdatedL(TInt aPercentOfCurrentDownload, TInt aBytesOfCurrentDownload, TInt aBytesTotal);
 	void DownloadQueueUpdated(TInt /*aDownloadingShows*/, TInt /*aQueuedShows*/) {};
 	// From feedengineobserver
-	void FeedInfoUpdated(CFeedInfo* aFeedInfo);
+	void FeedInfoUpdated(TUint aFeedUid);
 	void FeedUpdateCompleteL(TUint aFeedUid);
 	void FeedUpdateAllCompleteL();
 	void FeedDownloadUpdatedL(TUint /*aFeedUid*/, TInt /*aPercentOfCurrentDownload*/);
@@ -73,13 +73,16 @@ protected:
 	 */
 	void HandleCommandL(TInt aCommand);
 	
-	void GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex);
 	void UpdateFeedUpdateStateL();
-	void UpdateShowItemL(CShowInfo* aShowInfo, TInt aSizeDownloaded = KErrNotFound);
+	void UpdateShowItemL(TUint aUid, TInt aSizeDownloaded);
 	void UpdateShowItemDataL(CShowInfo* aShowInfo,TInt aIndex, TInt aSizeDownloaded = KErrNotFound);
 
 	 void DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane);
 private:
+	void GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex);
+
+private:
+	
 	TPodcastClientShowCategory iCurrentCategory;
 	CPodcastModel& iPodcastModel;
 	TBool iProgressAdded;

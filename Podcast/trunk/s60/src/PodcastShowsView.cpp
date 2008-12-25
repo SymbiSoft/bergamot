@@ -186,77 +186,31 @@ void CPodcastShowsView::ShowListUpdated()
 void CPodcastShowsView::ShowDownloadUpdatedL(TInt aPercentOfCurrentDownload,
 		TInt aBytesOfCurrentDownload, TInt /*aBytesTotal*/)
 	{
-	//DP("CPodcastClientShowsView::ShowDownloadUpdatedL");
-	//if(ViewContext() != NULL)
+	if (aPercentOfCurrentDownload == KOneHundredPercent)
 		{
-		CShowInfo *showInfo= NULL;
-		TInt index = iListContainer->Listbox()->CurrentItemIndex();
-		if (index >= 0 && index < iPodcastModel.ActiveShowList().Count())
+		iProgressAdded = EFalse;
+
+		if (iCurrentCategory == EShowPendingShows)
 			{
-			showInfo = iPodcastModel.ActiveShowList()[index];
+			iPodcastModel.GetShowsDownloading();
+			UpdateListboxItemsL();
 			}
-
-		// now we only show when the active downloa has focus in a list
-		//if(!iPodcastModel.ShowEngine().DownloadsStopped() && showInfo != NULL && showInfo->Uid() == iPodcastModel.ShowEngine().ShowDownloading()->Uid() &&				
-
-		// we show progress bar only for pending shows and inside the feed to which
-		// the active download belongs
-		if ((iCurrentCategory == EShowPendingShows && aBytesOfCurrentDownload
-				!= -1) || (iPodcastModel.ShowEngine().ShowDownloading()!= NULL && iPodcastModel.ActiveFeedInfo()
-				!= NULL && iPodcastModel.ShowEngine().ShowDownloading()->FeedUid() == iPodcastModel.ActiveFeedInfo()->Uid() && aPercentOfCurrentDownload>=0
-				&& aPercentOfCurrentDownload < KOneHundredPercent))
+		}
+	else 
+		{
+		CShowInfo *info = iPodcastModel.ShowEngine().ShowDownloading();
+		if (info) 
 			{
-			if (!iProgressAdded)
-				{
-				//	ViewContext()->AddProgressInfoL(EEikProgressTextPercentage, KOneHundredPercent);
-
-				iProgressAdded = ETrue;
-				}
-
-			//ViewContext()->SetAndDrawProgressInfo(aPercentOfCurrentDownload);
+			UpdateShowItemL(info->Uid(), aBytesOfCurrentDownload);
 			}
-		else
-			{
-			//ViewContext()->RemoveAndDestroyProgressInfo();
-			//ViewContext()->DrawNow();
-			iProgressAdded = EFalse;
-			}
-
-		if (aPercentOfCurrentDownload == KOneHundredPercent)
-			{
-			//ViewContext()->RemoveAndDestroyProgressInfo();
-			//ViewContext()->DrawNow();
-			iProgressAdded = EFalse;
-
-			if (iCurrentCategory == EShowPendingShows
-					&& iPodcastModel.ShowEngine().ShowDownloading() != NULL)
-				{
-				// First find the item, to remove it if we are in the pending show list
-				TInt index = iPodcastModel.ActiveShowList().Find(iPodcastModel.ShowEngine().ShowDownloading());
-
-				if (index != KErrNotFound)
-					{
-					//iListContainer->Listbox()->(index);
-					iPodcastModel.ActiveShowList().Remove(index);
-					UpdateListboxItemsL();
-					}
-				}
-			}
-
-		if (iPodcastModel.ShowEngine().ShowDownloading() != NULL)
-			{
-			//UpdateShowItemL(iPodcastModel.ShowEngine().ShowDownloading(), aBytesOfCurrentDownload);
-			}
-
 		}
 	}
 
-void CPodcastShowsView::FeedInfoUpdated(CFeedInfo* aFeedInfo)
+void CPodcastShowsView::FeedInfoUpdated(TUint aFeedUid)
 	{
-	if (iPodcastModel.ActiveFeedInfo() != NULL && aFeedInfo->Uid()
-			== iPodcastModel.ActiveFeedInfo()->Uid())
+	if (iPodcastModel.ActiveFeedInfo() != NULL && aFeedUid == 
+		iPodcastModel.ActiveFeedInfo()->Uid())
 		{
-		iPodcastModel.SetActiveFeedInfo(aFeedInfo);
 		TRAP_IGNORE(UpdateFeedUpdateStateL());
 		// Title might have changed
 		TRAP_IGNORE(UpdateListboxItemsL());
@@ -389,8 +343,6 @@ void CPodcastShowsView::UpdateShowItemDataL(CShowInfo* aShowInfo,TInt aIndex, TI
 			showDate = *unknown;
 			CleanupStack::PopAndDestroy(unknown);
 			}
-
-		//aListboxData->SetTextL(showDate, EQikListBoxSlotText3);
 	}
 	else
 	{
@@ -423,20 +375,17 @@ void CPodcastShowsView::UpdateShowItemDataL(CShowInfo* aShowInfo,TInt aIndex, TI
 	TListItemProperties itemProps;	
 	itemProps.SetBold(aShowInfo->PlayState() == ENeverPlayed);
 	iListContainer->Listbox()->ItemDrawer()->SetPropertiesL(aIndex, itemProps);						
-	//aListboxData->SetTextL(aShowInfo->Title(), EQikListBoxSlotText1);
-	//aListboxData->SetTextL(infoSize, EQikListBoxSlotText4);
-	//aListboxData->SetEmphasis(aShowInfo->PlayState() == ENeverPlayed);					
 }
 
-void CPodcastShowsView::UpdateShowItemL(CShowInfo* aShowInfo, TInt aSizeDownloaded)
+void CPodcastShowsView::UpdateShowItemL(TUint aUid, TInt aSizeDownloaded)
 {
-	// First find the item
-	TInt index = iPodcastModel.ActiveShowList().Find(aShowInfo);	
-
-	if(index != KErrNotFound && index < iItemArray->Count())
-	{				
-		UpdateShowItemDataL(aShowInfo, index, aSizeDownloaded);		
-		iListContainer->Listbox()->DrawItem(index);
+	RShowInfoArray& array = iPodcastModel.ActiveShowList();
+	
+	for (int i=0;i<array.Count();i++) {
+		if (array[i]->Uid() == aUid) {
+			UpdateShowItemDataL(array[i], i, aSizeDownloaded);		
+			iListContainer->Listbox()->DrawItem(i);			
+		}
 	}
 }
 
@@ -449,8 +398,6 @@ void CPodcastShowsView::UpdateListboxItemsL()
 		TBuf<KMaxShortDateFormatSpec*2> showDate;
 
 		TInt len = 0;
-
-		//SetAppTitleNameL(KNullDesC());
 
 		switch (iCurrentCategory)
 			{
@@ -808,7 +755,7 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 			if (index >= 0 && index < iPodcastModel.ActiveShowList().Count())
 				{
 				iPodcastModel.ShowEngine().AddDownload(iPodcastModel.ActiveShowList()[index]);
-				UpdateShowItemL(iPodcastModel.ActiveShowList()[index]);
+				UpdateShowItemL(iPodcastModel.ActiveShowList()[index]->Uid(),-1);
 				}
 			}
 			break;
@@ -1001,7 +948,6 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 					aMenuPane->SetItemDimmed(EPodcastStopDownloads, ETrue);
 					aMenuPane->SetItemDimmed(EPodcastResumeDownloads, ETrue);
 					aMenuPane->SetItemDimmed(EPodcastShowUnplayedOnly, EFalse);
-					aMenuPane->SetItemDimmed(EPodcastViewDownloadedShows, ETrue);
 				}break;
 			default:
 				{

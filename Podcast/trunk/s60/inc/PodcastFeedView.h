@@ -55,7 +55,7 @@ class CPodcastFeedView : public CPodcastListView, MEikListBoxObserver, public MF
 
 		
 		// from MFeedEngineObserver
-		void FeedInfoUpdated(CFeedInfo* aFeedInfo);
+		void FeedInfoUpdated(TUint aFeedUid);
 		void FeedDownloadUpdatedL(TUint aFeedUid, TInt aPercentOfCurrentDownload);
 		void FeedUpdateCompleteL(TUint aFeeidUid);
 		void FeedUpdateAllCompleteL();
@@ -66,7 +66,7 @@ class CPodcastFeedView : public CPodcastListView, MEikListBoxObserver, public MF
 		 * @param aCommand ID of the command to respond to. 
 		 */
 		void HandleCommandL(TInt aCommand);
-		void FeedInfoUpdatedL(CFeedInfo* aFeedInfo);
+		void FeedInfoUpdatedL(TUint aFeedUid);
 		void UpdateFeedInfoDataL(CFeedInfo* aFeedInfo, TInt aIndex, TBool aIsUpdating = EFalse);
 		void UpdateFeedInfoStatusL(TUint aFeedUid, TBool aIsUpdating = EFalse);
 
@@ -75,7 +75,6 @@ class CPodcastFeedView : public CPodcastListView, MEikListBoxObserver, public MF
 	private:
 		CPodcastModel& iPodcastModel;		
 		TBool iUpdatingAllRunning;
-		TBool iProgressAdded;
 		TFeedsViewMode iCurrentViewMode;
 		HBufC* iBooksFormat;
 		HBufC* iFeedsFormat;

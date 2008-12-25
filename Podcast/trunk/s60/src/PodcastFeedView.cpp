@@ -218,33 +218,31 @@ void CPodcastFeedView::HandleListBoxEventL(CEikListBox* aListBox, TListBoxEvent 
 	}
 }
 
-void CPodcastFeedView::FeedInfoUpdatedL(CFeedInfo* aFeedInfo)
+void CPodcastFeedView::FeedInfoUpdatedL(TUint aFeedUid)
 	{
-	// Since a title might have been updated
-	if (iProgressAdded)
-		{
-		//ViewContext()->RemoveAndDestroyProgressInfo();
-		//ViewContext()->DrawNow();
-		iProgressAdded = EFalse;
-		}
 
 	if (iCurrentViewMode == EFeedsNormalMode)
 		{
 		const RFeedInfoArray& feeds = iPodcastModel.FeedEngine().GetSortedFeeds();
 
-		TInt index = feeds.Find(aFeedInfo);
+		TInt index = KErrNotFound;
+		for (int i = 0; i < feeds.Count(); i++) {
+			if (feeds[i]->Uid() == aFeedUid) {
+				index = i;
+			}
+		}
 
 		if (index != KErrNotFound && index<iItemArray->Count())
 			{
-			UpdateFeedInfoDataL(aFeedInfo, index);
+			UpdateFeedInfoDataL(feeds[index], index);
 			iListContainer->Listbox()->DrawItem(index);
 			}
 		}
 	}
 
-void CPodcastFeedView::FeedInfoUpdated(CFeedInfo* aFeedInfo)
+void CPodcastFeedView::FeedInfoUpdated(TUint aFeedUid)
 	{
-	TRAP_IGNORE(FeedInfoUpdatedL(aFeedInfo))
+	TRAP_IGNORE(FeedInfoUpdatedL(aFeedUid))
 	}
 
 void CPodcastFeedView::FeedUpdateCompleteL(TUint aFeedUid)
@@ -270,22 +268,9 @@ void CPodcastFeedView::FeedDownloadUpdatedL(TUint aFeedUid, TInt aPercentOfCurre
 
 	if(aPercentOfCurrentDownload>=0 && aPercentOfCurrentDownload<100)
 		{
-		if(!iProgressAdded)
-			{
-//			ViewContext()->AddProgressInfoL(EEikProgressTextPercentage, 100);
-			iProgressAdded = ETrue;
-			}
-	//	ViewContext()->SetAndDrawProgressInfo(aPercentOfCurrentDownload);
 		}
 		
-	else if(iProgressAdded)
-		{
-	//	ViewContext()->RemoveAndDestroyProgressInfo();
-	//	ViewContext()->DrawNow();
-		iProgressAdded = EFalse;
-		}
 	}
-
 
 void CPodcastFeedView::UpdateFeedInfoStatusL(TUint aFeedUid, TBool aIsUpdating)
 	{
@@ -723,13 +708,6 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 				iUpdatingAllRunning = EFalse;
 
 				iPodcastModel.FeedEngine().CancelUpdateAllFeedsL();
-
-				if(iProgressAdded)
-					{
-				//	ViewContext()->RemoveAndDestroyProgressInfo();
-					//ViewContext()->DrawNow();
-					iProgressAdded = EFalse;
-					}				
 				}
 			}break;
 			//

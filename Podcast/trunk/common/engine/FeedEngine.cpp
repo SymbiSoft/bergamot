@@ -477,7 +477,7 @@ void CFeedEngine::ParsingComplete(CFeedInfo *item)
 	TRAP_IGNORE(item->SetTitleL(title));
 	DBUpdateFeed(item);
 	for (int i=0;i<iObservers.Count();i++) {
-		iObservers[i]->FeedInfoUpdated(item);
+		iObservers[i]->FeedInfoUpdated(item->Uid());
 	}
 	
 	}
@@ -1065,13 +1065,13 @@ void CFeedEngine::DBLoadFeeds()
 			}
 			
 			sqlite3_int64 feedtype = sqlite3_column_int64(st, 9);
+			TLinearOrder<CFeedInfo> sortOrder( CFeedEngine::CompareFeedsByTitle);
+			
 			if (feedtype) {
 				feedInfo->SetIsBookFeed();
-				// feeds are alredy sorted by SQLite
-				iSortedBooks.Append(feedInfo);
+				iSortedBooks.InsertInOrder(feedInfo, sortOrder);
 			} else {
-				// feeds are alredy sorted by SQLite
-				iSortedFeeds.Append(feedInfo);		
+				iSortedFeeds.InsertInOrder(feedInfo, sortOrder);
 			}
 			
 				

@@ -247,7 +247,7 @@ void CPodcastMainView::HandleListBoxEventL(CEikListBox* /*aListBox*/, TListBoxEv
 				break;
 			case 1:
 				newview = KUidPodcastShowsViewID;
-				messageUid = TUid::Uid(EShowNewShows);
+				messageUid = TUid::Uid(EShowDownloadedShows);
 				break;
 			case 2:
 				newview = KUidPodcastShowsViewID;
