@@ -70,33 +70,46 @@ void CSettingsEngine::GetDefaultBaseDirL(TDes &aBaseDir)
 	BaflUtils::GetDiskListL(iFs, *disks);
 	
 	#ifdef __WINS__
-		aBaseDir.Copy(KInternalPodcastDir);
+		iBaseDir.Copy(KPodcastDir3);
 		CleanupStack::PopAndDestroy(disks);
 		return;
 	#endif
 	
-	/*DP1("Disks count: %u", disks->Count());
+	DP1("Disks count: %u", disks->Count());
 	
 	for (int i=0;i<disks->Count();i++) {
-		DP1("Disk %u: %S", i, &(*disks)[i]);
-	}*/
-	
-	if (disks->Count() == 1)  // if only one drive, use C:\Media files\Podcasts
+		DP2("Disk %u: %S", i, &(*disks)[i]);
+	}
+
+	if (disks->Count() == 1)  // if only one drive, use C:
 		{
-		aBaseDir.Copy(KInternalPodcastDir);
+		iBaseDir.Copy(KPodcastDir3);
 		} 
-	else // else we use the first flash drive
+	else // else we use the flash drive
 		{
-		aBaseDir.Copy((*disks)[1]);
-		aBaseDir.Append(_L(":"));
-		aBaseDir.Append(KFlashPodcastDir);
-		
+		iBaseDir.Copy(KPodcastDir1);
+		DP1("Trying podcast dir '%S'", &iBaseDir);
+				
 		TRAPD(err, BaflUtils::EnsurePathExistsL(iFs, iBaseDir));
 		
-		if (err != KErrNone) {
-			DP("Leave in EnsurePathExistsL, revert to internal disk");
-			aBaseDir.Copy(KInternalPodcastDir);
-		}
+		if (err != KErrNone)
+			{
+			DP("Leave in EnsurePathExistsL");
+			iBaseDir.Copy(KPodcastDir2);
+			DP1("Trying podcast dir '%S'", &iBaseDir);
+			TRAPD(err, BaflUtils::EnsurePathExistsL(iFs, iBaseDir));
+			if (err != KErrNone) 
+				{
+				DP("Leave in EnsurePathExistsL");
+				iBaseDir.Copy(KPodcastDir3);
+				DP1("Trying podcast dir '%S'", &iBaseDir);
+				TRAPD(err, BaflUtils::EnsurePathExistsL(iFs, iBaseDir));
+				if (err != KErrNone)
+					{
+					DP("Leave in EnsurePathExistsL");
+					}
+				}
+			}
 		}
 	CleanupStack::PopAndDestroy(disks);
 	}

@@ -23,4 +23,10 @@ SOURCE			TelephonyListener.cpp
 SOURCE			OpmlParser.cpp 
 SOURCE			RemoteControlListener.cpp
 
-MACRO HAVE_CONFIG_H
+MACRO HAVE_CONFIG_H // for libid3tag
+
+#ifdef __UIQ3_SDK__
+MACRO UIQ3
+#else
+MACRO S60
+#endif

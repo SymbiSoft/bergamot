@@ -4,8 +4,15 @@
 #include <e32base.h>
 #include "PodcastModel.h"
 
-_LIT(KInternalPodcastDir, "c:\\Media files\\Podcasts\\");
-_LIT(KFlashPodcastDir, "\\Podcasts\\");
+#ifdef UIQ3
+_LIT(KPodcastDir1, "E:\\Podcasts\\");
+_LIT(KPodcastDir2, "D:\\Podcasts\\");
+_LIT(KPodcastDir3, "C:\\Media files\\Podcasts\\");
+#else
+_LIT(KPodcastDir1, "E:\\Podcasts\\");
+_LIT(KPodcastDir2, "C:\\Podcasts\\");
+_LIT(KPodcastDir3, "C:\\Podcasts\\");
+#endif
 
 _LIT(KConfigImportFile, "config.cfg");
 _LIT(KDefaultFeedsFile, "defaultfeeds.xml");
