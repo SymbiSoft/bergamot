@@ -7,10 +7,6 @@
 
 [0x101F7961], 0, 0, 0, {"Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID"}
 
-; Freeware installation "warning" required by Symbian signed
-;"..\..\common\group\FreewareWarningEN.txt"-"",FT 
-;"./DownloadWarningEN.txt"-"",FT 
-
 {
 "\epoc32\data\z\resource\apps\Podcast.R01"
 "\epoc32\data\z\resource\apps\Podcast.R02"
@@ -25,11 +21,11 @@
 "\epoc32\data\z\resource\apps\Podcast.R27"
 "\epoc32\data\z\resource\apps\Podcast.R44"
 "\epoc32\data\z\resource\apps\Podcast.R49"
-}-"!:\resource\apps\Podcast.rsc"
+}-"c:\resource\apps\Podcast.rsc"
 
-"\epoc32\data\z\resource\apps\Podcastsvg.mif"-"!:\resource\apps\Podcastsvg.mif"
-"\epoc32\data\z\resource\apps\Podcast.mbm"-"!:\resource\apps\Podcast.mbm"
-"\epoc32\data\z\private\10003a3f\import\apps\Podcast_reg.rsc"-"!:\private\10003a3f\import\apps\Podcast_reg.rsc"
+"\epoc32\data\z\resource\apps\Podcastsvg.mif"-"c:\resource\apps\Podcastsvg.mif"
+"\epoc32\data\z\resource\apps\Podcast.mbm"-"c:\resource\apps\Podcast.mbm"
+"\epoc32\data\z\private\10003a3f\import\apps\Podcast_reg.rsc"-"c:\private\10003a3f\import\apps\Podcast_reg.rsc"
 
 ; configuration and DB
 "../../common/config/config.cfg"-"c:\private\A0009D00\config.cfg"
@@ -37,4 +33,4 @@
 "../../common/config/escarpod.sqlite"-"c:\private\A0009D00\escarpod.sqlite.template"
 
 ; application UI
-"\epoc32\release\gcce\udeb\Podcast.exe"-"!:\sys\bin\Podcast.exe",FR,RI
+"\epoc32\release\gcce\udeb\Podcast.exe"-"c:\sys\bin\Podcast.exe",FR,RI

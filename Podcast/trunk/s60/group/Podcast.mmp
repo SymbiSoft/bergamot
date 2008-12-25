@@ -4,11 +4,11 @@
  * (c) 2008 Teknolog (Sebastian Brännström)
  * (c) 2008 Anotherguest (Lars Persson)
  */
+
 #if !defined(__UIQ3_SDK__)
 TARGET			Podcast.exe
 TARGETTYPE  	exe
 UID				0x100039CE 0xA0009D00  
-VENDORID		0x0
 
 CAPABILITY NetworkServices UserEnvironment
 
@@ -60,23 +60,6 @@ START BITMAP Podcast.mbm
 	SOURCE 8 emptyimage.bmp
 END
 
-SOURCEPATH ..\data
-USERINCLUDE ..\..\common\resources
-
-START RESOURCE Podcast.rss
-TARGETPATH resource\apps
-LANG			  01 02 03 04 05 06 07 16 17 25 27 44 49
-HEADER
-END
-
-START RESOURCE Podcast_reg.rss
-#ifdef WINSCW
-TARGETPATH 	  \private\10003a3f\apps
-#else
-TARGETPATH 	  \private\10003a3f\import\apps
-#endif
-END
-
 SYSTEMINCLUDE   \epoc32\include
 SYSTEMINCLUDE   \epoc32\include\libc
 SYSTEMINCLUDE \epoc32\include\mmf\common 
@@ -100,6 +83,24 @@ SOURCE  PodcastFeedView.cpp
 SOURCE  PodcastPlayView.cpp
 SOURCE  PodcastSettingsView.cpp
 SOURCE  PodcastShowsView.cpp
+
+SOURCEPATH ..\data
+USERINCLUDE ..\..\common\resources
+
+START RESOURCE Podcast.rss
+	HEADER
+	TARGETPATH resource\apps
+	LANG			  01 02 03 04 05 06 07 16 17 25 27 44 49
+END
+
+START RESOURCE Podcast_reg.rss
+LANG SC
+#ifdef WINSCW
+TARGETPATH 	  \private\10003a3f\apps
+#else
+TARGETPATH 	  \private\10003a3f\import\apps
+#endif
+END
 
 STATICLIBRARY	engine.lib
 STATICLIBRARY	libid3tag.lib

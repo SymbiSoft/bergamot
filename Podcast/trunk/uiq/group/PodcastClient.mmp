@@ -9,7 +9,6 @@ TARGET            PodcastClient.exe
 TARGETTYPE        exe
 TARGETPATH        \sys\bin
 UID               0x100039CE 0xA00046AE
-VENDORID          0x0
 
 CAPABILITY NetworkServices UserEnvironment
 

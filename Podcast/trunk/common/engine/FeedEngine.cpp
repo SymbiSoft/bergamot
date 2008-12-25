@@ -1011,6 +1011,8 @@ void CFeedEngine::DBLoadFeeds()
 	// note, "order by title" leaks memory, had to remove it!
 	iSqlBuffer.Format(_L("select url, title, description, imageurl, imagefile, link, built, lastupdated, uid, feedtype, customtitle from feeds"));
 
+	iSqlBuffer.Append(_L(" order by title"));
+	
 	sqlite3_stmt *st;
 	 
 	TLinearOrder<CFeedInfo> sortOrder( CFeedEngine::CompareFeedsByTitle);

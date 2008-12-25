@@ -7,10 +7,6 @@
 
 ;(0x101F6300), 3, 0, 0, {"UIQ30ProductID"}
 
-; Freeware installation "warning" required by Symbian signed
-;"../../common/config/FreewareWarningEN.txt"-"",FT 
-;"./DownloadWarningEN.txt"-"",FT 
-
 "/epoc32/release/gcce/udeb/PodcastClient.exe"-"!:\sys\bin\PodcastClient.exe"
 "/epoc32/data/z/resource/apps/PodcastClient.mbm"-"!:\resource\apps\PodcastClient.mbm"
 "/epoc32/data/z/private/10003A3F/apps/PodcastClient_reg.rsc"-"!:\private\10003a3f\import\apps\PodcastClient_reg.rsc"

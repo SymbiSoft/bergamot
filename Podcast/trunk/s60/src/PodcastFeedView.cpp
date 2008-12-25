@@ -328,6 +328,7 @@ void CPodcastFeedView::UpdateFeedInfoDataL(CFeedInfo* aFeedInfo, TInt aIndex, TB
 	TInt iconIndex = 0;
 	if(aIsUpdating)
 		{
+			iconIndex = 1;
 			iEikonEnv->ReadResourceL(updatedDate, R_PODCAST_FEEDS_IS_UPDATING);
 			unplayedShows = KNullDesC();			
 		}
