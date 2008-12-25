@@ -136,21 +136,10 @@ void CPodcastMainView::UpdateListboxItemsL()
 				{
 					TUint unplayed, total;
 					iPodcastModel.ShowEngine().GetStatsForDownloaded(total, unplayed);
-					/*if (total == -1) {
-						iEikonEnv->ReadResourceL(formatting, R_PODCAST_ONPHONE_STATUS_UNKNOWN);
-						statusText.Copy(formatting);
-					} else {*/											
-					//}
 					iListboxFormatbuffer.Format(iMainMenuItems->MdcaPoint(loop), unplayed, total);				
 				}
 				break;
 			case 2:
-				/*if(iPodcastModel.ShowEngine().DownloadsStopped()) {
-					iEikonEnv->ReadResourceL(formatting, R_PODCAST_PENDING_STATUS_SUSPENDED);
-					
-				} else {
-					iEikonEnv->ReadResourceL(formatting, R_PODCAST_PENDING_STATUS_ACTIVE);				
-				}*/
 				iListboxFormatbuffer.Format(iMainMenuItems->MdcaPoint(loop), iPodcastModel.ShowEngine().GetNumDownloadingShowsL());						
 				break;
 			case 3:

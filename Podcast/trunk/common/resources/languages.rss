@@ -1,8 +1,7 @@
 //#include <e32const.h> // just so I can easily lookup language numbers :)
 
 #include "PodcastClient_common.rls" // strings common between languages
-#include "PodcastClient_english.rls"
-/*#ifdef LANGUAGE_01
+#ifdef LANGUAGE_01
 	#include "PodcastClient_english.rls"
 #elif defined LANGUAGE_02
 	#include "PodcastClient_french.rls"
@@ -28,4 +27,4 @@
 	#include "PodcastClient_catalan.rls"
 #elif defined LANGUAGE_49
 	#include "PodcastClient_estonian.rls"
-#endif*/
+#endif

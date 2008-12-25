@@ -63,16 +63,15 @@ RESOURCE AVKON_VIEW r_podcast_mainview
 	cba = R_AVKON_SOFTKEYS_OPTIONS_EXIT;    
 }
 
-
 RESOURCE ARRAY r_podcast_mainmenu_array
 {
 	items = 
 	{
-	LBUF {txt = "0\tPlayer\t%S";},
-	LBUF {txt = "1\tShows on Phone\t%d Unplayed, %d total";},
-	LBUF {txt = "2\tDownloader\t%d Queued";},
-	LBUF {txt = "3\tFeeds\t%d Feeds";},
-	LBUF {txt = "4\tAudio Books\t%d Books";}
+	LBUF {txt = "0\t" STRING_r_view_player_cmd "\t%S";},
+	LBUF {txt = "1\t" STRING_r_view_shows_cmd "\t" STRING_r_view_onphone_status;},
+	LBUF {txt = "2\t" STRING_r_view_dling_shows_cmd "\t" STRING_r_podcast_shows_title_download;},
+	LBUF {txt = "3\t" STRING_r_view_feeds_cmd "\t" STRING_r_podcast_feeds_title_format;},
+	LBUF {txt = "4\t" STRING_r_view_audiobooks_cmd "\t" STRING_r_podcast_books_title_format;}
 	};
 
 }
