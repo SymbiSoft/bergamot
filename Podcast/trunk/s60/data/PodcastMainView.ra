@@ -43,13 +43,7 @@ RESOURCE MENU_PANE r_podcast_mainview_menu
 			{
 			command = EPodcastAbout;
 			txt = STRING_r_view_about_cmd;
-			},				
-		MENU_ITEM
-			{
-			command = EAknCmdExit;		
-			// Indicate that it will only be created in debug builds		
-			txt = STRING_r_listbox_listview_cmd_close_debug;		
-			}      
+			}     
 		};
     }
 
