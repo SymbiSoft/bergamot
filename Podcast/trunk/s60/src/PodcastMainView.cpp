@@ -140,7 +140,14 @@ void CPodcastMainView::UpdateListboxItemsL()
 				}
 				break;
 			case 2:
-				iListboxFormatbuffer.Format(iMainMenuItems->MdcaPoint(loop), iPodcastModel.ShowEngine().GetNumDownloadingShowsL());						
+				if (iPodcastModel.ShowEngine().DownloadsStopped()) {
+				
+					HBufC *buf = iEikonEnv->AllocReadResourceLC(R_VIEW_DLING_SHOWS_SUSPENDED_CMD);
+					iListboxFormatbuffer.Format(buf->Des(), iPodcastModel.ShowEngine().GetNumDownloadingShowsL());
+					CleanupStack::PopAndDestroy(buf);
+				} else {
+					iListboxFormatbuffer.Format(iMainMenuItems->MdcaPoint(loop), iPodcastModel.ShowEngine().GetNumDownloadingShowsL());
+				}
 				break;
 			case 3:
 				iListboxFormatbuffer.Format(iMainMenuItems->MdcaPoint(loop), iPodcastModel.FeedEngine().GetSortedFeeds().Count());

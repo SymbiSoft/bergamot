@@ -63,6 +63,8 @@ RESOURCE AVKON_VIEW r_podcast_mainview
 	cba = R_AVKON_SOFTKEYS_OPTIONS_EXIT;    
 }
 
+RESOURCE TBUF r_view_dling_shows_suspended_cmd { buf = "2\t" STRING_r_view_dling_shows_cmd "\t" STRING_r_podcast_shows_downloads_suspended;}
+
 RESOURCE ARRAY r_podcast_mainmenu_array
 {
 	items = 
@@ -73,7 +75,6 @@ RESOURCE ARRAY r_podcast_mainmenu_array
 	LBUF {txt = "3\t" STRING_r_view_feeds_cmd "\t" STRING_r_podcast_feeds_title_format;},
 	LBUF {txt = "4\t" STRING_r_view_audiobooks_cmd "\t" STRING_r_podcast_books_title_format;}
 	};
-
 }
 
 RESOURCE DIALOG r_dlg_about
