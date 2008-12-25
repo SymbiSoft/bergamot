@@ -20,9 +20,9 @@ PRJ_EXPORTS
 
 #if defined(__UIQ3_SDK__)
 ..\..\common\config\defaultfeeds.xml \epoc32\winscw\c\private\A00046ae\defaultfeeds.xml
-..\..\common\config\escarpod.sqlite \epoc32\winscw\c\private\A00046ae\escarpod.sqlite
+..\..\common\config\escarpod.sqlite \epoc32\winscw\c\private\A00046ae\escarpod.sqlite.template
 #else
 ..\..\common\config\defaultfeeds_emu.xml \epoc32\winscw\c\private\A0009D00\defaultfeeds.xml
-..\..\common\config\escarpod.sqlite \epoc32\winscw\c\private\A0009D00\escarpod.sqlite
+..\..\common\config\escarpod.sqlite \epoc32\winscw\c\private\A0009D00\escarpod.sqlite.template
 #endif
 
