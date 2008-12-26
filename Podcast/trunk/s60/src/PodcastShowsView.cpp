@@ -266,37 +266,43 @@ void CPodcastShowsView::HandleListBoxEventL(CEikListBox* /*aListBox*/,
 void CPodcastShowsView::GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex)
 	{
 	TBool dlStop = iPodcastModel.ShowEngine().DownloadsStopped();
+	TUint showDownloadingUid = iPodcastModel.ShowEngine().ShowDownloading() ? iPodcastModel.ShowEngine().ShowDownloading()->Uid() : 0;
+	TUint showPlayingUid = iPodcastModel.PlayingPodcast() ? iPodcastModel.PlayingPodcast()->Uid() : 0;
+	TBool playingOrPaused = iPodcastModel.SoundEngine().State() == ESoundEnginePlaying || 
+							iPodcastModel.SoundEngine().State() == ESoundEnginePaused;
+	
 	if (aShowInfo->ShowType() == EAudioBook)
 		{
 		aIconIndex = EAudiobookChapterIcon;
 		}
+	else if (showDownloadingUid == aShowInfo->Uid())
+		{
+		aIconIndex = dlStop ? ESuspendedShowIcon : EDownloadingShowIcon;		
+		}
+	else if (showPlayingUid == aShowInfo->Uid() && playingOrPaused)
+		{
+		aIconIndex = EPlayingShowIcon;
+		}
 	else
 		{
-		if (iPodcastModel.PlayingPodcast() && iPodcastModel.PlayingPodcast()->Uid() == aShowInfo->Uid())
+		switch (aShowInfo->DownloadState())
 			{
-			aIconIndex = EPlayingShowIcon;
-			}
-		else
-			{
-			switch (aShowInfo->DownloadState())
-				{
-				case EDownloaded:
-					aIconIndex = EShowIcon;
-					break;
-				case ENotDownloaded:
-					aIconIndex = ENewShowIcon;
-					break;
-				case EQueued:
-					aIconIndex = dlStop ? ESuspendedShowIcon : EQuedShowIcon;
-					break;
-				case EDownloading:
-					aIconIndex = dlStop ? ESuspendedShowIcon
-							: EDownloadingShowIcon;
-					break;
-				}
+			case EDownloaded:
+				aIconIndex = EShowIcon;
+				break;
+			case ENotDownloaded:
+				aIconIndex = ENewShowIcon;
+				break;
+			case EQueued:
+				aIconIndex = dlStop ? ESuspendedShowIcon : EQuedShowIcon;
+				break;
+			case EDownloading:
+				aIconIndex = dlStop ? ESuspendedShowIcon : EDownloadingShowIcon;		
+				break;
 			}
 		}
 	}
+	
 
 void CPodcastShowsView::UpdateFeedUpdateStateL()
 	{

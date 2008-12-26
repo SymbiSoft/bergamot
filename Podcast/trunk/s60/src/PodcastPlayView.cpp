@@ -147,6 +147,7 @@ class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver, p
 		{
 			return iShowInfo;
 		}
+		void PlayShow();
 	protected:
 		void UpdateControlVisibility();
 		void ShowListUpdated(){};  
@@ -376,9 +377,12 @@ CPodcastPlayContainer::CPodcastPlayContainer(CPodcastModel& aPodcastModel,CAknNa
 TKeyResponse CPodcastPlayContainer::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType)
 {
 	TKeyResponse Ret = EKeyWasNotConsumed;	
-	
+	const TUint KCenterKey = 63557;
 	switch (aKeyEvent.iCode)
 	{
+	case KCenterKey:
+		PlayShow();
+		break;
 	case EKeyRightArrow:
 		if(iTabGroup)
 		{
@@ -542,6 +546,44 @@ TInt CPodcastPlayContainer::PlayingUpdateStaticCallbackL(TAny* aPlayView)
 	{
 	static_cast<CPodcastPlayContainer*>(aPlayView)->UpdatePlayStatusL();
 	return KErrNone;
+	}
+
+
+void CPodcastPlayContainer::PlayShow()
+	{
+	if (iPodcastModel.PlayingPodcast() != NULL
+		&& iPodcastModel.PlayingPodcast()->Uid() == ShowInfo()->Uid())
+	{
+		if (iPodcastModel.PlayingPodcast()->ShowType() == EVideoPodcast
+			|| iPodcastModel.SoundEngine().State() == ESoundEngineNotInitialized)
+		{
+		//	QikFileUtils::StartAppL(iPodcastModel.PlayingPodcast()->FileName());//, lsSession);
+		}
+		else
+		{
+			if (iPodcastModel.SoundEngine().State() == ESoundEnginePlaying)
+			{
+				iPodcastModel.SoundEngine().Pause();
+				//iPlayProgressbar->SetFocusing(EFalse);
+/*						comMan.SetTextL(*this, EPodcastPlay,
+					R_PODCAST_PLAYER_PLAY_CMD);*/
+//						RequestFocusL(iScrollableContainer);
+			}
+			else
+			{
+				iPodcastModel.SoundEngine().Play();
+				//iPlayProgressbar->SetFocusing(EFalse);
+				/*comMan.SetTextL(*this, EPodcastPlay,
+					R_PODCAST_PLAYER_PAUSE_CMD);*/
+			}
+		}
+	}
+	else
+	{
+		iPodcastModel.PlayPausePodcastL(ShowInfo(), ETrue);
+	}
+	UpdateViewL();
+
 	}
 
 void CPodcastPlayContainer::PlaybackInitializedL()
@@ -1117,40 +1159,7 @@ void CPodcastPlayView::HandleCommandL(TInt aCommand)
 		break;
 		
 	case EPodcastPlay:
-		{
-			if (iPodcastModel.PlayingPodcast() != NULL
-				&& iPodcastModel.PlayingPodcast()->Uid() == iPlayContainer->ShowInfo()->Uid())
-			{
-				if (iPodcastModel.PlayingPodcast()->ShowType() == EVideoPodcast
-					|| iPodcastModel.SoundEngine().State() == ESoundEngineNotInitialized)
-				{
-				//	QikFileUtils::StartAppL(iPodcastModel.PlayingPodcast()->FileName());//, lsSession);
-				}
-				else
-				{
-					if (iPodcastModel.SoundEngine().State() == ESoundEnginePlaying)
-					{
-						iPodcastModel.SoundEngine().Pause();
-						//iPlayProgressbar->SetFocusing(EFalse);
-/*						comMan.SetTextL(*this, EPodcastPlay,
-							R_PODCAST_PLAYER_PLAY_CMD);*/
-//						RequestFocusL(iScrollableContainer);
-					}
-					else
-					{
-						iPodcastModel.SoundEngine().Play();
-						//iPlayProgressbar->SetFocusing(EFalse);
-						/*comMan.SetTextL(*this, EPodcastPlay,
-							R_PODCAST_PLAYER_PAUSE_CMD);*/
-					}
-				}
-			}
-			else
-			{
-				iPodcastModel.PlayPausePodcastL(iPlayContainer->ShowInfo(), ETrue);
-			}
-			iPlayContainer->UpdateViewL();
-		}
+		iPlayContainer->PlayShow();
 		break;
 	case EPodcastStop:
 		{

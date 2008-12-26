@@ -254,10 +254,10 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TBool aSuccessful)
 		if (aSuccessful) 
 		{
 			iShowDownloading->SetDownloadState(EDownloaded);
-			NotifyShowDownloadUpdated(100,0,1);
-
 			DBUpdateShow(iShowDownloading);
 			DBRemoveDownload(iShowDownloading->Uid());
+
+			NotifyShowDownloadUpdated(100,0,1);
 			
 			delete iShowDownloading;
 		}

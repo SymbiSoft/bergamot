@@ -484,20 +484,34 @@ CQikCommand* CPodcastClientShowsView::DynInitOrDeleteCommandL(CQikCommand* aComm
 void CPodcastClientShowsView::GetShowIcons(CShowInfo* aShowInfo, TInt& aImageId, TInt& aMaskId)
 {	
 	TBool dlStop = iPodcastModel.ShowEngine().DownloadsStopped();
-	if (aShowInfo->ShowType() == EAudioBook) {
+	TUint showDownloadingUid = iPodcastModel.ShowEngine().ShowDownloading() ? iPodcastModel.ShowEngine().ShowDownloading()->Uid() : 0;
+	TUint showPlayingUid = iPodcastModel.PlayingPodcast() ? iPodcastModel.PlayingPodcast()->Uid() : 0;
+	TBool playingOrPaused = iPodcastModel.SoundEngine().State() == ESoundEnginePlaying || 
+							iPodcastModel.SoundEngine().State() == ESoundEnginePaused;
+	
+	if (aShowInfo->ShowType() == EAudioBook)
+		{
 		aImageId = EMbmPodcastclientAudiobookchapter_40x40;
 		aMaskId = EMbmPodcastclientAudiobookchapter_40x40m;
-	} else {
-		if (iPodcastModel.PlayingPodcast() == aShowInfo) { // && iPodcastModel.SoundEngine().State() == ESoundEnginePlaying) {
-					aImageId = EMbmPodcastclientShow_playing_40x40;
-					aMaskId = EMbmPodcastclientShow_playing_40x40m;
-		} else {
-			switch(aShowInfo->DownloadState())
+		}
+	else if (showDownloadingUid == aShowInfo->Uid())
+		{
+		aImageId = dlStop ? EMbmPodcastclientSuspended_40x40 : EMbmPodcastclientDownloading_40x40;
+		aMaskId = EMbmPodcastclientDownloading_40x40m;		
+		}
+	else if (showPlayingUid == aShowInfo->Uid() && playingOrPaused)
+		{
+		aImageId = EMbmPodcastclientShow_playing_40x40;
+		aMaskId = EMbmPodcastclientShow_playing_40x40m;
+		}
+	else
+		{
+		switch (aShowInfo->DownloadState())
 			{
 			case EDownloaded:
 				aImageId = EMbmPodcastclientShow_40x40;
 				aMaskId = EMbmPodcastclientShow_40x40m;
-				break;	
+				break;
 			case ENotDownloaded:
 				aImageId = EMbmPodcastclientNew_40x40;
 				aMaskId = EMbmPodcastclientNew_40x40m;
@@ -508,11 +522,10 @@ void CPodcastClientShowsView::GetShowIcons(CShowInfo* aShowInfo, TInt& aImageId,
 				break;
 			case EDownloading:
 				aImageId = dlStop ? EMbmPodcastclientSuspended_40x40 : EMbmPodcastclientDownloading_40x40;
-				aMaskId = EMbmPodcastclientDownloading_40x40m;
+				aMaskId = EMbmPodcastclientDownloading_40x40m;		
 				break;
 			}
 		}
-	}
 }
 
 void CPodcastClientShowsView::UpdateShowItemDataL(CShowInfo* aShowInfo, MQikListBoxData* aListboxData, TInt aSizeDownloaded)
