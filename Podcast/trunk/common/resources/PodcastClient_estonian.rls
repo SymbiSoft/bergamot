@@ -181,7 +181,7 @@ rls_string STRING_r_view_books_setorder_dlg_selectlabel "Vali lugu mida liigutad
 
 rls_string STRING_r_view_remove_all_downloads_cmd "Eemalda kõik"
 
-rls_string STRING_r_podcast_subtitle "The UIQ Podcatcher" // shown beneath main view title
+rls_string STRING_r_podcast_subtitle "The Symbian Podcatcher" // shown beneath main view title
 
 rls_string STRING_r_add_feed_exists "Antud URL:iga kanal on juba olemas!" // shown when adding or changing a feed to a URL that already exists
 rls_string STRING_r_add_feed_exists_title "Korduv kanal" // title of error dialogs when adding feeds

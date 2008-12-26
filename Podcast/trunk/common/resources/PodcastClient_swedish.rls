@@ -181,7 +181,7 @@ rls_string STRING_r_view_books_setorder_dlg_selectlabel "Välj kapitel att flytt
 
 rls_string STRING_r_view_remove_all_downloads_cmd "Ta bort alla"
 
-rls_string STRING_r_podcast_subtitle "Podcatchern för UIQ" // shown beneath main view title
+rls_string STRING_r_podcast_subtitle "Podcatchern för Symbian" // shown beneath main view title
 
 rls_string STRING_r_add_feed_exists "En kanal med denna URL finns redan!" // shown when adding or changing a feed to a URL that already exists
 rls_string STRING_r_add_feed_exists_title "Dubblett" // title of error dialogs when adding feeds

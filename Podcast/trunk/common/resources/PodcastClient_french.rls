@@ -182,7 +182,7 @@ rls_string STRING_r_view_books_setorder_dlg_selectlabel "Sélectionner le chapit
 
 rls_string STRING_r_view_remove_all_downloads_cmd "Tout supprimer"
 
-rls_string STRING_r_podcast_subtitle "Podcast en mode UIQ" // shown beneath main view title
+rls_string STRING_r_podcast_subtitle "Podcast en mode Symbian" // shown beneath main view title
 
 rls_string STRING_r_add_feed_exists "Un flux existe déjà avec cette adresse !" // shown when adding or changing a feed to a URL that already exists
 rls_string STRING_r_add_feed_exists_title "Dupliquer le flux" // title of error dialogs when adding feeds

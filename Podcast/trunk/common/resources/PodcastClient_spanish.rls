@@ -181,7 +181,7 @@ rls_string STRING_r_view_books_setorder_dlg_selectlabel "Selecccionar el Capítu
 
 rls_string STRING_r_view_remove_all_downloads_cmd "Borrar Todo"
 
-rls_string STRING_r_podcast_subtitle "El Lector de Podcasts para UIQ" // shown beneath main view title
+rls_string STRING_r_podcast_subtitle "El Lector de Podcasts para Symbian" // shown beneath main view title
 
 rls_string STRING_r_add_feed_exists "¡Ya existe una Fuente con esta URL!" // shown when adding or changing a feed to a URL that already exists
 rls_string STRING_r_add_feed_exists_title "Fuente Duplicada " // title of error dialogs when adding feeds

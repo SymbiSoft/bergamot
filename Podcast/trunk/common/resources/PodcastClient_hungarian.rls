@@ -182,7 +182,7 @@ rls_string STRING_r_view_books_setorder_dlg_selectlabel "Válassza ki a mozgatni
 
 rls_string STRING_r_view_remove_all_downloads_cmd "Mind Eltavolitasa"
 
-rls_string STRING_r_podcast_subtitle "Az UIQ Podcatcher" // shown beneath main view title
+rls_string STRING_r_podcast_subtitle "Az Symbian Podcatcher" // shown beneath main view title
 
 rls_string STRING_r_add_feed_exists "Mar letezik feed ilyen URL-lel!" // shown when adding or changing a feed to a URL that already exists
 rls_string STRING_r_add_feed_exists_title "Feed kettozese" // title of error dialogs when adding feeds

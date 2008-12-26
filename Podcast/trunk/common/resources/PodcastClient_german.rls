@@ -181,7 +181,7 @@ rls_string STRING_r_view_books_setorder_dlg_selectlabel "Zu verschiebenden Eintr
 
 rls_string STRING_r_view_remove_all_downloads_cmd "Alle Entfernen"
 
-rls_string STRING_r_podcast_subtitle "Der UIQ Podcatcher" // shown beneath main view title
+rls_string STRING_r_podcast_subtitle "Der Symbian Podcatcher" // shown beneath main view title
 
 rls_string STRING_r_add_feed_exists "Ein Abonnement mit dieser URL existiert bereits!" // shown when adding or changing a feed to a URL that already exists
 rls_string STRING_r_add_feed_exists_title "Dupliziertes Abonnement" // title of error dialogs when adding feeds

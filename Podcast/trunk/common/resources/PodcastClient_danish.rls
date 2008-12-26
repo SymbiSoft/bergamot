@@ -181,7 +181,7 @@ rls_string STRING_r_view_books_setorder_dlg_selectlabel "Vælg objekt at flytte"
 
 rls_string STRING_r_view_remove_all_downloads_cmd "Fjern alle"
 
-rls_string STRING_r_podcast_subtitle "UIQ Podfangeren" // shown beneath main view title
+rls_string STRING_r_podcast_subtitle "Symbian Podfangeren" // shown beneath main view title
 
 rls_string STRING_r_add_feed_exists "Et feed med denne URL eksisterer allerede!" // shown when adding or changing a feed to a URL that already exists
 rls_string STRING_r_add_feed_exists_title "Dupliker Feed" // title of error dialogs when adding feeds

@@ -173,7 +173,7 @@ rls_string STRING_r_view_books_setorder_dlg_swapcmd "Přeskočit"
 rls_string STRING_r_view_books_setorder_dlg_label "Vyberte položku k přeskočení"
 rls_string STRING_r_view_books_setorder_dlg_selectlabel "Vybrete položku k přesunutí"
 rls_string STRING_r_view_remove_all_downloads_cmd "Odebrat vše"
-rls_string STRING_r_podcast_subtitle "UIQ Podcaster" // shown beneath main view title
+rls_string STRING_r_podcast_subtitle "Symbian Podcaster" // shown beneath main view title
 rls_string STRING_r_add_feed_exists "Zdroj s tímto URL již existuje!" // shown when adding or changing a feed to a URL that already exists
 rls_string STRING_r_add_feed_exists_title "Duplikátní zdroj" // title of error dialogs when adding feeds
 rls_string STRING_r_add_feed_replace "Všechny šou v tomto zdroji budou smazány! Chcete pokračovat?" // shown when changing an existing feed URL
