@@ -39,7 +39,7 @@ public:
 	TBool UpdateFeedL(TUint aFeedUid);
 	void UpdateAllFeedsL();
 	void CancelUpdateAllFeedsL();
-	const RFeedInfoArray& GetSortedFeeds() const;
+	const RFeedInfoArray& GetSortedFeeds();
 	CFeedInfo* GetFeedInfoByUid(TUint aFeedUid);	
 	void GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed, TBool aIsBookFeed );
 	void GetDownloadedStats(TUint &aNumShows, TUint &aNumUnplayed);
@@ -47,7 +47,7 @@ public:
 	void AddBookL(const TDesC& aBookTitle, CDesCArrayFlat* aFileNameArray);
 	void AddBookChaptersL(CFeedInfo& aFeedInfo, CDesCArrayFlat* aFileNameArray);
 	void RemoveBookL(TUint aUid);
-	const RFeedInfoArray& GetSortedBooks() const;
+	const RFeedInfoArray& GetSortedBooks();
 	void ImportBookL(const TDesC& aTitle, const TDesC& aFile);
 
 

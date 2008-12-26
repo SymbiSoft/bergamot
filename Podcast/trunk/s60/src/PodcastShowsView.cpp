@@ -575,34 +575,17 @@ void CPodcastShowsView::UpdateListboxItemsL()
 				iNaviPane->Pop(iNaviDecorator);
 				delete iNaviDecorator;
 				iNaviDecorator = NULL;
-				iNaviDecorator
-						= iNaviPane->CreateNavigationLabelL(*titleBuffer);
 				}
 
-			if (iNaviPane != NULL)
-				{
-				iNaviPane->Pop(iNaviDecorator);
-				delete iNaviDecorator;
-				iNaviDecorator = NULL;
-				iNaviDecorator
-						= iNaviPane->CreateNavigationLabelL(*titleBuffer);
-				}
+			iNaviDecorator	= iNaviPane->CreateNavigationLabelL(*titleBuffer);
+			iNaviPane->PushL(*iNaviDecorator);
 			CleanupStack::PopAndDestroy(titleBuffer);
-
 			}
 		else
 			{
 			TUint numUnplayed = 0;
 			TUint numShows = 0;
-			if (len == 0)
-				{
-				if (iNaviPane != NULL)
-					{
-					iNaviPane->Pop(iNaviDecorator);
-					delete iNaviDecorator;
-					iNaviDecorator = NULL;
-					}
-				}
+	
 			HBufC* titleFormat=  iEikonEnv->AllocReadResourceLC(R_PODCAST_SHOWS_TITLE_FORMAT);
 			HBufC* titleBuffer = HBufC::NewL(titleFormat->Length()+8);
 			
@@ -620,9 +603,10 @@ void CPodcastShowsView::UpdateListboxItemsL()
 				iNaviPane->Pop(iNaviDecorator);
 				delete iNaviDecorator;
 				iNaviDecorator = NULL;
-				iNaviDecorator
-						= iNaviPane->CreateNavigationLabelL(*titleBuffer);
 				}
+			
+			iNaviDecorator = iNaviPane->CreateNavigationLabelL(*titleBuffer);
+			iNaviPane->PushL(*iNaviDecorator);
 			CleanupStack::PopAndDestroy(titleBuffer);
 			}
 		}

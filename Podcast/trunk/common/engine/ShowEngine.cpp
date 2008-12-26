@@ -367,8 +367,11 @@ void CShowEngine::DBGetAllDownloads(RShowInfoArray& aShowArray)
 	{
 	DP("CShowEngine::DBGetAllDownloads");
 	CShowInfo *showInfo = NULL;
-	iSqlBuffer.Format(_L("select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, shows.uid, showsize, trackno, pubdate, showtype from downloads, shows where downloads.uid=shows.uid order by dl_index"));
-
+	iSqlBuffer.Format(_L("select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, shows.uid, showsize, trackno, pubdate, showtype from downloads, shows where downloads.uid=shows.uid"));
+	
+#ifndef DONT_SORT_SQL
+	iSqlBuffer.Append(_L(" order by dl_index"));
+#endif
 	sqlite3_stmt *st;
 
 	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
@@ -391,8 +394,15 @@ CShowInfo* CShowEngine::DBGetNextDownload()
 	{
 	DP("CShowEngine::DBGetNextDownload");
 	CShowInfo *showInfo = NULL;
-	iSqlBuffer.Format(_L("select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, shows.uid, showsize, trackno, pubdate, showtype from downloads, shows where downloads.uid=shows.uid order by dl_index limit 1"));
+	iSqlBuffer.Format(_L("select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, shows.uid, showsize, trackno, pubdate, showtype from downloads, shows where downloads.uid=shows.uid"));
 
+#ifndef DONT_SORT_SQL
+	iSqlBuffer.Append(_L(" limit 1"));
+#else
+	iSqlBuffer.Append(_L(" order by dl_index limit 1"));
+#endif
+
+	
 	sqlite3_stmt *st;
 
 	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
@@ -420,7 +430,9 @@ void CShowEngine::DBGetShowsByFeed(RShowInfoArray& aShowArray, TUint aFeedUid)
 		iSqlBuffer.Append(_L(" and playstate=0"));
 	}
 	
+#ifndef DONT_SORT_SQL
 	iSqlBuffer.Append(_L(" order by pubdate desc"));
+#endif
 	
 	sqlite3_stmt *st;
 

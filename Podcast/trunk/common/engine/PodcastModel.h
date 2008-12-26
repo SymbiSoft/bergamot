@@ -13,6 +13,9 @@
 #include "debug.h"
 #include "sqlite3.h"
 
+// SQLite leaks memory when sorting, so to test our own memory leaks we need to disable this
+//#define DONT_SORT_SQL
+
 class CFeedEngine;
 class CSoundEngine;
 class CShowEngine;

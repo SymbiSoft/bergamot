@@ -729,8 +729,11 @@ CFeedInfo* CFeedEngine::GetFeedInfoByUid(TUint aFeedUid)
 	return NULL;
 	}
 		
-const RFeedInfoArray& CFeedEngine::GetSortedFeeds() const
+const RFeedInfoArray& CFeedEngine::GetSortedFeeds()
 {
+	TLinearOrder<CFeedInfo> sortOrder( CFeedEngine::CompareFeedsByTitle);
+
+	iSortedFeeds.Sort(sortOrder);
 	return iSortedFeeds;
 }
 
@@ -846,8 +849,11 @@ void CFeedEngine::RemoveBookL(TUint aUid)
 		}
 	}
 
-const RFeedInfoArray& CFeedEngine::GetSortedBooks() const 
+const RFeedInfoArray& CFeedEngine::GetSortedBooks() 
 {
+	TLinearOrder<CFeedInfo> sortOrder( CFeedEngine::CompareFeedsByTitle);
+	
+	iSortedBooks.Sort(sortOrder);
 	return iSortedBooks;
 }
 
@@ -1008,11 +1014,8 @@ void CFeedEngine::DBLoadFeeds()
 	iSortedFeeds.Reset();
 	CFeedInfo *feedInfo = NULL;
 	
-	// note, "order by title" leaks memory, had to remove it!
 	iSqlBuffer.Format(_L("select url, title, description, imageurl, imagefile, link, built, lastupdated, uid, feedtype, customtitle from feeds"));
 
-	iSqlBuffer.Append(_L(" order by title"));
-	
 	sqlite3_stmt *st;
 	 
 	TLinearOrder<CFeedInfo> sortOrder( CFeedEngine::CompareFeedsByTitle);
