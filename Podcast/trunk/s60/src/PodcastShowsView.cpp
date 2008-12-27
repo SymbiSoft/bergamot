@@ -727,11 +727,13 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 			CleanupStack::PopAndDestroy(str);
 			iPodcastModel.ShowEngine().CheckFilesL();
 			break;
-		case EPodcastShowUnplayedOnly:
-			{
-			iPodcastModel.SettingsEngine().SetSelectUnplayedOnly(!iPodcastModel.SettingsEngine().SelectUnplayedOnly());
+		case EPodcastShowUnplayedOnlyOn:
+			iPodcastModel.SettingsEngine().SetSelectUnplayedOnly(ETrue);
 			UpdateListboxItemsL();
-			}
+			break;
+		case EPodcastShowUnplayedOnlyOff:
+			iPodcastModel.SettingsEngine().SetSelectUnplayedOnly(EFalse);
+			UpdateListboxItemsL();
 			break;
 		case EPodcastMarkAllPlayed:
 			iPodcastModel.MarkSelectionPlayed();
@@ -894,10 +896,6 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 			
 			aMenuPane->SetItemDimmed(EPodcastDownloadShow, removeDownloadShowCmd || updatingState);
 			
-			aMenuPane->SetItemButtonState(EPodcastShowUnplayedOnly, iPodcastModel.SettingsEngine().SelectUnplayedOnly()?EEikMenuItemSymbolOn:EEikMenuItemSymbolIndeterminate);
-			
-			
-			aMenuPane->SetItemDimmed(EPodcastShowUnplayedOnly, updatingState);
 			aMenuPane->SetItemDimmed(EPodcastMarkAllPlayed, updatingState);
 			
 			aMenuPane->SetItemDimmed(EPodcastDeleteShow, removeDeleteShowCmd);					
@@ -949,5 +947,15 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 			}	
 			
 			
-}
+	} else if (aResourceId == R_ONOFF_MENU) {
+		if (iPodcastModel.SettingsEngine().SelectUnplayedOnly())
+		{
+		aMenuPane->SetItemButtonState(EPodcastShowUnplayedOnlyOff, EEikMenuItemSymbolIndeterminate);
+		aMenuPane->SetItemButtonState(EPodcastShowUnplayedOnlyOn, EEikMenuItemSymbolOn);
+		} else {
+		aMenuPane->SetItemButtonState(EPodcastShowUnplayedOnlyOn, EEikMenuItemSymbolIndeterminate);
+		aMenuPane->SetItemButtonState(EPodcastShowUnplayedOnlyOff, EEikMenuItemSymbolOn);
+		}
+
+	}
 }

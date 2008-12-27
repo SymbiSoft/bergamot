@@ -14,6 +14,25 @@ RESOURCE HOTKEYS r_podcast_showsview_hotkeys
     }
 
 
+RESOURCE MENU_PANE r_onoff_menu
+	{
+	items =	{
+		MENU_ITEM
+			{
+			command = EPodcastShowUnplayedOnlyOn;
+			txt = STRING_r_on;
+			flags = EEikMenuItemRadioStart|EEikMenuItemSymbolOn;
+			},
+		MENU_ITEM
+			{
+			command = EPodcastShowUnplayedOnlyOff;
+			txt = STRING_r_off;
+	        flags = EEikMenuItemRadioEnd;
+			}
+	};
+			
+	}
+
 RESOURCE MENU_PANE r_podcast_showsview_menu
     {
     items =
@@ -87,6 +106,7 @@ RESOURCE MENU_PANE r_podcast_showsview_menu
 			{
 			command = EPodcastShowUnplayedOnly;
 			txt = STRING_r_view_show_unplayed_cmd;
+			cascade = r_onoff_menu;
 			},
 		MENU_ITEM
 			{
