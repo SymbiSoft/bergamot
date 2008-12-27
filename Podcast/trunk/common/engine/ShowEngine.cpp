@@ -431,7 +431,12 @@ void CShowEngine::DBGetShowsByFeed(RShowInfoArray& aShowArray, TUint aFeedUid)
 	}
 	
 #ifndef DONT_SORT_SQL
-	iSqlBuffer.Append(_L(" order by pubdate desc"));
+	CFeedInfo *feedInfo = iPodcastModel.FeedEngine().GetFeedInfoByUid(aFeedUid);
+	if(feedInfo->IsBookFeed()) {
+		iSqlBuffer.Append(_L(" order by trackno"));
+	} else {
+		iSqlBuffer.Append(_L(" order by pubdate desc"));
+	}
 #endif
 	
 	sqlite3_stmt *st;
@@ -646,7 +651,7 @@ TBool CShowEngine::DBUpdateShow(CShowInfo *aItem)
 	 
 	//DP1("SQL: %S", &iSqlBuffer.Left(KSqlDPLen));
 	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
-	DP("After prepare");
+
 	if (rc==SQLITE_OK)
 		{
 		rc = sqlite3_step(st);

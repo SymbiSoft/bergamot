@@ -367,7 +367,7 @@ void CPodcastClientShowsView::UpdateFeedUpdateStateL()
 	if((iListbox->IsDimmed() && !listboxDimmed) || (!iListbox->IsDimmed() && listboxDimmed))
 		{
 		iListbox->SetDimmed(listboxDimmed);	
-		UpdateCommandsL();
+		UpdateCommandsL(ETrue);
 		}
 	}
 
@@ -790,12 +790,12 @@ void CPodcastClientShowsView::UpdateListboxItemsL()
 			
 		}	
 		
-		UpdateCommandsL();
+		UpdateCommandsL(ETrue);
 
 	}
 }
 
-void CPodcastClientShowsView::UpdateCommandsL()
+void CPodcastClientShowsView::UpdateCommandsL(TBool aUpdateFeedStats)
 {
 	CQikCommandManager& comMan = CQikCommandManager::Static();
 	RShowInfoArray &fItems = iPodcastModel.ActiveShowList();
@@ -932,6 +932,10 @@ void CPodcastClientShowsView::UpdateCommandsL()
 		}break;
 	}	
 
+	if (!aUpdateFeedStats) {
+		return;
+	}
+	
 	if (iCurrentCategory == EShowPendingShows) {
 		HBufC* titleBuffer = NULL;
 		

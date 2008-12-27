@@ -33,7 +33,7 @@ protected:
 	// from MQikCommandModelOwner	
 	CQikCommand* DynInitOrDeleteCommandL(CQikCommand* aCommand, const CCoeControl& aControlAddingCommands);
 	void ViewActivatedL(const TVwsViewId &aPrevViewId, TUid aCustomMessageId, const TDesC8 &aCustomMessage);
-	void UpdateCommandsL();
+	void UpdateCommandsL(TBool aUpdateFeedStats=EFalse);
 	void UpdateSelectCommandL();
 	void GetShowIcons(CShowInfo* aShowInfo, TInt& aImageId, TInt& aMaskId);
 	void UpdateFeedUpdateStateL();

@@ -953,7 +953,7 @@ void CFeedEngine::GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUn
 
 void CFeedEngine::DBGetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed)
 	{
-	DP1("CFeedEngine::DBGetStatsByFeed, feedUid=%d", aFeedUid);
+	DP1("CFeedEngine::DBGetStatsByFeed, feedUid=%u", aFeedUid);
 	iSqlBuffer.Format(_L("select count(*) from shows where feeduid=%u"), aFeedUid);
 
 	sqlite3_stmt *st;
