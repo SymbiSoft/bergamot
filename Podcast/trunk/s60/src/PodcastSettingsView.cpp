@@ -12,10 +12,12 @@
 #include <aknsettingitemlist.h>
 #include <aknnavide.h> 
 #include <podcast.rsg>
+#include "SettingsEngine.h"
+
 class CPodcastSettingItemList:public CAknSettingItemList
 	{
 public:
-	CPodcastSettingItemList()
+	CPodcastSettingItemList(CPodcastModel& aPodcastModel) : iPodcastModel(aPodcastModel)
 		{
 
 		}
@@ -35,6 +37,13 @@ public:
 	 */
 	CAknSettingItem* CreateSettingItemL( TInt aSettingId )
 		{
+		CSettingsEngine &se = iPodcastModel.SettingsEngine();
+		iShowDir.Copy(se.BaseDir());
+		iIntervalUpdate = se.UpdateFeedInterval();
+		iTimeUpdate = se.UpdateFeedTime();
+		iAutoDownload = se.DownloadAutomatically();
+		iConnection = se.SpecificIAP();
+		
 		switch(aSettingId)
 			{
 			case EPodcastSettingShowDir:
@@ -50,7 +59,7 @@ public:
 				return new (ELeave) CAknEnumeratedTextPopupSettingItem (aSettingId, iConnection);
 				break;
 			case EPodcastSettingAutoDownload:
-				return new (ELeave) CAknEnumeratedTextPopupSettingItem (aSettingId, iAutoDownload);
+				return new (ELeave) CAknBinaryPopupSettingItem (aSettingId, iAutoDownload);
 				break;
 			default:
 				return CAknSettingItemList::CreateSettingItemL(aSettingId);
@@ -63,12 +72,14 @@ public:
 	TTime iTimeUpdate;
 	TInt iAutoDownload;
 	TInt iConnection;
+	
+	CPodcastModel &iPodcastModel;
 	};
 
 class CPodcastSettingsContainer : public CCoeControl
     {
     public: 
-		CPodcastSettingsContainer();
+		CPodcastSettingsContainer(CPodcastModel& aPodcastModel);
 		~CPodcastSettingsContainer();
 		void ConstructL( const TRect& aRect );
 		TInt CountComponentControls() const;
@@ -83,6 +94,8 @@ class CPodcastSettingsContainer : public CCoeControl
 		CPodcastSettingItemList  * iListbox;
 		CAknNavigationDecorator* iNaviDecorator;
         CAknNavigationControlContainer* iNaviPane;
+	private:
+		CPodcastModel &iPodcastModel;
 	};
 
 
@@ -97,7 +110,7 @@ void CPodcastSettingsContainer::HandleResourceChange(TInt aType)
 	    }
 }
 
-CPodcastSettingsContainer::CPodcastSettingsContainer()
+CPodcastSettingsContainer::CPodcastSettingsContainer(CPodcastModel &aPodcastModel) : iPodcastModel(aPodcastModel)
 {
 }
 
@@ -115,7 +128,7 @@ CCoeControl* CPodcastSettingsContainer::ComponentControl( TInt /*aIndex*/ ) cons
 void CPodcastSettingsContainer::ConstructL( const TRect& aRect )
 	{
 	CreateWindowL();
-	iListbox =new (ELeave) CPodcastSettingItemList;
+	iListbox =new (ELeave) CPodcastSettingItemList(iPodcastModel);
 	iListbox->SetMopParent( this );
 	iListbox->SetContainerWindowL(*this);
 	iListbox->ConstructFromResourceL(R_PODCAST_SETTINGS);
@@ -158,7 +171,7 @@ CPodcastSettingsView::CPodcastSettingsView(CPodcastModel& aPodcastModel):iPodcas
 void CPodcastSettingsView::ConstructL()
 {
 	BaseConstructL(R_PODCAST_SETTINGSVIEW);	
-	iSettingsContainer = new (ELeave) CPodcastSettingsContainer;
+	iSettingsContainer = new (ELeave) CPodcastSettingsContainer(iPodcastModel);
 	iSettingsContainer->ConstructL(ClientRect());
 }
     

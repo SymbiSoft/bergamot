@@ -179,11 +179,7 @@ RESOURCE AVKON_SETTING_PAGE r_podcast_autodownload_page_resource
 {
     label= STRING_r_podcast_setting_autodownload;
     type = EAknCtPopupSettingList;
-    editor_resource_id = r_setting_autodownload_popup_list_entry;
-}
-
-RESOURCE POPUP_SETTING_LIST r_setting_autodownload_popup_list_entry
-{
+    number= 0;
 }
 
 RESOURCE AVKON_POPUP_SETTING_TEXTS r_on_off_texts
