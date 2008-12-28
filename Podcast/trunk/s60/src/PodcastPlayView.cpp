@@ -1124,12 +1124,14 @@ void CPodcastPlayView::HandleCommandL(TInt aCommand)
 	case EPodcastMarkAsPlayed:
 		{
 			iPlayContainer->ShowInfo()->SetPlayState(EPlayed);
+			iPodcastModel.ShowEngine().UpdateShow(iPlayContainer->ShowInfo());
 			iPlayContainer->UpdateViewL();
 		}
 		break;
 	case EPodcastMarkAsUnplayed:
 		{
 			iPlayContainer->ShowInfo()->SetPlayState(ENeverPlayed);
+			iPodcastModel.ShowEngine().UpdateShow(iPlayContainer->ShowInfo());
 			iPlayContainer->UpdateViewL();
 		}
 		break;

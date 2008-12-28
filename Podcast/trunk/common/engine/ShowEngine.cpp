@@ -153,31 +153,6 @@ void CShowEngine::DownloadInfo(CHttpClient* aHttpClient, TInt aTotalBytes)
 		}
 	}
 
-void CShowEngine::GetStatsForDownloaded(TUint &aNumShows, TUint &aNumUnplayed )
-	{
-	DP("CShowEngine::GetStatsForDownloaded");
-	TInt showsCount = 0;
-	TInt unplayedCount = 0;
-	
-	RShowInfoArray array;
-	DBGetDownloadedShows(array);
-	
-	
-	for (TInt i=0;i<array.Count();i++) {
-		if (!(array[i]->ShowType() == EAudioBook))
-			{
-			showsCount++;
-			if (array[i]->PlayState() == ENeverPlayed) {
-				unplayedCount++;
-			}
-			}
-		}
-	
-	aNumShows = showsCount;
-	aNumUnplayed = unplayedCount;
-	array.ResetAndDestroy();
-	}
-
 void CShowEngine::GetShowL(CShowInfo *info)
 	{
 	CFeedInfo *feedInfo = iPodcastModel.FeedEngine().GetFeedInfoByUid(info->FeedUid());
@@ -264,6 +239,7 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TBool aSuccessful)
 		else 
 		{
 			iShowDownloading->SetDownloadState(EQueued);
+			DBUpdateShow(iShowDownloading);
 			iDownloadErrors++;
 			if (iDownloadErrors > KMaxDownloadErrors) 
 			{
@@ -1016,13 +992,6 @@ void CShowEngine::NotifyShowListUpdated()
 		}
 	}
 
-void CShowEngine::SetShowPlayState(CShowInfo* aShowInfo, TPlayState aPlayState)
-	{
-	aShowInfo->SetPlayState(aPlayState);
-	DBUpdateShow(aShowInfo);
-	}
-
-
 void CShowEngine::ListDirL(TFileName &folder) {
 	CDirScan *dirScan = CDirScan::NewLC(iFs);
 	//DP1("Listing dir: %S", &folder);
@@ -1134,6 +1103,12 @@ void CShowEngine::ReadMetaDataComplete()
 	NotifyShowListUpdated();
 	MetaDataReader().SetIgnoreTrackNo(EFalse);
 	}
+
+void CShowEngine::UpdateShow(CShowInfo *aInfo)
+	{
+	DBUpdateShow(aInfo);
+	}
+
 
 CMetaDataReader& CShowEngine::MetaDataReader()
 	{

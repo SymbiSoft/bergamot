@@ -29,7 +29,6 @@ public:
 	CShowInfo* ShowDownloading();
 	CShowInfo* GetShowByUidL(TUint aShowUid);
 	CShowInfo* GetNextShowByTrackL(CShowInfo* aShowInfo);
-	void SetShowPlayState(CShowInfo* aShowInfo, TPlayState aPlayState);
 	
 	// show access methods
 	void GetAllShows(RShowInfoArray &aArray);
@@ -46,11 +45,11 @@ public:
 	void DeleteShow(TUint aShowUid, TBool aRemoveFile=ETrue);
 	
 	void CheckFilesL();
-	void GetStatsForDownloaded(TUint &aNumShows, TUint &aNumUnplayed );
 	void AddObserver(MShowEngineObserver *observer);
 	void RemoveObserver(MShowEngineObserver *observer);
 
 	void NotifyShowListUpdated();
+	void UpdateShow(CShowInfo *aInfo);
 	
 	CMetaDataReader& MetaDataReader();
 protected:

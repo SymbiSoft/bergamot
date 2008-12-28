@@ -46,6 +46,12 @@ public:
 			case EPodcastSettingUpdateTime:
 				return new (ELeave) CAknTimeOrDateSettingItem(aSettingId, CAknTimeOrDateSettingItem::ETime, iTimeUpdate);
 				break;
+			case EPodcastSettingConnection:
+				return new (ELeave) CAknEnumeratedTextPopupSettingItem (aSettingId, iConnection);
+				break;
+			case EPodcastSettingAutoDownload:
+				return new (ELeave) CAknEnumeratedTextPopupSettingItem (aSettingId, iAutoDownload);
+				break;
 			default:
 				return CAknSettingItemList::CreateSettingItemL(aSettingId);
 				break;
@@ -55,6 +61,8 @@ public:
 	TFileName iShowDir;
 	TInt iIntervalUpdate;
 	TTime iTimeUpdate;
+	TInt iAutoDownload;
+	TInt iConnection;
 	};
 
 class CPodcastSettingsContainer : public CCoeControl
@@ -216,3 +224,24 @@ void CPodcastSettingsView::HandleCommandL(TInt aCommand)
 		break;
 	}
 }
+
+/*
+CMyEnumSetting::CMyEnumSetting(TInt aResourceId, CPodcastSettingItemList *aSettingList) : CAknEnumeratedTextPopupSettingItem(aResourceId, 0)
+	{
+	
+	}
+CMyEnumSetting::~CMyEnumSetting()
+	{
+	
+	}
+
+void CMyEnumSetting::EditItemL(TBool aCalledFromMenu)
+	{
+	
+	}
+
+void CMyEnumSetting::HandleSettingPageEventL(CAknSettingPage* aSettingPage,TAknSettingPageEvent aEventType)
+	{
+	
+	}
+*/

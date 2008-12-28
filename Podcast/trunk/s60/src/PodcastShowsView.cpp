@@ -552,11 +552,18 @@ void CPodcastShowsView::UpdateListboxItemsL()
 				iListContainer->Listbox()->HandleItemAdditionL();
 				}				
 			}
+		}
+	UpdateNaviPaneL();
+	}
 
+	void CPodcastShowsView::UpdateNaviPaneL()
+		{
 		if (iCurrentCategory == EShowPendingShows)
 			{
 			HBufC* titleBuffer= NULL;
 
+			RShowInfoArray &fItems = iPodcastModel.ActiveShowList();
+			TUint len = fItems.Count();
 			if (iPodcastModel.ShowEngine().DownloadsStopped())
 				{
 				HBufC* titleFormat=  iEikonEnv->AllocReadResourceLC(R_PODCAST_SHOWS_DOWNLOADS_SUSPENDED);
@@ -592,12 +599,12 @@ void CPodcastShowsView::UpdateListboxItemsL()
 	
 			HBufC* titleFormat=  iEikonEnv->AllocReadResourceLC(R_PODCAST_SHOWS_TITLE_FORMAT);
 			HBufC* titleBuffer = HBufC::NewL(titleFormat->Length()+8);
-			
-			if (iPodcastModel.ActiveFeedInfo()) {
-				iPodcastModel.FeedEngine().GetStatsByFeed(iPodcastModel.ActiveFeedInfo()->Uid(), numShows, numUnplayed, EFalse);
+			if (iCurrentCategory == EShowDownloadedShows) {
+				iPodcastModel.FeedEngine().GetDownloadedStats(numShows, numUnplayed);
 			} else {
-				iPodcastModel.FeedEngine().GetDownloadedStats(numShows, numUnplayed);		
-			}
+				iPodcastModel.FeedEngine().GetStatsByFeed(iPodcastModel.ActiveFeedInfo()->Uid(), numShows, numUnplayed, EFalse);
+			} 
+			
 			titleBuffer->Des().Format(*titleFormat, numUnplayed, numShows);
 			CleanupStack::PopAndDestroy(titleFormat);
 			CleanupStack::PushL(titleBuffer);
@@ -612,7 +619,6 @@ void CPodcastShowsView::UpdateListboxItemsL()
 			iNaviDecorator = iNaviPane->CreateNavigationLabelL(*titleBuffer);
 			iNaviPane->PushL(*iNaviDecorator);
 			CleanupStack::PopAndDestroy(titleBuffer);
-			}
 		}
 	}
 
@@ -630,7 +636,9 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 			TInt index = iListContainer->Listbox()->CurrentItemIndex();
 			if (index >= 0 && index < iPodcastModel.ActiveShowList().Count())
 				{
-				iPodcastModel.ActiveShowList()[index]->SetPlayState(EPlayed);
+				CShowInfo *info = iPodcastModel.ActiveShowList()[index];
+				info->SetPlayState(EPlayed);
+				iPodcastModel.ShowEngine().UpdateShow(info);
 				if (iPodcastModel.SettingsEngine().SelectUnplayedOnly())
 					{
 					iItemArray->Delete(index);
@@ -638,8 +646,10 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 					
 					iListContainer->Listbox()->HandleItemRemovalL();
 					}
-
-				UpdateListboxItemsL();
+				else {
+					UpdateShowItemDataL(iPodcastModel.ActiveShowList()[index], index, 0);
+				}
+				UpdateNaviPaneL();
 				}
 			}
 			break;
@@ -648,8 +658,12 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 			TInt index = iListContainer->Listbox()->CurrentItemIndex();
 			if (index >= 0 && index < iPodcastModel.ActiveShowList().Count())
 				{
-				iPodcastModel.ActiveShowList()[index]->SetPlayState(ENeverPlayed);
-				UpdateListboxItemsL();
+				CShowInfo *info = iPodcastModel.ActiveShowList()[index];
+				info->SetPlayState(ENeverPlayed);
+				iPodcastModel.ShowEngine().UpdateShow(info);
+
+				UpdateShowItemDataL(iPodcastModel.ActiveShowList()[index], index, 0);
+				UpdateNaviPaneL();
 				}
 			}
 			break;

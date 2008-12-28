@@ -135,7 +135,7 @@ void CPodcastMainView::UpdateListboxItemsL()
 			case 1:
 				{
 					TUint unplayed, total;
-					iPodcastModel.ShowEngine().GetStatsForDownloaded(total, unplayed);
+					iPodcastModel.FeedEngine().GetDownloadedStats(total, unplayed);
 					iListboxFormatbuffer.Format(iMainMenuItems->MdcaPoint(loop), unplayed, total);				
 				}
 				break;

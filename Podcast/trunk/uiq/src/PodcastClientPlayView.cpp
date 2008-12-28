@@ -281,13 +281,15 @@ void CPodcastClientPlayView::HandleCommandL(CQikCommand& aCommand)
 		{
 		case EPodcastMarkAsPlayed:
 			{
-			iPodcastModel.ShowEngine().SetShowPlayState(iShowInfo, EPlayed);
+			iShowInfo->SetPlayState(EPlayed);
+			iPodcastModel.ShowEngine().UpdateShow(iShowInfo);
 			UpdateViewL();
 			}
 			break;
 		case EPodcastMarkAsUnplayed:
 			{
-			iPodcastModel.ShowEngine().SetShowPlayState(iShowInfo, ENeverPlayed);
+			iShowInfo->SetPlayState(ENeverPlayed);
+			iPodcastModel.ShowEngine().UpdateShow(iShowInfo);
 			UpdateViewL();
 			}
 			break;

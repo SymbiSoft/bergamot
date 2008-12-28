@@ -133,7 +133,9 @@ void CPodcastClientShowsView::HandleCommandL(CQikCommand& aCommand)
 			TInt index = iListbox->CurrentItemIndex();
 			if(index >= 0 && index < iPodcastModel.ActiveShowList().Count())
 			{
-				iPodcastModel.ShowEngine().SetShowPlayState(iPodcastModel.ActiveShowList()[index], EPlayed);
+				CShowInfo *info = iPodcastModel.ActiveShowList()[index];
+				info->SetPlayState(EPlayed);
+				iPodcastModel.ShowEngine().UpdateShow(info);
 				if (iPodcastModel.SettingsEngine().SelectUnplayedOnly()) {
 					MQikListBoxModel& model(iListbox->Model());
 					model.ModelBeginUpdateLC();
@@ -149,7 +151,9 @@ void CPodcastClientShowsView::HandleCommandL(CQikCommand& aCommand)
 			TInt index = iListbox->CurrentItemIndex();
 			if(index >= 0 && index < iPodcastModel.ActiveShowList().Count())
 			{
-				iPodcastModel.ShowEngine().SetShowPlayState(iPodcastModel.ActiveShowList()[index], ENeverPlayed);
+				CShowInfo *info = iPodcastModel.ActiveShowList()[index];
+				info->SetPlayState(ENeverPlayed);
+				iPodcastModel.ShowEngine().UpdateShow(info);
 				UpdateListboxItemsL();
 			}
 			}break;
@@ -1035,6 +1039,8 @@ TKeyResponse CPodcastClientShowsView::OfferKeyEventL(const TKeyEvent& aKeyEvent,
 						iPodcastModel.ActiveShowList()[index]->SetPlayState(EPlayed);
 					}
 					
+					iPodcastModel.ShowEngine().UpdateShow(iPodcastModel.ActiveShowList()[index]);
+
 					if (iPodcastModel.SettingsEngine().SelectUnplayedOnly()) {
 						MQikListBoxModel& model(iListbox->Model());
 						model.ModelBeginUpdateLC();

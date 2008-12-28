@@ -170,7 +170,7 @@ void CPodcastClientBaseView::UpdateListboxItemsL()
 			case EBaseViewDownloadedShows:
 				{
 					TUint unplayed, total;
-					iPodcastModel.ShowEngine().GetStatsForDownloaded(total, unplayed);
+					iPodcastModel.FeedEngine().GetDownloadedStats(total, unplayed);
 					/*if (total == -1) {
 						iEikonEnv->ReadResourceL(formatting, R_PODCAST_ONPHONE_STATUS_UNKNOWN);
 						statusText.Copy(formatting);

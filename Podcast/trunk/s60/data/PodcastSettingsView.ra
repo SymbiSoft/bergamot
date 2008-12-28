@@ -54,9 +54,9 @@ items =
 	{
 			AVKON_SETTING_ITEM
 			{
-			name = STRING_r_podcast_setting_showdir;
-			identifier = EPodcastSettingShowDir;
-			setting_page_resource = r_podcast_showdir_page;
+				name = STRING_r_podcast_setting_showdir;
+				identifier = EPodcastSettingShowDir;
+				setting_page_resource = r_podcast_showdir_page;
 			},
 			AVKON_SETTING_ITEM
 			{
@@ -70,26 +70,23 @@ items =
 				identifier= EPodcastSettingUpdateTime;			
 				name= STRING_r_podcast_setting_updateat;
 				setting_page_resource = r_podcast_updatetime_page;
-			}/*,
+			},
+			AVKON_SETTING_ITEM
+				{
+				identifier = EPodcastSettingAutoDownload;
+				setting_page_resource = r_podcast_autodownload_page_resource;
+				associated_resource = r_on_off_texts;
+				name = STRING_r_podcast_setting_autodownload;
+				},
 			AVKON_SETTING_ITEM
 			{
-				identifier= EPodcastSettingAutoDownload;					
-				name= STRING_r_podcast_setting_autodownload;
-				setting_page_resource = r_podcast_autodl_page;					
-			}*/
-
-
+				identifier = EPodcastSettingConnection;
+				setting_page_resource = r_podcast_connection_page_resource;
+				associated_resource = r_podcast_connection_texts;
+				name = STRING_r_podcast_setting_connection;
+			}			
 	};
 }
-
-RESOURCE AVKON_SETTING_PAGE r_podcast_autodl_page
-{
-label=STRING_r_podcast_setting_autodownload;
-type = EEikCtCheckBox;
-
-}
-
-
 
 RESOURCE AVKON_SETTING_PAGE r_podcast_updateinterval_page
 {
@@ -141,3 +138,75 @@ maxlength = 256;
 default_input_mode = EAknEditorTextInputMode;
 }
 
+RESOURCE AVKON_SETTING_PAGE r_podcast_connection_page_resource
+{
+    label= STRING_r_podcast_setting_connection;
+    type = EAknCtPopupSettingList;
+    editor_resource_id = r_setting_connection_popup_list_entry;
+}
+
+RESOURCE POPUP_SETTING_LIST r_setting_connection_popup_list_entry
+{
+}
+
+RESOURCE AVKON_POPUP_SETTING_TEXTS r_podcast_connection_texts
+{
+    setting_texts_resource = r_podcast_connection_closed;
+    popped_up_texts_resource = r_podcast_connection_opened;
+}
+
+RESOURCE ARRAY r_podcast_connection_closed
+{
+    items = 
+    {
+    AVKON_ENUMERATED_TEXT{value=0; text = STRING_r_podcast_setting_default;},
+    AVKON_ENUMERATED_TEXT{value=1; text = STRING_r_podcast_setting_wlanonly;},
+    AVKON_ENUMERATED_TEXT{value=2; text = STRING_r_podcast_setting_usespecified;}
+    };
+}
+
+RESOURCE ARRAY r_podcast_connection_opened
+{
+    items = 
+    {
+    LBUF { txt=STRING_r_podcast_setting_default; },
+    LBUF { txt=STRING_r_podcast_setting_wlanonly; },	
+    LBUF { txt=STRING_r_podcast_setting_usespecified; }
+    };
+}
+
+RESOURCE AVKON_SETTING_PAGE r_podcast_autodownload_page_resource
+{
+    label= STRING_r_podcast_setting_autodownload;
+    type = EAknCtPopupSettingList;
+    editor_resource_id = r_setting_autodownload_popup_list_entry;
+}
+
+RESOURCE POPUP_SETTING_LIST r_setting_autodownload_popup_list_entry
+{
+}
+
+RESOURCE AVKON_POPUP_SETTING_TEXTS r_on_off_texts
+{
+    flags = 0;
+    setting_texts_resource = r_setting_on_off_closed;
+    popped_up_texts_resource = r_setting_on_off_opened;
+}
+
+RESOURCE ARRAY r_setting_on_off_closed
+{
+    items =
+    {
+        AVKON_ENUMERATED_TEXT { value=1; text=STRING_r_on; },
+    	AVKON_ENUMERATED_TEXT { value=0; text=STRING_r_off; }
+    };
+}
+
+RESOURCE ARRAY r_setting_on_off_opened
+{
+    items =
+    {
+        LBUF { txt=STRING_r_on; },
+        LBUF { txt=STRING_r_off; }
+    };
+}

@@ -10,10 +10,27 @@
 #define PODCASTSETTINGSVIEWH 
 
 #include <aknview.h>
+#include <aknsettingitemlist.h> 
 #include "ShowEngineObserver.h"
 #include "PodcastModel.h"
 
 class CPodcastSettingsContainer;
+class CPodcastSettingItemList;
+/*
+class CMyEnumSetting : public CAknEnumeratedTextPopupSettingItem
+{
+public:
+	CMyEnumSetting(TInt aResourceId, CPodcastSettingItemList *aSettingList);
+    ~CMyEnumSetting();
+
+    void EditItemL(TBool aCalledFromMenu);
+
+	void HandleSettingPageEventL(CAknSettingPage* aSettingPage,TAknSettingPageEvent aEventType);
+ 
+protected:
+	CPodcastSettingItemList* iList;
+};
+*/
 
 class CPodcastSettingsView : public CAknView
     {
@@ -60,6 +77,7 @@ class CPodcastSettingsView : public CAknView
 		CPodcastModel& iPodcastModel;
 		 /** Previous activated view */
 		 TVwsViewId iPreviousView;
+		 TInt iAutoDownloadValue;
 };
 
 #endif // PODCASTSETTINGSVIEWH

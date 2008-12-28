@@ -76,10 +76,11 @@ protected:
 	void UpdateFeedUpdateStateL();
 	void UpdateShowItemL(TUint aUid, TInt aSizeDownloaded);
 	void UpdateShowItemDataL(CShowInfo* aShowInfo,TInt aIndex, TInt aSizeDownloaded = KErrNotFound);
+	void DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane);
 
-	 void DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane);
 private:
 	void GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex);
+	void UpdateNaviPaneL();
 
 private:
 	

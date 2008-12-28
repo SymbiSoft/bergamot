@@ -53,6 +53,7 @@ void CSoundEngine::MapcPlayComplete(TInt aError) {
 			iMaxPos = 0;
 			iPodcastModel.PlayingPodcast()->SetPlayState(EPlayed);
 			iPodcastModel.PlayingPodcast()->SetPosition(0);
+			iPodcastModel.ShowEngine().UpdateShow(iPodcastModel.PlayingPodcast());
 			}
 	}
 

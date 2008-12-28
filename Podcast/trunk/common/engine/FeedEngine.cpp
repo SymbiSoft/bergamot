@@ -930,7 +930,7 @@ void CFeedEngine::GetDownloadedStats(TUint &aNumShows, TUint &aNumUnplayed)
 		  
 	sqlite3_finalize(st);
 
-	iSqlBuffer.Format(_L("select count(*) from shows where downloadstate=%u and playstate=%u"), EDownloaded, EPlayed);
+	iSqlBuffer.Format(_L("select count(*) from shows where downloadstate=%u and playstate=%u"), EDownloaded, ENeverPlayed);
 
 	rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
 		
