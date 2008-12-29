@@ -22,6 +22,9 @@
 #include <e32const.h>
 #include <eikdialg.h>
 #include <aknquerydialog.h>
+#include <caknfilenamepromptdialog.h> 
+#include <BAUTILS.H> 
+
 const TInt KMaxFeedNameLength = 100;
 const TInt KMaxUnplayedFeedsLength =64;
 const TInt KADayInHours = 24;
@@ -30,6 +33,7 @@ const TInt KNumberOfFilesMaxLength = 4;
 _LIT(KUnknownUpdateDateString, "?/?");
 _LIT(KFeedFormat, "%d\t%S\t%S %S");
 _LIT(KDefaultDataFolder, "C:\\DATA\\");
+
 class CPodcastFeedContainer : public CCoeControl
     {
     public: 
@@ -627,7 +631,6 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			TFileName importName;
 			dlg->SetTitleL(*import_title);
 									
-			//if(CQikSelectFileDlg::RunDlgLD(*mimeTypes, *fileNames, import_title))i
 			if(dlg->ExecuteL(importName))
 				{
 				if(importName.Length()>0)
@@ -641,12 +644,39 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			}break;
 		case EPodcastExportFeeds:
 			{
+			CAknFileNamePromptDialog *fileDlg = CAknFileNamePromptDialog::NewL(R_PODCAST_FILENAME_PROMPT_DIALOG);
 			TFileName fileName;
-			iPodcastModel.FeedEngine().ExportFeedsL(fileName);
-			TBuf<1024> fName;
-			TFileName newName;
-			newName.Copy(_L("feeds.xml"));
-			//CQikSaveFileDlg::RunDlgLD(fileName, newName, NULL,ESaveFileUsingMove);
+			if (fileDlg->ExecuteL(fileName) && fileName.Length() > 0) {
+				CDesCArrayFlat* mimeTypes = new (ELeave) CDesCArrayFlat(KDefaultGran);
+				CleanupStack::PushL(mimeTypes);
+				CDesCArrayFlat* fileNames = new (ELeave) CDesCArrayFlat(KDefaultGran);
+				CleanupStack::PushL(fileNames);
+				
+				HBufC* exportTitle = iEikonEnv->AllocReadResourceLC(R_PODCAST_EXPORT_FEEDS_TITLE);
+				CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeCopy  , R_PODCAST_EXPORT_FEEDS);
+				TFileName pathName;
+				HBufC* leftKeyText = iEikonEnv->AllocReadResourceLC(R_PODCAST_EXPORT_FEEDS_SOFTKEY);
+				dlg->SetLeftSoftkeyFileL(*leftKeyText);
+				dlg->SetTitleL(*exportTitle);
+										
+				if(dlg->ExecuteL(pathName))
+					{
+					if(pathName.Length()>0)
+						{
+						pathName.Append(fileName);
+						TFileName temp;
+						iPodcastModel.FeedEngine().ExportFeedsL(temp);
+						RFs fs;
+						fs.Connect();
+						BaflUtils::CopyFile(fs, temp, pathName);
+						BaflUtils::DeleteFile(fs,temp);
+						fs.Close();
+						}
+					}
+				delete dlg;
+				CleanupStack::PopAndDestroy(4,mimeTypes); // title, fileNames, mimeTypes
+			}
+			delete fileDlg;									
 			}break;
 		case EPodcastEditFeed:
 			{

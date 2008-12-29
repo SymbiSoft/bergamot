@@ -210,6 +210,28 @@ RESOURCE FILESELECTIONDIALOG r_podcast_import_podcast
  };
 }
 
+RESOURCE FILESELECTIONDIALOG r_podcast_export_feeds
+{
+ title = STRING_r_view_export_feeds_title;
+ root_path = "c:\\";
+ filters =
+ {
+  FILTER
+  {
+  filter_type = EFilenameFilter;
+  filter_style = EInclusiveFilter;
+  filter_data = { "*.*" };
+  }
+ };
+}
+
+RESOURCE FILENAMEPROMPTDIALOG r_podcast_filename_prompt_dialog
+{
+  filename_prompt = STRING_r_enter_filename;
+  default_filename = "feeds.xml";
+  path = "";
+}
+
 // Books
 RESOURCE TBUF r_podcast_books_title_format {buf = STRING_r_podcast_books_title_format;}
 RESOURCE TBUF r_podcast_books_status_format {buf = STRING_r_podcast_books_status_format;}
@@ -225,8 +247,9 @@ RESOURCE TBUF r_podcast_feeds_is_updating {buf = STRING_r_podcast_feeds_is_updat
 
 RESOURCE TBUF r_podcast_feeds_no_feeds {buf = STRING_r_podcast_no_feeds;}
 RESOURCE TBUF r_podcast_import_feeds_title {buf = STRING_r_view_import_feeds_title;}
+RESOURCE TBUF r_podcast_export_feeds_title {buf = STRING_r_view_export_feeds_title;}
 RESOURCE TBUF r_podcast_books_no_books {buf = STRING_r_view_books_no_books;}
-
+RESOURCE TBUF r_podcast_export_feeds_softkey {buf = STRING_r_view_export_feeds_softkey;}
 RESOURCE TBUF r_podcast_pending_status_active {buf = STRING_r_podcast_shows_title_download;}
 RESOURCE TBUF r_podcast_pending_status_suspended {buf = STRING_r_podcast_shows_downloads_suspended;}
 RESOURCE TBUF r_podcast_books_status {buf = STRING_r_view_books_status;}

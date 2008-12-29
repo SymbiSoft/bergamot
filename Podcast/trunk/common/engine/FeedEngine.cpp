@@ -299,7 +299,7 @@ void CFeedEngine::ReplaceString(TDes & aString, const TDesC& aStringToReplace,
 	while (pos != KErrNotFound)
 		{
 		aString.Replace(offset+pos, aStringToReplace.Length(), aReplacement);
-		offset = pos + 1;
+		offset += pos + aStringToReplace.Length()+1;
 		if (offset > aString.Length()) {
 			return;
 		}

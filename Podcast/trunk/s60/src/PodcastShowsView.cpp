@@ -414,7 +414,7 @@ void CPodcastShowsView::UpdateShowItemDataL(CShowInfo* aShowInfo,TInt aIndex, TI
 		iItemArray->InsertL(aIndex, iListboxFormatbuffer);
 		}
 	TListItemProperties itemProps;	
-	itemProps.SetBold(aShowInfo->PlayState() == ENeverPlayed);
+	itemProps.SetUnderlined(aShowInfo->PlayState() == ENeverPlayed);
 	iListContainer->Listbox()->ItemDrawer()->SetPropertiesL(aIndex, itemProps);						
 }
 
@@ -566,7 +566,7 @@ void CPodcastShowsView::UpdateListboxItemsL()
 						//listBoxData->AddTextL(showDate, EQikListBoxSlotText3);
 
 						//listBoxData->SetEmphasis();
-						itemProps.SetBold(si->PlayState() == ENeverPlayed);
+						itemProps.SetUnderlined(si->PlayState() == ENeverPlayed);
 						iListContainer->Listbox()->ItemDrawer()->SetPropertiesL(i, itemProps);																	
 						}
 					}
