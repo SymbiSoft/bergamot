@@ -22,8 +22,10 @@
 #include <e32const.h>
 #include <eikdialg.h>
 #include <aknquerydialog.h>
+#include <caknmemoryselectiondialog.h> 
 #include <caknfilenamepromptdialog.h> 
 #include <BAUTILS.H> 
+#include <pathinfo.h> 
 
 const TInt KMaxFeedNameLength = 100;
 const TInt KMaxUnplayedFeedsLength =64;
@@ -647,6 +649,30 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			CAknFileNamePromptDialog *fileDlg = CAknFileNamePromptDialog::NewL(R_PODCAST_FILENAME_PROMPT_DIALOG);
 			TFileName fileName;
 			if (fileDlg->ExecuteL(fileName) && fileName.Length() > 0) {
+
+				CAknMemorySelectionDialog* memDlg = 
+					 CAknMemorySelectionDialog::NewL(ECFDDialogTypeCopy, ETrue);
+				CAknMemorySelectionDialog:: TMemory memory = 
+					CAknMemorySelectionDialog::EPhoneMemory;
+
+				if ( memDlg->ExecuteL(memory) == CAknFileSelectionDialog::ERightSoftkey )
+				{
+				delete memDlg;
+				break;
+				}
+				
+				delete memDlg;
+				TFileName pathName;
+				if (memory==CAknMemorySelectionDialog::EMemoryCard)
+				{
+					pathName = PathInfo:: MemoryCardRootPath();
+				}
+				else
+				{
+					pathName = PathInfo:: PhoneMemoryRootPath();
+				}
+
+				
 				CDesCArrayFlat* mimeTypes = new (ELeave) CDesCArrayFlat(KDefaultGran);
 				CleanupStack::PushL(mimeTypes);
 				CDesCArrayFlat* fileNames = new (ELeave) CDesCArrayFlat(KDefaultGran);
@@ -654,7 +680,6 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 				
 				HBufC* exportTitle = iEikonEnv->AllocReadResourceLC(R_PODCAST_EXPORT_FEEDS_TITLE);
 				CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeCopy  , R_PODCAST_EXPORT_FEEDS);
-				TFileName pathName;
 				HBufC* leftKeyText = iEikonEnv->AllocReadResourceLC(R_PODCAST_EXPORT_FEEDS_SOFTKEY);
 				dlg->SetLeftSoftkeyFileL(*leftKeyText);
 				dlg->SetTitleL(*exportTitle);
