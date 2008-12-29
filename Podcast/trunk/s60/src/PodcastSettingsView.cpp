@@ -24,6 +24,7 @@ public:
 	
 	~CPodcastSettingItemList()
 		{
+
 		}
 
 	void StoreSettings() {
@@ -43,7 +44,7 @@ public:
 		TBool dimAutoUpdateInterval = iConnection == -1 || iAutoUpdate != EAutoUpdatePeriodically;
 		TBool dimAutoUpdateTime = iConnection == -1 || iAutoUpdate != EAutoUpdateAtTime;
 		TBool dimAutoUpdate = iConnection == -1;
-		TBool dimAutoDownload = iConnection == -1;
+		TBool dimAutoDownload = iConnection == -1 || iAutoUpdate == EAutoUpdateOff;
 	
 		iSettingAutoDownload->SetHidden(dimAutoDownload);
 		iSettingAutoUpdate->SetHidden(dimAutoUpdate);
@@ -133,15 +134,6 @@ public:
 	
 	CPodcastModel &iPodcastModel;
 	};
-
-void CUpdatingSettingItem::HandleSettingPageEventL(CAknSettingPage* aSettingPage,TAknSettingPageEvent aEventType)
-	{
-	CAknSettingItem::HandleSettingPageEventL(aSettingPage, aEventType);
-	if (aEventType == EEventSettingOked) { 
-		iList->UpdateSettingVisibility();
-		}
-	}
-
 
 class CPodcastSettingsContainer : public CCoeControl
     {

@@ -207,3 +207,6 @@ rls_string STRING_r_view_import_book_title "Vali M3U fail"
 
 rls_string STRING_r_view_import_audiobook_cmd "Import Book"
 rls_string STRING_r_view_import_book_title "Select M3U file"
+
+rls_string STRING_r_on "On"
+rls_string STRING_r_off "Off"

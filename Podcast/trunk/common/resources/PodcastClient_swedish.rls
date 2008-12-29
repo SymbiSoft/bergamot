@@ -204,3 +204,6 @@ rls_string STRING_r_podcast_books_add_chapter "Lägg till kapitel"
 
 rls_string STRING_r_view_import_audiobook_cmd "Importera ljudbok"
 rls_string STRING_r_view_import_book_title "Välj M3U-fil"
+
+rls_string STRING_r_on "På"
+rls_string STRING_r_off "Av"
