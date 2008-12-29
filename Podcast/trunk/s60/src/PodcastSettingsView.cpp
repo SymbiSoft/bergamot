@@ -24,9 +24,42 @@ public:
 	
 	~CPodcastSettingItemList()
 		{
-
 		}
 
+	void StoreSettings() {
+		StoreSettingsL();
+		CSettingsEngine &se = iPodcastModel.SettingsEngine();
+		se.SetBaseDir(iShowDir);
+		se.SetUpdateAutomatically((TAutoUpdateSetting)iAutoUpdate);
+		se.SetUpdateFeedInterval(iIntervalUpdate);
+		se.SetUpdateFeedTime(iTimeUpdate);
+		se.SetSpecificIAP(iConnection);
+		se.SetDownloadAutomatically(iAutoDownload);
+	}
+	
+	void UpdateSettingVisibility()
+		{
+		LoadSettingsL();
+		TBool dimAutoUpdateInterval = iConnection == -1 || iAutoUpdate != EAutoUpdatePeriodically;
+		TBool dimAutoUpdateTime = iConnection == -1 || iAutoUpdate != EAutoUpdateAtTime;
+		TBool dimAutoUpdate = iConnection == -1;
+		TBool dimAutoDownload = iConnection == -1;
+	
+		iSettingAutoDownload->SetHidden(dimAutoDownload);
+		iSettingAutoUpdate->SetHidden(dimAutoUpdate);
+		iSettingAutoUpdateTime->SetHidden(dimAutoUpdateTime);
+		iSettingAutoUpdateInterval->SetHidden(dimAutoUpdateInterval);
+				
+		TRAP_IGNORE(HandleChangeInItemArrayOrVisibilityL());
+		}
+
+	void  EditItemL (TInt aIndex, TBool aCalledFromMenu)
+		{
+		CAknSettingItemList::EditItemL(aIndex,aCalledFromMenu);
+		StoreSettingsL();
+		UpdateSettingVisibility();
+		}
+	
 	/**
 	 * Framework method to create a setting item based upon the user id aSettingId. The 
 	 * client code decides what type to contruct. new (ELeave) must then be used and the resulting 
@@ -39,42 +72,76 @@ public:
 		{
 		CSettingsEngine &se = iPodcastModel.SettingsEngine();
 		iShowDir.Copy(se.BaseDir());
+		iAutoUpdate = se.UpdateAutomatically();
 		iIntervalUpdate = se.UpdateFeedInterval();
 		iTimeUpdate = se.UpdateFeedTime();
-		iAutoDownload = se.DownloadAutomatically();
 		iConnection = se.SpecificIAP();
-		
+		iAutoDownload = se.DownloadAutomatically();
+			
 		switch(aSettingId)
 			{
 			case EPodcastSettingShowDir:
 				return new (ELeave) CAknTextSettingItem(aSettingId, iShowDir);
 				break;
+			case EPodcastSettingAutoUpdate:
+				iSettingAutoUpdate = new (ELeave) CAknEnumeratedTextPopupSettingItem(aSettingId, iAutoUpdate);
+				return iSettingAutoUpdate;
+				break;
 			case EPodcastSettingUpdateInterval:
-				return new (ELeave) CAknIntegerEdwinSettingItem(aSettingId, iIntervalUpdate);
+				{
+				iSettingAutoUpdateInterval = new (ELeave) CAknIntegerEdwinSettingItem(aSettingId, iIntervalUpdate);
+				return iSettingAutoUpdateInterval; 
 				break;
+				}
 			case EPodcastSettingUpdateTime:
-				return new (ELeave) CAknTimeOrDateSettingItem(aSettingId, CAknTimeOrDateSettingItem::ETime, iTimeUpdate);
+				{
+				iSettingAutoUpdateTime = new (ELeave) CAknTimeOrDateSettingItem(aSettingId, CAknTimeOrDateSettingItem::ETime, iTimeUpdate);
+				return iSettingAutoUpdateTime;
 				break;
+				}
 			case EPodcastSettingConnection:
 				return new (ELeave) CAknEnumeratedTextPopupSettingItem (aSettingId, iConnection);
 				break;
 			case EPodcastSettingAutoDownload:
-				return new (ELeave) CAknBinaryPopupSettingItem (aSettingId, iAutoDownload);
+				{
+				iSettingAutoDownload = new (ELeave) CAknBinaryPopupSettingItem (aSettingId, iAutoDownload);
+				return iSettingAutoDownload;
 				break;
+				}
 			default:
 				return CAknSettingItemList::CreateSettingItemL(aSettingId);
 				break;
 			}
 		return NULL;
 		}
+	
 	TFileName iShowDir;
+	
 	TInt iIntervalUpdate;
+	CAknSettingItem *iSettingAutoUpdateInterval;
+	
 	TTime iTimeUpdate;
+	CAknSettingItem *iSettingAutoUpdateTime; 
+	
+	TInt iAutoUpdate;
+	CAknSettingItem *iSettingAutoUpdate;
+	
 	TInt iAutoDownload;
+	CAknSettingItem *iSettingAutoDownload; 
+	
 	TInt iConnection;
 	
 	CPodcastModel &iPodcastModel;
 	};
+
+void CUpdatingSettingItem::HandleSettingPageEventL(CAknSettingPage* aSettingPage,TAknSettingPageEvent aEventType)
+	{
+	CAknSettingItem::HandleSettingPageEventL(aSettingPage, aEventType);
+	if (aEventType == EEventSettingOked) { 
+		iList->UpdateSettingVisibility();
+		}
+	}
+
 
 class CPodcastSettingsContainer : public CCoeControl
     {
@@ -84,6 +151,9 @@ class CPodcastSettingsContainer : public CCoeControl
 		void ConstructL( const TRect& aRect );
 		TInt CountComponentControls() const;
 		CCoeControl* ComponentControl( TInt aIndex ) const;
+		void StoreSettings();
+		void UpdateSettingVisibility();
+		
     protected:
     	TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType)
     	{
@@ -114,6 +184,15 @@ CPodcastSettingsContainer::CPodcastSettingsContainer(CPodcastModel &aPodcastMode
 {
 }
 
+void CPodcastSettingsContainer::StoreSettings()
+	{
+	iListbox->StoreSettings();
+	}
+
+void CPodcastSettingsContainer::UpdateSettingVisibility()
+	{
+	iListbox->UpdateSettingVisibility();
+	}
 
 TInt CPodcastSettingsContainer::CountComponentControls() const
 {
@@ -194,7 +273,8 @@ void CPodcastSettingsView::DoActivateL(const TVwsViewId& aPrevViewId,
 	if(iSettingsContainer)
 		{
 		iSettingsContainer->SetRect(ClientRect());
-		AppUi()->AddToViewStackL( *this, iSettingsContainer );	
+		AppUi()->AddToViewStackL( *this, iSettingsContainer );
+		iSettingsContainer->UpdateSettingVisibility();
 		iSettingsContainer->MakeVisible(ETrue);
 		iSettingsContainer->DrawNow();
 		}
@@ -205,6 +285,7 @@ void CPodcastSettingsView::DoDeactivate()
 	if ( iSettingsContainer )
 		{
 		AppUi()->RemoveFromViewStack( *this, iSettingsContainer );
+		iSettingsContainer->StoreSettings();
 		iSettingsContainer->MakeVisible(EFalse);
 		}
 	}

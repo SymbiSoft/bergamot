@@ -60,10 +60,16 @@ items =
 			},
 			AVKON_SETTING_ITEM
 			{
+				identifier = EPodcastSettingAutoUpdate;
+				setting_page_resource = r_podcast_autoupdate_page_resource;
+				associated_resource = r_podcast_autoupdate_texts;
+				name = STRING_r_podcast_setting_autoupdate;
+			},
+			AVKON_SETTING_ITEM
+			{
 				identifier= EPodcastSettingUpdateInterval;			
 				name= STRING_r_podcast_setting_checkevery;
 				setting_page_resource = r_podcast_updateinterval_page;
-
 			},
 			AVKON_SETTING_ITEM
 			{
@@ -160,7 +166,7 @@ RESOURCE ARRAY r_podcast_connection_closed
     items = 
     {
     AVKON_ENUMERATED_TEXT{value=0; text = STRING_r_podcast_setting_default;},
-    AVKON_ENUMERATED_TEXT{value=1; text = STRING_r_podcast_setting_wlanonly;},
+    AVKON_ENUMERATED_TEXT{value=-1; text = STRING_r_podcast_setting_wlanonly;},
     AVKON_ENUMERATED_TEXT{value=2; text = STRING_r_podcast_setting_usespecified;}
     };
 }
@@ -204,5 +210,43 @@ RESOURCE ARRAY r_setting_on_off_opened
     {
         LBUF { txt=STRING_r_on; },
         LBUF { txt=STRING_r_off; }
+    };
+}
+
+RESOURCE AVKON_SETTING_PAGE r_podcast_autoupdate_page_resource
+{
+    label= STRING_r_podcast_setting_autoupdate;
+    type = EAknCtPopupSettingList;
+    editor_resource_id = r_setting_autoupdate_popup_list_entry;
+}
+
+RESOURCE POPUP_SETTING_LIST r_setting_autoupdate_popup_list_entry
+{
+}
+
+RESOURCE AVKON_POPUP_SETTING_TEXTS r_podcast_autoupdate_texts
+{
+    flags = 0;
+    setting_texts_resource = r_podcast_autoupdate_closed;
+    popped_up_texts_resource = r_podcast_autoupdate_opened;
+}
+
+RESOURCE ARRAY r_podcast_autoupdate_closed
+{
+    items =
+    {
+	AVKON_ENUMERATED_TEXT { value=0; text=STRING_podcast_autoupdate_off; },
+    AVKON_ENUMERATED_TEXT { value=1; text=STRING_podcast_autoupdate_perodical; },
+    AVKON_ENUMERATED_TEXT { value=2; text=STRING_podcast_autoupdate_attime; }    
+    };
+}
+
+RESOURCE ARRAY r_podcast_autoupdate_opened
+{
+    items =
+    {
+        LBUF { txt=STRING_podcast_autoupdate_off; },
+        LBUF { txt=STRING_podcast_autoupdate_perodical; },
+        LBUF { txt=STRING_podcast_autoupdate_attime; }
     };
 }
