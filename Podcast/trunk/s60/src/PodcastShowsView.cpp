@@ -135,31 +135,28 @@ TKeyResponse CPodcastShowsView::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEvent
 			activeShow = iPodcastModel.ActiveShowList()[index];
 		}
 		
-		if (activeShow == NULL) {
-			return;
-		}
-		
-		switch (aKeyEvent.iCode) {
-		case '*':
-			if (activeShow->PlayState() == EPlayed) {
-				HandleCommandL(EPodcastMarkAsUnplayed);
-			} else {
-				HandleCommandL(EPodcastMarkAsPlayed);
+		if (activeShow != NULL) {
+			switch (aKeyEvent.iCode) {
+			case '*':
+				if (activeShow->PlayState() == EPlayed) {
+					HandleCommandL(EPodcastMarkAsUnplayed);
+				} else {
+					HandleCommandL(EPodcastMarkAsPlayed);
+				}
+				break;
+			case '#':
+				if (activeShow->DownloadState() == ENotDownloaded) {
+					HandleCommandL(EPodcastDownloadShow);
+				}
+				break;
+			case EKeyBackspace:
+			case EKeyDelete:
+				HandleCommandL(EPodcastDeleteShowHardware);
+				break;
 			}
-			break;
-		case '#':
-			if (activeShow->DownloadState() == ENotDownloaded) {
-				HandleCommandL(EPodcastDownloadShow);
-			}
-			break;
-		case EKeyBackspace:
-		case EKeyDelete:
-			HandleCommandL(EPodcastDeleteShowHardware);
-			break;
-		default:
-			DP1("%d", aKeyEvent.iCode);
 		}
-		}
+	}
+		return EKeyWasNotConsumed;
 	}
 
 CPodcastShowsView::~CPodcastShowsView()

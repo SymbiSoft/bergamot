@@ -1023,36 +1023,45 @@ TKeyResponse CPodcastClientShowsView::OfferKeyEventL(const TKeyEvent& aKeyEvent,
 	//RDebug::Print(_L("CPodcastClientShowsView::OfferKeyEventL"));
 	CQikViewBase::OfferKeyEventL(aKeyEvent, aType);
 	
-	if(aType == EEventKey)
+	if (aType == EEventKey)
 		{
-			switch(aKeyEvent.iCode)
+		CShowInfo *activeShow = NULL;
+
+		TInt index = iListbox->CurrentItemIndex();
+		if(index >= 0 && index < iPodcastModel.ActiveShowList().Count())
+		{
+			activeShow = iPodcastModel.ActiveShowList()[index];
+		}
+		
+		if (activeShow != NULL) 
 			{
+			CQikCommand* command = NULL;
+			switch (aKeyEvent.iCode) {
 			case '*':
-			case EKeyLeftArrow:
-				RDebug::Print(_L("CPodcastClientShowsView::OfferKeyEventL switching play state"));
-				TInt index = iListbox->CurrentItemIndex();
-				if(index >= 0 && index < iPodcastModel.ActiveShowList().Count())
+				if (activeShow->PlayState() == EPlayed) {
+					command = CQikCommand::NewL(EPodcastMarkAsUnplayed);
+				} else {
+					command = CQikCommand::NewL(EPodcastMarkAsPlayed);
+				}
+				break;
+			case '#':
+				if (activeShow->DownloadState() == ENotDownloaded) {
+					command = CQikCommand::NewL(EPodcastDownloadShow);
+				}
+				break;
+			case EKeyBackspace:
+			case EKeyDelete:
+				command = CQikCommand::NewL(EPodcastDeleteShowHardware);
+				break;
+			}
+			
+			if (command) 
 				{
-					if (iPodcastModel.ActiveShowList()[index]->PlayState() == EPlayed) {
-						iPodcastModel.ActiveShowList()[index]->SetPlayState(ENeverPlayed);
-					} else {
-						iPodcastModel.ActiveShowList()[index]->SetPlayState(EPlayed);
-					}
-					
-					iPodcastModel.ShowEngine().UpdateShow(iPodcastModel.ActiveShowList()[index]);
-
-					if (iPodcastModel.SettingsEngine().SelectUnplayedOnly()) {
-						MQikListBoxModel& model(iListbox->Model());
-						model.ModelBeginUpdateLC();
-						model.RemoveDataL(index);
-						model.ModelEndUpdateL();
-					}
-					
-
-				UpdateListboxItemsL();
-				return EKeyWasConsumed;
+				HandleCommandL(*command);
+				delete command;
 				}
 			}
+	
 		}
 	
 	return EKeyWasNotConsumed;
