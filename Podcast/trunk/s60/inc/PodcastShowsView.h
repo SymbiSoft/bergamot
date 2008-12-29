@@ -18,7 +18,7 @@
 #include "Podcast.hrh"
 #include "PodcastListView.h"
 
-class CPodcastShowsView : public CPodcastListView,public MEikListBoxObserver, public MFeedEngineObserver, public MShowEngineObserver
+class CPodcastShowsView : public CPodcastListView,public MEikListBoxObserver, public MFeedEngineObserver, public MShowEngineObserver, public MKeyEventListener
 	{
 public: 
 	static CPodcastShowsView* NewL(CPodcastModel& aPodcastModel);
@@ -77,6 +77,8 @@ protected:
 	void UpdateShowItemL(TUint aUid, TInt aSizeDownloaded);
 	void UpdateShowItemDataL(CShowInfo* aShowInfo,TInt aIndex, TInt aSizeDownloaded = KErrNotFound);
 	void DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane);
+
+	TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType);
 
 private:
 	void GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex);

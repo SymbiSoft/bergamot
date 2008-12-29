@@ -18,6 +18,11 @@ class CEikFormattedCellListBox;
 class CAknNavigationDecorator;
 class CAknNavigationControlContainer;
 
+class MKeyEventListener {
+public:
+virtual TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType) = 0;
+};
+
 class CPodcastListContainer : public CCoeControl
     {
     public: 
@@ -29,9 +34,11 @@ class CPodcastListContainer : public CCoeControl
         CCoeControl* ComponentControl( TInt aIndex ) const;
 		void HandleResourceChange(TInt aType);
 		virtual TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType);
+		void SetKeyEventListener(MKeyEventListener *aKeyEventListener);
 		CEikFormattedCellListBox* Listbox();
 	protected:
-		CEikFormattedCellListBox * iListbox;		
+		CEikFormattedCellListBox * iListbox;
+		MKeyEventListener* iKeyEventListener;
 	};
 
 

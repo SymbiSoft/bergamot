@@ -19,8 +19,15 @@ CPodcastListContainer::CPodcastListContainer()
 {
 }
 
+void CPodcastListContainer::SetKeyEventListener(MKeyEventListener *aKeyEventListener)
+	{
+	iKeyEventListener = aKeyEventListener;
+	}
+
 TKeyResponse CPodcastListContainer::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType)
 {
+	if (iKeyEventListener)
+		iKeyEventListener->OfferKeyEventL(aKeyEvent, aType);
 	return iListbox->OfferKeyEventL(aKeyEvent, aType);
 }
 

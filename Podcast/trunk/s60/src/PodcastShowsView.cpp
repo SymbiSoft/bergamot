@@ -118,8 +118,48 @@ void CPodcastShowsView::ConstructL()
 	iListContainer->Listbox()->ItemDrawer()->FormattedCellData()->SetIconArrayL(icons);
 	CleanupStack::Pop(icons); // icons
 	iListContainer->Listbox()->SetListBoxObserver(this);
+	iListContainer->SetKeyEventListener(this);
 	iPodcastModel.FeedEngine().AddObserver(this);
 	iPodcastModel.ShowEngine().AddObserver(this);
+	}
+
+TKeyResponse CPodcastShowsView::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType)
+	{
+	if (aType == EEventKey)
+		{
+		CShowInfo *activeShow = NULL;
+
+		TInt index = iListContainer->Listbox()->CurrentItemIndex();
+		if(index >= 0 && index < iPodcastModel.ActiveShowList().Count())
+		{
+			activeShow = iPodcastModel.ActiveShowList()[index];
+		}
+		
+		if (activeShow == NULL) {
+			return;
+		}
+		
+		switch (aKeyEvent.iCode) {
+		case '*':
+			if (activeShow->PlayState() == EPlayed) {
+				HandleCommandL(EPodcastMarkAsUnplayed);
+			} else {
+				HandleCommandL(EPodcastMarkAsPlayed);
+			}
+			break;
+		case '#':
+			if (activeShow->DownloadState() == ENotDownloaded) {
+				HandleCommandL(EPodcastDownloadShow);
+			}
+			break;
+		case EKeyBackspace:
+		case EKeyDelete:
+			HandleCommandL(EPodcastDeleteShowHardware);
+			break;
+		default:
+			DP1("%d", aKeyEvent.iCode);
+		}
+		}
 	}
 
 CPodcastShowsView::~CPodcastShowsView()
