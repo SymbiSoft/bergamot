@@ -42,7 +42,10 @@ void CPodcastListContainer::ConstructL( const TRect& aRect, TInt aListboxFlags )
 	iListbox->SetContainerWindowL(*this);
 	iListbox->ConstructL(this, aListboxFlags);
 	iListbox->CreateScrollBarFrameL(ETrue);
-	iListbox->ScrollBarFrame()->SetScrollBarVisibilityL(CEikScrollBarFrame::EAuto, CEikScrollBarFrame::EAuto );    
+	iListbox->ScrollBarFrame()->SetScrollBarVisibilityL(CEikScrollBarFrame::EAuto, CEikScrollBarFrame::EAuto );
+	
+	iListbox->ItemDrawer()->FormattedCellData()->EnableMarqueeL( ETrue );
+
 	iListbox->SetSize(aRect.Size());
 	iListbox->MakeVisible(ETrue);
     MakeVisible(EFalse);
@@ -77,6 +80,11 @@ void CPodcastListContainer::HandleResourceChange(TInt aType)
 }
 
 
+void CPodcastListContainer::ScrollToVisible() {
+	if (iListbox != NULL) {
+		iListbox->ScrollToMakeItemVisible(iListbox->CurrentItemIndex());
+	}
+}
 void CPodcastListContainer::SizeChanged()
 {
 	if(iListbox != NULL)

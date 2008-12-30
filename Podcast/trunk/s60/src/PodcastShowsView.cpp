@@ -591,6 +591,7 @@ void CPodcastShowsView::UpdateListboxItemsL()
 			}
 		}
 	UpdateNaviPaneL();
+	iListContainer->ScrollToVisible();
 	}
 
 	void CPodcastShowsView::UpdateNaviPaneL()

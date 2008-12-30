@@ -36,6 +36,7 @@ class CPodcastListContainer : public CCoeControl
 		virtual TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType);
 		void SetKeyEventListener(MKeyEventListener *aKeyEventListener);
 		CEikFormattedCellListBox* Listbox();
+		void ScrollToVisible();
 	protected:
 		CEikFormattedCellListBox * iListbox;
 		MKeyEventListener* iKeyEventListener;
@@ -98,7 +99,7 @@ class CPodcastListView : public CAknView
 		 TInt iListboxFlags;
 		 
 		 CDesCArray* iItemArray;
-		 RArray<TInt> iItemIdArray;
+		 RArray<TUint> iItemIdArray;
 		TBuf<256> iListboxFormatbuffer;
     };
 #endif // PODCASTBASEVIEWH
