@@ -385,6 +385,12 @@ TKeyResponse CPodcastPlayContainer::OfferKeyEventL(const TKeyEvent& aKeyEvent,TE
 		case KCenterKey:
 			PlayShow();
 			break;
+		case EKeyUpArrow:
+			iPodcastModel.SoundEngine().VolumeUp();
+			break;
+		case EKeyDownArrow:
+			iPodcastModel.SoundEngine().VolumeDown();
+			break;
 		case EKeyRightArrow:
 			if (aKeyEvent.iRepeats) {
 				TUint ptime = iPodcastModel.SoundEngine().PlayTime();

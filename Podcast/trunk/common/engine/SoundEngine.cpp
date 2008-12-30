@@ -232,6 +232,32 @@ TSoundEngineState CSoundEngine::State()
 	return iState;
 }
 
+void CSoundEngine::VolumeUp()
+	{
+	if(iState <= ESoundEngineOpening) {
+		return;
+	}
+	TInt max = iPlayer->MaxVolume();
+	TInt step = max / KVolumeSteps;
+	
+	TInt now;
+	iPlayer->GetVolume(now);
+	iPlayer->SetVolume(now+step > max ? max : now+step);	
+	}
+
+void CSoundEngine::VolumeDown()
+	{
+	if(iState <= ESoundEngineOpening) {
+		return;
+	}
+	TInt max = iPlayer->MaxVolume();
+	TInt step = max / KVolumeSteps;
+	
+	TInt now;
+	iPlayer->GetVolume(now);
+	iPlayer->SetVolume(now-step < 0 ? 0 : now-step);
+	}
+
 void CSoundEngine::SetVolume(TUint aVolume)
 {
 	if(iState > ESoundEngineOpening)

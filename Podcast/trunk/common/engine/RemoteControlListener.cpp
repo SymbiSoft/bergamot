@@ -202,10 +202,12 @@ void CRemoteControlListener::MrccatoCommand(TRemConCoreApiOperationId aOperation
 	/** VolumeUp. */
 		case ERemConCoreApiVolumeUp:					
 			DP("ERemConCoreApiVolumeUp");
+			iModel.SoundEngine().VolumeUp();
 			break;
 	/** VolumeDown. */
 		case ERemConCoreApiVolumeDown:
 			DP("ERemConCoreApiVolumeDown");
+			iModel.SoundEngine().VolumeDown();
 			break;				
 	/** Mute. */
 		case ERemConCoreApiMute:
