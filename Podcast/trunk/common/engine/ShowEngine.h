@@ -40,7 +40,7 @@ public:
 	
 	void CompleteL(CHttpClient* aClient, TBool aSuccessful);
 	TBool AddShow(CShowInfo *item);
-	void DeletePlayedShows();
+	void DeletePlayedShows(RShowInfoArray &aShowInfoArray);
 	void DeleteAllShowsByFeed(TUint aFeedUid,TBool aDeleteFiles=ETrue);
 	void DeleteShow(TUint aShowUid, TBool aRemoveFile=ETrue);
 	

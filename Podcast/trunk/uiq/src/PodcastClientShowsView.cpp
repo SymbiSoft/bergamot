@@ -248,7 +248,7 @@ void CPodcastClientShowsView::HandleCommandL(CQikCommand& aCommand)
 			{
 				if(iEikonEnv->QueryWinL(R_PODCAST_DELETE_PLAYED_TITLE, R_PODCAST_DELETE_PLAYED_PROMPT))				
 				{
-				iPodcastModel.ShowEngine().DeletePlayedShows();
+				iPodcastModel.ShowEngine().DeletePlayedShows(iPodcastModel.ActiveShowList());
 				UpdateListboxItemsL();
 				}
 			}break;

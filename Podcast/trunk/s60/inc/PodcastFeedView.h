@@ -14,7 +14,7 @@
 #include "PodcastListView.h"
 #include "Podcast.hrh"
 
-class CPodcastFeedView : public CPodcastListView, MEikListBoxObserver, public MFeedEngineObserver
+class CPodcastFeedView : public CPodcastListView, MEikListBoxObserver, public MFeedEngineObserver, public MKeyEventListener
     {
     public: 
         static CPodcastFeedView* NewL(CPodcastModel& aPodcastModel);
@@ -72,6 +72,8 @@ class CPodcastFeedView : public CPodcastListView, MEikListBoxObserver, public MF
 
 		 void DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane);
 		void HandleAddNewAudioBookL();
+		TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType);
+
 	private:
 		CPodcastModel& iPodcastModel;		
 		TBool iUpdatingAllRunning;

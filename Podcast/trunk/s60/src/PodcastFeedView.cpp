@@ -13,6 +13,7 @@
 #include "SoundEngine.h"
 #include "PodcastPlayView.h"
 #include "PodcastApp.h"
+#include "PodcastUtils.h"
 #include <caknfileselectiondialog.h>
 #include <aknnavide.h> 
 #include <podcast.rsg>
@@ -131,6 +132,7 @@ void CPodcastFeedView::ConstructL()
 	CleanupStack::Pop(icons); // icons
 
 	iListContainer->Listbox()->SetListBoxObserver(this);
+	iListContainer->SetKeyEventListener(this);
 }
     
 CPodcastFeedView::~CPodcastFeedView()
@@ -557,10 +559,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 		{
 		case EPodcastAddFeed:
 			{
-			_LIT(KURLPrefix, "http://");
-			_LIT(KItpcPrefix, "itpc://");
-			_LIT(KPcastPrefix, "pcast://");			
-			TBuf<256> url;
+			TBuf<KFeedUrlLength> url;
 			CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(url) ;//CPodcastClientAddFeedDlg(iPodcastModel);
 			dlg->PrepareLC(R_PODCAST_ADD_FEED_DLG);
 			HBufC* prompt = iEikonEnv->AllocReadResourceLC(R_PODCAST_ADDFEED_PROMPT);
@@ -568,41 +567,8 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			CleanupStack::PopAndDestroy(prompt);
 			if(dlg->RunLD())
 				{
-				// url is always present so access that								
-				// Some pod links are written in format itpc://mylink.net/podcast.xml
-				// Symbian HTTP stack does not like itpc:// 
-				// Try to use a HTTP instead.
-				TInt p = url.Find(KItpcPrefix);
-				if (p >= 0)
-					{
-					url.Delete(p, KItpcPrefix().Length());
-					}
+				PodcastUtils::FixProtocols(url);
 
-				// Some pod links are written in format pcast://mylink.net/podcast.xml
-				// Symbian HTTP stack does not like itpc:// 
-				// Try to use a HTTP instead.
-				p = url.Find(KPcastPrefix);
-				if (p >= 0)
-					{
-					url.Delete(p, KPcastPrefix().Length());
-					}
-
-				// The URL must start with http://, otherwise the HTTP stack fails.
-				TInt pos = url.Find(KURLPrefix);
-				if (pos == KErrNotFound)
-					{
-					HBufC* newUrl = HBufC::NewL(url.Length() + KURLPrefix().Length());
-					TPtr ptr = newUrl->Des();
-					ptr.Append(KURLPrefix());
-					ptr.Append(url);
-
-					// replace the url buffer
-					url.Copy(*newUrl);
-					delete newUrl;					
-					}
-
-				// check which mode we are in.
-				// we are creating a new feed
 				CFeedInfo* newFeedInfo = CFeedInfo::NewL();
 				CleanupStack::PushL(newFeedInfo);
 				newFeedInfo->SetUrlL(url);
@@ -709,23 +675,75 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			CleanupStack::PopAndDestroy(memDlg);									
 			} break;
 		case EPodcastEditFeed:
-			{
-			if(iListContainer->Listbox() != NULL)
+			{			
+			TInt index = iListContainer->Listbox()->CurrentItemIndex();
+		
+			if(index < iItemArray->MdcaCount() && index >= 0)
 				{
-				TInt index = iListContainer->Listbox()->CurrentItemIndex();
+				CFeedInfo *info = iPodcastModel.FeedEngine().GetSortedFeeds()[index];
 
-				const RFeedInfoArray& feeds = iPodcastModel.FeedEngine().GetSortedFeeds();
-
-				TInt cnt = feeds.Count();
-
-				if(index< cnt)
+				TBuf<KFeedTitleLength> title;
+				title.Copy(info->Title());
+				TBuf<KFeedUrlLength> url;
+				url.Copy(info->Url());
+				CAknMultiLineDataQueryDialog  *dlg = CAknMultiLineDataQueryDialog ::NewL(title, url);
+			
+				if (dlg->ExecuteLD(R_PODCAST_EDIT_FEED_DLG)) 
 					{
-					/*CPodcastClientAddFeedDlg* dlg = new (ELeave) CPodcastClientAddFeedDlg(iPodcastModel, feeds[index]);
-					if(dlg->ExecuteLD(R_PODCAST_EDIT_FEED_DLG))
+					
+					if(info->Url().Compare(url) != 0)
 						{
-						UpdateListboxItemsL();
-						}*/
-					}			
+						TBuf<200> dlgMessage;
+						TBuf<100> dlgTitle;
+						CEikonEnv::Static()->ReadResourceL(dlgMessage, R_ADD_FEED_REPLACE);
+						CEikonEnv::Static()->ReadResourceL(dlgTitle, R_ADD_FEED_REPLACE_TITLE);
+
+						// Ask the user if it is OK to remove all shows
+						if ( CEikonEnv::Static()->QueryWinL(dlgTitle, dlgMessage))
+							{
+							PodcastUtils::FixProtocols(url);
+							
+							//----- HACK ---- //
+							CFeedInfo* temp = CFeedInfo::NewL();
+							temp->SetUrlL(url);
+							TBool added = iPodcastModel.FeedEngine().AddFeed(temp);
+							if (added) {
+								// The Feed URL did not exist
+								// Remove the temp entry so that the correct entry could be changed
+								iPodcastModel.FeedEngine().RemoveFeed(temp->Uid());	
+								
+								// user has accepted that shows will be deleted
+								iPodcastModel.ShowEngine().DeleteAllShowsByFeed(info->Uid());
+
+								// update URL
+								info->SetUrlL(url);	
+							
+								if (info->Title().Compare(title) != 0)
+									{
+									info->SetTitleL(title);
+									info->SetCustomTitle();	
+									}
+								UpdateListboxItemsL();
+							} else {
+								// the feed existed. Object deleted in AddFeed.	
+								TBuf<200> dlgMessage;
+								TBuf<100> dlgTitle;
+								CEikonEnv::Static()->ReadResourceL(dlgMessage, R_ADD_FEED_EXISTS);
+								CEikonEnv::Static()->ReadResourceL(dlgTitle, R_ADD_FEED_EXISTS_TITLE);
+								CEikonEnv::Static()->InfoWinL(dlgTitle, dlgMessage);		
+							}
+						}
+					} else { // no url change, maybe title?
+						// Update the title
+						if (info->Title().Compare(title) != 0)
+						{
+							info->SetTitleL(title);
+							info->SetCustomTitle();	
+							iPodcastModel.FeedEngine().UpdateFeed(info);
+							UpdateListboxItemsL();
+						}
+					}
+				}
 				}
 			break;
 			}
@@ -769,16 +787,6 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 				iPodcastModel.FeedEngine().CancelUpdateAllFeedsL();
 				}
 			}break;
-			//
-		case EPodcastDeleteAllPlayed:
-			{
-			//HandleAddNewAudioBookL();
-			/*if(iListbox != NULL)
-						{
-						TInt index = iListbox->CurrentItemIndex();
-						}*/
-						break;
-			}
 		case EPodcastPlayAudioBook:
 			{
 			if(iListContainer->Listbox() != NULL)
@@ -976,3 +984,16 @@ void CPodcastFeedView::HandleAddNewAudioBookL()
 	CleanupStack::PopAndDestroy(mimeArray);
 	}
 
+TKeyResponse CPodcastFeedView::OfferKeyEventL(const TKeyEvent& aKeyEvent, TEventCode aType)
+	{
+	if (aType == EEventKey)
+		{
+			switch (aKeyEvent.iCode) {
+			case EKeyBackspace:
+			case EKeyDelete:
+				HandleCommandL(EPodcastDeleteFeedHardware);
+				break;
+			}
+		}
+	return EKeyWasNotConsumed;
+	}

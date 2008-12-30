@@ -824,19 +824,19 @@ TInt CShowEngine::CompareShowsByTitle(const CShowInfo &a, const CShowInfo &b)
 		}
 	}
 
-void CShowEngine::DeletePlayedShows()
+void CShowEngine::DeletePlayedShows(RShowInfoArray &aShowInfoArray)
 	{
-	/*for (TInt i=0;i<iSelectedShows.Count();i++)
+	for (TInt i=0;i<aShowInfoArray.Count();i++)
 		{
-		if (iSelectedShows[i]->PlayState() == EPlayed && iSelectedShows[i]->FileName().Length() > 0) {
-			if (iPodcastModel.PlayingPodcast() == iSelectedShows[i] && iPodcastModel.SoundEngine().State() != ESoundEngineNotInitialized) {
+		if (aShowInfoArray[i]->PlayState() == EPlayed && aShowInfoArray[i]->FileName().Length() > 0) {
+			if (iPodcastModel.PlayingPodcast() == aShowInfoArray[i] && iPodcastModel.SoundEngine().State() != ESoundEngineNotInitialized) {
 				iPodcastModel.SoundEngine().Stop();
 			}
-			BaflUtils::DeleteFile(iFs, iSelectedShows[i]->FileName());
-			iSelectedShows[i]->SetDownloadState(ENotDownloaded);
+			BaflUtils::DeleteFile(iFs, aShowInfoArray[i]->FileName());
+			aShowInfoArray[i]->SetDownloadState(ENotDownloaded);
+			DBUpdateShow(aShowInfoArray[i]);
 			}
 		}
-	UpdateSelectedShows();*/
 	}
 
 void CShowEngine::DeleteAllShowsByFeed(TUint aFeedUid, TBool aDeleteFiles)

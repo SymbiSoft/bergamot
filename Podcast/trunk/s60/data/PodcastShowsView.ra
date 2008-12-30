@@ -52,17 +52,17 @@ RESOURCE MENU_PANE r_podcast_showsview_menu
 		MENU_ITEM
 			{
 			command = EPodcastDownloadShow;
-			txt = STRING_r_view_download_show_cmd;
+			txt = STRING_r_view_download_show_cmd " (#)";
 			},
 		MENU_ITEM
 			{
 			command = EPodcastMarkAsPlayed;
-			txt = STRING_r_view_mark_as_played_cmd;
+			txt = STRING_r_view_mark_as_played_cmd " (*)";
 			},
 		MENU_ITEM
 			{
 			command = EPodcastMarkAsUnplayed;
-			txt = STRING_r_view_mark_as_unplayed_cmd;
+			txt = STRING_r_view_mark_as_unplayed_cmd " (*)";
 			},
 		MENU_ITEM
 			{

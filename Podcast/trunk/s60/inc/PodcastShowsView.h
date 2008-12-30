@@ -18,7 +18,7 @@
 #include "Podcast.hrh"
 #include "PodcastListView.h"
 
-class CPodcastShowsView : public CPodcastListView,public MEikListBoxObserver, public MFeedEngineObserver, public MShowEngineObserver, public MKeyEventListener
+class CPodcastShowsView : public CPodcastListView, public MEikListBoxObserver, public MFeedEngineObserver, public MShowEngineObserver, public MKeyEventListener
 	{
 public: 
 	static CPodcastShowsView* NewL(CPodcastModel& aPodcastModel);

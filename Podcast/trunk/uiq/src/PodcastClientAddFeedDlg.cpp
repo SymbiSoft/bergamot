@@ -5,12 +5,10 @@
 #include "PodcastModel.h"
 #include "FeedEngine.h"
 #include "ShowEngine.h"
+#include "PodcastUtils.h"
 #include <PodcastClient.rsg>
 
 const TInt KMaxTextBuffer = 1024;
-_LIT(KURLPrefix, "http://");
-_LIT(KItpcPrefix, "itpc://");
-_LIT(KPcastPrefix, "pcast://");
 
 CPodcastClientAddFeedDlg::CPodcastClientAddFeedDlg(CPodcastModel& aPodcastModel) : iPodcastModel(aPodcastModel)
 	{
@@ -65,38 +63,7 @@ TBool CPodcastClientAddFeedDlg::OkToExitL(TInt aCommandId)
 	CleanupStack::PushL(url);
 	TPtr urlPtr = url->Des();
 
-	// Some pod links are written in format itpc://mylink.net/podcast.xml
-	// Symbian HTTP stack does not like itpc:// 
-	// Try to use a HTTP instead.
-	TInt p = urlPtr.Find(KItpcPrefix);
-	if (p >= 0)
-		{
-		urlPtr.Delete(p, KItpcPrefix().Length());
-		}
-
-	// Some pod links are written in format pcast://mylink.net/podcast.xml
-	// Symbian HTTP stack does not like itpc:// 
-	// Try to use a HTTP instead.
-	p = urlPtr.Find(KPcastPrefix);
-	if (p >= 0)
-		{
-		urlPtr.Delete(p, KPcastPrefix().Length());
-		}
-	
-	// The URL must start with http://, otherwise the HTTP stack fails.
-	TInt pos = urlPtr.Find(KURLPrefix);
-	if (pos == KErrNotFound)
-		{
-		HBufC* newUrl = HBufC::NewL(url->Length() + KURLPrefix().Length());
-		TPtr ptr = newUrl->Des();
-		ptr.Append(KURLPrefix());
-		ptr.Append(*url);
-		
-		// replace the url buffer
-		CleanupStack::PopAndDestroy(url);
-		url = newUrl;
-		CleanupStack::PushL(url);
-		}
+	PodcastUtils::FixProtocols(urlPtr);
 
 	// check which mode we are in.
 	if (iEditFeed == EFalse)

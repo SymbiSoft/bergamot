@@ -22,6 +22,7 @@ SOURCE			MetaDataReader.cpp
 SOURCE			TelephonyListener.cpp 
 SOURCE			OpmlParser.cpp 
 SOURCE			RemoteControlListener.cpp
+SOURCE			PodcastUtils.cpp
 
 MACRO HAVE_CONFIG_H // for libid3tag
 

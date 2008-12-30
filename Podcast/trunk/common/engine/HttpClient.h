@@ -7,7 +7,11 @@
 #include "PodcastModel.h"
 #include "es_sock.h"
 
+#ifdef UIQ3
 _LIT8(KUserAgent, "Escarpod/UIQ");
+#else
+_LIT8(KUserAgent, "Escarpod/S60");
+#endif
 _LIT8(KAccept, "*/*");
 
 class CHttpClient : public CBase
