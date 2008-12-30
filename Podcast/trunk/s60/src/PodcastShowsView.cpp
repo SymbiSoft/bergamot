@@ -136,14 +136,18 @@ TKeyResponse CPodcastShowsView::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEvent
 		}
 		
 		if (activeShow != NULL) {
+			DP1("aKeyEvent.iCode=%d", aKeyEvent.iCode);
 			switch (aKeyEvent.iCode) {
+			case 117: 
 			case '*':
+			case EKeySpace:
 				if (activeShow->PlayState() == EPlayed) {
 					HandleCommandL(EPodcastMarkAsUnplayed);
 				} else {
 					HandleCommandL(EPodcastMarkAsPlayed);
 				}
 				break;
+			case 106:
 			case '#':
 				if (activeShow->DownloadState() == ENotDownloaded) {
 					HandleCommandL(EPodcastDownloadShow);
@@ -151,7 +155,11 @@ TKeyResponse CPodcastShowsView::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEvent
 				break;
 			case EKeyBackspace:
 			case EKeyDelete:
-				HandleCommandL(EPodcastDeleteShowHardware);
+				if (iCurrentCategory == EShowPendingShows) {
+					HandleCommandL(EPodcastRemoveDownloadHardware);
+				} else {
+					HandleCommandL(EPodcastDeleteShowHardware);
+				}
 				break;
 			}
 		}
@@ -397,12 +405,25 @@ void CPodcastShowsView::UpdateShowItemDataL(CShowInfo* aShowInfo,TInt aIndex, TI
 			infoSize.Format(KSizeDownloadingOf(), &dlSize, &totSize);
 			infoSize.Append(KShowsSizeUnit());
 		}
-		else
+		else if (aShowInfo->ShowSize() > 0)
 		{
 			infoSize.Format(KShowsSizeFormat(), (float)aShowInfo->ShowSize() / (float)KSizeMb);
 			infoSize.Append(KShowsSizeUnit());
+		} 
+		else {
+			infoSize = KNullDesC();	
 		}
+		
+		if (aShowInfo->PubDate().Int64() == 0)
+			{
+			showDate = KNullDesC();
+			}
+		else
+			{
+			aShowInfo->PubDate().FormatL(showDate, KDateFormat());
+			}
 	}
+	
 	iListboxFormatbuffer.Format(KShowFormat(), iconIndex, &aShowInfo->Title(), &showDate, &infoSize);
 	iItemArray->Delete(aIndex);
 	if(aIndex>= iItemArray->MdcaCount())
@@ -499,14 +520,6 @@ void CPodcastShowsView::UpdateListboxItemsL()
 				iListContainer->Listbox()->Reset();
 				iItemIdArray.Reset();
 				iItemArray->Reset();
-				// Informs the list box model that there will be an update of the data.
-				// Notify the list box model that changes will be made after this point.
-				// Observe that a cleanupitem has been put on the cleanupstack and 
-				// will be removed by ModelEndUpdateL. This means that you have to 
-				// balance the cleanupstack.
-				// When you act directly on the model you always need to encapsulate 
-				// the calls between ModelBeginUpdateLC and ModelEndUpdateL.
-				//	model.ModelBeginUpdateLC();
 
 				if (len > 0)
 					{
@@ -514,8 +527,7 @@ void CPodcastShowsView::UpdateListboxItemsL()
 						{
 						CShowInfo *si = fItems[i];
 						iItemIdArray.Append(si->Uid());
-						//listBoxData->SetItemId(si->Uid());
-						//listBoxData->AddTextL(si->Title(), EQikListBoxSlotText1);						
+
 						if (si->ShowType() == EAudioBook)
 							{
 							showSize.Format(KChapterFormatting(), si->TrackNo());
@@ -562,10 +574,7 @@ void CPodcastShowsView::UpdateListboxItemsL()
 						GetShowIcons(si, iconIndex);
 						iListboxFormatbuffer.Format(KShowFormat(), iconIndex, &si->Title(), &showDate, &showSize);
 						iItemArray->AppendL(iListboxFormatbuffer);
-						//listBoxData->AddTextL(showSize, EQikListBoxSlotText4);												
-						//listBoxData->AddTextL(showDate, EQikListBoxSlotText3);
 
-						//listBoxData->SetEmphasis();
 						itemProps.SetUnderlined(si->PlayState() == ENeverPlayed);
 						iListContainer->Listbox()->ItemDrawer()->SetPropertiesL(i, itemProps);																	
 						}
@@ -576,15 +585,9 @@ void CPodcastShowsView::UpdateListboxItemsL()
 					showSize.Insert(0, _L("0\t"));
 					iItemArray->Reset();
 					iItemIdArray.Reset();
-					//iItemArray->AppendL(showSize);
-					//iItemIdArray.Append(0);
 					
 					itemProps.SetDimmed(ETrue);
 					itemProps.SetHiddenSelection(ETrue);
-					//iListContainer->Listbox()->ItemDrawer()->SetPropertiesL(0, itemProps);					
-					//listBoxData->AddTextL(*noItems, EQikListBoxSlotText1);
-					//listBoxData->SetDimmed(ETrue);
-					//CleanupStack::PopAndDestroy(noItems);		
 					}
 				iListContainer->Listbox()->HandleItemAdditionL();
 				}				
@@ -679,10 +682,10 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 				iPodcastModel.ShowEngine().UpdateShow(info);
 				if (iPodcastModel.SettingsEngine().SelectUnplayedOnly())
 					{
-					iItemArray->Delete(index);
+					UpdateListboxItemsL();
+					/*iItemArray->Delete(index);
 					iItemIdArray.Remove(index);
-					
-					iListContainer->Listbox()->HandleItemRemovalL();
+					iListContainer->Listbox()->HandleItemRemovalL();*/
 					}
 				else {
 					UpdateShowItemDataL(iPodcastModel.ActiveShowList()[index], index, 0);

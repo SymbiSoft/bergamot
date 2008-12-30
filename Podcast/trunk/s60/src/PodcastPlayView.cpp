@@ -10,6 +10,7 @@
 #include "SoundEngine.h"
 #include "ShowEngine.h"
 #include "FeedEngine.h"
+#include "SettingsEngine.h"
 #include "Podcast.hrh"
 #include <aknnavide.h> 
 #include <podcast.rsg>
@@ -322,14 +323,14 @@ void CPodcastPlayContainer::SizeChanged()
 	
 	if(iDownloadProgressInfo != NULL)
 	{
-		iDownloadProgressInfo->SetSize(TSize(Size().iWidth, iDownloadProgressInfo->MinimumSize().iHeight));
-		iDownloadProgressInfo->SetPosition(TPoint(0,Size().iHeight-iDownloadProgressInfo->Size().iHeight));		
+		iDownloadProgressInfo->SetSize(TSize(Size().iWidth-2*vPadding, iDownloadProgressInfo->MinimumSize().iHeight));
+		iDownloadProgressInfo->SetPosition(TPoint(vPadding,Size().iHeight-iDownloadProgressInfo->Size().iHeight));		
 	}
 
 	if(iPlayProgressbar != NULL)
 	{
-		iPlayProgressbar->SetSize(TSize(Size().iWidth, iDownloadProgressInfo->MinimumSize().iHeight));
-		iPlayProgressbar->SetPosition(TPoint(0,Size().iHeight-iPlayProgressbar->Size().iHeight));
+		iPlayProgressbar->SetSize(TSize(Size().iWidth-2*vPadding, iPlayProgressbar->MinimumSize().iHeight));
+		iPlayProgressbar->SetPosition(TPoint(vPadding,Size().iHeight-iPlayProgressbar->Size().iHeight));
 		playprogressHeight = iPlayProgressbar->Size().iHeight;
 	}
 
@@ -349,13 +350,13 @@ void CPodcastPlayContainer::SizeChanged()
 
 	if(iCoverImageCtrl)
 	{
-		iCoverImageCtrl->SetSize(TSize(Size().iWidth, Size().iHeight - (playprogressHeight+titleHeight+timeSizeHeight)));
+		iCoverImageCtrl->SetSize(TSize(Size().iWidth, Size().iHeight - (playprogressHeight+titleHeight+timeSizeHeight+2*vPadding)));
 		iCoverImageCtrl->SetPosition(TPoint(0, titleHeight+2*vPadding));
 	}
 
 	if(iShowInfoLabel != NULL)
 	{
-		iShowInfoLabel->SetSize(TSize(Size().iWidth, Size().iHeight - (playprogressHeight+titleHeight+timeSizeHeight)));
+		iShowInfoLabel->SetSize(TSize(Size().iWidth, Size().iHeight - (playprogressHeight+titleHeight+timeSizeHeight+2*vPadding)));
 		iShowInfoLabel->SetPosition(TPoint(0, titleHeight+2*vPadding));
 	}
 	
@@ -378,62 +379,92 @@ TKeyResponse CPodcastPlayContainer::OfferKeyEventL(const TKeyEvent& aKeyEvent,TE
 {
 	TKeyResponse Ret = EKeyWasNotConsumed;	
 	const TUint KCenterKey = 63557;
-	switch (aKeyEvent.iCode)
-	{
-	case KCenterKey:
-		PlayShow();
-		break;
-	case EKeyRightArrow:
-		if(iTabGroup)
+	if (aType == EEventKey) {
+		switch (aKeyEvent.iCode)
 		{
-			TInt IndexNum = iTabGroup->ActiveTabIndex();
-			IndexNum = IndexNum + 1;
-			
-			if(IndexNum > 1) 
-				IndexNum = 1;
-			
-			iTabGroup->SetActiveTabByIndex(IndexNum);
-			UpdateControlVisibility();
-								
-			DrawNow();
-		}
-		break;
- 
-	case EKeyLeftArrow:
-		if(iTabGroup)
-		{    
-			TInt IndexNum = iTabGroup->ActiveTabIndex();
-			IndexNum = IndexNum - 1;
-			
-			if(IndexNum < 0)
-				IndexNum = 0;
-			
-			iTabGroup->SetActiveTabByIndex(IndexNum);
-			UpdateControlVisibility();
-			
-			DrawNow();
-		}
-		break;
- 
-	default:
-		if(iTabGroup)
-		{
-			switch(iTabGroup->ActiveTabIndex())
-			{
-			case 1:
-				if(iShowInfoLabel)
-				{
-					Ret = iShowInfoLabel->OfferKeyEventL(aKeyEvent, aType);
-				}
-				break;
-			default:			
-					Ret = CCoeControl::OfferKeyEventL(aKeyEvent, aType);			
-				break;
-			}	
-		}
-		break;
-	}
+		case KCenterKey:
+			PlayShow();
+			break;
+		case EKeyRightArrow:
+			if (aKeyEvent.iRepeats) {
+				TUint ptime = iPodcastModel.SoundEngine().PlayTime();
+				if (ptime > 0)
+					{
+					TInt stepValue = iPodcastModel.SettingsEngine().SeekStepTime();
+					TUint pos = iPodcastModel.SoundEngine().Position().Int64()/1000000;
+					pos+=stepValue;
 	
+					iPodcastModel.SoundEngine().SetPosition(pos);
+					UpdatePlayStatusL();
+					}
+			} else {
+				if(iTabGroup)
+				{
+					TInt IndexNum = iTabGroup->ActiveTabIndex();
+					IndexNum = IndexNum + 1;
+					
+					if(IndexNum > 1) 
+						IndexNum = 1;
+					
+					iTabGroup->SetActiveTabByIndex(IndexNum);
+					UpdateControlVisibility();
+										
+					DrawNow();
+				}
+			}
+			break;	 
+		case EKeyLeftArrow:
+			if (aKeyEvent.iRepeats) {
+				TUint ptime = iPodcastModel.SoundEngine().PlayTime();
+				if (ptime > 0)
+					{
+					TInt stepValue = iPodcastModel.SettingsEngine().SeekStepTime();
+					TUint pos = iPodcastModel.SoundEngine().Position().Int64()/1000000;
+					if (((TInt)pos) - stepValue > 0) {
+						pos-=stepValue;
+					} else {
+						pos = 0;
+					}
+	
+					iPodcastModel.SoundEngine().SetPosition(pos);
+					UpdatePlayStatusL();
+					}
+			} else {
+				if(iTabGroup)
+				{    
+					TInt IndexNum = iTabGroup->ActiveTabIndex();
+					IndexNum = IndexNum - 1;
+					
+					if(IndexNum < 0)
+						IndexNum = 0;
+					
+					iTabGroup->SetActiveTabByIndex(IndexNum);
+					UpdateControlVisibility();
+					
+					DrawNow();
+				}
+			}
+			break;
+	 
+		default:
+			if(iTabGroup)
+			{
+				switch(iTabGroup->ActiveTabIndex())
+				{
+				case 1:
+					if(iShowInfoLabel)
+					{
+						Ret = iShowInfoLabel->OfferKeyEventL(aKeyEvent, aType);
+					}
+					break;
+				default:			
+						Ret = CCoeControl::OfferKeyEventL(aKeyEvent, aType);			
+					break;
+				}	
+			}
+			break;
+		}
+	}
 	return Ret;
 } 
 

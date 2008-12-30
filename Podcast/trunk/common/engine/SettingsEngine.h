@@ -30,7 +30,7 @@ const TInt KMaxVolume = 100;
 const TInt KVolumeDelta = 10;
 const TInt KDefaultUpdateFeedInterval = 60;
 const TInt KDefaultMaxSimultaneousDownloads = 1;
-const TInt KDefaultMaxListItems = 100;
+const TInt KDefaultMaxListItems = 200;
 const TInt KDefaultSeekTime = 15;
 
 enum TAutoUpdateSetting
