@@ -79,7 +79,6 @@ void CPodcastListContainer::HandleResourceChange(TInt aType)
 	    }
 }
 
-
 void CPodcastListContainer::ScrollToVisible() {
 	if (iListbox != NULL) {
 		iListbox->ScrollToMakeItemVisible(iListbox->CurrentItemIndex());
@@ -223,4 +222,17 @@ void CPodcastListView::RunAboutDialogL()
     CleanupStack::Pop(dlg);
     dlg->ExecuteLD(R_DLG_ABOUT);
 }
+
+void CPodcastListView::SetNaviTextL(TDesC &aText)
+	{
+	if (iNaviPane != NULL)
+		{
+		iNaviPane->Pop(iNaviDecorator);
+		delete iNaviDecorator;
+		iNaviDecorator = NULL;
+		}
+
+	iNaviDecorator	= iNaviPane->CreateNavigationLabelL(aText);
+	iNaviPane->PushL(*iNaviDecorator);
+	}
 

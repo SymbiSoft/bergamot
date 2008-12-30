@@ -177,7 +177,12 @@ void CPodcastMainView::DoActivateL(const TVwsViewId& aPrevViewId,
 	                                  TUid aCustomMessageId,
 	                                  const TDesC8& aCustomMessage)
 {
+	HBufC *buf = iEikonEnv->AllocReadResourceLC(R_PODCAST_SUBTITLE);
+	SetNaviTextL(*buf);
+	CleanupStack::PopAndDestroy(buf);
+	
 	CPodcastListView::DoActivateL(aPrevViewId, aCustomMessageId, aCustomMessage);
+	
 	if(iCheckForQuedDownloads)
 	{
 		iCheckForQuedDownloads = EFalse;

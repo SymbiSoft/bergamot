@@ -88,6 +88,7 @@ class CPodcastListView : public CAknView
 		virtual void UpdateListboxItemsL() = 0;
 		
         void RunAboutDialogL();
+		void SetNaviTextL(TDesC &aText);
 	protected:
 		 CAknNavigationDecorator* iNaviDecorator;
 		 CAknNavigationControlContainer* iNaviPane;

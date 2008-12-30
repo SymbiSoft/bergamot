@@ -127,3 +127,5 @@ RESOURCE TBUF r_podcast_feeds_status_format {buf = STRING_r_podcast_feeds_status
 
 RESOURCE TBUF r_podcast_onphone_status {buf = STRING_r_view_onphone_status;}
 RESOURCE TBUF r_podcast_onphone_status_unknown {buf = STRING_r_view_onphone_status_unknown;}
+
+RESOURCE TBUF r_podcast_subtitle {buf = STRING_r_podcast_subtitle;}

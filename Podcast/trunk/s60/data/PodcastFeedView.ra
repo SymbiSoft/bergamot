@@ -299,8 +299,6 @@ RESOURCE TBUF r_podcast_pending_status_suspended {buf = STRING_r_podcast_shows_d
 RESOURCE TBUF r_podcast_books_status {buf = STRING_r_view_books_status;}
 RESOURCE TBUF r_podcast_feeds_status {buf = STRING_r_view_feeds_status;}
 
-RESOURCE TBUF r_podcast_subtitle {buf = STRING_r_podcast_subtitle;}
-
 RESOURCE TBUF r_add_feed_exists {buf = STRING_r_add_feed_exists;}
 RESOURCE TBUF r_add_feed_exists_title {buf = STRING_r_add_feed_exists_title;}
 
