@@ -623,70 +623,75 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			break;
 			}
 		case EPodcastImportFeeds:
-			{		
-			CDesCArrayFlat* mimeTypes = new (ELeave) CDesCArrayFlat(KDefaultGran);
-			CleanupStack::PushL(mimeTypes);
-			CDesCArrayFlat* fileNames = new (ELeave) CDesCArrayFlat(KDefaultGran);
-			CleanupStack::PushL(fileNames);
-			HBufC* import_title = iEikonEnv->AllocReadResourceLC(R_PODCAST_IMPORT_FEEDS_TITLE);
-			CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeNormal, R_PODCAST_IMPORT_PODCAST);
-			TFileName importName;
-			dlg->SetTitleL(*import_title);
-									
-			if(dlg->ExecuteL(importName))
-				{
-				if(importName.Length()>0)
-					{
-					iPodcastModel.FeedEngine().ImportFeedsL(importName);
-					UpdateListboxItemsL();
-					}
-				}
-
-			CleanupStack::PopAndDestroy(3,mimeTypes); // title, fileNames, mimeTypes								
-			}break;
-		case EPodcastExportFeeds:
 			{
-			CAknFileNamePromptDialog *fileDlg = CAknFileNamePromptDialog::NewL(R_PODCAST_FILENAME_PROMPT_DIALOG);
-			TFileName fileName;
-			if (fileDlg->ExecuteL(fileName) && fileName.Length() > 0) {
+			CAknMemorySelectionDialog* memDlg = 
+				CAknMemorySelectionDialog::NewL(ECFDDialogTypeNormal, ETrue);
+			CleanupStack::PushL(memDlg);
+			CAknMemorySelectionDialog::TMemory memory = 
+				CAknMemorySelectionDialog::EPhoneMemory;
 
-				CAknMemorySelectionDialog* memDlg = 
-					 CAknMemorySelectionDialog::NewL(ECFDDialogTypeCopy, ETrue);
-				CAknMemorySelectionDialog:: TMemory memory = 
-					CAknMemorySelectionDialog::EPhoneMemory;
-
-				if ( memDlg->ExecuteL(memory) == CAknFileSelectionDialog::ERightSoftkey )
+			if (memDlg->ExecuteL(memory))
 				{
-				delete memDlg;
-				break;
-				}
-				
-				delete memDlg;
-				TFileName pathName;
+				TFileName importName;
+			
 				if (memory==CAknMemorySelectionDialog::EMemoryCard)
 				{
-					pathName = PathInfo:: MemoryCardRootPath();
+					importName = PathInfo:: MemoryCardRootPath();
 				}
 				else
 				{
-					pathName = PathInfo:: PhoneMemoryRootPath();
+					importName = PathInfo:: PhoneMemoryRootPath();
 				}
 
+				CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeNormal, R_PODCAST_IMPORT_PODCAST);
+				CleanupStack::PushL(dlg);
+
+				dlg->SetDefaultFolderL(importName);
+				DP1("importName=%S", &importName);						
+				if(dlg->ExecuteL(importName))
+					{
+					if(importName.Length()>0)
+						{
+						iPodcastModel.FeedEngine().ImportFeedsL(importName);
+						UpdateListboxItemsL();
+						}
+					}
+				CleanupStack::PopAndDestroy(dlg);
+				}
+			CleanupStack::PopAndDestroy(memDlg);								
+			}break;
+		case EPodcastExportFeeds:
+			{
+			CAknMemorySelectionDialog* memDlg = 
+				CAknMemorySelectionDialog::NewL(ECFDDialogTypeSave, ETrue);
+			CleanupStack::PushL(memDlg);
+			CAknMemorySelectionDialog::TMemory memory = 
+				CAknMemorySelectionDialog::EPhoneMemory;
+
+			if (memDlg->ExecuteL(memory))
+				{
+				TFileName pathName;
 				
-				CDesCArrayFlat* mimeTypes = new (ELeave) CDesCArrayFlat(KDefaultGran);
-				CleanupStack::PushL(mimeTypes);
-				CDesCArrayFlat* fileNames = new (ELeave) CDesCArrayFlat(KDefaultGran);
-				CleanupStack::PushL(fileNames);
-				
-				HBufC* exportTitle = iEikonEnv->AllocReadResourceLC(R_PODCAST_EXPORT_FEEDS_TITLE);
-				CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeCopy  , R_PODCAST_EXPORT_FEEDS);
-				HBufC* leftKeyText = iEikonEnv->AllocReadResourceLC(R_PODCAST_EXPORT_FEEDS_SOFTKEY);
-				dlg->SetLeftSoftkeyFileL(*leftKeyText);
-				dlg->SetTitleL(*exportTitle);
+				if (memory==CAknMemorySelectionDialog::EMemoryCard)
+				{
+					pathName = PathInfo::MemoryCardRootPath();
+				}
+				else
+				{
+					pathName = PathInfo::PhoneMemoryRootPath();
+				}
+
+				CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeSave, R_PODCAST_EXPORT_FEEDS);
+				CleanupStack::PushL(dlg);
 										
+				DP1("pathName=%S", &pathName);
 				if(dlg->ExecuteL(pathName))
 					{
-					if(pathName.Length()>0)
+					CAknFileNamePromptDialog *fileDlg = CAknFileNamePromptDialog::NewL(R_PODCAST_FILENAME_PROMPT_DIALOG);
+					CleanupStack::PushL(fileDlg);
+					fileDlg->SetPathL(pathName);
+					TFileName fileName;
+					if (fileDlg->ExecuteL(fileName) && fileName.Length() > 0)
 						{
 						pathName.Append(fileName);
 						TFileName temp;
@@ -697,12 +702,12 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 						BaflUtils::DeleteFile(fs,temp);
 						fs.Close();
 						}
+					CleanupStack::PopAndDestroy(fileDlg);
 					}
-				delete dlg;
-				CleanupStack::PopAndDestroy(4,mimeTypes); // title, fileNames, mimeTypes
+				CleanupStack::PopAndDestroy(dlg);
 			}
-			delete fileDlg;									
-			}break;
+			CleanupStack::PopAndDestroy(memDlg);									
+			} break;
 		case EPodcastEditFeed:
 			{
 			if(iListContainer->Listbox() != NULL)
@@ -724,7 +729,6 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 				}
 			break;
 			}
-
 		case EPodcastDeleteFeedHardware:
 		case EPodcastDeleteFeed:
 			{

@@ -198,7 +198,7 @@ RESOURCE FILESELECTIONDIALOG r_podcast_import_audiobook
 RESOURCE FILESELECTIONDIALOG r_podcast_import_podcast
 {
  title = STRING_r_view_import_feeds_title;
- root_path = "e:\\";
+ root_path = "";
  filters =
  {
   FILTER
@@ -213,7 +213,7 @@ RESOURCE FILESELECTIONDIALOG r_podcast_import_podcast
 RESOURCE FILESELECTIONDIALOG r_podcast_export_feeds
 {
  title = STRING_r_view_export_feeds_title;
- root_path = "c:\\";
+ root_path = "";
  filters =
  {
   FILTER
