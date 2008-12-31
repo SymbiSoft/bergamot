@@ -156,17 +156,19 @@ void CSyncClientAppView::ShowSyncProfiles() {
 #else
 	DP("ShowSyncProfiles BEGIN");
 	RSyncMLSession session;
-	
+	DP("After session");
 	TInt error;
 	TRAP(error, session.OpenL());
+	DP("After OpenL");
 	if (error!=KErrNone) {
 		DP1("OpenL error %d", error);
 		return;
 	}
-
+	DP("Before job");
 	RSyncMLDataSyncJob job;
-	
+	DP("After job");
 	RArray<TSmlProfileId> profiles;
+	DP("Before ListProfilesL");
 	TRAP(error, session.ListProfilesL(profiles, ESmlDataSync));
 	if (error!=KErrNone)
 		{
@@ -266,4 +268,3 @@ void CSyncClientAppView::StoreSettingsL()
 	iItemList->StoreSettingsL();
 	}
 		
-// End of file

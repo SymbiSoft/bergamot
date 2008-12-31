@@ -10,7 +10,7 @@ NAME SWIM    // 4 letter ID
 #include <appinfo.rh>
 #include "SyncClientS60.hrh"
 #include "SyncClient_english.rls"
-#include "SyncClientS60.mbg"
+#include <SyncClientS60.mbg>
 
 //  RESOURCE DEFINITIONS
 // -----------------------------------------------------------------------------

@@ -2,7 +2,8 @@ TARGET            SyncClientS60.exe
 TARGETTYPE        exe
 UID		  		  0x100039CE 0xE0983804
 
-EPOCSTACKSIZE	  0x10000
+EPOCSTACKSIZE 81920
+EPOCHEAPSIZE 512000 1024000
 
 SYSTEMINCLUDE     \epoc32\include
 USERINCLUDE       ..\inc
@@ -24,7 +25,7 @@ SOURCEPATH      .
 START RESOURCE    SyncClientS60.rss
 HEADER
 TARGETPATH resource\apps
-END //RESOURCE
+END
 
 START RESOURCE    SyncClientS60_reg.rss
 #ifdef WINSCW
@@ -32,10 +33,10 @@ TARGETPATH 	  \private\10003a3f\apps
 #else
 TARGETPATH 	  \private\10003a3f\import\apps
 #endif
-END //RESOURCE
+END
 
-// For Nokia Startup List API
-
+START RESOURCE  E0983805.rss
+END
 
 LIBRARY           euser.lib
 LIBRARY           apparc.lib
@@ -48,10 +49,7 @@ LIBRARY           estor.lib
 LIBRARY	     	  flogger.lib
 LIBRARY			  eikcoctl.lib 
 
-#if defined(__UIQ3_SDK__)
-LIBRARY			SmlClient.lib 
-#elif defined(WINSCW)
-#else  
+#ifndef WINSCW
 LIBRARY			syncmlclientapi.lib 
 #endif
 

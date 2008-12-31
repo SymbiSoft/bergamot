@@ -90,5 +90,3 @@ void CSyncClientAppUi::RunAboutDialogL()
     CleanupStack::Pop(dlg);
     dlg->ExecuteLD(R_DLG_ABOUT);
 }
-
-// End of file

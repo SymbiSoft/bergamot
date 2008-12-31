@@ -2,8 +2,7 @@
 #include "debug.h"
 
 CSyncSetting::CSyncSetting(TInt aResourceId, TUint aProfileId, RSyncServerSession &aSession) :
-	CAknEnumeratedTextPopupSettingItem(aResourceId, iValue), iProfileId(aProfileId), iSession(aSession),
-	iValue(0)
+	CAknEnumeratedTextPopupSettingItem(aResourceId, iValue), iValue(0), iProfileId(aProfileId), iSession(aSession)
 	{
 	}
 

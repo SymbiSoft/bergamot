@@ -80,5 +80,3 @@ private: // Data members
 
 
 #endif
-
-// End of file
