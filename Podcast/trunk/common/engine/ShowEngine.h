@@ -43,6 +43,7 @@ public:
 	void DeletePlayedShows(RShowInfoArray &aShowInfoArray);
 	void DeleteAllShowsByFeed(TUint aFeedUid,TBool aDeleteFiles=ETrue);
 	void DeleteShow(TUint aShowUid, TBool aRemoveFile=ETrue);
+	void DeleteOldShowsByFeed(TUint aFeedUid);
 	
 	void CheckFilesL();
 	void AddObserver(MShowEngineObserver *observer);

@@ -581,11 +581,13 @@ void CPodcastClientShowsView::UpdateShowItemDataL(CShowInfo* aShowInfo, MQikList
 			infoSize.Format(KSizeDownloadingOf(), &dlSize, &totSize);
 			infoSize.Append(KShowsSizeUnit());
 		}
-		else
+		else if (aShowInfo->ShowSize() > 0)
 		{
 			infoSize.Format(KShowsSizeFormat(), (float)aShowInfo->ShowSize() / (float)KSizeMb);
 			infoSize.Append(KShowsSizeUnit());
-
+		} 
+		else {
+			infoSize = KNullDesC();	
 		}
 	}
 	aListboxData->SetTextL(aShowInfo->Title(), EQikListBoxSlotText1);
@@ -1038,6 +1040,7 @@ TKeyResponse CPodcastClientShowsView::OfferKeyEventL(const TKeyEvent& aKeyEvent,
 			CQikCommand* command = NULL;
 			switch (aKeyEvent.iCode) {
 			case '*':
+			case EKeyLeftArrow:
 				if (activeShow->PlayState() == EPlayed) {
 					command = CQikCommand::NewL(EPodcastMarkAsUnplayed);
 				} else {
@@ -1045,6 +1048,7 @@ TKeyResponse CPodcastClientShowsView::OfferKeyEventL(const TKeyEvent& aKeyEvent,
 				}
 				break;
 			case '#':
+			case EKeyRightArrow:
 				if (activeShow->DownloadState() == ENotDownloaded) {
 					command = CQikCommand::NewL(EPodcastDownloadShow);
 				}

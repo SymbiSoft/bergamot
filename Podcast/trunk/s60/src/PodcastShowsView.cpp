@@ -642,7 +642,7 @@ void CPodcastShowsView::UpdateListboxItemsL()
 			HBufC* titleBuffer = HBufC::NewL(titleFormat->Length()+8);
 			if (iCurrentCategory == EShowDownloadedShows) {
 				iPodcastModel.FeedEngine().GetDownloadedStats(numShows, numUnplayed);
-			} else {
+			} else if (iPodcastModel.ActiveFeedInfo()){
 				iPodcastModel.FeedEngine().GetStatsByFeed(iPodcastModel.ActiveFeedInfo()->Uid(), numShows, numUnplayed, EFalse);
 			} 
 			
@@ -858,19 +858,10 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 				{
 				if (iPodcastModel.ShowEngine().RemoveDownload(iPodcastModel.ActiveShowList()[index]->Uid()))
 					{
-					if (index > 0)
-						{
-						iItemArray->Delete(index);
+						/*iItemArray->Delete(index);
 						iItemIdArray.Remove(index);						
-						iListContainer->Listbox()->HandleItemRemovalL();
-						
-						/*MQikListBoxModel& model(iListbox->Model());
-						 model.ModelBeginUpdateLC();
-						 model.RemoveDataL(index);
-						 model.ModelEndUpdateL();*/
-						}
-
-					UpdateListboxItemsL();
+						iListContainer->Listbox()->HandleItemRemovalL();*/
+						UpdateListboxItemsL();
 					}
 				}
 			}

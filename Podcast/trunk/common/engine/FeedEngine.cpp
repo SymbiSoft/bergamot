@@ -549,6 +549,8 @@ void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TBool aSuccessful)
 		time.HomeTime();
 		iActiveFeed->SetLastUpdated(time);
 
+		iPodcastModel.ShowEngine().DeleteOldShowsByFeed(iActiveFeed->Uid());
+
 		//iPodcastModel.ShowEngine().SaveShowsL();
 
 		// if the feed has specified a image url. download it if we dont already have it
@@ -958,8 +960,6 @@ void CFeedEngine::DBGetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNum
 
 	sqlite3_stmt *st;
 	 
-	//DP1("SQL statement length=%d", iSqlBuffer.Length());
-
 	int rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
 	
 	if( rc==SQLITE_OK ){
