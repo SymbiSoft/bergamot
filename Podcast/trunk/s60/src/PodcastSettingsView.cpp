@@ -14,6 +14,10 @@
 #include <podcast.rsg>
 #include "SettingsEngine.h"
 
+#include <caknfileselectiondialog.h> 
+#include <caknmemoryselectiondialog.h> 
+#include <pathinfo.h>
+
 class CPodcastSettingItemList:public CAknSettingItemList
 	{
 public:
@@ -56,9 +60,49 @@ public:
 
 	void  EditItemL (TInt aIndex, TBool aCalledFromMenu)
 		{
-		CAknSettingItemList::EditItemL(aIndex,aCalledFromMenu);
-		StoreSettingsL();
-		UpdateSettingVisibility();
+		if (aIndex == 0) {
+			CAknMemorySelectionDialog* memDlg = 
+				CAknMemorySelectionDialog::NewL(ECFDDialogTypeNormal, ETrue);
+			CleanupStack::PushL(memDlg);
+			CAknMemorySelectionDialog::TMemory memory = 
+				CAknMemorySelectionDialog::EPhoneMemory;
+	
+			if (memDlg->ExecuteL(memory))
+				{
+				TFileName importName;
+			
+				if (memory==CAknMemorySelectionDialog::EMemoryCard)
+				{
+					importName = PathInfo:: MemoryCardRootPath();
+				}
+				else
+				{
+					importName = PathInfo:: PhoneMemoryRootPath();
+				}
+	
+				CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeSave, R_PODCAST_SHOWDIR_SELECTOR);
+				HBufC* select = iEikonEnv->AllocReadResourceLC(R_PODCAST_SOFTKEY_SELECT);
+				dlg->SetLeftSoftkeyFileL(*select);
+				CleanupStack::PopAndDestroy(select);
+				CleanupStack::PushL(dlg);
+	
+				dlg->SetDefaultFolderL(importName);
+				
+				if(dlg->ExecuteL(importName))
+					{
+					importName.Append(_L("Podcasts"));
+					iShowDir.Copy(importName);
+					LoadSettingsL();
+					}
+				CleanupStack::PopAndDestroy(dlg);
+				}
+			CleanupStack::PopAndDestroy(memDlg);								
+			}
+		else {
+			CAknSettingItemList::EditItemL(aIndex,aCalledFromMenu);
+		}
+			StoreSettingsL();
+			UpdateSettingVisibility();
 		}
 	
 	/**

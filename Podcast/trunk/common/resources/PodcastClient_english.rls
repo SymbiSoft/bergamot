@@ -211,4 +211,3 @@ rls_string STRING_r_off "Off"
 rls_string STRING_r_enter_filename "Enter file name"
 rls_string STRING_r_view_export_feeds_title "Select folder"
 rls_string STRING_r_view_export_feeds_softkey "Select"
-

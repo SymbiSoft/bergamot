@@ -250,3 +250,20 @@ RESOURCE ARRAY r_podcast_autoupdate_opened
         LBUF { txt=STRING_podcast_autoupdate_attime; }
     };
 }
+
+RESOURCE FILESELECTIONDIALOG r_podcast_showdir_selector
+{
+ title = STRING_r_view_export_feeds_title;
+ root_path = "";
+ filters =
+ {
+  FILTER
+  {
+  filter_type = EFilenameFilter;
+  filter_style = EInclusiveFilter;
+  filter_data = { "*.*" };
+  }
+ };
+}
+
+RESOURCE TBUF r_podcast_softkey_select { buf = STRING_r_view_export_feeds_softkey; }
