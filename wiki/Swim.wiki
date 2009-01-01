@@ -6,7 +6,7 @@ http://bergamot.googlecode.com/svn/wiki/swimicon.jpg
 
 Swim is a utility for automatic periodic synchronization of data with internet servers such as Google Calendar (through [http://www.goosync.com/ GooSync]), [http://www.mobical.net Mobical], [http://zyb.com Zyb], [http://www.scheduleworld.com ScheduleWorld] and [http://ovi.com/ Ovi]. It makes use of the existing SyncML support in the system, and adds timing capabilities, something both UIQ and S60 mysteriously lack! You can set it to sync your data every 15 minutes, every hour, every 4 hours, every 12 hours, daily, or weekly.
 
-_Swim is now available for both UIQ and S60, however S60 FP2 is not yet supported!_
+_Swim is now available for both UIQ and S60 3rd ed., however S60 3rd ed. FP2 is not yet supported (N78, N79, N96, 6220)!_
 
 == Screenshots ==
 
