@@ -53,7 +53,7 @@ If your phone supports it, using your own wireless LAN or Bluetooth PAN are grea
 
 To download binaries of Escarpod to use on your phone, visit our [http://code.google.com/p/bergamot/downloads/list Downloads] page.
 
-  * Escarpod 1.20 (~ December 2008)
+  * Escarpod 1.20 (January 2009)
     * First S60 version
     * New SQLite based backend with massive performance and stability improvements
     * Other improvements based on user suggestions
