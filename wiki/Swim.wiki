@@ -23,7 +23,7 @@ http://bergamot.googlecode.com/svn/wiki/Swim_N95_1.jpg http://bergamot.googlecod
 
 To use Swim, you need to do three things:
 
-  # Download the latest unsigned Swim SIS file from our [http://code.google.com/p/bergamot/downloads/list download page].
+  # Download the latest unsigned Swim SIS file from our [http://code.google.com/p/bergamot/downloads/list download page] *onto your computer*.
   # Sign Swim using Symbian [https://www.symbiansigned.com/app/page/public/openSignedOnline.do Open Signed Online]. 
     * Get your IMEI by typing `*#06#` on your phone
     * Select the following capabilities: `LocalServices NetworkServices WriteDeviceData ReadDeviceData ReadUserData WriteUserData ProtServ`, or simply select all.
@@ -50,6 +50,7 @@ The complete source code is found in the [http://bergamot.googlecode.com/svn/Syn
   * 0.50 (2009-01-??)
     * Support for syncing at a fixed time or date and custom intervals
     * Support for FP2 and S60 5th ed (hopefully).
+    * Roaming detection
 
   * 0.41 (S60 Only) (2008-11-17) [http://bergamot.googlecode.com/svn/Sync/tags/v041 Source]
     * Fix for S60 problem with sync every 30 minutes
