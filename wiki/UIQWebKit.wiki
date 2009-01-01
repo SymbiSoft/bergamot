@@ -1,12 +1,12 @@
 ...because UIQ needs a decent web browser
 
-= WebKit for UIQ =
+= Webkit for UIQ =
 
 == Digia @Web ==
-Finnish company Digia has done pretty much what I had in mind with their 
 
-  * [http://www.digia.com/C2256FEF0043E9C1/0/405001847 @Web browser].
+Finnish company Digia has done pretty much what I had in mind with their @Web browser
 
+  * [http://www.digia.com/C2256FEF0043E9C1/0/405001847 @Web]
 
 == O3 Mobi Ozone ==
 
