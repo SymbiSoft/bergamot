@@ -33,10 +33,12 @@ To use Swim, you need to do three things:
 
 == How to Use ==
 
-  # Set up one or more SyncML accounts in your agenda manager (UIQ)/sync settings (S60)
-    * Tip: In the SyncML settings you can choose which internet account to use
+  # Set up one or more SyncML accounts:
+    * UIQ: Go to Agenda manager (the calendar app)
+    * S60: Settings/Connections/Sync, Tools/Sync or Connections/Sync
+    * Tip: In the SyncML settings you can choose which internet account to use, so the system won't ask you every time the sync is triggered by Swim
   # Run Swim, and set up a timer
-  # Swim now automatically starts with the phone, and runs invisibly in the background
+  # Swim now automatically starts with the phone, and runs invisibly in the background (The process is SyncServer, the UI does not need to run)
   # Enjoy your synchronized data!
 
 The sync timer is set relative to the time of day when you enable it. So if you enable hourly sync at 12:03, it will sync at 13:03, 14:03 etc. Similarly, if you set it for daily sync, it will sync at 12:03 every day. This part could certainly be improved :)
