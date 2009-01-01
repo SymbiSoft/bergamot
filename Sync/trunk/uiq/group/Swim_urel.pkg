@@ -3,21 +3,17 @@
 #{"Swim"}, (0xE0983800), 0, 40, 0, TYPE=SA
 (0x101F6300), 3, 0, 0, {"UIQ30ProductID"}
 
-; Freeware installation "warning" required by Symbian signed
-"..\..\common\group\FreewareWarningEN.txt"-"",FT 
+"\epoc32\release\gcce\urel\SyncServer_0xE0983802.exe"-"!:\sys\bin\SyncServer_0xE0983802.exe"
 
-"\epoc32\release\gcce\urel\SyncServer.exe"-"!:\sys\bin\SyncServer.exe"
-
-"\epoc32\data\z\resource\apps\SyncClient.rsc"-"!:\resource\apps\SyncClient.rsc"
-"\epoc32\data\z\resource\apps\SyncClient.mbm"-"!:\resource\apps\SyncClient.mbm"
-"\epoc32\data\z\resource\apps\SyncClient_loc.RSC"-"!:\resource\apps\SyncClient_loc.RSC"
-"\epoc32\data\z\private\10003a3f\apps\SyncClient_reg.rsc"-"!:\private\10003a3f\import\apps\SyncClient_reg.rsc"
+"\epoc32\data\z\resource\apps\SyncClientUIQ_0xE0983801.rsc"-"!:\resource\apps\SyncClientUIQ_0xE0983801.rsc"
+"\epoc32\data\z\resource\apps\SyncClientUIQ_0xE0983801.mbm"-"!:\resource\apps\SyncClientUIQ_0xE0983801.mbm"
+"\epoc32\data\z\resource\apps\SyncClientUIQ_0xE0983801_loc.RSC"-"!:\resource\apps\SyncClientUIQ_0xE0983801_loc.RSC"
+"\epoc32\data\z\private\10003a3f\apps\SyncClientUIQ_0xE0983801_reg.rsc"-"!:\private\10003a3f\import\apps\SyncClientUIQ_0xE0983801_reg.rsc"
 
 ; settings to be removed on uninstall
 ;""-"!:\private\e0983802\config.dat"
 
-; Recognizer for auto start
-"\epoc32\release\gcce\urel\SyncServerRecognizer.dll" -"!:\sys\bin\SyncServerRecognizer.dll"
-"\epoc32\data\z\resource\Plugins\SyncServerRecognizer.rsc" -"!:\resource\Plugins\SyncServerRecognizer.rsc"
+; auto start file
+"SyncServer_0xE0983802.ast"-"C:\private\10274b9f\import\SyncServer_0xE0983802.ast"
 
-"\epoc32\release\gcce\urel\SyncClient.exe"-"!:\sys\bin\SyncClient.exe", FR, RI
+"\epoc32\release\gcce\urel\SyncClientUIQ_0xE0983801.exe"-"!:\sys\bin\SyncClientUIQ_0xE0983801.exe", FR, RI

@@ -4,7 +4,7 @@
 #include <EIKDIALG.H>
 #include "SyncClient.hrh"
 #include "SyncClientView.h"
-#include <SyncClient.rsg>
+#include <SyncClientUIQ_0xE0983801.rsg>
 #include <EIKLABEL.H>
 
 class CAboutDlg:public CEikDialog

@@ -5,8 +5,8 @@ UID3 0xE0983801
 
 RESOURCE APP_REGISTRATION_INFO
 {
-    app_file="SyncClient";
-    localisable_resource_file="\\resource\\apps\\SyncClient_loc";
+    app_file="SyncClientUIQ_0xE0983801";
+    localisable_resource_file="\\resource\\apps\\SyncClientUIQ_0xE0983801_loc";
     }
 
 

@@ -8,7 +8,7 @@
 #include <QikCommand.h>
 #include "SyncClient.hrh"
 #include "SyncClientView.h"
-#include <SyncClient.rsg>
+#include <SyncClientUIQ_0xE0983801.rsg>
 #include <QikGridLayoutManager.h>
 #include <SyncMLClient.h>
 #include <SyncMLClientDS.h>

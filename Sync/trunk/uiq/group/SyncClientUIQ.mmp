@@ -1,4 +1,4 @@
-TARGET            SyncClient.exe
+TARGET            SyncClientUIQ_0xE0983801.exe
 TARGETTYPE        exe
 UID               0x100039CE 0xE0983801
 VENDORID          0
@@ -39,7 +39,7 @@ LIBRARY			SmlClient.lib
 LIBRARY			eikdlg.lib
 LIBRARY			flogger.lib
 
-START BITMAP SyncClient.mbm
+START BITMAP SyncClientUIQ_0xE0983801.mbm
 	TARGETPATH \resource\apps
 	HEADER
 	SOURCEPATH ..\images
@@ -52,20 +52,20 @@ START BITMAP SyncClient.mbm
 END
 
 SOURCEPATH ..\group
-START RESOURCE SyncClient_loc.rss
+START RESOURCE SyncClientUIQ_0xE0983801_loc.rss
 	TARGETPATH \resource\apps
 	HEADER
 	LANG SC
 END
 
-START RESOURCE SyncClient_reg.rss
+START RESOURCE SyncClientUIQ_0xE0983801_reg.rss
 	TARGETPATH \private\10003A3F\apps
 END
 
 
 SYSTEMINCLUDE ..\..\common\group
 
-START RESOURCE SyncClient.rss
+START RESOURCE SyncClientUIQ_0xE0983801.rss
 	TARGETPATH \resource\apps
 	HEADER
 END

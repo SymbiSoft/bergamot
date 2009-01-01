@@ -11,7 +11,7 @@ RESOURCE LOCALISABLE_APP_INFO
       {
       caption = "Swim";
       number_of_icons = 3;
-      icon_file = "z:\\resource\\apps\\SyncClient.mbm";
+      icon_file = "z:\\resource\\apps\\SyncClientUIQ_0xE0983801.mbm";
       }
    };
    

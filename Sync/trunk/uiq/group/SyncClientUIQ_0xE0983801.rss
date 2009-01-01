@@ -122,7 +122,7 @@ RESOURCE DIALOG r_swim_about_dlg
 			type = EEikCtImage;
 			control = IMAGE
 				{
-			    bmpfile = "\\Resource\\Apps\\SyncClient.mbm";
+			    bmpfile = "\\Resource\\Apps\\SyncClientUIQ_0xE0983801.mbm";
 			    bmpid = 2;
 			    bmpmask = 3;
 			};
