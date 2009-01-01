@@ -47,6 +47,10 @@ The sync timer is set relative to the time of day when you enable it. So if you 
 
 The complete source code is found in the [http://bergamot.googlecode.com/svn/Sync/trunk subversion repository]. Compiled binaries for each release can be found on our [http://code.google.com/p/bergamot/downloads/list Downloads page]. Note that the unsigned binaries are unusable without signing them yourself!
 
+  * 0.50 (2009-01-??)
+    * Support for syncing at a fixed time or date and custom intervals
+    * Support for FP2 and S60 5th ed (hopefully).
+
   * 0.41 (S60 Only) (2008-11-17) [http://bergamot.googlecode.com/svn/Sync/tags/v041 Source]
     * Fix for S60 problem with sync every 30 minutes
     * *Note that this version seems not to be compatible with Feature Pack 2*
