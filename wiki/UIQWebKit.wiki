@@ -1,9 +1,20 @@
 ...because UIQ needs a decent web browser
 
-= UIQ WebKit -> Digia @Web =
-Finnish company Digia has done pretty much what I had in mind with their [http://www.digia.com/C2256FEF0043E9C1/0/405001847 @Web browser].
+= WebKit for UIQ =
+
+== Digia @Web ==
+Finnish company Digia has done pretty much what I had in mind with their 
+
+  * [http://www.digia.com/C2256FEF0043E9C1/0/405001847 @Web browser].
+
+
+== O3 Mobi Ozone ==
+
+O3 Mobi has made their own port, significantly faster than @Web
+
+  * [http://www.o3mobi.com/ Ozone]
 
 == Links ==
 
   * [http://trac.webkit.org/projects/webkit/wiki/S60Webkit S60WebKit]
-  * [http://www.digia.com/C2256FEF0043E9C1/0/405001847 @Web browser]
+  * [http://www.esato.com/board/viewtopic.php?topic=157175 Esato discussion]
