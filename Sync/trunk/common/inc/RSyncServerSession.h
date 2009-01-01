@@ -4,7 +4,7 @@
 #include <e32std.h>
 #include "CSyncServerSession.h"
 
-_LIT(KSyncServerExe, "\\sys\\bin\\SyncServer.exe");
+_LIT(KSyncServerExe, "\\sys\\bin\\SyncServer_0xE0983802.exe");
 _LIT(KSyncServerSemaphore, "KSyncServerSemaphore");
 
 class RSyncServerSession : public RSessionBase

@@ -5,7 +5,7 @@ ZDIR=$(EPOCROOT)epoc32\data\z
 endif
 
 TARGETDIR=$(ZDIR)\resource\apps
-ICONTARGETFILENAME=$(TARGETDIR)\SyncClientS60.mif
+ICONTARGETFILENAME=$(TARGETDIR)\SyncClientS60_0xE0983804.mif
 HEADERFILE=$(EPOCROOT)epoc32\include\SyncClientS60.mbg
 
 do_nothing :

@@ -167,7 +167,7 @@ RESOURCE LOCALISABLE_APP_INFO r_syncclient_localisable_app_info
         caption = STRING_syncclient_caption_string;
 
         number_of_icons = 1;
-	   	icon_file = "\\resource\\apps\\SyncClientS60.mif";
+	   	icon_file = "\\resource\\apps\\SyncClientS60_0xE0983804.mif";
 	    };
     }
 
@@ -188,7 +188,7 @@ RESOURCE DIALOG r_dlg_about
                 {
                 layout = ENoteWithImageLayout;
                 singular_label = STRING_about_text_s60; 
-                imagefile = "\\resource\\apps\\syncclients60.mif"; 
+                imagefile = "\\resource\\apps\\SyncClientS60_0xE0983804.mif"; 
                 imageid = EMbmSyncclients60Swimicon;
                 imagemask = EMbmSyncclients60Swimicon_mask;
                 };

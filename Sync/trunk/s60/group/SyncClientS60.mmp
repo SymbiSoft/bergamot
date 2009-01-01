@@ -1,4 +1,4 @@
-TARGET            SyncClientS60.exe
+TARGET            SyncClientS60_0xE0983804.exe
 TARGETTYPE        exe
 UID		  		  0x100039CE 0xE0983804
 
@@ -22,12 +22,12 @@ SOURCE 			RSyncServerSession.cpp
 SYSTEMINCLUDE ..\..\common\group
 
 SOURCEPATH      .
-START RESOURCE    SyncClientS60.rss
-HEADER
-TARGETPATH resource\apps
+START RESOURCE SyncClientS60_0xE0983804.rss
+	HEADER
+	TARGETPATH resource\apps
 END
 
-START RESOURCE    SyncClientS60_reg.rss
+START RESOURCE    SyncClientS60_0xE0983804_reg.rss
 #ifdef WINSCW
 TARGETPATH 	  \private\10003a3f\apps
 #else
