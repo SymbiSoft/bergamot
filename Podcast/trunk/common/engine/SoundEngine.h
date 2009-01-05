@@ -6,7 +6,7 @@
 
 class CPodcastModel;
 
-const TInt KVolumeSteps = 10;
+const TInt KVolumeSteps = 20;
 
 enum TSoundEngineState
 {
@@ -52,8 +52,8 @@ public:
 	void AddObserver(MSoundEngineObserver* aObserver);
 	void RemoveObserver(MSoundEngineObserver* aObserver);
 	
-	void VolumeUp();
-	void VolumeDown();
+	TUint VolumeUp();
+	TUint VolumeDown();
 	void SetVolume(TUint aVolume);
 	const TFileName& LastFileName();
 	

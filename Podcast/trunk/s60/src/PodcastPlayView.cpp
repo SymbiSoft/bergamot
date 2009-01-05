@@ -34,7 +34,6 @@ const TInt KMaxCoverImageWidth = 200;
 const TInt KTimeLabelSize = 64;
 _LIT(KZeroTime,"0:00:00/0:00:00");
 
-
 class CImageWaiter:public CActive
 	{
 	public:
@@ -130,16 +129,14 @@ public:
 	
 	};
 
+class CVolumeTimer;
+
 class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver, public MShowEngineObserver
     {
     public: 
 		CPodcastPlayContainer(CPodcastModel& aPodcastModel, CAknNavigationControlContainer* aNaviPane);
 		~CPodcastPlayContainer();
 		void ConstructL( const TRect& aRect );
-		CAknNavigationDecorator* NaviDeco()
-		{
-			return iNaviDecorator;
-		}
 
 		void ViewActivatedL(TInt aCurrentShowUid);
     	void Draw( const TRect& aRect ) const;
@@ -149,6 +146,9 @@ class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver, p
 			return iShowInfo;
 		}
 		void PlayShow();
+		void NaviShowTabGroupL();
+		void NaviShowVolumeL(TUint aVolume);
+				
 	protected:
 		void UpdateControlVisibility();
 		void ShowListUpdated(){};  
@@ -175,7 +175,9 @@ class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver, p
         */
         TTypeUid::Ptr MopSupplyObject( TTypeUid aId );
 	protected:
-		CAknNavigationDecorator* iNaviDecorator;
+		CAknNavigationDecorator* iTabNaviDecorator;
+		CAknNavigationDecorator* iVolumeNaviDecorator;
+				
 		CPeriodic* iPlaybackTicker;
 		CEikImage* iCoverImageCtrl;
 		CFbsBitmap* iCurrentCoverImage;
@@ -195,13 +197,41 @@ class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver, p
         CAknsBasicBackgroundControlContext* iBgContext;
         CImageDecoder* iBitmapConverter;        
         CImageWaiter* iImageWaiter;
+        CVolumeTimer* iVolumeTimer;
 	};
 
-// -----------------------------------------------------------------------------
-// CSIPExLogContainer::MopSupplyObject
-// From CCoeControl.
-// -----------------------------------------------------------------------------
-// 	
+class CVolumeTimer : public CTimer
+	{
+	public:
+		CVolumeTimer(CPodcastPlayContainer* aContainer) : CTimer(EPriorityIdle), iContainer(aContainer)
+		{
+		CTimer::ConstructL();
+		CActiveScheduler::Add(this);
+		}
+		
+	~CVolumeTimer()
+		{
+		Cancel();
+		}
+	
+	void CountDown()
+		{
+		TTimeIntervalMicroSeconds32 msecs(1000000*2);
+		After(msecs);
+		}
+	
+	void RunL()
+		{
+		if (iStatus == KErrNone)
+			{
+			iContainer->NaviShowTabGroupL();
+			}
+		}
+	
+	private:
+		CPodcastPlayContainer* iContainer;
+	};
+
 TTypeUid::Ptr CPodcastPlayContainer::MopSupplyObject( TTypeUid aId )
     {
     if ( aId.iUid == MAknsControlContext::ETypeId ) 
@@ -213,6 +243,10 @@ TTypeUid::Ptr CPodcastPlayContainer::MopSupplyObject( TTypeUid aId )
 
 void CPodcastPlayContainer::UpdateControlVisibility()
 {
+	if(iTabGroup == NULL) {
+		return;
+	}
+	
 	switch(iTabGroup->ActiveTabIndex())
 	{
 	case 0:
@@ -386,10 +420,16 @@ TKeyResponse CPodcastPlayContainer::OfferKeyEventL(const TKeyEvent& aKeyEvent,TE
 			PlayShow();
 			break;
 		case EKeyUpArrow:
-			iPodcastModel.SoundEngine().VolumeUp();
+			{
+			TUint vol = iPodcastModel.SoundEngine().VolumeUp();
+			NaviShowVolumeL(vol);
+			}
 			break;
 		case EKeyDownArrow:
-			iPodcastModel.SoundEngine().VolumeDown();
+			{
+			TUint vol = iPodcastModel.SoundEngine().VolumeDown();
+			NaviShowVolumeL(vol);
+			}
 			break;
 		case EKeyRightArrow:
 			if (aKeyEvent.iRepeats) {
@@ -551,15 +591,9 @@ void CPodcastPlayContainer::ConstructL( const TRect& aRect)
 	iPodcastModel.SoundEngine().AddObserver(this);
 	iPodcastModel.ShowEngine().AddObserver(this);
 
-	iNaviDecorator = iNaviPane->CreateTabGroupL();
+	iVolumeTimer = new CVolumeTimer(this);
+	NaviShowTabGroupL();
 
-	iTabGroup = STATIC_CAST(CAknTabGroup*, iNaviDecorator->DecoratedControl());
-	iTabGroup->SetTabFixedWidthL(KTabWidthWithTwoTabs);
-
-	iTabGroup->AddTabL(0,_L("1"));
-	iTabGroup->AddTabL(1,_L("2"));
- 
-	iTabGroup->SetActiveTabByIndex(0);
 	SetRect( aRect );  
     // Activate the window, which makes it ready to be drawn
     ActivateL();   
@@ -567,7 +601,8 @@ void CPodcastPlayContainer::ConstructL( const TRect& aRect)
 
 CPodcastPlayContainer::~CPodcastPlayContainer()
 {
-	delete iNaviDecorator;
+	delete iTabNaviDecorator;
+	delete iVolumeNaviDecorator;
 	delete iBgContext;
 	delete iCoverImageCtrl;
 	delete iPlayProgressbar;
@@ -577,6 +612,39 @@ CPodcastPlayContainer::~CPodcastPlayContainer()
 	delete iDownloadProgressInfo;
 	delete iPlaybackTicker;
 	delete iCurrentCoverImage;
+	}
+
+void CPodcastPlayContainer::NaviShowTabGroupL()
+	{
+	if (iTabNaviDecorator == NULL) {
+		iTabNaviDecorator = iNaviPane->CreateTabGroupL();
+		iTabGroup = STATIC_CAST(CAknTabGroup*, iTabNaviDecorator->DecoratedControl());
+		iTabGroup->SetTabFixedWidthL(KTabWidthWithTwoTabs);
+	
+		iTabGroup->AddTabL(0,_L("1"));
+		iTabGroup->AddTabL(1,_L("2"));
+	 
+		iTabGroup->SetActiveTabByIndex(0);
+	}
+	iNaviPane->Pop();
+	iNaviPane->PushL(*iTabNaviDecorator);
+	}
+
+void CPodcastPlayContainer::NaviShowVolumeL(TUint aVolume)
+	{
+	
+	if (iVolumeNaviDecorator == NULL) {
+		iVolumeNaviDecorator = iNaviPane->CreateVolumeIndicatorL(R_AVKON_NAVI_PANE_VOLUME_INDICATOR);
+		
+	}
+	TUint vol = aVolume * 10 / 65535;
+	vol = vol ? vol : 1; 
+	STATIC_CAST(CAknVolumeControl*,	iVolumeNaviDecorator->DecoratedControl())->SetValue(vol);
+	iNaviPane->Pop();
+	iNaviPane->PushL(*iVolumeNaviDecorator);
+
+	iVolumeTimer->Cancel();
+	iVolumeTimer->CountDown();
 	}
 
 TInt CPodcastPlayContainer::PlayingUpdateStaticCallbackL(TAny* aPlayView)
@@ -1123,12 +1191,7 @@ void CPodcastPlayView::DoActivateL(const TVwsViewId& aPrevViewId,
 		iPlayContainer->SetRect(ClientRect());
 		AppUi()->AddToViewStackL( *this, iPlayContainer );	
 		iPlayContainer->MakeVisible(ETrue);
-
-		if(iPlayContainer->NaviDeco() != NULL && iNaviPane)
-		{
-		iNaviPane->PushL(*iPlayContainer->NaviDeco());
-		}
-
+		iPlayContainer->NaviShowTabGroupL();
 		iPlayContainer->ViewActivatedL(iCurrentViewShowUid);
 	}
 
@@ -1141,10 +1204,10 @@ void CPodcastPlayView::DoDeactivate()
         AppUi()->RemoveFromViewStack( *this, iPlayContainer );
 		iPlayContainer->MakeVisible(EFalse);
 
-		if(iNaviPane && iPlayContainer->NaviDeco() != NULL)
+		/*if(iNaviPane && iPlayContainer->NaviDeco() != NULL)
 		{
 		iNaviPane->Pop(iPlayContainer->NaviDeco());
-		}
+		}*/
 	}
 }
 

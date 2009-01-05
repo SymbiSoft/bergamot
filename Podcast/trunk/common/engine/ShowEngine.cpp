@@ -532,6 +532,10 @@ void CShowEngine::DBGetDownloadedShows(RShowInfoArray& aShowArray)
 		iSqlBuffer.Append(_L(" and playstate=0"));
 		}
 
+#ifndef DONT_SORT_SQL
+	iSqlBuffer.Append(_L(" order by title"));
+#endif	
+
 	sqlite3_stmt *st;
 
 	int rc = sqlite3_prepare16_v2(iDB, (const void*) iSqlBuffer.PtrZ(), -1,
@@ -1007,10 +1011,11 @@ void CShowEngine::DeleteShow(TUint aShowUid, TBool aRemoveFile)
 			{
 			BaflUtils::DeleteFile(iFs, info->FileName());
 			}
+		
+		info->SetDownloadState(ENotDownloaded);
+		DBUpdateShow(info);
+		delete info;
 		}
-
-	DBDeleteShow(aShowUid);
-	delete info;
 	}
 
 void CShowEngine::GetShowsByFeed(RShowInfoArray& aShowArray, TUint aFeedUid)
