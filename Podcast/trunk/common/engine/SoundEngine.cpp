@@ -232,10 +232,10 @@ TSoundEngineState CSoundEngine::State()
 	return iState;
 }
 
-TUint CSoundEngine::VolumeUp()
+void CSoundEngine::VolumeUp()
 	{
 	if(iState <= ESoundEngineOpening) {
-		return;
+		return ;
 	}
 	TInt max = iPlayer->MaxVolume();
 	TInt step = max / KVolumeSteps;
@@ -244,24 +244,24 @@ TUint CSoundEngine::VolumeUp()
 	iPlayer->GetVolume(now);
 	iPlayer->SetVolume(now+step > max ? max : now+step);	
 	
-	iPlayer->GetVolume(now);
-	return now;
+	NotifyVolumeChanged();
 	}
 
-TUint CSoundEngine::VolumeDown()
+void CSoundEngine::VolumeDown()
 	{
 	if(iState <= ESoundEngineOpening) {
 		return;
 	}
 	TInt max = iPlayer->MaxVolume();
+	DP1("max=%d", max);
 	TInt step = max / KVolumeSteps;
-	
+	DP1("step=%d", step);
 	TInt now;
 	iPlayer->GetVolume(now);
+	DP1("now=%d", now);
 	iPlayer->SetVolume(now-step < 0 ? 0 : now-step);
 
-	iPlayer->GetVolume(now);
-	return now;
+	NotifyVolumeChanged();
 	}
 
 void CSoundEngine::SetVolume(TUint aVolume)
@@ -270,6 +270,8 @@ void CSoundEngine::SetVolume(TUint aVolume)
 		{
 			iPlayer->SetVolume((aVolume*iPlayer->MaxVolume()) / 100);
 		}
+	
+	NotifyVolumeChanged();
 }
 
 void CSoundEngine::NotifyPlaybackStopped()
@@ -294,4 +296,18 @@ void CSoundEngine::NotifyPlaybackInitialized()
 	for (int i=0;i<iObservers.Count();i++) {
 		TRAPD(err, iObservers[i]->PlaybackInitializedL());
 	}
+	}
+
+void CSoundEngine::NotifyVolumeChanged()
+	{
+	TInt max = iPlayer->MaxVolume();
+	
+	TInt vol;
+	iPlayer->GetVolume(vol);
+	
+	DP2("NotifyVolumeChanged, vol=%d, max=%d", vol, max);
+	for (int i=0;i<iObservers.Count();i++) {
+		TRAPD(err, iObservers[i]->VolumeChanged(vol, max));
+	}
+	
 	}

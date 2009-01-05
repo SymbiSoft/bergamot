@@ -40,7 +40,8 @@ public:
 	void UpdateViewL();
 	void PlaybackInitializedL();
 	void PlaybackStartedL();
-	void PlaybackStoppedL(); 
+	void PlaybackStoppedL();
+	void VolumeChanged(TUint aVolume, TUint aMaxVolume) { }
 	static TInt PlayingUpdateStaticCallbackL(TAny* aPlayView);
 	void UpdatePlayStatusL();
 

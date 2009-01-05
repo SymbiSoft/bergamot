@@ -160,7 +160,8 @@ class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver, p
 
 		void PlaybackInitializedL();
 		void PlaybackStartedL();
-		void PlaybackStoppedL(); 
+		void PlaybackStoppedL();
+		void VolumeChanged(TUint aVolume, TUint aMaxVolume);
 		void UpdateMaxProgressValueL(TInt aDuration);
 		
 		TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType);
@@ -421,14 +422,12 @@ TKeyResponse CPodcastPlayContainer::OfferKeyEventL(const TKeyEvent& aKeyEvent,TE
 			break;
 		case EKeyUpArrow:
 			{
-			TUint vol = iPodcastModel.SoundEngine().VolumeUp();
-			NaviShowVolumeL(vol);
+			iPodcastModel.SoundEngine().VolumeUp();
 			}
 			break;
 		case EKeyDownArrow:
 			{
-			TUint vol = iPodcastModel.SoundEngine().VolumeDown();
-			NaviShowVolumeL(vol);
+			iPodcastModel.SoundEngine().VolumeDown();
 			}
 			break;
 		case EKeyRightArrow:
@@ -637,9 +636,7 @@ void CPodcastPlayContainer::NaviShowVolumeL(TUint aVolume)
 		iVolumeNaviDecorator = iNaviPane->CreateVolumeIndicatorL(R_AVKON_NAVI_PANE_VOLUME_INDICATOR);
 		
 	}
-	TUint vol = aVolume * 10 / 65535;
-	vol = vol ? vol : 1; 
-	STATIC_CAST(CAknVolumeControl*,	iVolumeNaviDecorator->DecoratedControl())->SetValue(vol);
+	STATIC_CAST(CAknVolumeControl*,	iVolumeNaviDecorator->DecoratedControl())->SetValue(aVolume);
 	iNaviPane->Pop();
 	iNaviPane->PushL(*iVolumeNaviDecorator);
 
@@ -741,6 +738,14 @@ void CPodcastPlayContainer::PlaybackStoppedL()
 		{
 		UpdatePlayStatusL();
 		}
+	}
+
+void CPodcastPlayContainer::VolumeChanged(TUint aVolume, TUint aMaxVolume)
+	{
+	if (IsVisible()) {
+		TUint vol = aVolume*10/aMaxVolume;
+		NaviShowVolumeL(vol > 0 ? vol : 1);
+	}
 	}
 
 void CPodcastPlayContainer::ShowDownloadUpdatedL(

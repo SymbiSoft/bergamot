@@ -165,17 +165,10 @@ TKeyResponse CPodcastClientPlayView::OfferKeyEventL(const TKeyEvent& aKeyEvent,
 				break;
 
 			case '6':
-				if (iPodcastModel.SettingsEngine().Volume() < KMaxVolume)
-					{
-					iPodcastModel.SettingsEngine().SetVolume(iPodcastModel.SettingsEngine().Volume()+KVolumeDelta);
-					}
+				iPodcastModel.SoundEngine().VolumeUp();
 				break;
 			case '4':
-
-				if (iPodcastModel.SettingsEngine().Volume() > 0)
-					{
-					iPodcastModel.SettingsEngine().SetVolume(iPodcastModel.SettingsEngine().Volume()-KVolumeDelta);
-					}
+				iPodcastModel.SoundEngine().VolumeDown();
 				break;
 			}
 		}

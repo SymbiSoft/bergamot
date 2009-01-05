@@ -6,7 +6,7 @@
 
 class CPodcastModel;
 
-const TInt KVolumeSteps = 20;
+const TInt KVolumeSteps = 10;
 
 enum TSoundEngineState
 {
@@ -21,9 +21,9 @@ class MSoundEngineObserver
 {
 public:
 	virtual void PlaybackInitializedL() = 0;
-
 	virtual void PlaybackStartedL() = 0;
 	virtual void PlaybackStoppedL() = 0;
+	virtual void VolumeChanged(TUint aVolume, TUint aMaxVolume) = 0;
 };
 
 
@@ -52,8 +52,8 @@ public:
 	void AddObserver(MSoundEngineObserver* aObserver);
 	void RemoveObserver(MSoundEngineObserver* aObserver);
 	
-	TUint VolumeUp();
-	TUint VolumeDown();
+	void VolumeUp();
+	void VolumeDown();
 	void SetVolume(TUint aVolume);
 	const TFileName& LastFileName();
 	
@@ -61,12 +61,14 @@ private:
 	void NotifyPlaybackStarted();
 	void NotifyPlaybackStopped();
 	void NotifyPlaybackInitialized();
+	void NotifyVolumeChanged();
 	
 protected:
 	CSoundEngine(CPodcastModel& aPodcastModel);
 	void ConstructL();
 	void MapcPlayComplete(TInt aError);
 	void MapcInitComplete(TInt aError, const TTimeIntervalMicroSeconds &aDuration);
+	
 private:
     CMdaAudioPlayerUtility *iPlayer;
 	CPodcastModel& iPodcastModel;

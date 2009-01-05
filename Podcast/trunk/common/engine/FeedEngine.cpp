@@ -5,6 +5,7 @@
 #include "SettingsEngine.h"
 #include "ShowEngine.h"
 #include <e32hashtab.h>
+#include <TXTETEXT.H> // for ELineBreak
 #include "OpmlParser.h"
 
 CFeedEngine* CFeedEngine::NewL(CPodcastModel& aPodcastModel)
@@ -874,13 +875,22 @@ void CFeedEngine::CleanHtml(TDes &str)
 		tmp.Copy(str.Left(startPos));
 		TPtrC ptr=str.Mid(startPos, endPos-startPos+1);
 		if (ptr.CompareF(_L("<br>"))== 0) {
+#ifdef UIQ
 			tmp.Append('\r');
 			tmp.Append('\n');
+#else
+			tmp.Append(CEditableText::ELineBreak);
+#endif
 		} else if (ptr.CompareF(_L("<p>")) == 0) {
-			tmp.Append('\r');
-			tmp.Append('\n');
-			tmp.Append('\r');
-			tmp.Append('\n');
+#ifdef UIQ
+		tmp.Append('\r');
+		tmp.Append('\n');
+		tmp.Append('\r');
+		tmp.Append('\n');
+#else
+			tmp.Append(CEditableText::ELineBreak);
+			tmp.Append(CEditableText::ELineBreak);
+#endif
 		}
 		
 		if (str.Length() > endPos+1) {
