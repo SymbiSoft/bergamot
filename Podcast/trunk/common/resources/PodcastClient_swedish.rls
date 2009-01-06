@@ -207,3 +207,7 @@ rls_string STRING_r_view_import_book_title "Välj M3U-fil"
 
 rls_string STRING_r_on "På"
 rls_string STRING_r_off "Av"
+
+rls_string STRING_r_enter_filename "Ange filnamn"
+rls_string STRING_r_view_export_feeds_title "Välj mapp"
+rls_string STRING_r_view_export_feeds_softkey "Välj"

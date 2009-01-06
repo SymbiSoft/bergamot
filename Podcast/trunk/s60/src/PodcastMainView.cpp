@@ -115,12 +115,10 @@ void CPodcastMainView::UpdateListboxItemsL()
 	if(iListContainer->Listbox() != NULL)
 	{
 	
-		TBool playerActive = EFalse;
 		TPtrC descriptionText(KNullDesC());
 
 		if(iPodcastModel.PlayingPodcast() != NULL && (iPodcastModel.SoundEngine().State() == ESoundEnginePlaying || iPodcastModel.SoundEngine().State() == ESoundEnginePaused))
 		{
-			playerActive = ETrue;
 			descriptionText.Set(iPodcastModel.PlayingPodcast()->Title());
 		}
 		iItemArray->Reset();
@@ -207,8 +205,7 @@ void CPodcastMainView::CheckForQuedDownloadsL()
 	delete iStartupCallBack;
 	iStartupCallBack = NULL;
 
-	/*iPodcastModel.ShowEngine().SelectShowsDownloading();
-	if (iPodcastModel.ShowEngine().GetSelectedShows().Count() > 0) {
+	if (iPodcastModel.ShowEngine().GetNumDownloadingShowsL() > 0) {
 		if(iEikonEnv->QueryWinL(R_PODCAST_ENABLE_DOWNLOADS_TITLE, R_PODCAST_ENABLE_DOWNLOADS_PROMPT))
 		{
 			iPodcastModel.ShowEngine().ResumeDownloads();
@@ -216,7 +213,7 @@ void CPodcastMainView::CheckForQuedDownloadsL()
 			iPodcastModel.ShowEngine().StopDownloads();
 		}
 		UpdateListboxItemsL();
-	}*/
+	}
 }
 
 
@@ -246,9 +243,10 @@ void CPodcastMainView::HandleListBoxEventL(CEikListBox* /*aListBox*/, TListBoxEv
 			switch(iListContainer->Listbox()->CurrentItemIndex())
 			{
 			case 0:
-				if (iPodcastModel.PlayingPodcast()) {
+				if(iPodcastModel.PlayingPodcast() != NULL && (iPodcastModel.SoundEngine().State() == ESoundEnginePlaying || iPodcastModel.SoundEngine().State() == ESoundEnginePaused))
+					{
 					newview = KUidPodcastPlayViewID;
-				}
+					}
 				break;
 			case 1:
 				newview = KUidPodcastShowsViewID;
@@ -277,9 +275,4 @@ void CPodcastMainView::HandleListBoxEventL(CEikListBox* /*aListBox*/, TListBoxEv
 	default:
 		break;
 		}
-
-
 }
-
-
-

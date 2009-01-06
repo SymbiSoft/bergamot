@@ -516,6 +516,7 @@ void CPodcastPlayContainer::NaviClear()
 		iVolumeTimer->Cancel();
 		iNaviPane->Pop(iVolumeNaviDecorator);
 	}
+	iNaviType = ENaviNone;
 	}
 
 void CPodcastPlayContainer::NaviShowTabGroupL()
@@ -1073,6 +1074,7 @@ void CPodcastPlayView::DoActivateL(const TVwsViewId& aPrevViewId,
 		iPlayContainer->SetRect(ClientRect());
 		AppUi()->AddToViewStackL( *this, iPlayContainer );	
 		iPlayContainer->MakeVisible(ETrue);
+		iPlayContainer->NaviClear();
 		iPlayContainer->NaviShowTabGroupL();
 		iPlayContainer->ViewActivatedL(iCurrentViewShowUid);
 	}
