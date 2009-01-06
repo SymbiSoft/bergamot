@@ -51,7 +51,9 @@ public:
 
 	void NotifyShowListUpdated();
 	void UpdateShow(CShowInfo *aInfo);
-	
+
+	void GetMimeType(const TDesC& aFileName, TDes& aMimeType);
+
 	CMetaDataReader& MetaDataReader();
 protected:
 	// from HttpClientObserver, dont have to be public
@@ -63,7 +65,6 @@ protected:
 	// from MetaDataReaderObserver
 	void ReadMetaData(CShowInfo *aShowInfo);
 	void ReadMetaDataComplete();
-	void GetMimeType(const TDesC& aFileName, TDes& aMimeType);
 private:
 	CShowEngine(CPodcastModel& aPodcastModel);
 	void ConstructL();

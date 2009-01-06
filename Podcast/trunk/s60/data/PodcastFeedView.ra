@@ -227,14 +227,14 @@ RESOURCE DIALOG r_podcast_new_audiobook_dlg
 RESOURCE FILESELECTIONDIALOG r_podcast_import_audiobook
 {
  title = STRING_r_view_import_book_title;
- root_path = "e:\\";
+ root_path = "";
  filters =
  {
   FILTER
   {
   filter_type = EFilenameFilter;
   filter_style = EInclusiveFilter;
-  filter_data = { "*.*" };
+  filter_data = { "*.m3u" };
   }
  };
 }

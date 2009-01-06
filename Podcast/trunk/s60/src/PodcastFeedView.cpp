@@ -27,6 +27,7 @@
 #include <caknfilenamepromptdialog.h> 
 #include <BAUTILS.H> 
 #include <pathinfo.h> 
+#include <f32file.h>
 
 const TInt KMaxFeedNameLength = 100;
 const TInt KMaxUnplayedFeedsLength =64;
@@ -819,37 +820,51 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			}break;
 		case EPodcastImportAudioBook:
 			{
-			CDesCArrayFlat* mimeTypes = iEikonEnv->ReadDesCArrayResourceL(R_PODCAST_IMPORT_AUDIOBOOK_MIMEARRAY);
-			CleanupStack::PushL(mimeTypes);
+			CAknMemorySelectionDialog* memDlg = 
+				CAknMemorySelectionDialog::NewL(ECFDDialogTypeNormal, ETrue);
+			CleanupStack::PushL(memDlg);
+			CAknMemorySelectionDialog::TMemory memory = 
+				CAknMemorySelectionDialog::EPhoneMemory;
 
-			CDesCArrayFlat* fileNames = new (ELeave) CDesCArrayFlat(KDefaultGran);
-			CleanupStack::PushL(fileNames);
-			HBufC* import_title = iEikonEnv->AllocReadResourceLC(R_PODCAST_IMPORT_BOOK_TITLE);
-			CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeNormal, R_PODCAST_IMPORT_AUDIOBOOK);
-			TFileName importName;
-			
-			dlg->SetTitleL(*import_title);
-			
-			if(dlg->ExecuteL(importName))
+			if (memDlg->ExecuteL(memory))
 				{
-				if( importName.Length()>0 )
-					{
-					TBuf<128> title;
-					CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(title) ;//CPodcastClientAddFeedDlg(iPodcastModel);
-
-					HBufC* prompt= iEikonEnv->AllocReadResourceLC(R_PODCAST_ADDBOOK_PROMPT);
-					
-					if (dlg->ExecuteLD(R_PODCAST_NEW_AUDIOBOOK_DLG, *prompt))
-						{
-						// Add book // See CPodcastClientAudioBookDlg
-						iPodcastModel.FeedEngine().ImportBookL(title, importName);
-						UpdateListboxItemsL();
-						}
-					CleanupStack::PopAndDestroy(prompt);
-					}
+				TFileName importName;
+			
+				if (memory==CAknMemorySelectionDialog::EMemoryCard)
+				{
+					importName = PathInfo:: MemoryCardRootPath();
 				}
-												
-			CleanupStack::PopAndDestroy(3,mimeTypes); // title, fileNames, mimeTypes								
+				else
+				{
+					importName = PathInfo:: PhoneMemoryRootPath();
+				}
+
+				CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeNormal, R_PODCAST_IMPORT_AUDIOBOOK);
+				CleanupStack::PushL(dlg);
+
+				dlg->SetDefaultFolderL(importName);
+				
+				if(dlg->ExecuteL(importName))
+					{
+					if(importName.Length()>0)
+						{
+						TBuf<128> title;
+						CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(title) ;//CPodcastClientAddFeedDlg(iPodcastModel);
+
+						HBufC* prompt= iEikonEnv->AllocReadResourceLC(R_PODCAST_ADDBOOK_PROMPT);
+						
+						if (dlg->ExecuteLD(R_PODCAST_NEW_AUDIOBOOK_DLG, *prompt))
+							{
+							// Add book // See CPodcastClientAudioBookDlg
+							iPodcastModel.FeedEngine().ImportBookL(title, importName);
+							UpdateListboxItemsL();
+							}
+						CleanupStack::PopAndDestroy(prompt);
+						}
+					}
+				CleanupStack::PopAndDestroy(dlg);
+				}
+			CleanupStack::PopAndDestroy(memDlg);								
 			}break;
 		case EPodcastRemoveAudioBookHardware:
 		case EPodcastRemoveAudioBook:
@@ -928,20 +943,68 @@ void CPodcastFeedView::DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane
 
 void CPodcastFeedView::HandleAddNewAudioBookL()
 	{
-	CDesCArrayFlat* mimeArray = iEikonEnv->ReadDesCArrayResourceL(R_PODCAST_NEW_AUDIOBOOK_MIMEARRAY);
-	CleanupStack::PushL(mimeArray);
-	CDesCArrayFlat* fileNameArray = new (ELeave) CDesCArrayFlat(KDefaultGran);
-	CleanupStack::PushL(fileNameArray);
-	HBufC* dialogTitle = iEikonEnv->AllocReadResourceLC(R_PODCAST_NEW_AUDIOBOOK_SELECT_FILES);
-	//TQikDefaultFolderDescription defaultFolder;
-	//defaultFolder.SetDefaultFolder(EQikFileHandlingDefaultFolderAudio);
-	fileNameArray->AppendL(_L("C:\\testfile.mp3"));
-//	if(CQikSelectFileDlg::RunDlgLD(*mimeArray, *fileNameArray, defaultFolder, dialogTitle, EQikSelectFileDialogEnableMultipleSelect|EQikSelectFileDialogSortByName))
+	CAknMemorySelectionDialog* memDlg = 
+		CAknMemorySelectionDialog::NewL(ECFDDialogTypeNormal, ETrue);
+	CleanupStack::PushL(memDlg);
+	CAknMemorySelectionDialog::TMemory memory = 
+		CAknMemorySelectionDialog::EPhoneMemory;
+
+	if (memDlg->ExecuteL(memory))
 		{
-		if(fileNameArray->Count() > 0)
+		TFileName importName;
+	
+		if (memory==CAknMemorySelectionDialog::EMemoryCard)
+		{
+			importName = PathInfo:: MemoryCardRootPath();
+		}
+		else
+		{
+			importName = PathInfo:: PhoneMemoryRootPath();
+		}
+
+		CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeSave, R_PODCAST_SHOWDIR_SELECTOR);
+		HBufC* select = iEikonEnv->AllocReadResourceLC(R_PODCAST_SOFTKEY_SELECT);
+		dlg->SetLeftSoftkeyFileL(*select);
+		CleanupStack::PopAndDestroy(select);
+		CleanupStack::PushL(dlg);
+
+		dlg->SetDefaultFolderL(importName);
+
+		CDesCArrayFlat* fileNameArray = new (ELeave) CDesCArrayFlat(KDefaultGran);
+
+		if(dlg->ExecuteL(importName))
 			{
+			RFs fs;
+			fs.Connect();
+			CDirScan *dirScan = CDirScan::NewLC(fs);
+			//DP1("Listing dir: %S", &folder);
+			dirScan ->SetScanDataL(importName, KEntryAttDir, ESortByName);
+
+			CDir *dirPtr;
+			dirScan->NextL(dirPtr);
+			for (TInt i = 0; i < dirPtr->Count(); i++)
+				{
+				const TEntry &entry = (TEntry) (*dirPtr)[i];
+				if (!entry.IsDir()) 
+					{
+					TFileName pathName;
+					pathName.Copy(importName);
+					pathName.Append(entry.iName);
+
+					TBuf<100> mimeType;
+					iPodcastModel.ShowEngine().GetMimeType(pathName, mimeType);
+					DP2("'%S' has mime: '%S'", &pathName, &mimeType);
+					if (mimeType.Left(5) == _L("audio"))
+						{
+						fileNameArray->AppendL(pathName);
+						}
+					}					
+				}
+			delete dirPtr;
+			CleanupStack::PopAndDestroy(dirScan);
+			
 			TBuf<256> title;
-			CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(title) ;//CPodcastClientAddFeedDlg(iPodcastModel);
+			CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(title);
 		
 			HBufC* inputprompt= iEikonEnv->AllocReadResourceLC(R_PODCAST_ADDBOOK_PROMPT);			
 			HBufC* promptformat = iEikonEnv->AllocReadResourceLC(R_PODCAST_ADDBOOK_PROMPTFORMAT);						
@@ -954,14 +1017,15 @@ void CPodcastFeedView::HandleAddNewAudioBookL()
 				// Add book // See CPodcastClientAudioBookDlg
 				iPodcastModel.FeedEngine().AddBookL(title, fileNameArray);
 				UpdateListboxItemsL();
-				}		
+				}
+			fs.Close();
 			CleanupStack::PopAndDestroy(3, inputprompt);
 			}
+		
+			delete fileNameArray;
+		CleanupStack::PopAndDestroy(dlg);
 		}
-
-	CleanupStack::PopAndDestroy(dialogTitle);
-	CleanupStack::PopAndDestroy(fileNameArray);
-	CleanupStack::PopAndDestroy(mimeArray);
+	CleanupStack::PopAndDestroy(memDlg);		
 	}
 
 TKeyResponse CPodcastFeedView::OfferKeyEventL(const TKeyEvent& aKeyEvent, TEventCode aType)
