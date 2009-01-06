@@ -58,12 +58,6 @@ RESOURCE MENU_PANE r_podcast_playview_menu
 			txt = STRING_r_stop_cmd;
 			
 			},
-		MENU_ITEM
-			{
-			command = EPodcastSetVolume;
-			
-			txt = STRING_r_volume_cmd;
-			},
 	MENU_ITEM
 			{
 			command = EPodcastMarkAsPlayed;

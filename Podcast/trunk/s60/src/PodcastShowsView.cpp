@@ -675,6 +675,7 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 		case EPodcastMarkAsPlayed:
 			{
 			TInt index = iListContainer->Listbox()->CurrentItemIndex();
+			
 			if (index >= 0 && index < iPodcastModel.ActiveShowList().Count())
 				{
 				CShowInfo *info = iPodcastModel.ActiveShowList()[index];
@@ -682,10 +683,12 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 				iPodcastModel.ShowEngine().UpdateShow(info);
 				if (iPodcastModel.SettingsEngine().SelectUnplayedOnly())
 					{
-					UpdateListboxItemsL();
-					/*iItemArray->Delete(index);
+					iItemArray->Delete(index);
 					iItemIdArray.Remove(index);
-					iListContainer->Listbox()->HandleItemRemovalL();*/
+					iListContainer->Listbox()->HandleItemRemovalL();
+					iListContainer->Listbox()->SetCurrentItemIndex(index - 1 > 0 ? index - 1 : 0);
+					iListContainer->Listbox()->DrawNow();
+					UpdateNaviPaneL();
 					}
 				else {
 					UpdateShowItemDataL(iPodcastModel.ActiveShowList()[index], index, 0);
@@ -773,6 +776,7 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 						{
 						iPodcastModel.ShowEngine().DeleteShow(iPodcastModel.ActiveShowList()[index]->Uid());
 						}
+					
 					UpdateListboxItemsL();
 					}
 				}
@@ -858,10 +862,12 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 				{
 				if (iPodcastModel.ShowEngine().RemoveDownload(iPodcastModel.ActiveShowList()[index]->Uid()))
 					{
-						/*iItemArray->Delete(index);
+						iItemArray->Delete(index);
 						iItemIdArray.Remove(index);						
-						iListContainer->Listbox()->HandleItemRemovalL();*/
-						UpdateListboxItemsL();
+						iListContainer->Listbox()->HandleItemRemovalL();
+						iListContainer->Listbox()->SetCurrentItemIndex(index - 1 > 0 ? index - 1 : 0);
+						iListContainer->Listbox()->DrawNow();
+						UpdateNaviPaneL();
 					}
 				}
 			}

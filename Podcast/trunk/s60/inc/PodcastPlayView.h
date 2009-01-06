@@ -9,13 +9,128 @@
 #define PODCASTPLAYVIEWH 
 
 #include <aknview.h>
+#include <aknnavide.h> 
+#include <eikprogi.h>
+#include <eikimage.h> 
+#include <eikedwin.h>
+#include <eiklabel.h>
+#include <imageconversion.h>
+#include <bitmaptransforms.h>
+#include <aknsbasicbackgroundcontrolcontext.h>
 #include "ShowEngineObserver.h"
 #include "PodcastModel.h"
+#include "SoundEngine.h"
 
 const TInt KActiveShowUIDCmd = 0x1000;
 
 class CPodcastPlayContainer;
 class CAknNavigationControlContainer;
+
+class CImageWaiter:public CActive
+	{
+	public:
+	CImageWaiter(CEikImage* aImageCtrl, CFbsBitmap* aBitmap);
+	~CImageWaiter();
+	void Start();
+	void RunL();
+	void DoCancel();
+
+	private:
+	CEikImage* iImageCtrl;
+	CFbsBitmap* iBitmap;
+	TBool iScaling;
+	CBitmapScaler* iBitmapScaler;
+	};
+
+class CMyEdwin : public CEikEdwin
+	{
+public:
+	void SetBackgroundColor(const TRgb& aColor);
+	void SetTextColor(const TRgb& aColor);
+	};
+
+class CVolumeTimer : public CTimer
+	{
+	public:
+		CVolumeTimer(CPodcastPlayContainer* aContainer);
+		~CVolumeTimer();
+		void CountDown();
+		void RunL();
+		
+	private:
+		CPodcastPlayContainer* iContainer;
+	};
+
+class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver, public MShowEngineObserver
+    {
+    public: 
+		CPodcastPlayContainer(CPodcastModel& aPodcastModel, CAknNavigationControlContainer* aNaviPane);
+		~CPodcastPlayContainer();
+		void ConstructL( const TRect& aRect );
+
+		void ViewActivatedL(TInt aCurrentShowUid);
+    	void Draw( const TRect& aRect ) const;
+ 	    void UpdateViewL();
+		CShowInfo* ShowInfo()
+		{
+			return iShowInfo;
+		}
+		void PlayShow();
+		void NaviShowTabGroupL();
+		void NaviShowVolumeL(TUint aVolume);
+		void NaviClear();
+				
+	protected:
+		void UpdateControlVisibility();
+		void ShowListUpdated(){};  
+		void ShowDownloadUpdatedL(TInt aPercentOfCurrentDownload, TInt aBytesOfCurrentDownload, TInt aBytesTotal);
+		void DownloadQueueUpdated(TInt /*aDownloadingShows*/, TInt /*aQueuedShows*/) {}
+
+		static TInt PlayingUpdateStaticCallbackL(TAny* aPlayView);
+		void UpdatePlayStatusL();
+
+		void PlaybackInitializedL();
+		void PlaybackStartedL();
+		void PlaybackStoppedL();
+		void VolumeChanged(TUint aVolume, TUint aMaxVolume);
+		void UpdateMaxProgressValueL(TInt aDuration);
+		
+		TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType);
+		void HandleResourceChange(TInt aType);
+		void SizeChanged();
+		TInt CountComponentControls() const;
+		CCoeControl* ComponentControl(TInt aIndex) const;
+
+		
+        /**
+        * From CCoeControl, MopSupplyObject.
+        */
+        TTypeUid::Ptr MopSupplyObject( TTypeUid aId );
+	protected:
+		CAknNavigationDecorator* iTabNaviDecorator;
+		CAknNavigationDecorator* iVolumeNaviDecorator;
+				
+		CPeriodic* iPlaybackTicker;
+		CEikImage* iCoverImageCtrl;
+		CFbsBitmap* iCurrentCoverImage;
+		CEikProgressInfo* iPlayProgressbar;
+		CEikProgressInfo* iDownloadProgressInfo;
+		CEikLabel* iShowInfoTitle;
+		CMyEdwin* iShowInfoLabel;
+		CEikLabel* iTimeLabel;
+	
+		CShowInfo* iShowInfo;
+		CPodcastModel& iPodcastModel;
+		TUint iMaxProgressValue;
+		TUint iBytesDownloaded;
+		CAknNavigationControlContainer* iNaviPane;
+		CAknTabGroup* iTabGroup;
+		TFileName iLastImageFileName;
+        CAknsBasicBackgroundControlContext* iBgContext;
+        CImageDecoder* iBitmapConverter;        
+        CImageWaiter* iImageWaiter;
+        CVolumeTimer* iVolumeTimer;
+	};
 
 class CPodcastPlayView : public CAknView
     {

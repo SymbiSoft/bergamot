@@ -146,13 +146,13 @@ RESOURCE QIK_COMMAND_LIST r_podcast_playview_commands
 				namedGroupId = 1;
 				groupId = 2;
 				},
-		QIK_COMMAND
+		/*QIK_COMMAND
 			{
 			id = EPodcastSettings;
 			type = EQikCommandTypeScreen;
 			text = STRING_r_settings_cmd;
 			groupId = 11;  
-			},
+			},*/
 		QIK_COMMAND
 			{
 			id = EPodcastZoomSetting;

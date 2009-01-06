@@ -743,6 +743,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 						iItemArray->Delete(index);
 						iItemIdArray.Remove(index);
 						iListContainer->Listbox()->HandleItemRemovalL();
+						iListContainer->Listbox()->DrawNow();
 						}					
 					}
 				UpdateListboxItemsL();

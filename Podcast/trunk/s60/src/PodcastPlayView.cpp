@@ -7,97 +7,76 @@
 
 #include "PodcastPlayView.h"
 #include "PodcastAppUi.h"
-#include "SoundEngine.h"
 #include "ShowEngine.h"
 #include "FeedEngine.h"
 #include "SettingsEngine.h"
 #include "Podcast.hrh"
-#include <aknnavide.h> 
 #include <podcast.rsg>
 #include <podcast.mbg>
 #include <coecobs.h>
 #include <badesca.h>
-#include <eikedwin.h>
 #include <eikapp.h>
-#include <eiklabel.h>
-#include <eikprogi.h>
 #include <BARSREAD.H>
 #include <akntabgrp.h>
 #include <gulalign.h>
-#include <aknsbasicbackgroundcontrolcontext.h>
 #include <aknslider.h>
-#include <imageconversion.h>
-#include <bitmaptransforms.h>
+
 
 const TInt KAudioTickerPeriod = 1000000;
 const TInt KMaxCoverImageWidth = 200;
 const TInt KTimeLabelSize = 64;
 _LIT(KZeroTime,"0:00:00/0:00:00");
 
-class CImageWaiter:public CActive
+CImageWaiter::CImageWaiter(CEikImage* aImageCtrl, CFbsBitmap* aBitmap):CActive(0), iImageCtrl(aImageCtrl), iBitmap(aBitmap)
 	{
-	public:
-	CImageWaiter(CEikImage* aImageCtrl, CFbsBitmap* aBitmap):CActive(0), iImageCtrl(aImageCtrl), iBitmap(aBitmap)
+	CActiveScheduler::Add(this);
+	}
+
+CImageWaiter::~CImageWaiter()
+	{
+	Cancel();
+	delete iBitmapScaler;
+	}
+
+void CImageWaiter::Start()
+	{
+	SetActive();
+	}
+void CImageWaiter::RunL()
+	{
+	if (iStatus == KErrNone)
 		{
-		CActiveScheduler::Add(this);
-		}
-	~CImageWaiter()
-		{
-		Cancel();
-		delete iBitmapScaler;
-		}
-	void Start()
-		{
-		SetActive();
-		}
-	void RunL()
-		{
-		if (iStatus == KErrNone)
+		if (iBitmap->SizeInPixels().iWidth <= iImageCtrl->Size().iWidth && iBitmap->SizeInPixels().iHeight <= iImageCtrl->Size().iHeight || iScaling )
 			{
-			if (iBitmap->SizeInPixels().iWidth <= iImageCtrl->Size().iWidth && iBitmap->SizeInPixels().iHeight <= iImageCtrl->Size().iHeight || iScaling )
-				{
-				iImageCtrl->SetSize(TSize(iImageCtrl->Size().iWidth, iImageCtrl->MinimumSize().iHeight));
-				iImageCtrl->MakeVisible(ETrue);
-				iImageCtrl->DrawDeferred();
-				delete this;
-				}
-			else
-				{
-				iScaling = ETrue;
-				iBitmapScaler = CBitmapScaler::NewL();			
-				iBitmapScaler->Scale(&iStatus, *iBitmap, iImageCtrl->Size());
-				SetActive();
-				}				
+			iImageCtrl->SetSize(TSize(iImageCtrl->Size().iWidth, iImageCtrl->MinimumSize().iHeight));
+			iImageCtrl->MakeVisible(ETrue);
+			iImageCtrl->DrawDeferred();
+			delete this;
 			}
 		else
 			{
-			delete this;
-			}
+			iScaling = ETrue;
+			iBitmapScaler = CBitmapScaler::NewL();			
+			iBitmapScaler->Scale(&iStatus, *iBitmap, iImageCtrl->Size());
+			SetActive();
+			}				
 		}
-	
-	void DoCancel()
+	else
 		{
-		if(iBitmapScaler)
-			{
-			iBitmapScaler->Cancel();
-			}
+		delete this;
 		}
-	private:
-	CEikImage* iImageCtrl;
-	CFbsBitmap* iBitmap;
-	TBool iScaling;
-	CBitmapScaler* iBitmapScaler;
-	};
+	}
+	
+void CImageWaiter::DoCancel()
+	{
+	if(iBitmapScaler)
+		{
+		iBitmapScaler->Cancel();
+		}
+	}
 
-class CMyEdwin : public CEikEdwin
-	{
-public:
-	/**
-	* Set the Edwin background color
-	* @param aColor The RGB color to use as background
-	*/
-	void CMyEdwin::SetBackgroundColor(const TRgb& aColor)
-	{
+void CMyEdwin::SetBackgroundColor(const TRgb& aColor)
+{
 	 CParaFormatLayer*pFormatLayer = CEikonEnv::NewDefaultParaFormatLayerL();
 	 CleanupStack::PushL(pFormatLayer);
 	 CParaFormat* paraFormat=CParaFormat::NewLC();
@@ -109,14 +88,10 @@ public:
 	 SetParaFormatLayer(pFormatLayer); // Edwin takes the ownership
 	 CleanupStack::PopAndDestroy(paraFormat);
 	 CleanupStack::Pop(pFormatLayer);
-	}
-	
-	/**
-	* Set the Edwin text color
-	* @param aColor The RGB color to use for text
-	*/
-	void CMyEdwin::SetTextColor(const TRgb& aColor)
-	{
+}
+
+void CMyEdwin::SetTextColor(const TRgb& aColor)
+{
 	 CCharFormatLayer* FormatLayer = CEikonEnv::NewDefaultCharFormatLayerL();
 	 TCharFormat charFormat;
 	 TCharFormatMask charFormatMask;
@@ -125,113 +100,32 @@ public:
 	 charFormatMask.SetAttrib(EAttColor);
 	 FormatLayer->SetL(charFormat, charFormatMask);
 	 SetCharFormatLayer(FormatLayer);  // Edwin takes the ownership
+}
+
+CVolumeTimer::CVolumeTimer(CPodcastPlayContainer* aContainer) : CTimer(EPriorityIdle), iContainer(aContainer)
+	{
+	CTimer::ConstructL();
+	CActiveScheduler::Add(this);
+	}
+		
+CVolumeTimer::~CVolumeTimer()
+	{
+	Cancel();
 	}
 	
-	};
-
-class CVolumeTimer;
-
-class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver, public MShowEngineObserver
-    {
-    public: 
-		CPodcastPlayContainer(CPodcastModel& aPodcastModel, CAknNavigationControlContainer* aNaviPane);
-		~CPodcastPlayContainer();
-		void ConstructL( const TRect& aRect );
-
-		void ViewActivatedL(TInt aCurrentShowUid);
-    	void Draw( const TRect& aRect ) const;
- 	    void UpdateViewL();
-		CShowInfo* ShowInfo()
-		{
-			return iShowInfo;
-		}
-		void PlayShow();
-		void NaviShowTabGroupL();
-		void NaviShowVolumeL(TUint aVolume);
-				
-	protected:
-		void UpdateControlVisibility();
-		void ShowListUpdated(){};  
-		void ShowDownloadUpdatedL(TInt aPercentOfCurrentDownload, TInt aBytesOfCurrentDownload, TInt aBytesTotal);
-		void DownloadQueueUpdated(TInt /*aDownloadingShows*/, TInt /*aQueuedShows*/) {}
-
-		static TInt PlayingUpdateStaticCallbackL(TAny* aPlayView);
-		void UpdatePlayStatusL();
-
-		void PlaybackInitializedL();
-		void PlaybackStartedL();
-		void PlaybackStoppedL();
-		void VolumeChanged(TUint aVolume, TUint aMaxVolume);
-		void UpdateMaxProgressValueL(TInt aDuration);
-		
-		TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType);
-		void HandleResourceChange(TInt aType);
-		void SizeChanged();
-		TInt CountComponentControls() const;
-		CCoeControl* ComponentControl(TInt aIndex) const;
-
-		
-        /**
-        * From CCoeControl, MopSupplyObject.
-        */
-        TTypeUid::Ptr MopSupplyObject( TTypeUid aId );
-	protected:
-		CAknNavigationDecorator* iTabNaviDecorator;
-		CAknNavigationDecorator* iVolumeNaviDecorator;
-				
-		CPeriodic* iPlaybackTicker;
-		CEikImage* iCoverImageCtrl;
-		CFbsBitmap* iCurrentCoverImage;
-		CEikProgressInfo* iPlayProgressbar;
-		CEikProgressInfo* iDownloadProgressInfo;
-		CEikLabel* iShowInfoTitle;
-		CMyEdwin* iShowInfoLabel;
-		CEikLabel* iTimeLabel;
-	
-		CShowInfo* iShowInfo;
-		CPodcastModel& iPodcastModel;
-		TUint iMaxProgressValue;
-		TUint iBytesDownloaded;
-		CAknNavigationControlContainer* iNaviPane;
-		CAknTabGroup* iTabGroup;
-		TFileName iLastImageFileName;
-        CAknsBasicBackgroundControlContext* iBgContext;
-        CImageDecoder* iBitmapConverter;        
-        CImageWaiter* iImageWaiter;
-        CVolumeTimer* iVolumeTimer;
-	};
-
-class CVolumeTimer : public CTimer
+void CVolumeTimer::CountDown()
 	{
-	public:
-		CVolumeTimer(CPodcastPlayContainer* aContainer) : CTimer(EPriorityIdle), iContainer(aContainer)
-		{
-		CTimer::ConstructL();
-		CActiveScheduler::Add(this);
-		}
-		
-	~CVolumeTimer()
-		{
-		Cancel();
-		}
+	TTimeIntervalMicroSeconds32 msecs(1000000*2);
+	After(msecs);
+	}
 	
-	void CountDown()
+void CVolumeTimer::RunL()
+	{
+	if (iStatus == KErrNone)
 		{
-		TTimeIntervalMicroSeconds32 msecs(1000000*2);
-		After(msecs);
+		iContainer->NaviShowTabGroupL();
 		}
-	
-	void RunL()
-		{
-		if (iStatus == KErrNone)
-			{
-			iContainer->NaviShowTabGroupL();
-			}
-		}
-	
-	private:
-		CPodcastPlayContainer* iContainer;
-	};
+	}
 
 TTypeUid::Ptr CPodcastPlayContainer::MopSupplyObject( TTypeUid aId )
     {
@@ -613,8 +507,15 @@ CPodcastPlayContainer::~CPodcastPlayContainer()
 	delete iCurrentCoverImage;
 	}
 
+void CPodcastPlayContainer::NaviClear()
+	{
+	iVolumeTimer->Cancel();
+	iNaviPane->Pop();
+	}
+
 void CPodcastPlayContainer::NaviShowTabGroupL()
 	{
+	iVolumeTimer->Cancel();
 	if (iTabNaviDecorator == NULL) {
 		iTabNaviDecorator = iNaviPane->CreateTabGroupL();
 		iTabGroup = STATIC_CAST(CAknTabGroup*, iTabNaviDecorator->DecoratedControl());
@@ -631,7 +532,7 @@ void CPodcastPlayContainer::NaviShowTabGroupL()
 
 void CPodcastPlayContainer::NaviShowVolumeL(TUint aVolume)
 	{
-	
+	iVolumeTimer->Cancel();
 	if (iVolumeNaviDecorator == NULL) {
 		iVolumeNaviDecorator = iNaviPane->CreateVolumeIndicatorL(R_AVKON_NAVI_PANE_VOLUME_INDICATOR);
 		
@@ -639,8 +540,6 @@ void CPodcastPlayContainer::NaviShowVolumeL(TUint aVolume)
 	STATIC_CAST(CAknVolumeControl*,	iVolumeNaviDecorator->DecoratedControl())->SetValue(aVolume);
 	iNaviPane->Pop();
 	iNaviPane->PushL(*iVolumeNaviDecorator);
-
-	iVolumeTimer->Cancel();
 	iVolumeTimer->CountDown();
 	}
 
@@ -807,20 +706,13 @@ void CPodcastPlayContainer::UpdatePlayStatusL()
 
 		if (iPodcastModel.SoundEngine().State() == ESoundEnginePlaying)
 			{
-			//comMan.SetTextL(*this, EPodcastPlay, R_PODCAST_PLAYER_PAUSE_CMD);
 			iPlayProgressbar->SetFocusing(EFalse);
-			//RequestFocusL(iScrollableContainer);
 			}
 		else
 			{
-			//comMan.SetTextL(*this, EPodcastPlay, R_PODCAST_PLAYER_PLAY_CMD);
 			iPlayProgressbar->SetFocusing(EFalse);
 			}
 
-		//	comMan.SetDimmed(*this, EPodcastPlay, iPodcastModel.SoundEngine().State() == ESoundEngineNotInitialized);
-		/*comMan.SetDimmed(*this, EPodcastStop, (iPodcastModel.SoundEngine().State() == ESoundEngineNotInitialized
-		 || iPodcastModel.SoundEngine().State() == ESoundEngineStopped
-		 && iPodcastModel.PlayingPodcast()->Position() == 0));*/
 		if (iPlayProgressbar != NULL)
 			{
 			iPlayProgressbar->SetDimmed(iPodcastModel.SoundEngine().State() <= ESoundEngineOpening);
@@ -993,50 +885,19 @@ void CPodcastPlayContainer::UpdateViewL()
 				
 		if (iShowInfo->DownloadState() == ENotDownloaded)
 		{
-			/*comMan.SetInvisible(*this, EPodcastDownloadShow, EFalse);
-			comMan.SetInvisible(*this, EPodcastPlay, ETrue);
-			comMan.SetInvisible(*this, EPodcastRemoveDownload, ETrue);
-			comMan.SetInvisible(*this, EPodcastSetVolume, ETrue);*/
 			iDownloadProgressInfo->MakeVisible(EFalse);
 			iPlayProgressbar->MakeVisible(EFalse);
 		}
 		else
 			if (iShowInfo->DownloadState() != EDownloaded) // Qued or downloading.
 			{
-			/*	comMan.SetInvisible(*this, EPodcastPlay, ETrue);
-				comMan.SetInvisible(*this, EPodcastDownloadShow, ETrue);
-				comMan.SetInvisible(*this, EPodcastRemoveDownload, EFalse);*/
-				if (iShowInfo->DownloadState() == EDownloading)
-				{
-					/*comMan.SetTextL(*this, EPodcastRemoveDownload,
-						R_PODCAST_PLAYER_SUSPEND_DL_CMD);
-					comMan.SetShortTextL(*this, EPodcastRemoveDownload,
-						R_PODCAST_PLAYER_SUSPEND_DL_CMD);*/
-				}
-				else
-				{
-					/*comMan.SetTextL(*this, EPodcastRemoveDownload,
-						R_PODCAST_PLAYER_REMOVE_DL_CMD);
-					comMan.SetShortTextL(*this, EPodcastRemoveDownload,
-						R_PODCAST_PLAYER_REMOVE_DL_CMD);
-					if (iPodcastModel.ShowEngine().DownloadsStopped())
-					{
-						comMan.SetInvisible(*this, EPodcastResumeDownloads,
-							EFalse);
-					}*/
-				}
-				
-			//	comMan.SetInvisible(*this, EPodcastSetVolume, ETrue);
+	
 				iDownloadProgressInfo->MakeVisible(iShowInfo->DownloadState()
 					== EDownloading);
 				iPlayProgressbar->MakeVisible(EFalse);
 			}
 			else // Downloaded
 			{
-			/*	comMan.SetInvisible(*this, EPodcastPlay, EFalse);
-				comMan.SetInvisible(*this, EPodcastSetVolume, EFalse);
-				comMan.SetInvisible(*this, EPodcastDownloadShow, ETrue);
-				comMan.SetInvisible(*this, EPodcastRemoveDownload, ETrue);*/
 				iDownloadProgressInfo->MakeVisible(EFalse);
 				iPlayProgressbar->MakeVisible(ETrue);
 			}
@@ -1099,7 +960,6 @@ void CPodcastPlayContainer::UpdateViewL()
 				{
 					iCoverImageCtrl->CreatePictureFromFileL(iEikonEnv->EikAppUi()->Application()->BitmapStoreName(), EMbmPodcastShow_120, EMbmPodcastShow_120m);
 				}
-				//comMan.SetInvisible(*this, EPodcastDownloadShow, ETrue);
 			}
 		}
 		else // no show info, we should never get here
@@ -1109,7 +969,6 @@ void CPodcastPlayContainer::UpdateViewL()
 			{
 				iCoverImageCtrl->CreatePictureFromFileL(iEikonEnv->EikAppUi()->Application()->BitmapStoreName(), EMbmPodcastEmptyimage, EMbmPodcastEmptyimage);
 			}
-//			comMan.SetInvisible(*this, EPodcastDownloadShow, ETrue);
 		}
 		
 		UpdatePlayStatusL();
@@ -1208,11 +1067,7 @@ void CPodcastPlayView::DoDeactivate()
 	{
         AppUi()->RemoveFromViewStack( *this, iPlayContainer );
 		iPlayContainer->MakeVisible(EFalse);
-
-		/*if(iNaviPane && iPlayContainer->NaviDeco() != NULL)
-		{
-		iNaviPane->Pop(iPlayContainer->NaviDeco());
-		}*/
+		iPlayContainer->NaviClear();
 	}
 }
 
@@ -1240,14 +1095,6 @@ void CPodcastPlayView::HandleCommandL(TInt aCommand)
 			iPlayContainer->UpdateViewL();
 		}
 		break;
-		
-	case EPodcastSetVolume:
-		{
-		//	CPodcastClientVolumeDlg* dlg = new (ELeave) CPodcastClientVolumeDlg(iPodcastModel);
-		//	dlg->ExecuteLD(R_PODCAST_VOLUME_DLG);
-		}
-		break;
-		
 	case EPodcastZoomSetting:
 		{
 			// Launch the zoom dialog
@@ -1324,7 +1171,11 @@ void CPodcastPlayView::DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane
 		if (iPodcastModel.SoundEngine().State() == ESoundEnginePlaying)
 			{
 			aMenuPane->SetItemTextL(EPodcastPlay, R_PODCAST_PLAYER_PAUSE_CMD);					
-			}		
+			}	
+		
+		aMenuPane->SetItemDimmed(EPodcastStop, (iPodcastModel.SoundEngine().State() == ESoundEngineNotInitialized || 
+														iPodcastModel.SoundEngine().State() == ESoundEngineStopped && iPodcastModel.PlayingPodcast()->Position() == 0));
+				
 
 		aMenuPane->SetItemDimmed(EPodcastMarkAsPlayed, iPlayContainer->ShowInfo()->PlayState()
 				!= ENeverPlayed);
@@ -1337,7 +1188,6 @@ void CPodcastPlayView::DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane
 			aMenuPane->SetItemDimmed(EPodcastPlay, ETrue);
 			aMenuPane->SetItemDimmed(EPodcastStop, ETrue);
 			aMenuPane->SetItemDimmed(EPodcastRemoveDownload, ETrue);
-			aMenuPane->SetItemDimmed(EPodcastSetVolume, ETrue);
 			}
 		else
 			if (iPlayContainer->ShowInfo()->DownloadState() != EDownloaded) // Qued or downloading.
@@ -1360,13 +1210,10 @@ void CPodcastPlayView::DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane
 						aMenuPane->SetItemDimmed(EPodcastResumeDownloads,EFalse);
 						}
 					}
-
-				aMenuPane->SetItemDimmed(EPodcastSetVolume, ETrue);														
 				}
 			else // Downloaded
 				{
 				aMenuPane->SetItemDimmed(EPodcastPlay, EFalse);
-				aMenuPane->SetItemDimmed(EPodcastSetVolume, EFalse);
 				aMenuPane->SetItemDimmed(EPodcastDownloadShow, ETrue);
 				aMenuPane->SetItemDimmed(EPodcastRemoveDownload, ETrue);					
 				}	
