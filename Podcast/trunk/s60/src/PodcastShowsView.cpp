@@ -204,10 +204,12 @@ void CPodcastShowsView::DoActivateL(const TVwsViewId& aPrevViewId,
 			case 1: // BaseView
 				iPreviousView = TVwsViewId(KUidPodcast, KUidPodcastBaseViewID);
 			break;
-			case 5:// Settings
-				break;
 			default:
-				iPreviousView = TVwsViewId(KUidPodcast, KUidPodcastFeedViewID);
+				if (iCurrentCategory == EShowDownloadedShows) {
+					iPreviousView = TVwsViewId(KUidPodcast, KUidPodcastBaseViewID);
+				} else {
+					iPreviousView = TVwsViewId(KUidPodcast, KUidPodcastFeedViewID);
+				}
 				break;
 			}
 		}

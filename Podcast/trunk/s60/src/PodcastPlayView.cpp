@@ -20,7 +20,8 @@
 #include <akntabgrp.h>
 #include <gulalign.h>
 #include <aknslider.h>
-
+#include <aknsutils.h> 
+#include <aknsdrawutils.h> 
 
 const TInt KAudioTickerPeriod = 1000000;
 const TInt KMaxCoverImageWidth = 200;
@@ -509,13 +510,22 @@ CPodcastPlayContainer::~CPodcastPlayContainer()
 
 void CPodcastPlayContainer::NaviClear()
 	{
-	iVolumeTimer->Cancel();
-	iNaviPane->Pop();
+	if (iNaviType == ENaviTabs) {
+		iNaviPane->Pop(iTabNaviDecorator);
+	} else if (iNaviType == ENaviVolume) {
+		iVolumeTimer->Cancel();
+		iNaviPane->Pop(iVolumeNaviDecorator);
+	}
 	}
 
 void CPodcastPlayContainer::NaviShowTabGroupL()
 	{
-	iVolumeTimer->Cancel();
+	if (iNaviType == ENaviTabs) {
+		return;
+	} else if (iNaviType == ENaviVolume) {
+		iVolumeTimer->Cancel();
+	}
+	
 	if (iTabNaviDecorator == NULL) {
 		iTabNaviDecorator = iNaviPane->CreateTabGroupL();
 		iTabGroup = STATIC_CAST(CAknTabGroup*, iTabNaviDecorator->DecoratedControl());
@@ -526,20 +536,28 @@ void CPodcastPlayContainer::NaviShowTabGroupL()
 	 
 		iTabGroup->SetActiveTabByIndex(0);
 	}
+
 	iNaviPane->Pop();
 	iNaviPane->PushL(*iTabNaviDecorator);
+	iNaviType = ENaviTabs;
 	}
 
 void CPodcastPlayContainer::NaviShowVolumeL(TUint aVolume)
 	{
-	iVolumeTimer->Cancel();
 	if (iVolumeNaviDecorator == NULL) {
 		iVolumeNaviDecorator = iNaviPane->CreateVolumeIndicatorL(R_AVKON_NAVI_PANE_VOLUME_INDICATOR);
-		
 	}
+
 	STATIC_CAST(CAknVolumeControl*,	iVolumeNaviDecorator->DecoratedControl())->SetValue(aVolume);
-	iNaviPane->Pop();
-	iNaviPane->PushL(*iVolumeNaviDecorator);
+
+	if (iNaviType == ENaviVolume) {
+		iVolumeTimer->Cancel();
+	} else {
+		iNaviPane->Pop();
+		iNaviPane->PushL(*iVolumeNaviDecorator);
+	}
+	
+	iNaviType = ENaviVolume;
 	iVolumeTimer->CountDown();
 	}
 

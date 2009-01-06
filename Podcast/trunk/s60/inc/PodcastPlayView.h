@@ -61,6 +61,12 @@ class CVolumeTimer : public CTimer
 		CPodcastPlayContainer* iContainer;
 	};
 
+enum TNaviType {
+	ENaviNone,
+	ENaviTabs,
+	ENaviVolume
+};
+
 class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver, public MShowEngineObserver
     {
     public: 
@@ -130,6 +136,7 @@ class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver, p
         CImageDecoder* iBitmapConverter;        
         CImageWaiter* iImageWaiter;
         CVolumeTimer* iVolumeTimer;
+        TNaviType iNaviType;
 	};
 
 class CPodcastPlayView : public CAknView

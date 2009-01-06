@@ -926,7 +926,7 @@ TInt CFeedEngine::CompareFeedsByTitle(const CFeedInfo &a, const CFeedInfo &b)
 void CFeedEngine::GetDownloadedStats(TUint &aNumShows, TUint &aNumUnplayed)
 	{
 	DP("CFeedEngine::GetDownloadedStats");
-	iSqlBuffer.Format(_L("select count(*) from shows where downloadstate=%u"), EDownloaded);
+	iSqlBuffer.Format(_L("select count(*) from shows where downloadstate=%u and showtype!=%u"), EDownloaded, EAudioBook);
 
 	sqlite3_stmt *st;
 	 
@@ -942,7 +942,8 @@ void CFeedEngine::GetDownloadedStats(TUint &aNumShows, TUint &aNumUnplayed)
 		  
 	sqlite3_finalize(st);
 
-	iSqlBuffer.Format(_L("select count(*) from shows where downloadstate=%u and playstate=%u"), EDownloaded, ENeverPlayed);
+	iSqlBuffer.Format(_L("select count(*) from shows where downloadstate=%u and showtype!=%u and playstate=%u"), EDownloaded,
+			EAudioBook, ENeverPlayed);
 
 	rc = sqlite3_prepare16_v2(iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
 		

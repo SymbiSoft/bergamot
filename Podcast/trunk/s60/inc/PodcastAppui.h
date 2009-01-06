@@ -3,7 +3,6 @@
 
 #include <aknviewappui.h>
 
-#include "PodcastContainer.h"
 class CPodcastMainView;
 class CPodcastFeedView;
 class CPodcastShowsView;

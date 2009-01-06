@@ -76,7 +76,6 @@ SOURCE  Podcast.cpp
 SOURCE  PodcastApp.cpp
 SOURCE  PodcastAppui.cpp 
 SOURCE  PodcastDocument.cpp
-SOURCE  PodcastContainer.cpp
 SOURCE  PodcastListView.cpp
 SOURCE  PodcastMainView.cpp
 SOURCE  PodcastFeedView.cpp
