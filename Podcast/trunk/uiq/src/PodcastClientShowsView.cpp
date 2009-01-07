@@ -141,6 +141,8 @@ void CPodcastClientShowsView::HandleCommandL(CQikCommand& aCommand)
 					model.ModelBeginUpdateLC();
 					model.RemoveDataL(index);
 					model.ModelEndUpdateL();
+					iPodcastModel.ActiveShowList().Remove(index);
+					delete info;
 				}
 				
 				UpdateListboxItemsL();
@@ -298,7 +300,8 @@ void CPodcastClientShowsView::HandleCommandL(CQikCommand& aCommand)
 							model.RemoveDataL(index);
 							model.ModelEndUpdateL();
 						}
-
+						delete iPodcastModel.ActiveShowList()[index];
+						iPodcastModel.ActiveShowList().Remove(index);
 						UpdateListboxItemsL();												
 					}
 				}

@@ -46,7 +46,7 @@ class CMyEdwin : public CEikEdwin
 	{
 public:
 	void SetBackgroundColor(const TRgb& aColor);
-	void SetTextColor(const TRgb& aColor);
+	void SetTextColor(const TRgb& aColor,TBool aBold);
 	};
 
 class CVolumeTimer : public CTimer
@@ -121,7 +121,7 @@ class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver, p
 		CFbsBitmap* iCurrentCoverImage;
 		CEikProgressInfo* iPlayProgressbar;
 		CEikProgressInfo* iDownloadProgressInfo;
-		CEikLabel* iShowInfoTitle;
+		CMyEdwin* iShowInfoTitle;
 		CMyEdwin* iShowInfoLabel;
 		CEikLabel* iTimeLabel;
 	

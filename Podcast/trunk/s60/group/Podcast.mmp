@@ -143,4 +143,5 @@ LIBRARY bitmaptransforms.lib
 LIBRARY fbscli.lib
 LIBRARY etext.lib  
 LIBRARY PlatformEnv.lib // for PathInfo
+LIBRARY form.lib 
 #endif

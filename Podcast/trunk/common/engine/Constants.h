@@ -7,6 +7,7 @@ const TUint KSizeMb = 1024000;
 _LIT(KShowsSizeFormat,"%.1f");
 _LIT(KShowsSizeUnit,"MB");
 _LIT(KDateFormat,"%D%M%Y%/0%1%/1%2%/2%3%/3");
+_LIT(KDateFormatShort,"%D%M%/0%1%/1%2");
 // Date/time format string
 _LIT(KTimeFormat, "%-B%:0%J%:1%T%+B");
 

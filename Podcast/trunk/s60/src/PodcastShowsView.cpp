@@ -19,7 +19,8 @@
 #include <gulicon.h>
 const TInt KSizeBufLen = 64;
 const TInt KDefaultGran = 5;
-_LIT(KSizeDownloadingOf, "%S/%S");
+_LIT(KSizeDownloadingOf, "(%.1f/%.1f MB)");
+_LIT(KShowsSizeFormatS60, "(%.1f MB)");
 _LIT(KChapterFormatting, "%03d");
 _LIT(KShowFormat, "%d\t%S\t%S %S");
 const TUint KIconArrayIds[] =
@@ -399,18 +400,12 @@ void CPodcastShowsView::UpdateShowItemDataL(CShowInfo* aShowInfo,TInt aIndex, TI
 	{
 		if(aSizeDownloaded > 0)
 		{
-			TBuf<KSizeBufLen> dlSize;
-			TBuf<KSizeBufLen> totSize;
-			
-			totSize.Format(KShowsSizeFormat(), (float)aShowInfo->ShowSize() / (float)KSizeMb);
-			dlSize.Format(KShowsSizeFormat(), (float) aSizeDownloaded / (float) KSizeMb);
-			infoSize.Format(KSizeDownloadingOf(), &dlSize, &totSize);
-			infoSize.Append(KShowsSizeUnit());
+			infoSize.Format(KSizeDownloadingOf(), ((float) aSizeDownloaded / (float) KSizeMb),
+				((float)aShowInfo->ShowSize() / (float)KSizeMb));
 		}
 		else if (aShowInfo->ShowSize() > 0)
 		{
-			infoSize.Format(KShowsSizeFormat(), (float)aShowInfo->ShowSize() / (float)KSizeMb);
-			infoSize.Append(KShowsSizeUnit());
+			infoSize.Format(KShowsSizeFormatS60(), (float)aShowInfo->ShowSize() / (float)KSizeMb);
 		} 
 		else {
 			infoSize = KNullDesC();	
@@ -422,7 +417,7 @@ void CPodcastShowsView::UpdateShowItemDataL(CShowInfo* aShowInfo,TInt aIndex, TI
 			}
 		else
 			{
-			aShowInfo->PubDate().FormatL(showDate, KDateFormat());
+			aShowInfo->PubDate().FormatL(showDate, KDateFormatShort());
 			}
 	}
 	
@@ -447,8 +442,11 @@ void CPodcastShowsView::UpdateShowItemL(TUint aUid, TInt aSizeDownloaded)
 	
 	for (int i=0;i<array.Count();i++) {
 		if (array[i]->Uid() == aUid) {
-			UpdateShowItemDataL(array[i], i, aSizeDownloaded);		
-			iListContainer->Listbox()->DrawItem(i);			
+			UpdateShowItemDataL(array[i], i, aSizeDownloaded);
+			if (iListContainer->Listbox()->TopItemIndex() <= i &&
+				iListContainer->Listbox()->BottomItemIndex() >= i) {
+					iListContainer->Listbox()->DrawItem(i);
+			}
 		}
 	}
 }
@@ -558,9 +556,8 @@ void CPodcastShowsView::UpdateListboxItemsL()
 								}
 							else
 								{
-								showSize.Format(KShowsSizeFormat(),
+								showSize.Format(KShowsSizeFormatS60(),
 										(float)si->ShowSize()/ (float)KSizeMb);
-								showSize.Append(KShowsSizeUnit());
 								}
 
 							if (si->PubDate().Int64() == 0)
@@ -569,7 +566,7 @@ void CPodcastShowsView::UpdateListboxItemsL()
 								}
 							else
 								{
-								si->PubDate().FormatL(showDate, KDateFormat());
+								si->PubDate().FormatL(showDate, KDateFormatShort());
 								}
 							}
 						TInt iconIndex = 0;						
@@ -687,6 +684,8 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 					{
 					iItemArray->Delete(index);
 					iItemIdArray.Remove(index);
+					iPodcastModel.ActiveShowList().Remove(index);
+					delete info;
 					iListContainer->Listbox()->HandleItemRemovalL();
 					iListContainer->Listbox()->SetCurrentItemIndex(index - 1 > 0 ? index - 1 : 0);
 					iListContainer->Listbox()->DrawNow();
@@ -850,10 +849,6 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 			{
 			iPodcastModel.ShowEngine().RemoveAllDownloads();
 			UpdateListboxItemsL();
-			if (iProgressAdded)
-				{
-				//ViewContext()->RemoveAndDestroyProgressInfo();
-				}
 			}
 			break;
 		case EPodcastRemoveDownloadHardware:
@@ -869,6 +864,9 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 						iListContainer->Listbox()->HandleItemRemovalL();
 						iListContainer->Listbox()->SetCurrentItemIndex(index - 1 > 0 ? index - 1 : 0);
 						iListContainer->Listbox()->DrawNow();
+						
+						delete iPodcastModel.ActiveShowList()[index];
+						iPodcastModel.ActiveShowList().Remove(index);
 						UpdateNaviPaneL();
 					}
 				}

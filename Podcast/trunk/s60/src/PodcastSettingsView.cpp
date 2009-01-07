@@ -18,12 +18,72 @@
 #include <caknmemoryselectiondialog.h> 
 #include <pathinfo.h>
 
+
+class CIapSetting: public CAknEnumeratedTextPopupSettingItem 
+{ 
+public:
+	CIapSetting(TInt aResourceId, TInt aValue, CPodcastModel &aPodcastModel) :
+		CAknEnumeratedTextPopupSettingItem(aResourceId, iValue), iValue(aValue), iPodcastModel(aPodcastModel)
+		{
+		}
+	
+	~CIapSetting()
+		{
+		}
+
+	void CompleteConstructionL()
+		{
+		CAknEnumeratedTextPopupSettingItem::CompleteConstructionL();
+		
+		CArrayPtr< CAknEnumeratedText > * enumeratedArr = EnumeratedTextArray();
+		CArrayPtr< HBufC > * poppedUpTextArray = PoppedUpTextArray();
+		enumeratedArr->Reset();
+		poppedUpTextArray->Reset();
+		CDesCArrayFlat *iapArray = iPodcastModel.IAPNames();
+
+		for (int i=0;i<iapArray->Count();i++) {
+			HBufC *buf = (*iapArray)[i].AllocL();
+			poppedUpTextArray->AppendL(buf);
+
+			DP2("IAP name='%S', id=%d", buf, iPodcastModel.IAPIds()[i].iIapId);
+			CAknEnumeratedText *enumerated = new CAknEnumeratedText(iPodcastModel.IAPIds()[i].iIapId, buf);
+			enumeratedArr->AppendL(enumerated);
+		}
+		
+		HandleTextArrayUpdateL();
+			
+		}
+
+	void EditItemL(TBool aCalledFromMenu)
+		{
+		DP("CIapSetting::EditItemL BEGIN");
+		LoadL();
+		CAknEnumeratedTextPopupSettingItem::EditItemL(aCalledFromMenu);
+		
+		StoreL();
+				
+		DP("CIapSetting::EditItemL END");
+		}
+
+	void HandleSettingPageEventL(CAknSettingPage* aSettingPage, TAknSettingPageEvent aEventType)
+		{
+		CAknSettingItem::HandleSettingPageEventL(aSettingPage, aEventType);
+		if (aEventType == EEventSettingOked) 
+			{
+			StoreL();
+			}
+		}
+
+protected:
+    TInt iValue;
+  	CPodcastModel& iPodcastModel;
+};
+
 class CPodcastSettingItemList:public CAknSettingItemList
 	{
 public:
 	CPodcastSettingItemList(CPodcastModel& aPodcastModel) : iPodcastModel(aPodcastModel)
 		{
-
 		}
 	
 	~CPodcastSettingItemList()
@@ -38,7 +98,15 @@ public:
 		se.SetUpdateAutomatically((TAutoUpdateSetting)iAutoUpdate);
 		se.SetUpdateFeedInterval(iIntervalUpdate);
 		se.SetUpdateFeedTime(iTimeUpdate);
-		se.SetSpecificIAP(iConnection);
+		
+		if (iConnection == 2) {
+			se.SetSpecificIAP(iIap);
+			iPodcastModel.SetIap(iIap);
+		} else {
+			se.SetSpecificIAP(iConnection);
+			iPodcastModel.SetIap(iConnection);
+		}
+		
 		se.SetDownloadAutomatically(iAutoDownload);
 	}
 	
@@ -49,11 +117,13 @@ public:
 		TBool dimAutoUpdateTime = iConnection == -1 || iAutoUpdate != EAutoUpdateAtTime;
 		TBool dimAutoUpdate = iConnection == -1;
 		TBool dimAutoDownload = iConnection == -1 || iAutoUpdate == EAutoUpdateOff;
+		TBool dimIAP = iConnection <= 0;
 	
 		iSettingAutoDownload->SetHidden(dimAutoDownload);
 		iSettingAutoUpdate->SetHidden(dimAutoUpdate);
 		iSettingAutoUpdateTime->SetHidden(dimAutoUpdateTime);
 		iSettingAutoUpdateInterval->SetHidden(dimAutoUpdateInterval);
+		iSettingIAP->SetHidden(dimIAP);
 				
 		TRAP_IGNORE(HandleChangeInItemArrayOrVisibilityL());
 		}
@@ -120,7 +190,8 @@ public:
 		iAutoUpdate = se.UpdateAutomatically();
 		iIntervalUpdate = se.UpdateFeedInterval();
 		iTimeUpdate = se.UpdateFeedTime();
-		iConnection = se.SpecificIAP();
+		iConnection = se.SpecificIAP() <= 0 ? se.SpecificIAP() : 2;
+		iIap = se.SpecificIAP() <=0 ? iPodcastModel.IAPIds()[0].iIapId : se.SpecificIAP();
 		iAutoDownload = se.DownloadAutomatically();
 			
 		switch(aSettingId)
@@ -133,26 +204,24 @@ public:
 				return iSettingAutoUpdate;
 				break;
 			case EPodcastSettingUpdateInterval:
-				{
 				iSettingAutoUpdateInterval = new (ELeave) CAknIntegerEdwinSettingItem(aSettingId, iIntervalUpdate);
 				return iSettingAutoUpdateInterval; 
 				break;
-				}
 			case EPodcastSettingUpdateTime:
-				{
 				iSettingAutoUpdateTime = new (ELeave) CAknTimeOrDateSettingItem(aSettingId, CAknTimeOrDateSettingItem::ETime, iTimeUpdate);
 				return iSettingAutoUpdateTime;
 				break;
-				}
 			case EPodcastSettingConnection:
 				return new (ELeave) CAknEnumeratedTextPopupSettingItem (aSettingId, iConnection);
 				break;
+			case EPodcastSettingIAPList:
+				iSettingIAP = new (ELeave) CIapSetting (aSettingId, iIap, iPodcastModel);
+				return iSettingIAP;
+				break;
 			case EPodcastSettingAutoDownload:
-				{
 				iSettingAutoDownload = new (ELeave) CAknBinaryPopupSettingItem (aSettingId, iAutoDownload);
 				return iSettingAutoDownload;
 				break;
-				}
 			default:
 				return CAknSettingItemList::CreateSettingItemL(aSettingId);
 				break;
@@ -173,8 +242,12 @@ public:
 	
 	TInt iAutoDownload;
 	CAknSettingItem *iSettingAutoDownload; 
-	
+
 	TInt iConnection;
+	
+	TInt iIap;
+	CAknSettingItem *iSettingIAP; 
+		
 	
 	CPodcastModel &iPodcastModel;
 	};

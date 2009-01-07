@@ -91,7 +91,7 @@ void CMyEdwin::SetBackgroundColor(const TRgb& aColor)
 	 CleanupStack::Pop(pFormatLayer);
 }
 
-void CMyEdwin::SetTextColor(const TRgb& aColor)
+void CMyEdwin::SetTextColor(const TRgb& aColor, TBool aBold)
 {
 	 CCharFormatLayer* FormatLayer = CEikonEnv::NewDefaultCharFormatLayerL();
 	 TCharFormat charFormat;
@@ -99,6 +99,12 @@ void CMyEdwin::SetTextColor(const TRgb& aColor)
 	 FormatLayer->Sense(charFormat, charFormatMask);
 	 charFormat.iFontPresentation.iTextColor=aColor;
 	 charFormatMask.SetAttrib(EAttColor);
+
+	 if (aBold) {
+		 charFormat.iFontSpec.iFontStyle.SetStrokeWeight(EStrokeWeightBold);
+		 charFormatMask.SetAttrib(EAttFontStrokeWeight);
+	 }
+	 
 	 FormatLayer->SetL(charFormat, charFormatMask);
 	 SetCharFormatLayer(FormatLayer);  // Edwin takes the ownership
 }
@@ -267,26 +273,28 @@ void CPodcastPlayContainer::SizeChanged()
 	if(iTimeLabel != NULL)
 		{
 		iTimeLabel->SetSize(TSize(Size().iWidth, iPlayProgressbar->MinimumSize().iHeight));
-		iTimeLabel->SetPosition(TPoint(0,Size().iHeight-(iPlayProgressbar->Size().iHeight+iTimeLabel->Size().iHeight)));
+		iTimeLabel->SetPosition(TPoint(vPadding,Size().iHeight-iDownloadProgressInfo->Size().iHeight));
+		//iTimeLabel->SetPosition(TPoint(vPadding,Size().iHeight-(iPlayProgressbar->Size().iHeight+iTimeLabel->Size().iHeight)));
 		timeSizeHeight = iTimeLabel->Size().iHeight;
 		}
 	
 	if(iShowInfoTitle != NULL)
 	{
-		iShowInfoTitle->SetSize(TSize(Size().iWidth, iShowInfoTitle->MinimumSize().iHeight));
+		TUint height = iShowInfoTitle->TextLayout()->FormattedHeightInPixels();
+		iShowInfoTitle->SetSize(TSize(Size().iWidth, height));
 		iShowInfoTitle->SetPosition(TPoint(0, vPadding));
 		titleHeight = iShowInfoTitle->Size().iHeight;
 	}
 
 	if(iCoverImageCtrl)
 	{
-		iCoverImageCtrl->SetSize(TSize(Size().iWidth, Size().iHeight - (playprogressHeight+titleHeight+timeSizeHeight+2*vPadding)));
+		iCoverImageCtrl->SetSize(TSize(Size().iWidth, Size().iHeight - (playprogressHeight+titleHeight+3*vPadding)));
 		iCoverImageCtrl->SetPosition(TPoint(0, titleHeight+2*vPadding));
 	}
 
 	if(iShowInfoLabel != NULL)
 	{
-		iShowInfoLabel->SetSize(TSize(Size().iWidth, Size().iHeight - (playprogressHeight+titleHeight+timeSizeHeight+2*vPadding)));
+		iShowInfoLabel->SetSize(TSize(Size().iWidth, Size().iHeight - (playprogressHeight+titleHeight+3*vPadding)));
 		iShowInfoLabel->SetPosition(TPoint(0, titleHeight+2*vPadding));
 	}
 	
@@ -455,10 +463,15 @@ void CPodcastPlayContainer::ConstructL( const TRect& aRect)
 	iTimeLabel->SetLabelAlignment(ELayoutAlignCenter);
 	iTimeLabel->OverrideColorL(EColorLabelText,textColor);
 	iTimeLabel->SetMopParent(this);
-	iShowInfoTitle = new (ELeave) CEikLabel;
+	iShowInfoTitle = new (ELeave) CMyEdwin;//CEikLabel;
 	iShowInfoTitle->SetContainerWindowL(*this);
-	iShowInfoTitle->SetTextL(_L("Title"));
-	iShowInfoTitle->SetFont(iEikonEnv->TitleFont());
+	//iShowInfoTitle->SetTextL(&dummy);
+	iShowInfoTitle->ConstructL(EEikEdwinNoHorizScrolling|EEikEdwinReadOnly|EEikEdwinNoAutoSelection);
+	iShowInfoTitle->CreateScrollBarFrameL();
+	iShowInfoTitle->ScrollBarFrame()->SetScrollBarVisibilityL(CEikScrollBarFrame::EOff, CEikScrollBarFrame::EOn);
+	iShowInfoTitle->SetSize(iShowInfoTitle->MinimumSize());
+	iShowInfoTitle->SetTextColor(textColor, ETrue);
+	//iShowInfoTitle->SetFont(iEikonEnv->TitleFont());
 	iShowInfoTitle->SetSize(iShowInfoTitle->MinimumSize());
 	iShowInfoTitle->OverrideColorL(EColorLabelText,textColor);
 	iShowInfoTitle->SetMopParent(this);
@@ -468,7 +481,7 @@ void CPodcastPlayContainer::ConstructL( const TRect& aRect)
 	iShowInfoLabel->CreateScrollBarFrameL();
 	iShowInfoLabel->ScrollBarFrame()->SetScrollBarVisibilityL(CEikScrollBarFrame::EOff, CEikScrollBarFrame::EOn);
 	iShowInfoLabel->SetSize(iShowInfoLabel->MinimumSize());
-	iShowInfoLabel->SetTextColor(textColor);
+	iShowInfoLabel->SetTextColor(textColor, EFalse);
 
 //	iShowInfoLabel->SetLabelAlignment(ELayoutAlignLeft);
 //	iShowInfoLabel->SetFontL(iEikonEnv->DenseFont());
@@ -670,7 +683,7 @@ void CPodcastPlayContainer::ShowDownloadUpdatedL(
 		TInt aPercentOfCurrentDownload, TInt aBytesOfCurrentDownload,
 		TInt aBytesTotal)
 {
-	if (iShowInfo != iPodcastModel.ShowEngine().ShowDownloading()) {
+	if (iShowInfo && iPodcastModel.ShowEngine().ShowDownloading() && iShowInfo->Uid() != iPodcastModel.ShowEngine().ShowDownloading()->Uid()) {
 		if(iBytesDownloaded != 0)
 			{
 			iBytesDownloaded = 0;
@@ -790,6 +803,7 @@ void CPodcastPlayContainer::UpdatePlayStatusL()
 				{
 				iPlayProgressbar->SetAndDraw(0);
 				UpdateMaxProgressValueL(0);
+				iPlayProgressbar->SetDimmed(ETrue);
 				}
 			}		
 		}
@@ -897,10 +911,10 @@ void CPodcastPlayContainer::UpdateViewL()
 		iShowInfoLabel->SetTextL(&iShowInfo->Description());		
 		iShowInfoLabel->ForceScrollBarUpdateL();
 		iShowInfoLabel->HandleTextChangedL();
-		if (iShowInfoTitle != NULL)
-		{
-			iShowInfoTitle->SetTextL(iShowInfo->Title());
-		}
+
+		iShowInfoTitle->SetTextL(&iShowInfo->Title());
+		iShowInfoTitle->ForceScrollBarUpdateL();
+		iShowInfoTitle->HandleTextChangedL();
 				
 		if (iShowInfo->DownloadState() == ENotDownloaded)
 		{

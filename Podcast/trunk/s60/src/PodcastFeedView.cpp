@@ -244,7 +244,10 @@ void CPodcastFeedView::FeedInfoUpdatedL(TUint aFeedUid)
 		if (index != KErrNotFound && index<iItemArray->Count())
 			{
 			UpdateFeedInfoDataL(feeds[index], index);
-			iListContainer->Listbox()->DrawItem(index);
+			if (iListContainer->Listbox()->TopItemIndex() <= index &&
+				iListContainer->Listbox()->BottomItemIndex() >= index) {
+					iListContainer->Listbox()->DrawItem(index);
+			}
 			}
 		}
 	}
@@ -303,7 +306,10 @@ void CPodcastFeedView::UpdateFeedInfoStatusL(TUint aFeedUid, TBool aIsUpdating)
 		if (index != KErrNotFound && index < iItemArray->MdcaCount())
 			{
 			UpdateFeedInfoDataL(feeds[index], index, aIsUpdating);
-			iListContainer->Listbox()->DrawItem(index);
+			if (iListContainer->Listbox()->TopItemIndex() <= index &&
+				iListContainer->Listbox()->BottomItemIndex() >= index) {
+					iListContainer->Listbox()->DrawItem(index);
+			}
 			}
 		}
 	}
@@ -354,7 +360,7 @@ void CPodcastFeedView::UpdateFeedInfoDataL(CFeedInfo* aFeedInfo, TInt aIndex, TB
 			}
 			else 
 			{
-				aFeedInfo->LastUpdated().FormatL(updatedDate, KDateFormat());
+				aFeedInfo->LastUpdated().FormatL(updatedDate, KDateFormatShort());
 			}
 		}
 	}
@@ -456,7 +462,7 @@ void CPodcastFeedView::UpdateListboxItemsL()
 							}
 						else 
 							{
-							fi->LastUpdated().FormatL(updatedDate, KDateFormat());
+							fi->LastUpdated().FormatL(updatedDate, KDateFormatShort());
 							}
 						}
 					
@@ -895,7 +901,6 @@ void CPodcastFeedView::DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane
 {
 	if(aResourceId == R_PODCAST_FEEDVIEW_MENU)
 	{
-		TBool playingPodcast = (iPodcastModel.PlayingPodcast() != NULL && (iPodcastModel.SoundEngine().State() == ESoundEnginePlaying || iPodcastModel.SoundEngine().State() == ESoundEnginePaused));
 		if (iListContainer->Listbox() == NULL)
 			return;
 		TInt index = iListContainer->Listbox()->CurrentItemIndex();
