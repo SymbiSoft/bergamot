@@ -321,7 +321,7 @@ void CPodcastSettingsContainer::ConstructL( const TRect& aRect )
 	iListbox->SetContainerWindowL(*this);
 	iListbox->ConstructFromResourceL(R_PODCAST_SETTINGS);
 	iListbox->SetSize(aRect.Size());
-
+	
 	iListbox->MakeVisible(ETrue);
 	// Set the windows size
 	SetRect( aRect );    
@@ -361,6 +361,13 @@ void CPodcastSettingsView::ConstructL()
 	BaseConstructL(R_PODCAST_SETTINGSVIEW);	
 	iSettingsContainer = new (ELeave) CPodcastSettingsContainer(iPodcastModel);
 	iSettingsContainer->ConstructL(ClientRect());
+	
+	iNaviPane =( CAknNavigationControlContainer * ) StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidNavi ) );
+		
+	HBufC *titleBuffer = iEikonEnv->AllocReadResourceL(R_SETTINGS_TITLE);
+	iNaviDecorator  = iNaviPane->CreateNavigationLabelL(*titleBuffer);
+	delete titleBuffer;
+
 }
     
 CPodcastSettingsView::~CPodcastSettingsView()
@@ -387,6 +394,12 @@ void CPodcastSettingsView::DoActivateL(const TVwsViewId& aPrevViewId,
 		iSettingsContainer->MakeVisible(ETrue);
 		iSettingsContainer->DrawNow();
 		}
+	
+	
+	if(iNaviDecorator && iNaviPane)
+		{
+		iNaviPane->PushL(*iNaviDecorator);
+		}
 }
 
 void CPodcastSettingsView::DoDeactivate()
@@ -397,6 +410,12 @@ void CPodcastSettingsView::DoDeactivate()
 		iSettingsContainer->StoreSettings();
 		iSettingsContainer->MakeVisible(EFalse);
 		}
+	
+	if(iNaviDecorator && iNaviPane)
+		{
+		iNaviPane->Pop(iNaviDecorator);
+		}
+		
 	}
 
 /** 

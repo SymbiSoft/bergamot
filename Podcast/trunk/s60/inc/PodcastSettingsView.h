@@ -78,6 +78,8 @@ class CPodcastSettingsView : public CAknView
 		 /** Previous activated view */
 		 TVwsViewId iPreviousView;
 		 TInt iAutoDownloadValue;
+		 CAknNavigationDecorator* iNaviDecorator;
+		 CAknNavigationControlContainer* iNaviPane;
 };
 
 #endif // PODCASTSETTINGSVIEWH

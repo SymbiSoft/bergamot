@@ -274,7 +274,7 @@ RESOURCE FILESELECTIONDIALOG r_podcast_showdir_selector
 }
 
 RESOURCE TBUF r_podcast_softkey_select { buf = STRING_r_view_export_feeds_softkey; }
-
+RESOURCE TBUF r_settings_title { buf = STRING_r_podcast_settings_title; }
 RESOURCE AVKON_SETTING_PAGE r_setting_iap_page_resource
 {
     label= STRING_r_podcast_setting_iaplist;

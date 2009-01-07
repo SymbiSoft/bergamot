@@ -237,7 +237,7 @@ void CPodcastPlayContainer::HandleResourceChange(TInt aType)
 void CPodcastPlayContainer::ViewActivatedL(TInt aCurrentShowUid)
 		{
 			iShowInfo = iPodcastModel.ShowEngine().GetShowByUidL(aCurrentShowUid);
-			
+			NaviShowTabGroupL();
 			UpdateViewL();
 			
 			TInt sndState = iPodcastModel.SoundEngine().State();
@@ -499,7 +499,6 @@ void CPodcastPlayContainer::ConstructL( const TRect& aRect)
 	iPodcastModel.ShowEngine().AddObserver(this);
 
 	iVolumeTimer = new CVolumeTimer(this);
-	NaviShowTabGroupL();
 
 	SetRect( aRect );  
     // Activate the window, which makes it ready to be drawn
