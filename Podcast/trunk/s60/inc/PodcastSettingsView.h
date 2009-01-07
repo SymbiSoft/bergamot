@@ -16,21 +16,6 @@
 
 class CPodcastSettingsContainer;
 class CPodcastSettingItemList;
-/*
-class CMyEnumSetting : public CAknEnumeratedTextPopupSettingItem
-{
-public:
-	CMyEnumSetting(TInt aResourceId, CPodcastSettingItemList *aSettingList);
-    ~CMyEnumSetting();
-
-    void EditItemL(TBool aCalledFromMenu);
-
-	void HandleSettingPageEventL(CAknSettingPage* aSettingPage,TAknSettingPageEvent aEventType);
- 
-protected:
-	CPodcastSettingItemList* iList;
-};
-*/
 
 class CPodcastSettingsView : public CAknView
     {

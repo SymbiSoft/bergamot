@@ -172,9 +172,9 @@ RESOURCE ARRAY r_podcast_connection_closed
 {
     items = 
     {
-    AVKON_ENUMERATED_TEXT{value=0; text = STRING_r_podcast_setting_default;},
+//    AVKON_ENUMERATED_TEXT{value=0; text = STRING_r_podcast_setting_default;},
     AVKON_ENUMERATED_TEXT{value=-1; text = STRING_r_podcast_setting_wlanonly;},
-    AVKON_ENUMERATED_TEXT{value=2; text = STRING_r_podcast_setting_usespecified;}
+    AVKON_ENUMERATED_TEXT{value=1; text = STRING_r_podcast_setting_usespecified;}
     };
 }
 
@@ -182,7 +182,7 @@ RESOURCE ARRAY r_podcast_connection_opened
 {
     items = 
     {
-    LBUF { txt=STRING_r_podcast_setting_default; },
+//    LBUF { txt=STRING_r_podcast_setting_default; },
     LBUF { txt=STRING_r_podcast_setting_wlanonly; },	
     LBUF { txt=STRING_r_podcast_setting_usespecified; }
     };

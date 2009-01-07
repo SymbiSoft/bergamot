@@ -22,8 +22,8 @@
 class CIapSetting: public CAknEnumeratedTextPopupSettingItem 
 { 
 public:
-	CIapSetting(TInt aResourceId, TInt aValue, CPodcastModel &aPodcastModel) :
-		CAknEnumeratedTextPopupSettingItem(aResourceId, iValue), iValue(aValue), iPodcastModel(aPodcastModel)
+	CIapSetting(TInt aResourceId, TInt& aValue, CPodcastModel &aPodcastModel) :
+		CAknEnumeratedTextPopupSettingItem(aResourceId, aValue), iPodcastModel(aPodcastModel)
 		{
 		}
 	
@@ -41,6 +41,7 @@ public:
 		poppedUpTextArray->Reset();
 		CDesCArrayFlat *iapArray = iPodcastModel.IAPNames();
 
+		DP2("InternalValue=%d, ExternalValue=%d", InternalValue(), ExternalValue());
 		for (int i=0;i<iapArray->Count();i++) {
 			HBufC *buf = (*iapArray)[i].AllocL();
 			poppedUpTextArray->AppendL(buf);
@@ -59,23 +60,24 @@ public:
 		DP("CIapSetting::EditItemL BEGIN");
 		LoadL();
 		CAknEnumeratedTextPopupSettingItem::EditItemL(aCalledFromMenu);
-		
-		StoreL();
-				
+		StoreL();		
+		DP2("InternalValue=%d, ExternalValue=%d", InternalValue(), ExternalValue());
 		DP("CIapSetting::EditItemL END");
 		}
 
 	void HandleSettingPageEventL(CAknSettingPage* aSettingPage, TAknSettingPageEvent aEventType)
 		{
+		DP("CIapSetting::HandleSettingPageEventL BEGIN");
 		CAknSettingItem::HandleSettingPageEventL(aSettingPage, aEventType);
-		if (aEventType == EEventSettingOked) 
+		/*if (aEventType == EEventSettingOked) 
 			{
+			DP2("InternalValue=%d, ExternalValue=%d", InternalValue(), ExternalValue());
 			StoreL();
-			}
+			}*/
+		DP("CIapSetting::HandleSettingPageEventL END");
 		}
 
 protected:
-    TInt iValue;
   	CPodcastModel& iPodcastModel;
 };
 
@@ -92,22 +94,32 @@ public:
 		}
 
 	void StoreSettings() {
+		DP("StoreSettings BEGIN");
 		StoreSettingsL();
 		CSettingsEngine &se = iPodcastModel.SettingsEngine();
 		se.SetBaseDir(iShowDir);
+		DP1("Base Dir: %S", &iShowDir);
 		se.SetUpdateAutomatically((TAutoUpdateSetting)iAutoUpdate);
+		DP1("Update automatically: %d", iAutoUpdate);
 		se.SetUpdateFeedInterval(iIntervalUpdate);
+		DP1("Update feed interval: %d", iIntervalUpdate);
 		se.SetUpdateFeedTime(iTimeUpdate);
+		//DP1("Update feed time: %d", iTimeUpdate.Int64());
 		
-		if (iConnection == 2) {
+		if (iConnection == 1) {
+			DP1("Specific IAP: %d", iIap);
 			se.SetSpecificIAP(iIap);
 			iPodcastModel.SetIap(iIap);
 		} else {
-			se.SetSpecificIAP(iConnection);
-			iPodcastModel.SetIap(iConnection);
+			DP("Specific IAP: -1");
+			se.SetSpecificIAP(-1);
+			iPodcastModel.SetIap(-1);
 		}
 		
+		DP1("Download automatically: %d", iAutoDownload);
 		se.SetDownloadAutomatically(iAutoDownload);
+		se.SaveSettingsL();
+		DP("StoreSettings END");
 	}
 	
 	void UpdateSettingVisibility()
@@ -117,7 +129,7 @@ public:
 		TBool dimAutoUpdateTime = iConnection == -1 || iAutoUpdate != EAutoUpdateAtTime;
 		TBool dimAutoUpdate = iConnection == -1;
 		TBool dimAutoDownload = iConnection == -1 || iAutoUpdate == EAutoUpdateOff;
-		TBool dimIAP = iConnection <= 0;
+		TBool dimIAP = iConnection < 0;
 	
 		iSettingAutoDownload->SetHidden(dimAutoDownload);
 		iSettingAutoUpdate->SetHidden(dimAutoUpdate);
@@ -190,7 +202,7 @@ public:
 		iAutoUpdate = se.UpdateAutomatically();
 		iIntervalUpdate = se.UpdateFeedInterval();
 		iTimeUpdate = se.UpdateFeedTime();
-		iConnection = se.SpecificIAP() <= 0 ? se.SpecificIAP() : 2;
+		iConnection = se.SpecificIAP() <= 0 ? -1 : 1;
 		iIap = se.SpecificIAP() <=0 ? iPodcastModel.IAPIds()[0].iIapId : se.SpecificIAP();
 		iAutoDownload = se.DownloadAutomatically();
 			
