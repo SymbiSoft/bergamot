@@ -34,9 +34,10 @@ const TInt KMaxUnplayedFeedsLength =64;
 const TInt KADayInHours = 24;
 const TInt KDefaultGran = 5;
 const TInt KNumberOfFilesMaxLength = 4;
+
 _LIT(KUnknownUpdateDateString, "?/?");
 _LIT(KFeedFormat, "%d\t%S\t%S %S");
-_LIT(KDefaultDataFolder, "C:\\DATA\\");
+
 
 class CPodcastFeedContainer : public CCoeControl
     {
@@ -366,7 +367,7 @@ void CPodcastFeedView::UpdateFeedInfoDataL(CFeedInfo* aFeedInfo, TInt aIndex, TB
 	}
 	itemProps.SetDimmed(aIsUpdating);
 	
-	iListboxFormatbuffer.Format(KFeedFormat(), iconIndex, &aFeedInfo->Title(), &unplayedShows, &updatedDate);
+	iListboxFormatbuffer.Format(KFeedFormat(), iconIndex, &aFeedInfo->Title(), &updatedDate,  &unplayedShows);
 	iItemArray->Delete(aIndex);
 	if(aIndex>= iItemArray->MdcaCount())
 			{
@@ -474,7 +475,7 @@ void CPodcastFeedView::UpdateListboxItemsL()
 						{
 						iconIndex = 1;						
 						}
-					iListboxFormatbuffer.Format(KFeedFormat(), iconIndex, &fi->Title(), &unplayedShows, &updatedDate);
+					iListboxFormatbuffer.Format(KFeedFormat(), iconIndex, &fi->Title(), &updatedDate, &unplayedShows);
 					iItemArray->AppendL(iListboxFormatbuffer);
 					itemProps.SetUnderlined(unplayedCount > 0);
 					iListContainer->Listbox()->ItemDrawer()->SetPropertiesL(i, itemProps);

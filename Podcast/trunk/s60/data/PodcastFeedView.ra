@@ -278,7 +278,8 @@ RESOURCE FILENAMEPROMPTDIALOG r_podcast_filename_prompt_dialog
 
 // Books
 RESOURCE TBUF r_podcast_books_title_format {buf = STRING_r_podcast_books_title_format;}
-RESOURCE TBUF r_podcast_books_status_format {buf = STRING_r_podcast_books_status_format;}
+RESOURCE TBUF r_podcast_books_status_format {buf = "(" STRING_r_podcast_books_status_format ")";}
+
 RESOURCE TBUF r_podcast_import_book_title {buf = STRING_r_view_import_book_title;}
 
 
