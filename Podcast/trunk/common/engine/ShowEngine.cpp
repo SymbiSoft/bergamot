@@ -1161,6 +1161,7 @@ void CShowEngine::ListDirL(TFileName &folder)
 	{
 	CDirScan *dirScan = CDirScan::NewLC(iFs);
 	//DP1("Listing dir: %S", &folder);
+	BaflUtils::EnsurePathExistsL(iFs, folder);
 	dirScan ->SetScanDataL(folder, KEntryAttDir, ESortByName);
 
 	CDir *dirPtr;

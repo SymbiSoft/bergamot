@@ -29,13 +29,14 @@ class CAknNavigationControlContainer;
 class CImageWaiter:public CActive
 	{
 	public:
-	CImageWaiter(CEikImage* aImageCtrl, CFbsBitmap* aBitmap);
+	CImageWaiter(CEikImage* aImageCtrl, CFbsBitmap* aBitmap, CPodcastPlayContainer& aContainer);
 	~CImageWaiter();
 	void Start();
 	void RunL();
 	void DoCancel();
 
 	private:
+	CPodcastPlayContainer& iContainer;
 	CEikImage* iImageCtrl;
 	CFbsBitmap* iBitmap;
 	TBool iScaling;

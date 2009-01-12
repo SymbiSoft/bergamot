@@ -28,7 +28,7 @@ const TInt KMaxCoverImageWidth = 200;
 const TInt KTimeLabelSize = 64;
 _LIT(KZeroTime,"0:00:00/0:00:00");
 
-CImageWaiter::CImageWaiter(CEikImage* aImageCtrl, CFbsBitmap* aBitmap):CActive(0), iImageCtrl(aImageCtrl), iBitmap(aBitmap)
+CImageWaiter::CImageWaiter(CEikImage* aImageCtrl, CFbsBitmap* aBitmap, CPodcastPlayContainer& aContainer):CActive(0), iImageCtrl(aImageCtrl), iBitmap(aBitmap), iContainer(aContainer)
 	{
 	CActiveScheduler::Add(this);
 	}
@@ -49,9 +49,9 @@ void CImageWaiter::RunL()
 		{
 		if (iBitmap->SizeInPixels().iWidth <= iImageCtrl->Size().iWidth && iBitmap->SizeInPixels().iHeight <= iImageCtrl->Size().iHeight || iScaling )
 			{
-			iImageCtrl->SetSize(TSize(iImageCtrl->Size().iWidth, iImageCtrl->MinimumSize().iHeight));
-			iImageCtrl->MakeVisible(ETrue);
-			iImageCtrl->DrawNow();
+			iImageCtrl->SetSize(TSize(iImageCtrl->Size().iWidth, iImageCtrl->MinimumSize().iHeight));		
+			iContainer.RequestRelayout(iImageCtrl);
+			iContainer.DrawDeferred();
 			delete this;
 			}
 		else
@@ -529,6 +529,7 @@ void CPodcastPlayContainer::ConstructL( const TRect& aRect)
 	iVolumeTimer = new CVolumeTimer(this);
 
 	SetRect( aRect );  
+	SetComponentsToInheritVisibility();
     // Activate the window, which makes it ready to be drawn
     ActivateL();   
 }
@@ -969,12 +970,14 @@ void CPodcastPlayContainer::UpdateViewL()
 			}
 			
 			CFeedInfo* feedInfo = iPodcastModel.FeedEngine().GetFeedInfoByUid(iShowInfo->FeedUid());
+		
 			if (feedInfo != NULL)
 			{
 				TParsePtrC parser(feedInfo->ImageFileName());
 				
 				if (parser.NameAndExt().Length() > 0)
 				{
+					
 					if (feedInfo->ImageFileName() != iLastImageFileName)
 					{
 						iLastImageFileName = feedInfo->ImageFileName();
@@ -991,7 +994,7 @@ void CPodcastPlayContainer::UpdateViewL()
 							iCurrentCoverImage = new (ELeave) CFbsBitmap;
 							iCurrentCoverImage->Create(iBitmapConverter->FrameInfo(0).iOverallSizeInPixels, iBitmapConverter->FrameInfo(0).iFrameDisplayMode);
 							iCoverImageCtrl->SetNewBitmaps(iCurrentCoverImage, NULL);
-							iImageWaiter  = new (ELeave) CImageWaiter(iCoverImageCtrl, iCurrentCoverImage);
+							iImageWaiter  = new (ELeave) CImageWaiter(iCoverImageCtrl, iCurrentCoverImage, *this);
 							iBitmapConverter->Convert(&iImageWaiter->iStatus,*iCurrentCoverImage);
 							iImageWaiter->Start();
 							}
