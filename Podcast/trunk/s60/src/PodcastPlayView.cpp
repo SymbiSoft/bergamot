@@ -1169,6 +1169,7 @@ void CPodcastPlayView::HandleCommandL(TInt aCommand)
 		{
 			iPodcastModel.SoundEngine().Stop();
 			iPodcastModel.PlayingPodcast()->SetPosition(0);
+			iPodcastModel.SetPlayingPodcast(NULL);
 		}
 		break;
 	case EPodcastResumeDownloads:

@@ -43,6 +43,7 @@ public:
 	CSoundEngine& SoundEngine();
 	CSettingsEngine& SettingsEngine();
 	CShowInfo* PlayingPodcast();
+	void SetPlayingPodcast(CShowInfo* aPodcast);
 	void PlayPausePodcastL(CShowInfo * aPodcast, TBool aPlayOnInit = EFalse);
 	CFeedInfo* ActiveFeedInfo();
 	void SetActiveFeedInfo(CFeedInfo* aFeedInfo);
