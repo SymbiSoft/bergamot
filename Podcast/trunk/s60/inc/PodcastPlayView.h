@@ -124,6 +124,8 @@ class CPodcastPlayContainer : public CCoeControl, public MSoundEngineObserver, p
 		CMyEdwin* iShowInfoTitle;
 		CMyEdwin* iShowInfoLabel;
 		CEikLabel* iTimeLabel;
+		CEikLabel* iDummyLabel;
+
 	
 		CShowInfo* iShowInfo;
 		CPodcastModel& iPodcastModel;

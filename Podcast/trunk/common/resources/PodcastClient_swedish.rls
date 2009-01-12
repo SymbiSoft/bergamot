@@ -211,3 +211,6 @@ rls_string STRING_r_off "Av"
 rls_string STRING_r_enter_filename "Ange filnamn"
 rls_string STRING_r_view_export_feeds_title "Välj mapp"
 rls_string STRING_r_view_export_feeds_softkey "Välj"
+
+rls_string STRING_r_playview_tab_info "Info"
+rls_string STRING_r_playview_tab_play "Spela"

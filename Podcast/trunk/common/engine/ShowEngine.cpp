@@ -408,6 +408,18 @@ void CShowEngine::DBGetAllDownloads(RShowInfoArray& aShowArray)
 		sqlite3_finalize(st);
 		}
 
+	// delete downloads that don't have a show
+	
+	iSqlBuffer.Format(_L("delete from downloads where uid not in (select downloads.uid from shows, downloads where shows.uid=downloads.uid)"));
+
+	rc = sqlite3_prepare16_v2(iDB, (const void*) iSqlBuffer.PtrZ(), -1,	&st, (const void**) NULL);
+
+	if (rc == SQLITE_OK)
+		{
+		rc = sqlite3_step(st);
+		sqlite3_finalize(st);
+		}
+
 	}
 
 CShowInfo* CShowEngine::DBGetNextDownload()
@@ -467,10 +479,10 @@ void CShowEngine::DBGetShowsByFeed(RShowInfoArray& aShowArray, TUint aFeedUid)
 		}
 #endif
 
-	TBuf<100> limit;
+/*	TBuf<100> limit;
 	limit.Format(_L(" limit %u"), iPodcastModel.SettingsEngine().MaxListItems());
 	iSqlBuffer.Append(limit);
-
+*/
 	sqlite3_stmt *st;
 
 	int rc = sqlite3_prepare16_v2(iDB, (const void*) iSqlBuffer.PtrZ(), -1,
@@ -608,6 +620,17 @@ void CShowEngine::DeleteOldShowsByFeed(TUint aFeedUid)
 		rc = sqlite3_step(st);
 		sqlite3_finalize(st);
 		}
+	
+	iSqlBuffer.Format(_L("delete from downloads where uid not in (select downloads.uid from shows, downloads where shows.uid=downloads.uid)"));
+
+	rc = sqlite3_prepare16_v2(iDB, (const void*) iSqlBuffer.PtrZ(), -1,	&st, (const void**) NULL);
+
+	if (rc == SQLITE_OK)
+		{
+		rc = sqlite3_step(st);
+		sqlite3_finalize(st);
+		}
+
 	}
 
 void CShowEngine::DBFillShowInfoFromStmt(sqlite3_stmt *st, CShowInfo* showInfo)

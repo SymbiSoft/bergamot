@@ -116,7 +116,7 @@ void CPodcastMainView::UpdateListboxItemsL()
 	{
 	
 		TPtrC descriptionText(KNullDesC());
-
+		CShowInfo *info = iPodcastModel.PlayingPodcast();
 		if(iPodcastModel.PlayingPodcast() != NULL && (iPodcastModel.SoundEngine().State() == ESoundEnginePlaying || iPodcastModel.SoundEngine().State() == ESoundEnginePaused))
 		{
 			descriptionText.Set(iPodcastModel.PlayingPodcast()->Title());

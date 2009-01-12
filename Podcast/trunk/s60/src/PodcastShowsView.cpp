@@ -901,9 +901,7 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 			TBool removeDownloadShowCmd = ETrue;
 			TBool removeRemoveSuspendCmd = EFalse;
 			TBool updatingState = (iCurrentCategory != EShowDownloadedShows && iPodcastModel.FeedEngine().ClientState() != ENotUpdating && iPodcastModel.FeedEngine().ActiveClientUid() == iPodcastModel.ActiveFeedInfo()->Uid());
-			//TBool playingPodcast = (iPodcastModel.PlayingPodcast() != NULL && (iPodcastModel.SoundEngine().State() == ESoundEnginePlaying || iPodcastModel.SoundEngine().State() == ESoundEnginePaused));
 			TBool removeSetPlayed = EFalse;
-			//aMenuPane->SetItemDimmed(EPodcastViewPlayer, !playingPodcast);
 			
 			if(iListContainer->Listbox() != NULL)
 			{

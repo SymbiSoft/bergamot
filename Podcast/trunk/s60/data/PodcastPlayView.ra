@@ -100,3 +100,5 @@ RESOURCE TBUF r_podcast_player_pause_cmd{buf = STRING_r_pause_cmd;}
 RESOURCE TBUF r_podcast_player_play_cmd{buf = STRING_r_play_cmd;}
 RESOURCE TBUF r_podcast_player_suspend_dl_cmd{buf = STRING_r_suspend_download_cmd;}
 RESOURCE TBUF r_podcast_player_remove_dl_cmd{buf = STRING_r_view_remove_download_short_cmd;}
+RESOURCE TBUF r_playview_tab_info{buf = STRING_r_playview_tab_info; }
+RESOURCE TBUF r_playview_tab_play{buf = STRING_r_playview_tab_play; }

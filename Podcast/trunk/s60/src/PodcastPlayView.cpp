@@ -51,7 +51,7 @@ void CImageWaiter::RunL()
 			{
 			iImageCtrl->SetSize(TSize(iImageCtrl->Size().iWidth, iImageCtrl->MinimumSize().iHeight));
 			iImageCtrl->MakeVisible(ETrue);
-			iImageCtrl->DrawDeferred();
+			iImageCtrl->DrawNow();
 			delete this;
 			}
 		else
@@ -154,13 +154,27 @@ void CPodcastPlayContainer::UpdateControlVisibility()
 	case 0:
 		{
 		iCoverImageCtrl->MakeVisible(ETrue);
+		TBuf<1024> buf;
+		iShowInfoLabel->SetTextL(&buf);		
+		iShowInfoLabel->ForceScrollBarUpdateL();
+		iShowInfoLabel->HandleTextChangedL();
 		iShowInfoLabel->MakeVisible(EFalse);
+		iShowInfoLabel->UpdateScrollBarsL();
 		}break;
 	case 1:
 		{
 		iCoverImageCtrl->MakeVisible(EFalse);
+		TBuf<1024> buf;
+		buf.Copy(iShowInfo->Description());
+		buf.Append(CEditableText::ELineBreak);
+
+		iShowInfoLabel->SetTextL(&buf);		
+		iShowInfoLabel->ForceScrollBarUpdateL();
+		iShowInfoLabel->HandleTextChangedL();
 		iShowInfoLabel->MakeVisible(ETrue);
 		iShowInfoLabel->UpdateAllFieldsL();
+
+		iShowInfoLabel->UpdateScrollBarsL();
 		}break;
 	}
 }
@@ -236,9 +250,14 @@ void CPodcastPlayContainer::HandleResourceChange(TInt aType)
 
 void CPodcastPlayContainer::ViewActivatedL(TInt aCurrentShowUid)
 		{
+			if (iShowInfo) {
+				delete iShowInfo;
+			}
 			iShowInfo = iPodcastModel.ShowEngine().GetShowByUidL(aCurrentShowUid);
 			NaviShowTabGroupL();
+			iTabGroup->SetActiveTabByIndex(0);
 			UpdateViewL();
+			SizeChanged();
 			
 			TInt sndState = iPodcastModel.SoundEngine().State();
 			if (iShowInfo != NULL && sndState == ESoundEngineNotInitialized
@@ -274,7 +293,6 @@ void CPodcastPlayContainer::SizeChanged()
 		{
 		iTimeLabel->SetSize(TSize(Size().iWidth, iPlayProgressbar->MinimumSize().iHeight));
 		iTimeLabel->SetPosition(TPoint(vPadding,Size().iHeight-iDownloadProgressInfo->Size().iHeight));
-		//iTimeLabel->SetPosition(TPoint(vPadding,Size().iHeight-(iPlayProgressbar->Size().iHeight+iTimeLabel->Size().iHeight)));
 		timeSizeHeight = iTimeLabel->Size().iHeight;
 		}
 	
@@ -286,15 +304,18 @@ void CPodcastPlayContainer::SizeChanged()
 		titleHeight = iShowInfoTitle->Size().iHeight;
 	}
 
+	TUint mainItemSize = Size().iHeight - (timeSizeHeight+titleHeight+3*vPadding);
+
 	if(iCoverImageCtrl)
 	{
-		iCoverImageCtrl->SetSize(TSize(Size().iWidth, Size().iHeight - (playprogressHeight+titleHeight+3*vPadding)));
+		iCoverImageCtrl->SetSize(TSize(Size().iWidth, mainItemSize));
 		iCoverImageCtrl->SetPosition(TPoint(0, titleHeight+2*vPadding));
 	}
 
+	TUint scrollbarWidth = 10;
 	if(iShowInfoLabel != NULL)
 	{
-		iShowInfoLabel->SetSize(TSize(Size().iWidth, Size().iHeight - (playprogressHeight+titleHeight+3*vPadding)));
+		iShowInfoLabel->SetSize(TSize(Size().iWidth-scrollbarWidth, mainItemSize));
 		iShowInfoLabel->SetPosition(TPoint(0, titleHeight+2*vPadding));
 	}
 	
@@ -325,12 +346,22 @@ TKeyResponse CPodcastPlayContainer::OfferKeyEventL(const TKeyEvent& aKeyEvent,TE
 			break;
 		case EKeyUpArrow:
 			{
-			iPodcastModel.SoundEngine().VolumeUp();
+			TInt tab = iTabGroup->ActiveTabIndex();
+			if (tab == 0) {
+				iPodcastModel.SoundEngine().VolumeUp();
+			} else {
+				iShowInfoLabel->MoveCursorL(TCursorPosition::EFPageUp, EFalse); // or MoveDisplayL
+			}
 			}
 			break;
 		case EKeyDownArrow:
 			{
-			iPodcastModel.SoundEngine().VolumeDown();
+			TInt tab = iTabGroup->ActiveTabIndex();
+			if (tab == 0) {
+				iPodcastModel.SoundEngine().VolumeDown();
+			} else {
+				iShowInfoLabel->MoveCursorL(TCursorPosition::EFPageDown, EFalse); // or MoveDisplayL
+			}
 			}
 			break;
 		case EKeyRightArrow:
@@ -441,15 +472,11 @@ void CPodcastPlayContainer::ConstructL( const TRect& aRect)
 	iCoverImageCtrl->SetAlignment(TGulAlignment(CGraphicsContext::ECenter, EVCenter));
 	iCoverImageCtrl->SetSize(TSize(100,100));
 	iCoverImageCtrl->SetMopParent(this);
-	//TResourceReader reader;
-	//iEikonEnv->CreateResourceReaderLC(reader, R_PODCAST_PLAYVIEW_SLIDER);
 	
 	iPlayProgressbar = new (ELeave) CEikProgressInfo;//CAknSlider;	
 	iPlayProgressbar->SetContainerWindowL(*this);
 	iPlayProgressbar->ConstructL();
 	iPlayProgressbar->SetMopParent(this);
-	//iPlayProgressbar->ConstructFromResourceL(this, 0, reader);
-	//CleanupStack::PopAndDestroy();//close reader
 
 	iPlayProgressbar->SetSize(iPlayProgressbar->MinimumSize());
 	iPlayProgressbar->SetFinalValue(100);
@@ -463,30 +490,29 @@ void CPodcastPlayContainer::ConstructL( const TRect& aRect)
 	iTimeLabel->SetLabelAlignment(ELayoutAlignCenter);
 	iTimeLabel->OverrideColorL(EColorLabelText,textColor);
 	iTimeLabel->SetMopParent(this);
+	
 	iShowInfoTitle = new (ELeave) CMyEdwin;//CEikLabel;
 	iShowInfoTitle->SetContainerWindowL(*this);
-	//iShowInfoTitle->SetTextL(&dummy);
-	iShowInfoTitle->ConstructL(EEikEdwinNoHorizScrolling|EEikEdwinReadOnly|EEikEdwinNoAutoSelection);
+	iShowInfoTitle->SetMopParent(this);
+	iShowInfoTitle->ConstructL(EEikEdwinDisplayOnly);
 	iShowInfoTitle->CreateScrollBarFrameL();
-	iShowInfoTitle->ScrollBarFrame()->SetScrollBarVisibilityL(CEikScrollBarFrame::EOff, CEikScrollBarFrame::EOn);
+	iShowInfoTitle->ScrollBarFrame()->SetScrollBarVisibilityL(CEikScrollBarFrame::EOff, CEikScrollBarFrame::EOff);
 	iShowInfoTitle->SetSize(iShowInfoTitle->MinimumSize());
 	iShowInfoTitle->SetTextColor(textColor, ETrue);
-	//iShowInfoTitle->SetFont(iEikonEnv->TitleFont());
 	iShowInfoTitle->SetSize(iShowInfoTitle->MinimumSize());
 	iShowInfoTitle->OverrideColorL(EColorLabelText,textColor);
 	iShowInfoTitle->SetMopParent(this);
+	
 	iShowInfoLabel = new (ELeave) CMyEdwin;//CEikLabel;
 	iShowInfoLabel->SetContainerWindowL(*this);
-	iShowInfoLabel->ConstructL(EEikEdwinNoHorizScrolling|EEikEdwinReadOnly|EEikEdwinNoAutoSelection);
-	iShowInfoLabel->CreateScrollBarFrameL();
-	iShowInfoLabel->ScrollBarFrame()->SetScrollBarVisibilityL(CEikScrollBarFrame::EOff, CEikScrollBarFrame::EOn);
+	iShowInfoLabel->SetMopParent(this);
+	iShowInfoLabel->ConstructL(EEikEdwinDisplayOnly);
+	iShowInfoLabel->SetAknEditorFlags(EAknEditorFlagEnableScrollBars);
+	iShowInfoLabel->CreateScrollBarFrameL()->SetScrollBarVisibilityL(CEikScrollBarFrame::EOff, CEikScrollBarFrame::EAuto);
 	iShowInfoLabel->SetSize(iShowInfoLabel->MinimumSize());
 	iShowInfoLabel->SetTextColor(textColor, EFalse);
+	iShowInfoLabel->SetCursorPosL(0, EFalse);
 
-//	iShowInfoLabel->SetLabelAlignment(ELayoutAlignLeft);
-//	iShowInfoLabel->SetFontL(iEikonEnv->DenseFont());
-	iShowInfoLabel->SetMopParent(this);
-	iShowInfoLabel->ActivateL();
 	iDownloadProgressInfo = new (ELeave) CEikProgressInfo;
 	iDownloadProgressInfo->SetContainerWindowL(*this);
 	iDownloadProgressInfo->ConstructL();
@@ -494,7 +520,9 @@ void CPodcastPlayContainer::ConstructL( const TRect& aRect)
 	iDownloadProgressInfo->SetSize(iDownloadProgressInfo->MinimumSize());
 	iDownloadProgressInfo->SetFinalValue(100);
 	iDownloadProgressInfo->ActivateL();
+	
 	iPlaybackTicker = CPeriodic::NewL(CActive::EPriorityStandard);
+	
 	iPodcastModel.SoundEngine().AddObserver(this);
 	iPodcastModel.ShowEngine().AddObserver(this);
 
@@ -507,6 +535,7 @@ void CPodcastPlayContainer::ConstructL( const TRect& aRect)
 
 CPodcastPlayContainer::~CPodcastPlayContainer()
 {
+	delete iShowInfo;
 	delete iTabNaviDecorator;
 	delete iVolumeNaviDecorator;
 	delete iBgContext;
@@ -543,10 +572,16 @@ void CPodcastPlayContainer::NaviShowTabGroupL()
 		iTabNaviDecorator = iNaviPane->CreateTabGroupL();
 		iTabGroup = STATIC_CAST(CAknTabGroup*, iTabNaviDecorator->DecoratedControl());
 		iTabGroup->SetTabFixedWidthL(KTabWidthWithTwoTabs);
-	
-		iTabGroup->AddTabL(0,_L("1"));
-		iTabGroup->AddTabL(1,_L("2"));
+
+		HBufC *playLabel = iEikonEnv->AllocReadResourceLC(R_PLAYVIEW_TAB_PLAY);
+		HBufC *infoLabel = iEikonEnv->AllocReadResourceLC(R_PLAYVIEW_TAB_INFO);
+				
+		iTabGroup->AddTabL(0,*playLabel);
+		iTabGroup->AddTabL(1,*infoLabel);
 	 
+		CleanupStack::PopAndDestroy(infoLabel);
+		CleanupStack::PopAndDestroy(playLabel);
+				
 		iTabGroup->SetActiveTabByIndex(0);
 	}
 
@@ -576,6 +611,7 @@ void CPodcastPlayContainer::NaviShowVolumeL(TUint aVolume)
 
 TInt CPodcastPlayContainer::PlayingUpdateStaticCallbackL(TAny* aPlayView)
 	{
+	DP("CPodcastPlayContainer::PlayingUpdateStaticCallbackL");
 	static_cast<CPodcastPlayContainer*>(aPlayView)->UpdatePlayStatusL();
 	return KErrNone;
 	}
@@ -596,17 +632,11 @@ void CPodcastPlayContainer::PlayShow()
 			if (iPodcastModel.SoundEngine().State() == ESoundEnginePlaying)
 			{
 				iPodcastModel.SoundEngine().Pause();
-				//iPlayProgressbar->SetFocusing(EFalse);
-/*						comMan.SetTextL(*this, EPodcastPlay,
-					R_PODCAST_PLAYER_PLAY_CMD);*/
-//						RequestFocusL(iScrollableContainer);
+				iPlaybackTicker->Cancel();
 			}
 			else
 			{
 				iPodcastModel.SoundEngine().Play();
-				//iPlayProgressbar->SetFocusing(EFalse);
-				/*comMan.SetTextL(*this, EPodcastPlay,
-					R_PODCAST_PLAYER_PAUSE_CMD);*/
 			}
 		}
 	}
@@ -906,8 +936,12 @@ void CPodcastPlayContainer::UpdateViewL()
 	if (iShowInfo != NULL)
 	{
 		UpdateControlVisibility();
-		
-		iShowInfoLabel->SetTextL(&iShowInfo->Description());		
+
+		TBuf<1024> buf;
+		buf.Copy(iShowInfo->Description());
+		buf.Append(CEditableText::ELineBreak);
+
+		iShowInfoLabel->SetTextL(&buf);		
 		iShowInfoLabel->ForceScrollBarUpdateL();
 		iShowInfoLabel->HandleTextChangedL();
 
@@ -1003,8 +1037,6 @@ void CPodcastPlayContainer::UpdateViewL()
 			}
 		}
 		
-		UpdatePlayStatusL();
-			
 		if (iPodcastModel.PlayingPodcast() != NULL && iPodcastModel.PlayingPodcast()->Uid() == iShowInfo->Uid() && iPodcastModel.SoundEngine().State() == ESoundEnginePlaying)
 		{
 			iPlaybackTicker->Cancel();
@@ -1015,6 +1047,8 @@ void CPodcastPlayContainer::UpdateViewL()
 		iCoverImageCtrl->SetSize(TSize(Size().iWidth, iCoverImageCtrl->MinimumSize().iHeight));
 
 		SetSize(Size());
+
+		UpdatePlayStatusL();
 }
 
 CPodcastPlayView* CPodcastPlayView::NewL(CPodcastModel& aPodcastModel)
@@ -1128,33 +1162,13 @@ void CPodcastPlayView::HandleCommandL(TInt aCommand)
 			iPlayContainer->UpdateViewL();
 		}
 		break;
-	case EPodcastZoomSetting:
-		{
-			// Launch the zoom dialog
-		/*	const TInt zoomFactor =
-				CQikZoomDialog::RunDlgLD(iPodcastModel.ZoomState());
-			
-			// If zoom state have changed it will be stored to persistent
-			// storage and a relayout will be performed
-			if (iPodcastModel.SetZoomState(zoomFactor))
-			{
-				// Sets the zoom factor for the view
-				iLastZoomLevel = zoomFactor;
-				SetZoomFactorL(CQikAppUi::ZoomFactorL(zoomFactor, *iEikonEnv));
-			}*/
-		}
-		break;
-		
 	case EPodcastPlay:
 		iPlayContainer->PlayShow();
 		break;
 	case EPodcastStop:
 		{
-//			comMan.SetTextL(*this, EPodcastPlay, R_PODCAST_PLAYER_PLAY_CMD);
-			//iPlayProgressbar->SetFocusing(EFalse);
 			iPodcastModel.SoundEngine().Stop();
 			iPodcastModel.PlayingPodcast()->SetPosition(0);
-			iPodcastModel.SetPlayingPodcast(NULL);
 		}
 		break;
 	case EPodcastResumeDownloads:

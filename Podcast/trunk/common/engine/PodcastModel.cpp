@@ -123,11 +123,6 @@ CEikonEnv* CPodcastModel::EikonEnv()
 	return iEnv;
 }
 
-void CPodcastModel::SetPlayingPodcast(CShowInfo* aPodcast)
-{
-	iPlayingPodcast = aPodcast;
-}
-
 CShowInfo* CPodcastModel::PlayingPodcast()
 {
 	return iPlayingPodcast;

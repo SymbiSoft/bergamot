@@ -207,6 +207,8 @@ void CSoundEngine::Stop(TBool aMarkPlayed)
 		SetPosition(0);
 		iPlayer->Stop();
 		iMaxPos = 0;
+		
+		NotifyPlaybackStopped();
 	}
 }
 
