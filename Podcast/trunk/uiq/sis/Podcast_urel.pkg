@@ -32,4 +32,7 @@
 "/epoc32/data/z/resource/apps/PodcastClient.R49"
 }-"!:\resource\apps\PodcastClient.rsc"
 
+; backup
+"../../common/resources/backup_registration.xml" - "c:\private\A00046ae\backup_registration.xml"
+
 "/epoc32/data/z/resource/apps/PodcastClient_loc.rsc"-"!:\resource\apps\PodcastClient_loc.rsc"

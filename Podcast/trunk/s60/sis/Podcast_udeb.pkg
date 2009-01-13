@@ -32,5 +32,8 @@
 "../../common/config/defaultfeeds.xml"-"c:\private\A0009D00\defaultfeeds.xml"
 "../../common/config/escarpod.sqlite"-"c:\private\A0009D00\escarpod.sqlite.template"
 
-; application UI
+; backup
+"../../common/resources/backup_registration.xml" - "c:\private\A0009D00\backup_registration.xml"
+
+; application UI - note that FR,RI does not work when SIS is self signed
 "\epoc32\release\gcce\udeb\Podcast.exe"-"c:\sys\bin\Podcast.exe",FR,RI
