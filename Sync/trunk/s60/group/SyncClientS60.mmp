@@ -19,7 +19,7 @@ SOURCE			SyncClientAppView.cpp
 SOURCEPATH 		..\..\common\src
 SOURCE 			RSyncServerSession.cpp
 
-SYSTEMINCLUDE ..\..\common\group
+USERINCLUDE ..\..\common\group
 
 SOURCEPATH      .
 START RESOURCE SyncClientS60_0xE0983804.rss

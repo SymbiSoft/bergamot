@@ -1,6 +1,6 @@
 // INCLUDE FILES
 #include <coemain.h>
-#include <SyncClientS60.rsg>
+#include <SyncClientS60_0xE0983804.rsg>
 #include "SyncClientS60.hrh"
 #include "SyncClientAppView.h"
 #include <eikfrlbd.h>
@@ -165,7 +165,11 @@ void CSyncClientAppView::ShowSyncProfiles() {
 		return;
 	}
 	DP("Before job");
-	RSyncMLDataSyncJob job;
+	TRAPD(err,RSyncMLDataSyncJob job;);
+	
+	if (err != KErrNone) {
+		DP1("Err=%d", err);
+	}
 	DP("After job");
 	RArray<TSmlProfileId> profiles;
 	DP("Before ListProfilesL");

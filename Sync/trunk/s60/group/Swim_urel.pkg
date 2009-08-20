@@ -2,6 +2,7 @@
 :"Bergamot Project"
 #{"Swim"}, (0xE0983805), 0, 42, 0, TYPE=SA
 [0x101F7961], 0, 0, 0, {"Series60ProductID"}
+[0x1028315F], 0, 0, 0, {"Series60ProductID"}
 
 "\epoc32\release\gcce\urel\SyncServer.exe"-"c:\sys\bin\SyncServer.exe"
 

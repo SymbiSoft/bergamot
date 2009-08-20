@@ -4,7 +4,7 @@
 #include "SyncClientAppView.h"
 #include "SyncClientS60.hrh"
 #include <aknnotedialog.h> 
-#include <SyncClientS60.rsg>
+#include <SyncClientS60_0xE0983804.rsg>
 
 // ================= MEMBER FUNCTIONS =======================
 
