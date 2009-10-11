@@ -1,0 +1,11 @@
+== Future Project Ideas ==
+
+There are many programs that need to be written for Symbian. Some ideas that come to mind are:
+
+  * An [ImageStitching image stitching] program
+  * [SubwayFinder Subway Finder] using GPS and compass
+  * [InstantMessenger IM client] for MSN, ICQ, AIM etc.
+  * iPhoneish SMS [BubbleChat bubble chat]
+  * [EBookReader E-book reader]
+  * [MediaPlayer A decent media player]
+  * [SMSLauncher SMS launcher] that reacts to incoming messages
