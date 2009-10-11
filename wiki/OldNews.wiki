@@ -1,5 +1,12 @@
 #summary Older news postings, for tracking purposes.
 
+  * 2008-11-29 - [Escarpod] 1.10 has been updated with new certificate, it now installs again!
+  * 2008-11-17 - [Swim] 0.41 for S60 fixes the "every 30 minute sync" bug.
+  * 2008-11-06 - [Swim] 0.40 has been released with support for both S60 and UIQ!
+  * 2008-10-04 - [Swim] 0.30 with support for Symbian Open Signed Online is out.
+  * 2008-07-29 - [Escarpod] 1.10 has been released, with M3U support for audio books, and lots of bug fixes.
+  * 2008-07-17 - The Bergamot mailing list is now members only due to immense spam problems. You can ask to join on the [http://groups.google.com/group/bergamot Groups page], and I'll add you to the list.
+  * 2008-07-11 - Escarpod 1.0 now has over 4000 downloads! 
   * 2008-06-08 - Escarpod 1.0 has over 2000 downloads! Insane!
   * 2008-05-21 - It's here! Version 1.0 of [Escarpod]! Read the [EscarpodAnnouncement full Announcement].
   * 2008-05-01 - Added a [PodcastFeeds list of good podcasts], and a [FreeAudioBooks list of free to download audiobooks]! Help me add more!
