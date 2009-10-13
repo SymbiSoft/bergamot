@@ -3,6 +3,7 @@
 
 There are many programs that need to be written for Symbian. Some ideas that come to mind are:
 
+  * Framework for application updates.
   * An [ImageStitching image stitching] program
   * [SubwayFinder Subway Finder] using GPS and compass
   * [InstantMessenger IM client] for MSN, ICQ, AIM etc.
