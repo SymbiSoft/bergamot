@@ -1,0 +1,74 @@
+/*
+* ==============================================================================
+*  Name        : helloworldbasic.mmp
+*  Part of     : Helloworldbasic
+*  Interface   :
+*  Description :
+*  Version     :
+*
+*  Copyright (c) 2005-2006 Nokia Corporation.
+*  This material, including documentation and any related
+*  computer programs, is protected by copyright controlled by
+*  Nokia Corporation.
+* ==============================================================================
+*/
+
+TARGET            HelloWorldBasic.exe
+TARGETTYPE        exe
+UID		  0x100039CE 0xA000017F
+
+SECUREID	  0xA000017F
+EPOCSTACKSIZE	  0x5000
+
+SOURCEPATH        ..\src
+SOURCE            HelloWorldBasic.cpp
+SOURCE            HelloWorldBasicApplication.cpp
+SOURCE            HelloWorldBasicAppView.cpp
+SOURCE            HelloWorldBasicAppUi.cpp
+SOURCE            HelloWorldBasicDocument.cpp
+SOURCE            HelloWorldBasicQueryDialog.cpp
+
+SOURCEPATH        ..\data
+
+START RESOURCE    HelloWorldBasic.rss
+HEADER
+TARGETPATH resource\apps
+END //RESOURCE
+
+START RESOURCE    HelloWorldBasic_reg.rss
+#ifdef WINSCW
+TARGETPATH 	  \private\10003a3f\apps
+#else
+TARGETPATH 	  \private\10003a3f\import\apps
+#endif
+END //RESOURCE
+
+
+
+USERINCLUDE       ..\inc ..\data
+
+SYSTEMINCLUDE     \epoc32\include
+
+LIBRARY           euser.lib
+LIBRARY           apparc.lib
+LIBRARY           cone.lib
+LIBRARY           eikcore.lib
+LIBRARY           avkon.lib
+LIBRARY           commonengine.lib
+LIBRARY		      efsrv.lib
+LIBRARY           estor.lib
+LIBRARY           eikcoctl.lib
+LIBRARY           eikdlg.lib
+LIBRARY accmonitor.lib
+LIBRARY flogger.lib
+
+
+LANG SC 01 09 31 32
+
+VENDORID	  	  0
+CAPABILITY	NONE
+
+// End of File
+
+SOURCEPATH ..\src
+SOURCE accessorymonitor.cpp AccessoryMonitorContainerView.cpp AccessoryMonitorContainer.cpp

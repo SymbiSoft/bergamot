@@ -1,0 +1,14 @@
+/*
+========================================================================
+ Name        : AccessoryMonitorContainer.l01
+ Author      : ${author}
+ Copyright   : ${copyright}
+ Description : 
+========================================================================
+*/
+// localized strings for language: UK English (01)
+#define STR_AccessoryMonitorContainerView_3 ""
+#define STR_AccessoryMonitorContainerView_4 "AccessoryMonitorContainer"
+#define STR_AccessoryMonitorContainerView_1 ""
+#define STR_AccessoryMonitorContainerView_2 ""
+#define STR_AccessoryMonitorContainerView_5 "Unknown"

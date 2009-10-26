@@ -1,0 +1,45 @@
+/*
+* ==============================================================================
+*  Name        : helloworldbasic_01.rls
+*  Part of     : helloworldbasic
+*  Interface   :
+*  Description :
+*  Version     :
+*
+*  Copyright (c) 2006 Nokia Corporation.
+*  This material, including documentation and any related
+*  computer programs, is protected by copyright controlled by
+*  Nokia Corporation.
+* ==============================================================================
+*/
+
+//  LOCALISATION STRINGS
+
+//d:Caption string for app.
+rls_string STRING_r_hewb_caption_string "HelloWorld"
+
+//d:Short caption string for app.
+rls_string STRING_r_hewb_short_caption_string "HW"
+
+//d:First item in "Options" menu pane, "hello" event.
+rls_string STRING_r_hewb_command1 "Hello"
+
+//d:Second item in "Options" menu pane, "read from file" event.
+rls_string STRING_r_hewb_command2 "Hello from file"
+
+//d:Third item in "Options" menu pane, "hello from edit" event.
+rls_string STRING_r_hewb_command3 "Hello from edit"
+
+//d:Fourth item in "Options" menu pane, "exit" event.
+rls_string STRING_r_hewb_exit "Exit"
+
+//d:When user requests EHelloWorldBasicCommand1 event, text below is shown.
+rls_string STRING_r_hewb_command1_text "Hello!"
+
+//d:When user requests EHelloWorldBasicCommand2 event, text below is shown.
+rls_string STRING_r_hewb_file_text "Hello World!"
+
+rls_string STRING_r_helloworldbasic_loc_resource_file_1 "\\resource\\apps\\HelloWorldBasic"
+
+// End of File
+

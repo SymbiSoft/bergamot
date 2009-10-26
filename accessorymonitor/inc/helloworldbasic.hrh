@@ -1,0 +1,28 @@
+/*
+* ==============================================================================
+*  Name        : helloworldbasic.hrh
+*  Part of     : Helloworldbasic
+*  Interface   :
+*  Description :
+*  Version     :
+*
+*  Copyright (c) 2005-2006 Nokia Corporation.
+*  This material, including documentation and any related
+*  computer programs, is protected by copyright controlled by
+*  Nokia Corporation.
+* ==============================================================================
+*/
+
+#ifndef __HELLOWORLDBASIC_HRH__
+#define __HELLOWORLDBASIC_HRH__
+
+// HelloWorldBasic enumerate command codes
+enum THelloWorldBasicIds
+    {
+    EHelloWorldBasicCommand1 = 0x6001, // start value must not be 0
+    EHelloWorldBasicCommand2,
+    EHelloWorldBasicCommand3,
+    EAccessoryMonitorContainerViewId
+    };
+
+#endif // __HELLOWORLDBASIC_HRH__

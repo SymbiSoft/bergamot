@@ -1,0 +1,11 @@
+/*
+========================================================================
+ Name        : AccessoryMonitorContainer.loc
+ Author      : ${author}
+ Copyright   : ${copyright}
+ Description : 
+========================================================================
+*/
+#ifdef LANGUAGE_01
+#include "AccessoryMonitorContainer.l01"
+#endif
