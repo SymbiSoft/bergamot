@@ -59,6 +59,7 @@ void CHelloWorldBasicAppView::ConstructL( const TRect& aRect )
     iFont = AknLayoutUtils::FontFromId(EAknLogicalFontPrimaryFont);
 
     iText.Copy(_L("Disconnected"));
+    iMpUtility=MMPXPlaybackUtility::NewL();
 
     // Set the windows size
     SetRect( aRect );
@@ -155,6 +156,8 @@ void CHelloWorldBasicAppView::AccessoryDisconnected()
 	DP("CHelloWorldBasicAppView::AccessoryDisconnected()");
 	iText.Copy(_L("Disconnected"));
 	DrawNow();
+    iMpUtility->CommandL(EPbCmdPause, 0);
+
 	}
 
 // End of File

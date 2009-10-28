@@ -18,6 +18,9 @@
 
 // INCLUDES
 #include <coecntrl.h>
+#include "mpxplaybackutility.h"
+#include "mpxplaybackframeworkdefs.h"
+#include "mpxplaybackmessage.h"
 
 // CLASS DECLARATION
 class CHelloWorldBasicAppView : public CCoeControl
@@ -101,7 +104,7 @@ class CHelloWorldBasicAppView : public CCoeControl
         * descriptor storing the user-given text
         */
         TBuf<24> iText;
-        
+        MMPXPlaybackUtility* iMpUtility;
     public:
     	void AccessoryConnected();
     	void AccessoryDisconnected();

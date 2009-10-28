@@ -15,7 +15,7 @@ void CAccessoryMonitor::ConstructL()
    CleanupClosePushL(array);
    iAccessoryInfo = CAccMonitorInfo::NewL();
 	iAccMonitor->StartObservingL(this);
-
+	 
    iAccMonitor->GetConnectedAccessoriesL(array);
  
    DP1("accessories count=%d", array.Count());
@@ -37,7 +37,7 @@ void CAccessoryMonitor::ConnectedL(CAccMonitorInfo* aAccessoryInfo)
     iAccessoryInfo->Reset();
  
     iAccessoryInfo->CopyL(aAccessoryInfo);
- 
+     
     iCallbacks.AccessoryConnected();
     DP("CAccessoryMonitor::ConnectedL END");
     
