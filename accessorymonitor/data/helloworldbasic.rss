@@ -91,21 +91,6 @@ RESOURCE MENU_PANE r_helloworldbasic_menu
         // added the new Options menu command here
         MENU_ITEM
                 {
-                command = EHelloWorldBasicCommand1;
-                txt = STRING_r_hewb_command1;
-                },
-        MENU_ITEM
-                {
-                command = EHelloWorldBasicCommand2;
-                txt = STRING_r_hewb_command2;
-                },
-        MENU_ITEM
-                {
-                command = EHelloWorldBasicCommand3;
-                txt = STRING_r_hewb_command3;
-                },
-        MENU_ITEM
-                {
                 command = EAknSoftkeyExit;
                 txt = STRING_r_hewb_exit;
                 }

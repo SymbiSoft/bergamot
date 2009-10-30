@@ -16,7 +16,7 @@
 //  LOCALISATION STRINGS
 
 //d:Caption string for app.
-rls_string STRING_r_hewb_caption_string "HelloWorld"
+rls_string STRING_r_hewb_caption_string "For Your Ears Only"
 
 //d:Short caption string for app.
 rls_string STRING_r_hewb_short_caption_string "HW"

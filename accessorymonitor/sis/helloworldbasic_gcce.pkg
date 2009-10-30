@@ -1,29 +1,24 @@
 ; helloworldbasic_gcce.pkg
 ;
 ;Language - standard language definitions
-&EN,FI,ZH,JA
+&EN
 
 ; standard SIS file header
-#{"HelloWorldBasic", "HelloWorldBasic", "HelloWorldBasic", "HelloWorldBasic"},(0xA000017F),1,0,0
+#{"For Your Ears Only"},(0xA000017F),0,10,0
 
 ;Localised Vendor name
-%{"Vendor-EN", "Vendor-FI", "Vendor-ZH", "Vendor-JA"}
+%{"Bergamot Project"}
 
 ;Unique Vendor name
-:"Vendor"
+:"Bergamot Project"
 
-;Supports Series 60 v 3.0
-[0x101F7961], 0, 0, 0, {"S60ProductID", "S60ProductID", "S60ProductID", "S60ProductID"}
+;Supports Symbian^1
+[0x1028315F], 0, 0, 0, {"Series60ProductID"}
 
 ;Files to install
 "C:\Symbian\S60_5th_Edition_SDK_v1.0\epoc32\release\gcce\udeb\HelloWorldBasic.exe" -"!:\sys\bin\HelloWorldBasic.exe"
 
-{
-"C:\Symbian\S60_5th_Edition_SDK_v1.0\epoc32\data\z\resource\apps\HelloWorldBasic.rsc"
-"C:\Symbian\S60_5th_Edition_SDK_v1.0\epoc32\data\z\resource\apps\HelloWorldBasic.r09"
-"C:\Symbian\S60_5th_Edition_SDK_v1.0\epoc32\data\z\resource\apps\HelloWorldBasic.r31"
-"C:\Symbian\S60_5th_Edition_SDK_v1.0\epoc32\data\z\resource\apps\HelloWorldBasic.r32"
-} -"!:\resource\apps\HelloWorldBasic.rsc"
+"C:\Symbian\S60_5th_Edition_SDK_v1.0\epoc32\data\z\resource\apps\HelloWorldBasic.rsc"-"!:\resource\apps\HelloWorldBasic.rsc"
 
 "C:\Symbian\S60_5th_Edition_SDK_v1.0\epoc32\data\z\private\10003a3f\import\apps\HelloWorldBasic_reg.rsc" -"!:\private\10003a3f\import\apps\HelloWorldBasic_reg.rsc"
 "C:\Symbian\S60_5th_Edition_SDK_v1.0\epoc32\data\z\resource\apps\helloworldbasic_aif.mif" -"!:\resource\apps\helloworldbasic_aif.mif"
