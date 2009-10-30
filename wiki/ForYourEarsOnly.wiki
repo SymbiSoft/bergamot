@@ -4,7 +4,7 @@
 
 For Your Ears Only is a Symbian app that automatically pauses the music player when the headset is disconnected.
 
-It is based on how Android works, and also [https://garage.maemo.org/projects/headphoned/ headphone daemon] for [http://maemo.org/ Maemo].
+It is inspired by how Android works, and also [https://garage.maemo.org/projects/headphoned/ headphone daemon] for [http://maemo.org/ Maemo].
 
 At the moment, only Symbian^1 (S60 5th edition) onwards is supported. Specifically, it has been tested on the Nokia 5800. 
 
