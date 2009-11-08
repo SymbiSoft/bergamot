@@ -13,7 +13,7 @@ NAME    ESPD // 4 letter ID
 
 RESOURCE RSS_SIGNATURE { }
 
-RESOURCE TBUF { buf = "Podcast"; }
+RESOURCE TBUF { buf = "Escarpod"; }
 
 RESOURCE EIK_APP_INFO
     {

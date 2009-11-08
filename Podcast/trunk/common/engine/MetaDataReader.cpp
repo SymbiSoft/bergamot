@@ -8,7 +8,7 @@
 #include "debug.h"
 
 _LIT(KMP3Extension, ".MP3");
-CMetaDataReader::CMetaDataReader(MMetaDataReaderObserver& aObserver) : iObserver(aObserver)
+CMetaDataReader::CMetaDataReader(MMetaDataReaderObserver& aObserver) : iObserver(aObserver), iFs(CEikonEnv::Static()->FsSession())
 {
 	iShow = NULL;
 }
@@ -30,7 +30,7 @@ void CMetaDataReader::ConstructL()
 	TCallBack callback(ParseNextShowCallbackL, this);
 	iParseNextShowCallBack = new (ELeave)CAsyncCallBack(callback, CActive::EPriorityStandard);
 	iCharConverter = CCnvCharacterSetConverter::NewL();
-	iCharConverter->PrepareToConvertToOrFromL(KCharacterSetIdentifierIso88591, CEikonEnv::Static()->FsSession()); 
+	iCharConverter->PrepareToConvertToOrFromL(KCharacterSetIdentifierIso88591, iFs); 
 	iLastConverterCharset = KCharacterSetIdentifierIso88591;
 }
 
@@ -64,7 +64,7 @@ void CMetaDataReader::ConvertToUniCodeL(TDes& aDestBuffer, TDes8& aInputBuffer, 
 		{
 			if(iLastConverterCharset != KCharacterSetIdentifierUnicodeBig)
 			{
-				iCharConverter->PrepareToConvertToOrFromL(KCharacterSetIdentifierUnicodeBig, CEikonEnv::Static()->FsSession()); 
+				iCharConverter->PrepareToConvertToOrFromL(KCharacterSetIdentifierUnicodeBig, iFs); 
 				iLastConverterCharset = KCharacterSetIdentifierUnicodeBig;
 			}
 			TInt unconvertable = 0;
@@ -81,7 +81,7 @@ void CMetaDataReader::ConvertToUniCodeL(TDes& aDestBuffer, TDes8& aInputBuffer, 
 		{
 			if(iLastConverterCharset != KCharacterSetIdentifierUnicodeLittle)
 			{
-				iCharConverter->PrepareToConvertToOrFromL(KCharacterSetIdentifierUnicodeLittle, CEikonEnv::Static()->FsSession()); 
+				iCharConverter->PrepareToConvertToOrFromL(KCharacterSetIdentifierUnicodeLittle, iFs); 
 				iLastConverterCharset = KCharacterSetIdentifierUnicodeLittle;
 			}
 			TInt unconvertable = 0;
@@ -98,7 +98,7 @@ void CMetaDataReader::ConvertToUniCodeL(TDes& aDestBuffer, TDes8& aInputBuffer, 
 		{
 			if(iLastConverterCharset != KCharacterSetIdentifierIso88591)
 				{
-				iCharConverter->PrepareToConvertToOrFromL(KCharacterSetIdentifierIso88591, CEikonEnv::Static()->FsSession()); 
+				iCharConverter->PrepareToConvertToOrFromL(KCharacterSetIdentifierIso88591, iFs); 
 				iLastConverterCharset = KCharacterSetIdentifierIso88591;
 				}
 			TInt unconvertable = 0;

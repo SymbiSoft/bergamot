@@ -62,7 +62,7 @@ void CSettingsEngine::ConstructL()
 		}		
 	}
 
-void CSettingsEngine::GetDefaultBaseDirL(TDes &aBaseDir)
+void CSettingsEngine::GetDefaultBaseDirL(TDes & /*aBaseDir*/)
 	{
 	CDesCArray* disks = new(ELeave) CDesCArrayFlat(10);
 	CleanupStack::PushL(disks);
@@ -78,7 +78,8 @@ void CSettingsEngine::GetDefaultBaseDirL(TDes &aBaseDir)
 	DP1("Disks count: %u", disks->Count());
 	
 	for (int i=0;i<disks->Count();i++) {
-		DP2("Disk %u: %S", i, &(*disks)[i]);
+		TPtrC ptr = disks->operator[](i);
+		DP2("Disk %u: %S", i, &ptr);
 	}
 
 	if (disks->Count() == 1)  // if only one drive, use C:

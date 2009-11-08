@@ -196,7 +196,7 @@ void CPodcastFeedView::DoDeactivate()
 }
 
 
-void CPodcastFeedView::HandleListBoxEventL(CEikListBox* aListBox, TListBoxEvent aEventType)
+void CPodcastFeedView::HandleListBoxEventL(CEikListBox* /* aListBox */, TListBoxEvent aEventType)
 {
 	switch(aEventType)
 	{

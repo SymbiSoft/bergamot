@@ -5,7 +5,7 @@
  * (c) 2008 Anotherguest (Lars Persson)
  */
 
-#include "Podcastsvg.mbg"
+#include <Podcastsvg.mbg>
 
 RESOURCE HOTKEYS r_podcast_mainview_hotkeys
     {
@@ -73,7 +73,8 @@ RESOURCE ARRAY r_podcast_mainmenu_array
 
 RESOURCE DIALOG r_dlg_about
     {
-    flags = EAknInformationNoteFlags;
+    flags = EAknDialogGenericNoteFlags;
+    buttons = R_AVKON_SOFTKEYS_CLOSE;
     items =
         {
         DLG_LINE
@@ -81,14 +82,14 @@ RESOURCE DIALOG r_dlg_about
             type = EAknCtNote;
             id = EPodcastAboutDlg;
             control = AVKON_NOTE
-                {
-                layout = ENoteWithImageLayout;
-                singular_label = STRING_r_about_text_s60; 
-                imagefile = "\\resource\\apps\\Podcastsvg.mif"; 
-                imageid = EMbmPodcastsvgPodcast;
-                imagemask = EMbmPodcastsvgPodcast_mask;
-                };
-            }
+				{
+				layout = ENoteWithImageLayout;
+				singular_label = STRING_r_about_text_s60; 
+				imagefile = "\\resource\\apps\\Podcastsvg.mif"; 
+				imageid = EMbmPodcastsvgPodcast;
+				imagemask = EMbmPodcastsvgPodcast_mask;
+				};
+			}
         };
     }
 

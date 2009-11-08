@@ -39,6 +39,7 @@ private:
 	CCnvCharacterSetConverter* iCharConverter;
 	TUint iLastConverterCharset;
 	TBool iIgnoreTrackNo;
+	RFs &iFs;
 };
 
 #endif /*METADATAREADER_H_*/

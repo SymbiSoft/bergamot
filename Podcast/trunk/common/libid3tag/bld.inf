@@ -1,9 +1,9 @@
-PRJ_MMPFILES
-libid3tag.mmp
-
 PRJ_PLATFORMS
 GCCE
 WINSCW
+
+PRJ_MMPFILES
+libid3tag.mmp
 
 PRJ_EXPORTS
 

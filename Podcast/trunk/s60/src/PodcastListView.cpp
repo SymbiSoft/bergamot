@@ -144,9 +144,9 @@ CPodcastListView::~CPodcastListView()
     }
 
 	
-void CPodcastListView::DoActivateL(const TVwsViewId& aPrevViewId,
-	                                  TUid aCustomMessageId,
-									  const TDesC8& aCustomMessage)
+void CPodcastListView::DoActivateL(const TVwsViewId& /*aPrevViewId */,
+	                                  TUid /*aCustomMessageId */,
+									  const TDesC8& /* aCustomMessage */)
 {	
 	if(iListContainer)
 	{
@@ -212,15 +212,15 @@ void CPodcastListView::HandleCommandL(TInt aCommand)
 
 void CPodcastListView::RunAboutDialogL()
 {
-    // Create dialog
-	CAknNoteDialog* dlg = new(ELeave) CAknNoteDialog(
-	    CAknNoteDialog::EConfirmationTone,
-	    CAknNoteDialog::ELongTimeout);
-    CleanupStack::PushL(dlg);
-
-    // Show dialog
-    CleanupStack::Pop(dlg);
-    dlg->ExecuteLD(R_DLG_ABOUT);
+	CAknNoteDialog* dlg = new(ELeave) CAknNoteDialog();
+	CleanupStack::PushL(dlg);
+	
+	/*TBuf<255> aboutMessage;
+	iEikonEnv->ReadResourceL(aboutMessage, STRING_R_ABOUT_TEXT_S60);
+	dlg->SetTextL(aboutMessage);*/
+	
+	CleanupStack::Pop(dlg);
+	dlg->ExecuteLD(R_DLG_ABOUT);
 }
 
 void CPodcastListView::SetNaviTextL(TDesC &aText)

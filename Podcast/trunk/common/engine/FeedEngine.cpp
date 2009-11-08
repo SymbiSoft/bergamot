@@ -20,7 +20,7 @@ CFeedEngine* CFeedEngine::NewL(CPodcastModel& aPodcastModel)
 void CFeedEngine::ConstructL()
 	{
 	iParser = new (ELeave) CFeedParser(*this);
-	iFs.Connect();
+	User::LeaveIfError(iFs.Connect());
 	iFeedClient = CHttpClient::NewL(iPodcastModel, *this);
 	iFeedTimer.ConstructL();
 	
@@ -958,7 +958,7 @@ void CFeedEngine::GetDownloadedStats(TUint &aNumShows, TUint &aNumUnplayed)
 	sqlite3_finalize(st);
 	}
 
-void CFeedEngine::GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed, TBool aIsBookFeed)
+void CFeedEngine::GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed, TBool /* aIsBookFeed */)
 	{
 	DP1("CFeedEngine::GetStatsByFeed, aFeedUid=%u", aFeedUid);
 	DBGetStatsByFeed(aFeedUid, aNumShows, aNumUnplayed);

@@ -63,7 +63,7 @@ END
 SYSTEMINCLUDE   \epoc32\include \epoc32\include\middleware
 SYSTEMINCLUDE   \epoc32\include\libc \epoc32\include\osextensions
 SYSTEMINCLUDE \epoc32\include\mmf\common 
-SYSTEMINCLUDE \epoc32\include\mmf\plugin \epoc32\include\domain\middleware
+SYSTEMINCLUDE \epoc32\include\domain\middleware
 
 USERINCLUDE ..\..\common\engine
 USERINCLUDE ..\..\common\libid3tag

@@ -4,7 +4,7 @@ TARGETTYPE lib
 SOURCEPATH .
 USERINCLUDE .
 USERINCLUDE ..\libid3tag ..\sqlite\src
-SYSTEMINCLUDE \epoc32\include \epoc32\include\libc \epoc32\include\mmf\plugin
+SYSTEMINCLUDE \epoc32\include \epoc32\include\libc
 
 // Engine
 SOURCE			HttpClient.cpp
