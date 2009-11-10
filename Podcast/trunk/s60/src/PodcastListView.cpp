@@ -12,7 +12,8 @@
 #include <podcast.rsg>
 #include <aknlists.h> 
 #include <aknviewappui.h>
-#include <aknnotedialog.h> 
+#include <aknnotedialog.h>
+#include <aknsbasicbackgroundcontrolcontext.h>
 
 const TInt KDefaultGran = 5;
 CPodcastListContainer::CPodcastListContainer()
@@ -35,19 +36,24 @@ void CPodcastListContainer::ConstructL( const TRect& aRect, TInt aListboxFlags )
 {
 	CreateWindowL();
 
+	iBgContext = 
+		    CAknsBasicBackgroundControlContext::NewL( KAknsIIDQsnBgAreaMain, 
+		                                              aRect, 
+		                                              ETrue );
+		
 	 // Set the windows size
     SetRect( aRect );    
     iListbox =static_cast<CEikFormattedCellListBox*>( new (ELeave) CAknDoubleLargeStyleListBox);
-	iListbox->SetMopParent( this );
+    iListbox->ConstructL(this, aListboxFlags);
+    iListbox->SetMopParent( this );
 	iListbox->SetContainerWindowL(*this);
-	iListbox->ConstructL(this, aListboxFlags);
 	iListbox->CreateScrollBarFrameL(ETrue);
 	iListbox->ScrollBarFrame()->SetScrollBarVisibilityL(CEikScrollBarFrame::EAuto, CEikScrollBarFrame::EAuto );
 	
 	iListbox->ItemDrawer()->FormattedCellData()->EnableMarqueeL( ETrue );
 
 	iListbox->SetSize(aRect.Size());
-	iListbox->MakeVisible(ETrue);
+	iListbox->MakeVisible(EFalse);
     MakeVisible(EFalse);
 	// Activate the window, which makes it ready to be drawn
     ActivateL();   
@@ -71,7 +77,8 @@ CCoeControl* CPodcastListContainer::ComponentControl(TInt aIndex) const
 
 void CPodcastListContainer::HandleResourceChange(TInt aType)
 {
-		switch( aType )
+	DP("CPodcastListContainer::HandleResourceChange");
+	switch( aType )
     	{
 	    case KEikDynamicLayoutVariantSwitch:
 		    SetRect(iEikonEnv->EikAppUi()->ClientRect());
@@ -86,6 +93,7 @@ void CPodcastListContainer::ScrollToVisible() {
 }
 void CPodcastListContainer::SizeChanged()
 {
+	DP("CPodcastListContainer::SizeChanged()");
 	if(iListbox != NULL)
 	{
 		iListbox->SetSize(Size());
@@ -101,7 +109,28 @@ CEikFormattedCellListBox* CPodcastListContainer::Listbox()
 CPodcastListContainer::~CPodcastListContainer()
 {
 	delete iListbox;
+	delete iBgContext;
 }
+
+
+void CPodcastListContainer::Draw(const TRect& aRect) const
+	{
+	CWindowGc& gc = SystemGc();
+	gc.SetBrushStyle(CGraphicsContext::ESolidBrush);
+	MAknsControlContext* cc = AknsDrawUtils::ControlContext(this);
+	MAknsSkinInstance* skin = AknsUtils::SkinInstance();
+	AknsDrawUtils::Background(skin, cc, (CCoeControl*) this, gc, aRect);
+	}
+
+
+TTypeUid::Ptr CPodcastListContainer::MopSupplyObject( TTypeUid aId )
+    {
+    if (iBgContext )
+    {
+      return MAknsControlContext::SupplyMopObject( aId, iBgContext );
+    }
+    return CCoeControl::MopSupplyObject(aId);
+    }
 
 CPodcastListView::CPodcastListView()
 {
@@ -110,7 +139,6 @@ CPodcastListView::CPodcastListView()
 void CPodcastListView::ConstructL()
 {
 	iListContainer = new (ELeave) CPodcastListContainer;
-	iListContainer->SetMopParent( this );
 	iListContainer->ConstructL(ClientRect(), iListboxFlags);
 	iItemArray = new (ELeave)CDesCArrayFlat(KDefaultGran);
 	iListContainer->Listbox()->Model()->SetItemTextArray(iItemArray);
@@ -128,10 +156,12 @@ void CPodcastListView::HandleViewRectChange()
 
 void CPodcastListView::HandleStatusPaneSizeChange()
 {
+	DP("CPodcastListView::HandleStatusPaneSizeChange()");
 	if ( iListContainer )
 	{
         iListContainer->SetRect( ClientRect() );
 	}
+	
 }
 
     
@@ -148,13 +178,21 @@ void CPodcastListView::DoActivateL(const TVwsViewId& /*aPrevViewId */,
 	                                  TUid /*aCustomMessageId */,
 									  const TDesC8& /* aCustomMessage */)
 {	
+	DP("CPodcastListView::DoActivateL()");
+	
 	if(iListContainer)
 	{
-		iListContainer->SetRect(ClientRect());
-		AppUi()->AddToViewStackL( *this, iListContainer );	
+		iListContainer->SetSize(ClientRect().Size());
+		iListContainer->iListbox->SetSize(ClientRect().Size());
+		AppUi()->AddToViewStackL( *this, iListContainer->iListbox );	
 		iListContainer->MakeVisible(ETrue);
 		UpdateListboxItemsL();		
 		iListContainer->DrawNow();
+		  
+		iListContainer->iListbox->MakeVisible(ETrue);
+		iListContainer->iListbox->DrawNow();
+		iListContainer->iListbox->SetFocus(ETrue);
+		iListContainer->MakeVisible(ETrue);
 	}
 	
 	if(iNaviDecorator && iNaviPane)
@@ -165,10 +203,12 @@ void CPodcastListView::DoActivateL(const TVwsViewId& /*aPrevViewId */,
 
 void CPodcastListView::DoDeactivate()
 {
+	DP("CPodcastListView::DoDeactivate()");
 	if ( iListContainer )
 	{
-        AppUi()->RemoveFromViewStack( *this, iListContainer );
+        AppUi()->RemoveFromViewStack( *this, iListContainer->iListbox );
 		iListContainer->MakeVisible(EFalse);
+		iListContainer->iListbox->MakeVisible(EFalse);
 		if(iNaviDecorator && iNaviPane)
 		{
 		iNaviPane->Pop(iNaviDecorator);
@@ -235,4 +275,3 @@ void CPodcastListView::SetNaviTextL(TDesC &aText)
 	iNaviDecorator	= iNaviPane->CreateNavigationLabelL(aText);
 	iNaviPane->PushL(*iNaviDecorator);
 	}
-

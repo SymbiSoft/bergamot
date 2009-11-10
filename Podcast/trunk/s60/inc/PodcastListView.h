@@ -11,6 +11,7 @@
 #include <aknview.h>
 #include <aknlists.h> 
 #include <eiklbo.h>
+#include <aknsbasicbackgroundcontrolcontext.h>
 #include "PodcastModel.h"
 
 class CAknDoubleLargeStyleListBox;
@@ -37,9 +38,16 @@ class CPodcastListContainer : public CCoeControl
 		void SetKeyEventListener(MKeyEventListener *aKeyEventListener);
 		CEikFormattedCellListBox* Listbox();
 		void ScrollToVisible();
-	protected:
+    	void Draw(const TRect& aRect) const;
+		
 		CEikFormattedCellListBox * iListbox;
+
+	protected:
+		TTypeUid::Ptr MopSupplyObject( TTypeUid aId );
+		
 		MKeyEventListener* iKeyEventListener;
+        CAknsBasicBackgroundControlContext* iBgContext;
+
 	};
 
 

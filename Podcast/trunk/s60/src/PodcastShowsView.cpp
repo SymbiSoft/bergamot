@@ -45,37 +45,6 @@ const TUint KIconArrayIds[] =
 			0
 	};
 
-class CPodcastShowsContainer : public CCoeControl
-	{
-public:
-	CPodcastShowsContainer();
-	~CPodcastShowsContainer();
-	void ConstructL(const TRect& aRect);
-protected:
-	CAknNavigationDecorator* iNaviDecorator;
-	CAknNavigationControlContainer* iNaviPane;
-	};
-
-CPodcastShowsContainer::CPodcastShowsContainer()
-	{
-	}
-
-void CPodcastShowsContainer::ConstructL(const TRect& aRect)
-	{
-	CreateWindowL();
-
-	// Set the windows size
-	SetRect(aRect);
-
-	// Activate the window, which makes it ready to be drawn
-	ActivateL();
-	}
-
-CPodcastShowsContainer::~CPodcastShowsContainer()
-	{
-	delete iNaviDecorator;
-	}
-
 CPodcastShowsView* CPodcastShowsView::NewL(CPodcastModel& aPodcastModel)
 	{
 	CPodcastShowsView* self = CPodcastShowsView::NewLC(aPodcastModel);
@@ -197,7 +166,7 @@ void CPodcastShowsView::DoActivateL(const TVwsViewId& aPrevViewId,
 		}
 
 	CPodcastListView::DoActivateL(aPrevViewId, aCustomMessageId, aCustomMessage);
-
+	
 	if(aPrevViewId.iAppUid == KUidPodcast)
 		{
 		switch(aPrevViewId.iViewUid.iUid)
@@ -214,7 +183,6 @@ void CPodcastShowsView::DoActivateL(const TVwsViewId& aPrevViewId,
 				break;
 			}
 		}
-		
 	UpdateFeedUpdateStateL();
 	}
 

@@ -47,7 +47,7 @@ void CImageWaiter::RunL()
 	{
 	if (iStatus == KErrNone)
 		{
-		if (iBitmap->SizeInPixels().iWidth <= iImageCtrl->Size().iWidth && iBitmap->SizeInPixels().iHeight <= iImageCtrl->Size().iHeight || iScaling )
+		if (iScaling)
 			{
 			iImageCtrl->SetSize(TSize(iImageCtrl->Size().iWidth, iImageCtrl->MinimumSize().iHeight));		
 			iContainer.RequestRelayout(iImageCtrl);
@@ -470,8 +470,9 @@ void CPodcastPlayContainer::ConstructL( const TRect& aRect)
 	
 	iCoverImageCtrl->CreatePictureFromFileL(iEikonEnv->EikAppUi()->Application()->BitmapStoreName(), EMbmPodcastEmptyimage);
 	iCoverImageCtrl->SetAlignment(TGulAlignment(CGraphicsContext::ECenter, EVCenter));
-	iCoverImageCtrl->SetSize(TSize(100,100));
+	iCoverImageCtrl->SetSize(TSize(0,0));
 	iCoverImageCtrl->SetMopParent(this);
+	iCoverImageCtrl->MakeVisible(EFalse);
 	
 	iPlayProgressbar = new (ELeave) CEikProgressInfo;//CAknSlider;	
 	iPlayProgressbar->SetContainerWindowL(*this);
