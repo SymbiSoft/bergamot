@@ -58,13 +58,15 @@ class CPodcastSettingsView : public CAknView
 		 */
 		void HandleCommandL(TInt aCommand);
 	private:
-		CPodcastSettingsContainer* iSettingsContainer;
+		//CPodcastSettingsContainer* iSettingsContainer;
 		CPodcastModel& iPodcastModel;
 		 /** Previous activated view */
 		 TVwsViewId iPreviousView;
 		 TInt iAutoDownloadValue;
 		 CAknNavigationDecorator* iNaviDecorator;
 		 CAknNavigationControlContainer* iNaviPane;
+		CPodcastSettingItemList  * iListbox;
+
 };
 
 #endif // PODCASTSETTINGSVIEWH

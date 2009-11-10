@@ -5,7 +5,11 @@
 %{"Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project"}
 #{"Escarpod","Escarpod","Escarpod","Escarpod","Escarpod","Escarpod","Escarpod","Escarpod","Escarpod","Escarpod","Escarpod", "Escarpod","Escarpod"}, (0xA0009D00), 1, 20, 0, TYPE=SA
 
+;Supports S60 3rd edition
 [0x101F7961], 0, 0, 0, {"Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID"}
+
+;Supports Symbian^1
+[0x1028315F], 0, 0, 0, {"Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID"}
 
 {
 "\epoc32\data\z\resource\apps\Podcast.R01"

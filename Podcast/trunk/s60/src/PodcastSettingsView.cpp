@@ -122,6 +122,12 @@ public:
 		DP("StoreSettings END");
 	}
 	
+	void HandleListBoxEventL(CEikListBox* aListBox, TListBoxEvent aEventType)
+	{
+		DP1("CPodcastSettingItemList::HandleListBoxEventL event %d", aEventType)
+		CAknSettingItemList::HandleListBoxEventL(aListBox, aEventType);
+	}
+	
 	void UpdateSettingVisibility()
 		{
 		LoadSettingsL();
@@ -264,90 +270,6 @@ public:
 	CPodcastModel &iPodcastModel;
 	};
 
-class CPodcastSettingsContainer : public CCoeControl
-    {
-    public: 
-		CPodcastSettingsContainer(CPodcastModel& aPodcastModel);
-		~CPodcastSettingsContainer();
-		void ConstructL( const TRect& aRect );
-		TInt CountComponentControls() const;
-		CCoeControl* ComponentControl( TInt aIndex ) const;
-		void StoreSettings();
-		void UpdateSettingVisibility();
-		
-    protected:
-    	TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType)
-    	{
-    		return iListbox->OfferKeyEventL(aKeyEvent, aType);
-    	}
-		void HandleResourceChange(TInt aType);
-	protected:
-		CPodcastSettingItemList  * iListbox;
-		CAknNavigationDecorator* iNaviDecorator;
-        CAknNavigationControlContainer* iNaviPane;
-	private:
-		CPodcastModel &iPodcastModel;
-	};
-
-
-
-void CPodcastSettingsContainer::HandleResourceChange(TInt aType)
-{
-		switch( aType )
-    	{
-	    case KEikDynamicLayoutVariantSwitch:
-		    SetRect(iEikonEnv->EikAppUi()->ClientRect());
-		    break;
-	    }
-}
-
-CPodcastSettingsContainer::CPodcastSettingsContainer(CPodcastModel &aPodcastModel) : iPodcastModel(aPodcastModel)
-{
-}
-
-void CPodcastSettingsContainer::StoreSettings()
-	{
-	iListbox->StoreSettings();
-	}
-
-void CPodcastSettingsContainer::UpdateSettingVisibility()
-	{
-	iListbox->UpdateSettingVisibility();
-	}
-
-TInt CPodcastSettingsContainer::CountComponentControls() const
-{
-	return iListbox!=NULL?1:0;
-}
-
-CCoeControl* CPodcastSettingsContainer::ComponentControl( TInt /*aIndex*/ ) const
-{
-	return iListbox;
-}
-
-void CPodcastSettingsContainer::ConstructL( const TRect& aRect )
-	{
-	CreateWindowL();
-	iListbox =new (ELeave) CPodcastSettingItemList(iPodcastModel);
-	iListbox->SetMopParent( this );
-	iListbox->SetContainerWindowL(*this);
-	iListbox->ConstructFromResourceL(R_PODCAST_SETTINGS);
-	iListbox->SetSize(aRect.Size());
-	
-	iListbox->MakeVisible(ETrue);
-	// Set the windows size
-	SetRect( aRect );    
-	MakeVisible(EFalse);
-	// Activate the window, which makes it ready to be drawn
-	ActivateL();   
-	}
-
-CPodcastSettingsContainer::~CPodcastSettingsContainer()
-{
-	delete iNaviDecorator;
-	delete iListbox;
-}
-
 
 CPodcastSettingsView* CPodcastSettingsView::NewL(CPodcastModel& aPodcastModel)
     {
@@ -371,20 +293,24 @@ CPodcastSettingsView::CPodcastSettingsView(CPodcastModel& aPodcastModel):iPodcas
 void CPodcastSettingsView::ConstructL()
 {
 	BaseConstructL(R_PODCAST_SETTINGSVIEW);	
-	iSettingsContainer = new (ELeave) CPodcastSettingsContainer(iPodcastModel);
-	iSettingsContainer->ConstructL(ClientRect());
+	
+	iListbox =new (ELeave) CPodcastSettingItemList(iPodcastModel);
+	iListbox->SetMopParent( this );
+	iListbox->ConstructFromResourceL(R_PODCAST_SETTINGS);
+	iListbox->SetRect(ClientRect());
+	iListbox->ActivateL();   
+	iListbox->MakeVisible(EFalse);
 	
 	iNaviPane =( CAknNavigationControlContainer * ) StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidNavi ) );
 		
 	HBufC *titleBuffer = iEikonEnv->AllocReadResourceL(R_SETTINGS_TITLE);
 	iNaviDecorator  = iNaviPane->CreateNavigationLabelL(*titleBuffer);
 	delete titleBuffer;
-
 }
     
 CPodcastSettingsView::~CPodcastSettingsView()
     {
-    delete iSettingsContainer;    
+	delete iListbox;
     }
 
 TUid CPodcastSettingsView::Id() const
@@ -398,15 +324,15 @@ void CPodcastSettingsView::DoActivateL(const TVwsViewId& aPrevViewId,
 {
 	iPreviousView = aPrevViewId;
 	
-	if(iSettingsContainer)
-		{
-		iSettingsContainer->SetRect(ClientRect());
-		AppUi()->AddToViewStackL( *this, iSettingsContainer );
-		iSettingsContainer->UpdateSettingVisibility();
-		iSettingsContainer->MakeVisible(ETrue);
-		iSettingsContainer->DrawNow();
-		}
-	
+	if (iListbox) {
+		iListbox->SetRect(ClientRect());
+		AppUi()->AddToStackL(*this, iListbox);
+		  
+		iListbox->UpdateSettingVisibility();
+		iListbox->MakeVisible(ETrue);
+		iListbox->DrawNow();
+		iListbox->SetFocus(ETrue);
+	}
 	
 	if(iNaviDecorator && iNaviPane)
 		{
@@ -416,11 +342,12 @@ void CPodcastSettingsView::DoActivateL(const TVwsViewId& aPrevViewId,
 
 void CPodcastSettingsView::DoDeactivate()
 	{
-	if ( iSettingsContainer )
-		{
-		AppUi()->RemoveFromViewStack( *this, iSettingsContainer );
-		iSettingsContainer->StoreSettings();
-		iSettingsContainer->MakeVisible(EFalse);
+	
+	if(iListbox)
+	    {
+		AppUi()->RemoveFromViewStack( *this, iListbox );
+		iListbox->StoreSettings();
+		iListbox->MakeVisible(EFalse);
 		}
 	
 	if(iNaviDecorator && iNaviPane)
@@ -437,6 +364,7 @@ void CPodcastSettingsView::DoDeactivate()
 */
 void CPodcastSettingsView::HandleCommandL(TInt aCommand)
 {
+	CAknView::HandleCommandL(aCommand);
 	RDebug::Printf("CPodcastListView::HandleCommandL=%d", aCommand);
 	switch(aCommand)
 	{
@@ -458,24 +386,3 @@ void CPodcastSettingsView::HandleCommandL(TInt aCommand)
 		break;
 	}
 }
-
-/*
-CMyEnumSetting::CMyEnumSetting(TInt aResourceId, CPodcastSettingItemList *aSettingList) : CAknEnumeratedTextPopupSettingItem(aResourceId, 0)
-	{
-	
-	}
-CMyEnumSetting::~CMyEnumSetting()
-	{
-	
-	}
-
-void CMyEnumSetting::EditItemL(TBool aCalledFromMenu)
-	{
-	
-	}
-
-void CMyEnumSetting::HandleSettingPageEventL(CAknSettingPage* aSettingPage,TAknSettingPageEvent aEventType)
-	{
-	
-	}
-*/

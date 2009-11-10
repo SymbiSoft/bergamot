@@ -16,9 +16,10 @@ CPodcastAppUi::CPodcastAppUi(CPodcastModel* aPodcastModel):iPodcastModel(aPodcas
 	
 	}
 void CPodcastAppUi::ConstructL()
-    {    
-    BaseConstructL( CAknAppUi::EAknEnableSkin );
+    {
 
+    BaseConstructL(CAknAppUi::EAknEnableSkin); 
+    
     iMainView = CPodcastMainView::NewL(*iPodcastModel);
 	this->AddViewL(iMainView);
 
