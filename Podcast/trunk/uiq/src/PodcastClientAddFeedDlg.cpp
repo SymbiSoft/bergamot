@@ -63,7 +63,7 @@ TBool CPodcastClientAddFeedDlg::OkToExitL(TInt aCommandId)
 	CleanupStack::PushL(url);
 	TPtr urlPtr = url->Des();
 
-	PodcastUtils::FixProtocols(urlPtr);
+	PodcastUtils::FixProtocolsL(urlPtr);
 
 	// check which mode we are in.
 	if (iEditFeed == EFalse)

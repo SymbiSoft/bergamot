@@ -10,7 +10,7 @@ _LIT(KPcastPrefix, "pcast://");
 class PodcastUtils
 	{
 public:
-	static void FixProtocols(TDes &aUrl);
+	static void FixProtocolsL(TDes &aUrl);
 	
 	};
 

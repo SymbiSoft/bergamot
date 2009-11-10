@@ -662,7 +662,6 @@ void CFeedEngine::ImportBookL(const TDesC& aTitle, const TDesC& aFile)
 			
 		error = rfile.Read(buf8);
 		buf16.Copy(buf8);
-		//RDebug::Print(_L("buf: %S\nline: %S"), &buf16, &line16);
 		}
 	
 	rfile.Close();

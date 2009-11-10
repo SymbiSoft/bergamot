@@ -355,7 +355,6 @@ void CHttpEventHandler::DumpIt(const TDesC8& aData)
 				logLine.Append(anEntry);
 				}
 			}
-			RDebug::Print(TRefByValue<const TDesC>_L("%S"), &logLine);	
 			logLine.Zero();
 
 		// Advance to next  byte segment (1 seg= cols)

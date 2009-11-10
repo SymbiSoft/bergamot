@@ -17,6 +17,8 @@
 #include "PodcastClientSettingsDlg.h"
 #include "PodcastClientFeedView.h"
 #include "SettingsEngine.h"
+#include "debug.h"
+
 /**
 Constructor for the view.
 Passes the application UI reference to the construction of the super class.
@@ -47,9 +49,6 @@ CPodcastClientView::~CPodcastClientView()
 */
 void CPodcastClientView::ConstructL()
 	{
-	//RDebug::Print(_L("ConstructL"));
-	// Calls ConstructL that initialises the standard values. 
-	// This should always be called in the concrete view implementations.
 	BaseConstructL();
 	}
 
@@ -172,7 +171,6 @@ void CPodcastClientView::HandleCommandL(CQikCommand& aCommand)
 
 void CPodcastClientView::ViewConstructL()
 {
-    //RDebug::Print(_L("ViewConstructL"));
 	ViewContext()->AddTextL(EPodcastListViewContextLabel, KNullDesC(), EHRightVCenter);
 
 	// Get the list box and the list box model
@@ -209,5 +207,5 @@ void CPodcastClientView::ViewDeactivated()
 
 void CPodcastClientView::HandleControlEventL(CCoeControl */*aControl*/, TCoeEvent /*aEventType*/)
 	{
-	//RDebug::Print(_L("HandleControlEvent"));
+	DP("HandleControlEvent");
 	}

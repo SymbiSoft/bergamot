@@ -1,6 +1,6 @@
 #include "PodcastUtils.h"
 			
-void PodcastUtils::FixProtocols(TDes &aUrl)
+void PodcastUtils::FixProtocolsL(TDes &aUrl)
 	{
 	// url is always present so access that								
 	// Some pod links are written in format itpc://mylink.net/podcast.xml

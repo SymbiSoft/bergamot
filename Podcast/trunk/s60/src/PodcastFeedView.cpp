@@ -554,7 +554,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			CleanupStack::PopAndDestroy(prompt);
 			if(dlg->RunLD())
 				{
-				PodcastUtils::FixProtocols(url);
+				PodcastUtils::FixProtocolsL(url);
 
 				CFeedInfo* newFeedInfo = CFeedInfo::NewL();
 				CleanupStack::PushL(newFeedInfo);
@@ -687,7 +687,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 						// Ask the user if it is OK to remove all shows
 						if ( CEikonEnv::Static()->QueryWinL(dlgTitle, dlgMessage))
 							{
-							PodcastUtils::FixProtocols(url);
+							PodcastUtils::FixProtocolsL(url);
 							
 							//----- HACK ---- //
 							CFeedInfo* temp = CFeedInfo::NewL();

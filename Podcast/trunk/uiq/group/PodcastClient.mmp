@@ -87,10 +87,10 @@ SYSTEMINCLUDE   \epoc32\include
 SYSTEMINCLUDE   \epoc32\include\libc
 
 USERINCLUDE     ..\inc 
-USERINCLUDE		..\..\common\libid3tag
 USERINCLUDE		..\..\common
 USERINCLUDE		..\..\common\engine
 USERINCLUDE     ..\..\common\sqlite\src
+USERINCLUDE		..\..\common\libid3tag
 
 SOURCEPATH      ..\src
 SOURCE          PodcastClientAppUi.cpp

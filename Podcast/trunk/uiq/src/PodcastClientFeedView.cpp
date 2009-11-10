@@ -499,7 +499,7 @@ void CPodcastClientFeedView::UpdateListboxItemsL()
 
 void CPodcastClientFeedView::HandleListBoxEventL(CQikListBox* /*aListBox*/, TQikListBoxEvent aEventType, TInt aItemIndex, TInt aSlotId)
 	{
-	//RDebug::Print(_L("HandleListBoxEvent, itemIndex=%d, slotId=%d, aEventType=%d"), aItemIndex, aSlotId, aEventType);
+	DP3("HandleListBoxEvent, itemIndex=%d, slotId=%d, aEventType=%d", aItemIndex, aSlotId, aEventType);
 	
 	switch (aEventType)
 		{

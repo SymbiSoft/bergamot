@@ -10,7 +10,7 @@
 #include <QikMediaFileFolderUtils.h>
 #include <QikSelectFileDlg.h>
 #include <QikSaveFileDlg.h>
-
+#include "debug.h"
 #include <podcastclient.mbg>
 #include "PodcastClientShowsView.h"
 #include "PodcastClientPlayView.h"
@@ -32,7 +32,6 @@ Creates and constructs the view.
 */
 CPodcastClientShowsView* CPodcastClientShowsView::NewLC(CQikAppUi& aAppUi, CPodcastModel& aPodcastModel)
 	{
-	//RDebug::Print(_L("NewLC"));
 	CPodcastClientShowsView* self = new (ELeave) CPodcastClientShowsView(aAppUi, aPodcastModel);
 	CleanupStack::PushL(self);
 	self->ConstructL();
@@ -990,8 +989,6 @@ void CPodcastClientShowsView::UpdateCommandsL(TBool aUpdateFeedStats)
 
 void CPodcastClientShowsView::HandleListBoxEventL(CQikListBox * /*aListBox*/, TQikListBoxEvent aEventType, TInt aItemIndex, TInt aSlotId)
 {
-	//RDebug::Print(_L("HandleListBoxEvent, itemIndex=%d, slotId=%d, aEventType=%d"), aItemIndex, aSlotId, aEventType);
-	
 	switch (aEventType)
 	{
 	case EEventHighlightMoved:
@@ -1025,7 +1022,6 @@ void CPodcastClientShowsView::HandleListBoxEventL(CQikListBox * /*aListBox*/, TQ
 
 TKeyResponse CPodcastClientShowsView::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType)
 	{
-	//RDebug::Print(_L("CPodcastClientShowsView::OfferKeyEventL"));
 	CQikViewBase::OfferKeyEventL(aKeyEvent, aType);
 	
 	if (aType == EEventKey)

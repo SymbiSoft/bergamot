@@ -183,7 +183,7 @@ void CPodcastListView::DoDeactivate()
 */
 void CPodcastListView::HandleCommandL(TInt aCommand)
 {
-	RDebug::Printf("CPodcastListView::HandleCommandL=%d", aCommand);
+	DP1("CPodcastListView::HandleCommandL=%d", aCommand);
 	switch(aCommand)
 	{
 	case EAknSoftkeyExit:

@@ -8,6 +8,7 @@
 #include "PodcastModel.h"
 #include "SoundEngine.h"
 #include "ShowEngine.h"
+#include "debug.h"
 
 /**
 Creates and constructs the view.
@@ -17,7 +18,6 @@ Creates and constructs the view.
 */
 CPodcastClientBaseView* CPodcastClientBaseView::NewLC(CQikAppUi& aAppUi, CPodcastModel& aPodcastModel)
 	{
-	//RDebug::Print(_L("NewLC"));
 	CPodcastClientBaseView* self = new (ELeave) CPodcastClientBaseView(aAppUi, aPodcastModel);
 	CleanupStack::PushL(self);
 	self->ConstructL();
@@ -70,7 +70,7 @@ void CPodcastClientBaseView::CheckForQuedDownloadsL()
 
 void CPodcastClientBaseView::ViewConstructL()
 {
-    //RDebug::Print(_L("ViewConstructL"));
+    DP("ViewConstructL");
     ViewConstructFromResourceL(R_PODCAST_MAINVIEW_UI_CONFIGURATIONS);
 
 	ViewContext()->AddTextL(EPodcastListViewContextLabel, KNullDesC(), EHCenterVCenter);
@@ -228,7 +228,7 @@ void CPodcastClientBaseView::UpdateListboxItemsL()
 
 void CPodcastClientBaseView::HandleListBoxEventL(CQikListBox * /*aListBox*/, TQikListBoxEvent aEventType, TInt aItemIndex, TInt aSlotId)
 {
-	//RDebug::Print(_L("HandleListBoxEvent, itemIndex=%d, slotId=%d, aEventType=%d"), aItemIndex, aSlotId, aEventType);
+	DP3("HandleListBoxEvent, itemIndex=%d, slotId=%d, aEventType=%d", aItemIndex, aSlotId, aEventType);
 
 	switch (aEventType)
 	{

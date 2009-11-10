@@ -45,7 +45,6 @@ CPodcastClientAppUi::~CPodcastClientAppUi()
 	RemoveView(*iBaseView); 
 	delete iBaseView;
 	
-	
 	delete iPodcastModel;
 }
 

@@ -39,7 +39,6 @@ _LIT(KZeroTime,"0:00:00");
 CPodcastClientPlayView* CPodcastClientPlayView::NewLC(CQikAppUi& aAppUi,
 		CPodcastModel& aPodcastModel)
 	{
-	//RDebug::Print(_L("NewLC"));
 	CPodcastClientPlayView* self = new (ELeave) CPodcastClientPlayView(aAppUi, aPodcastModel);
 	CleanupStack::PushL(self);
 	self->ConstructL();
@@ -430,7 +429,6 @@ void CPodcastClientPlayView::HandleCommandL(CQikCommand& aCommand)
 
 void CPodcastClientPlayView::ViewConstructL()
 	{
-	//RDebug::Print(_L("ViewConstructL"));
 	ViewConstructFromResourceL(R_PODCAST_PLAYVIEW_UI_CONFIGURATIONS);
 
 	iPlayProgressbar
@@ -528,7 +526,7 @@ void CPodcastClientPlayView::ShowDownloadUpdatedL(
 		TInt aBytesTotal)
 
 	{
-	//RDebug::Print(_L("CPodcastClientPlayView::ShowDownloadUpdatedL"));
+	DP("CPodcastClientPlayView::ShowDownloadUpdatedL");
 	if (iShowInfo && iPodcastModel.ShowEngine().ShowDownloading() && iShowInfo->Uid() != iPodcastModel.ShowEngine().ShowDownloading()->Uid()) {
 		iBytesDownloaded = 0;
 		UpdateViewL();

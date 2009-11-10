@@ -1148,7 +1148,7 @@ void CPodcastPlayView::DoDeactivate()
 */
 void CPodcastPlayView::HandleCommandL(TInt aCommand)
 {
-	RDebug::Printf("CPodcastListView::HandleCommandL=%d", aCommand);
+	DP1("CPodcastListView::HandleCommandL=%d", aCommand);
 	switch(aCommand)
 	{
 	case EPodcastMarkAsPlayed:

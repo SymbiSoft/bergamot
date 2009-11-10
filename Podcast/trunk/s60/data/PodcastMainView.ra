@@ -66,8 +66,8 @@ RESOURCE ARRAY r_podcast_mainmenu_array
 	LBUF {txt = "0\t" STRING_r_view_player_cmd "\t%S";},
 	LBUF {txt = "1\t" STRING_r_view_shows_cmd "\t" STRING_r_view_onphone_status;},
 	LBUF {txt = "2\t" STRING_r_view_dling_shows_cmd "\t" STRING_r_podcast_shows_title_download;},
-	LBUF {txt = "3\t" STRING_r_view_feeds_cmd "\t" STRING_r_podcast_feeds_title_format;},
-	LBUF {txt = "4\t" STRING_r_view_audiobooks_cmd "\t" STRING_r_podcast_books_title_format;}
+	LBUF {txt = "3\t" STRING_r_view_feeds_cmd "\t" STRING_r_podcast_feeds_title_format;}//,
+	//LBUF {txt = "4\t" STRING_r_view_audiobooks_cmd "\t" STRING_r_podcast_books_title_format;}
 	};
 }
 
