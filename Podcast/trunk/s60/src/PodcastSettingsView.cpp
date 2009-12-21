@@ -90,7 +90,7 @@ public:
 	
 	~CPodcastSettingItemList()
 		{
-
+		DP("CPodcastSettingItemList~");
 		}
 
 	void StoreSettings() {
@@ -293,23 +293,11 @@ CPodcastSettingsView::CPodcastSettingsView(CPodcastModel& aPodcastModel):iPodcas
 void CPodcastSettingsView::ConstructL()
 {
 	BaseConstructL(R_PODCAST_SETTINGSVIEW);	
-	
-	iListbox =new (ELeave) CPodcastSettingItemList(iPodcastModel);
-	iListbox->SetMopParent( this );
-	iListbox->ConstructFromResourceL(R_PODCAST_SETTINGS);
-	iListbox->SetRect(ClientRect());
-	iListbox->ActivateL();   
-	iListbox->MakeVisible(EFalse);
-	
-	iNaviPane =( CAknNavigationControlContainer * ) StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidNavi ) );
-		
-	HBufC *titleBuffer = iEikonEnv->AllocReadResourceL(R_SETTINGS_TITLE);
-	iNaviDecorator  = iNaviPane->CreateNavigationLabelL(*titleBuffer);
-	delete titleBuffer;
 }
     
 CPodcastSettingsView::~CPodcastSettingsView()
     {
+    DP("CPodcastSettingsView::~CPodcastSettingsView()");
 	delete iListbox;
     }
 
@@ -325,14 +313,26 @@ void CPodcastSettingsView::DoActivateL(const TVwsViewId& aPrevViewId,
 	iPreviousView = aPrevViewId;
 	
 	if (iListbox) {
-		iListbox->SetRect(ClientRect());
-		AppUi()->AddToStackL(*this, iListbox);
-		  
-		iListbox->UpdateSettingVisibility();
-		iListbox->MakeVisible(ETrue);
-		iListbox->DrawNow();
-		iListbox->SetFocus(ETrue);
+		delete iListbox;
 	}
+	
+	iListbox =new (ELeave) CPodcastSettingItemList(iPodcastModel);
+	iListbox->SetMopParent( this );
+	iListbox->ConstructFromResourceL(R_PODCAST_SETTINGS);
+	iListbox->SetRect(ClientRect());
+	iListbox->ActivateL();   
+	
+	iNaviPane =( CAknNavigationControlContainer * ) StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidNavi ) );
+		
+	HBufC *titleBuffer = iEikonEnv->AllocReadResourceL(R_SETTINGS_TITLE);
+	iNaviDecorator  = iNaviPane->CreateNavigationLabelL(*titleBuffer);
+	delete titleBuffer;
+
+	AppUi()->AddToStackL(*this, iListbox);
+	iListbox->UpdateSettingVisibility();
+	iListbox->MakeVisible(ETrue);
+	iListbox->DrawNow();
+	iListbox->SetFocus(ETrue);
 	
 	if(iNaviDecorator && iNaviPane)
 		{
@@ -342,19 +342,20 @@ void CPodcastSettingsView::DoActivateL(const TVwsViewId& aPrevViewId,
 
 void CPodcastSettingsView::DoDeactivate()
 	{
-	
-	if(iListbox)
-	    {
-		AppUi()->RemoveFromViewStack( *this, iListbox );
-		iListbox->StoreSettings();
+	DP("CPodcastSettingsView::DoDeactivate BEGIN");
+	if (iListbox) {
 		iListbox->MakeVisible(EFalse);
-		}
+		
+		AppUi()->RemoveFromViewStack( *this, iListbox );
+		
+	}
 	
 	if(iNaviDecorator && iNaviPane)
 		{
 		iNaviPane->Pop(iNaviDecorator);
+		delete iNaviDecorator;
 		}
-		
+	DP("CPodcastSettingsView::DoDeactivate END");
 	}
 
 /** 
@@ -376,6 +377,7 @@ void CPodcastSettingsView::HandleCommandL(TInt aCommand)
 		}
 	case EAknSoftkeyBack:
 		{
+		iListbox->StoreSettings();
 		AppUi()->ActivateViewL(iPreviousView);
 		}break;	
 	case EPodcastZoomSetting:
@@ -384,5 +386,15 @@ void CPodcastSettingsView::HandleCommandL(TInt aCommand)
 		break;
 	default:
 		break;
+	}
+}
+
+void CPodcastSettingsView::HandleStatusPaneSizeChange()
+{
+	CAknView::HandleStatusPaneSizeChange();
+
+	DP2("CPodcastSettingsView::HandleStatusPaneSizeChange() width=%d, height=%d", ClientRect().Width(), ClientRect().Height());
+	if (iListbox) {
+		iListbox->SetRect( ClientRect());	
 	}
 }

@@ -57,6 +57,8 @@ class CPodcastSettingsView : public CAknView
 		 * @param aCommand ID of the command to respond to. 
 		 */
 		void HandleCommandL(TInt aCommand);
+		void HandleStatusPaneSizeChange();
+
 	private:
 		//CPodcastSettingsContainer* iSettingsContainer;
 		CPodcastModel& iPodcastModel;
@@ -65,7 +67,7 @@ class CPodcastSettingsView : public CAknView
 		 TInt iAutoDownloadValue;
 		 CAknNavigationDecorator* iNaviDecorator;
 		 CAknNavigationControlContainer* iNaviPane;
-		CPodcastSettingItemList  * iListbox;
+		 CPodcastSettingItemList  * iListbox;
 
 };
 

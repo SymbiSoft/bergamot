@@ -53,7 +53,7 @@ void CPodcastListContainer::ConstructL( const TRect& aRect, TInt aListboxFlags )
 	iListbox->ItemDrawer()->FormattedCellData()->EnableMarqueeL( ETrue );
 
 	iListbox->SetSize(aRect.Size());
-	iListbox->MakeVisible(EFalse);
+	iListbox->MakeVisible(ETrue);
     MakeVisible(EFalse);
 	// Activate the window, which makes it ready to be drawn
     ActivateL();   
@@ -77,7 +77,6 @@ CCoeControl* CPodcastListContainer::ComponentControl(TInt aIndex) const
 
 void CPodcastListContainer::HandleResourceChange(TInt aType)
 {
-	DP("CPodcastListContainer::HandleResourceChange");
 	switch( aType )
     	{
 	    case KEikDynamicLayoutVariantSwitch:
@@ -93,7 +92,7 @@ void CPodcastListContainer::ScrollToVisible() {
 }
 void CPodcastListContainer::SizeChanged()
 {
-	DP("CPodcastListContainer::SizeChanged()");
+	DP2("CPodcastListContainer::SizeChanged(), width=%d, height=%d",Size().iWidth, Size().iHeight);
 	if(iListbox != NULL)
 	{
 		iListbox->SetSize(Size());
@@ -140,6 +139,8 @@ void CPodcastListView::ConstructL()
 {
 	iListContainer = new (ELeave) CPodcastListContainer;
 	iListContainer->ConstructL(ClientRect(), iListboxFlags);
+	iListContainer->SetMopParent(this);
+	iListContainer->ActivateL();
 	iItemArray = new (ELeave)CDesCArrayFlat(KDefaultGran);
 	iListContainer->Listbox()->Model()->SetItemTextArray(iItemArray);
 	iListContainer->Listbox()->Model()->SetOwnershipType(ELbmDoesNotOwnItemArray);
@@ -156,7 +157,8 @@ void CPodcastListView::HandleViewRectChange()
 
 void CPodcastListView::HandleStatusPaneSizeChange()
 {
-	DP("CPodcastListView::HandleStatusPaneSizeChange()");
+	DP2("CPodcastListView::HandleStatusPaneSizeChange(), width=%d, height=%d", ClientRect().Width(), ClientRect().Height());
+
 	if ( iListContainer )
 	{
         iListContainer->SetRect( ClientRect() );
@@ -183,16 +185,12 @@ void CPodcastListView::DoActivateL(const TVwsViewId& /*aPrevViewId */,
 	if(iListContainer)
 	{
 		iListContainer->SetSize(ClientRect().Size());
-		iListContainer->iListbox->SetSize(ClientRect().Size());
-		AppUi()->AddToViewStackL( *this, iListContainer->iListbox );	
+		iListContainer->SetMopParent(this);
+		
+		AppUi()->AddToStackL(*this, iListContainer);
 		iListContainer->MakeVisible(ETrue);
 		UpdateListboxItemsL();		
 		iListContainer->DrawNow();
-		  
-		iListContainer->iListbox->MakeVisible(ETrue);
-		iListContainer->iListbox->DrawNow();
-		iListContainer->iListbox->SetFocus(ETrue);
-		iListContainer->MakeVisible(ETrue);
 	}
 	
 	if(iNaviDecorator && iNaviPane)
@@ -206,9 +204,8 @@ void CPodcastListView::DoDeactivate()
 	DP("CPodcastListView::DoDeactivate()");
 	if ( iListContainer )
 	{
-        AppUi()->RemoveFromViewStack( *this, iListContainer->iListbox );
+		AppUi()->RemoveFromViewStack( *this, iListContainer);
 		iListContainer->MakeVisible(EFalse);
-		iListContainer->iListbox->MakeVisible(EFalse);
 		if(iNaviDecorator && iNaviPane)
 		{
 		iNaviPane->Pop(iNaviDecorator);

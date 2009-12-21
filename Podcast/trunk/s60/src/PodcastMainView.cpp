@@ -116,7 +116,7 @@ void CPodcastMainView::UpdateListboxItemsL()
 	{
 	
 		TPtrC descriptionText(KNullDesC());
-		CShowInfo *info = iPodcastModel.PlayingPodcast();
+		//CShowInfo *info = iPodcastModel.PlayingPodcast();
 		if(iPodcastModel.PlayingPodcast() != NULL && (iPodcastModel.SoundEngine().State() == ESoundEnginePlaying || iPodcastModel.SoundEngine().State() == ESoundEnginePaused))
 		{
 			descriptionText.Set(iPodcastModel.PlayingPodcast()->Title());
@@ -175,6 +175,7 @@ void CPodcastMainView::DoActivateL(const TVwsViewId& aPrevViewId,
 	                                  TUid aCustomMessageId,
 	                                  const TDesC8& aCustomMessage)
 {
+	DP("CPodcastMainView::DoActivateL BEGIN");
 	HBufC *buf = iEikonEnv->AllocReadResourceLC(R_PODCAST_SUBTITLE);
 	SetNaviTextL(*buf);
 	CleanupStack::PopAndDestroy(buf);
@@ -187,6 +188,7 @@ void CPodcastMainView::DoActivateL(const TVwsViewId& aPrevViewId,
 		iStartupCallBack = new (ELeave) CAsyncCallBack(TCallBack(StaticCheckForQuedDownloadsL, this), CActive::EPriorityIdle);
 		iStartupCallBack->Call();
 	}
+	DP("CPodcastMainView::DoActivateL END");
 }
 
 void CPodcastMainView::DoDeactivate()

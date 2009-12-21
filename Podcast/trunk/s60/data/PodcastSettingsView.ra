@@ -44,7 +44,7 @@ RESOURCE AVKON_VIEW r_podcast_settingsview
 {
 	hotkeys = r_podcast_settingsview_hotkeys;
 	menubar = r_podcast_settingsview_menubar;
-	cba = R_AVKON_SOFTKEYS_OPTIONS_BACK;    
+	cba = R_AVKON_SOFTKEYS_BACK;    
 }
 
 RESOURCE AVKON_SETTING_ITEM_LIST r_podcast_settings

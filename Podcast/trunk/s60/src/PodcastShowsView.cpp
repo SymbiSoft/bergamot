@@ -183,6 +183,7 @@ void CPodcastShowsView::DoActivateL(const TVwsViewId& aPrevViewId,
 				break;
 			}
 		}
+	
 	UpdateFeedUpdateStateL();
 	}
 

@@ -39,12 +39,12 @@ class CPodcastListContainer : public CCoeControl
 		CEikFormattedCellListBox* Listbox();
 		void ScrollToVisible();
     	void Draw(const TRect& aRect) const;
-		
-		CEikFormattedCellListBox * iListbox;
+		CEikFormattedCellListBox * iListbox;		
 
 	protected:
 		TTypeUid::Ptr MopSupplyObject( TTypeUid aId );
-		
+	
+	private:
 		MKeyEventListener* iKeyEventListener;
         CAknsBasicBackgroundControlContext* iBgContext;
 
