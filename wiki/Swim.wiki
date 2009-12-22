@@ -65,6 +65,7 @@ The complete source code is found in the [http://bergamot.googlecode.com/svn/Syn
 
   * 0.60 (When I get around to it)
     * Syncing at fixed times of day
+    * Roaming detection
     * Possibly provide a signed version through Horizon
 
   * 0.50 (2009-12-22) [http://bergamot.googlecode.com/svn/Sync/tags/v050 Source]
