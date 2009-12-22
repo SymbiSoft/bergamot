@@ -164,13 +164,7 @@ void CSyncClientAppView::ShowSyncProfiles() {
 		DP1("OpenL error %d", error);
 		return;
 	}
-	DP("Before job");
-	TRAPD(err,RSyncMLDataSyncJob job;);
-	
-	if (err != KErrNone) {
-		DP1("Err=%d", err);
-	}
-	DP("After job");
+
 	RArray<TSmlProfileId> profiles;
 	DP("Before ListProfilesL");
 	TRAP(error, session.ListProfilesL(profiles, ESmlDataSync));
