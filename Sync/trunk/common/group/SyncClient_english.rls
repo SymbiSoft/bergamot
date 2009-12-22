@@ -3,7 +3,7 @@ rls_string STRING_sync_about "About"
 
 rls_string STRING_r_about_title "About"
 rls_string STRING_about_text_uiq "Swim 0.40\n\nCopyright © 2007-2008,\nThe Bergamot Project\n\nhttp://bergamot.googlecode.com"
-rls_string STRING_about_text_s60 "Swim 0.42\n©2008 The Bergamot Project"
+rls_string STRING_about_text_s60 "Swim 0.50\n©2008 The Bergamot Project"
 
 rls_string STRING_option_0 "Manually"
 rls_string STRING_option_1 "Every 15 minutes"
