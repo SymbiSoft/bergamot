@@ -1,0 +1,60 @@
+TARGET            SyncClientS60_0xE0983804.exe
+TARGETTYPE        exe
+UID		  		  0x100039CE 0xE0983804
+
+EPOCSTACKSIZE 81920
+EPOCHEAPSIZE 1024000 32768000
+
+SYSTEMINCLUDE     \epoc32\include
+USERINCLUDE       ..\inc
+USERINCLUDE		..\..\common\inc
+
+SOURCEPATH 		..\src
+SOURCE			SyncClient.cpp
+SOURCE			SyncClientDocument.cpp
+SOURCE			SyncClientApplication.cpp
+SOURCE			SyncClientAppUi.cpp
+SOURCE			SyncClientAppView.cpp
+
+SOURCEPATH 		..\..\common\src
+SOURCE 			RSyncServerSession.cpp
+
+USERINCLUDE ..\..\common\group
+
+SOURCEPATH      .
+START RESOURCE SyncClientS60_0xE0983804.rss
+	HEADER
+	TARGETPATH resource\apps
+END
+
+START RESOURCE    SyncClientS60_0xE0983804_reg.rss
+#ifdef WINSCW
+TARGETPATH 	  \private\10003a3f\apps
+#else
+TARGETPATH 	  \private\10003a3f\import\apps
+#endif
+END
+
+START RESOURCE  E0983805.rss
+END
+
+LIBRARY           euser.lib
+LIBRARY           apparc.lib
+LIBRARY           cone.lib
+LIBRARY           eikcore.lib
+LIBRARY           avkon.lib
+LIBRARY           commonengine.lib
+LIBRARY		  	  efsrv.lib 
+LIBRARY           estor.lib
+LIBRARY	     	  flogger.lib
+LIBRARY			  eikcoctl.lib 
+
+#ifndef WINSCW
+LIBRARY			syncmlclientapi.lib 
+#endif
+
+LANG SC
+
+CAPABILITY LocalServices NetworkServices WriteDeviceData ReadDeviceData ReadUserData WriteUserData
+SOURCEPATH ..\src
+SOURCE SyncSetting.cpp

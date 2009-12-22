@@ -1,0 +1,21 @@
+#ifndef __SYNCCLIENT_HRH__
+#define __SYNCCLIENT_HRH__
+
+enum TSyncClientCommands
+    {
+    ESyncClientBaseViewPage = 1,
+    ESwimAboutText,
+    ESwimAboutIcon,
+    EMyAbout
+    };
+    
+enum TSyncClientDefines
+	{
+	EMyViewBuildingBlockBase,
+	EMyViewChoiceListBase,
+	ESwimContextLabel
+	};
+
+#endif
+
+

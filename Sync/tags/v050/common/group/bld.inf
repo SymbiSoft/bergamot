@@ -1,0 +1,31 @@
+#if defined(__UIQ3_SDK__)
+PRJ_MMPFILES
+
+..\..\uiq\group\SyncClientUIQ.mmp
+
+PRJ_EXPORTS
+
+// these seem to be missing from some SDKs
+..\..\uiq\syncml\syncmldef.h
+..\..\uiq\syncml\syncmlclient.h
+..\..\uiq\syncml\syncmlclientds.h
+..\..\uiq\syncml\syncmldatafilter.h
+..\..\uiq\syncml\syncmlhistory.h
+
+#else
+PRJ_MMPFILES
+
+gnumakefile ..\..\s60\group\icons_bitmaps_dc.mk
+..\..\s60\group\SyncClientS60.mmp
+
+#endif
+
+PRJ_MMPFILES
+SyncServer.mmp
+
+PRJ_PLATFORMS
+GCCE
+WINSCW
+
+
+
