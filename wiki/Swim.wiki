@@ -34,7 +34,9 @@ To use Swim, you need to do three things:
     * And if you have a UIQ phone, you obviously need that version
   # Sign Swim using Symbian [https://www.symbiansigned.com/app/page/public/openSignedOnline.do Open Signed Online]. 
     * Get your IMEI by typing `*#06#` on your phone
-    * Select the following capabilities: `LocalServices NetworkServices WriteDeviceData ReadDeviceData ReadUserData WriteUserData ProtServ`, or simply select all.
+    * Enter your email address
+    * Upload the Swim SIS file that you downloaded from this site
+    * You will get an email with a verification link. Click it. Then you get a second email with a link to the signed SIS file. Download the signed SIS file.
   # Install the signed SIS file on your phone.
 
 *In addition, many E-series phones have the option to allow self-signed programs disabled. To enable it, go to Application manager > Options > Settings > Software installation and change it to 'All'*
