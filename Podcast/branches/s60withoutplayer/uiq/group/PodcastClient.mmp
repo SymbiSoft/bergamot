@@ -1,0 +1,149 @@
+/**
+ * This file is a part of Escarpod Podcast project
+ * (c) 2008 The Bergamot Project
+ * (c) 2008 Teknolog (Sebastian Brännström)
+ * (c) 2008 Anotherguest (Lars Persson)
+ */
+ 
+TARGET            PodcastClient.exe
+TARGETTYPE        exe
+TARGETPATH        \sys\bin
+UID               0x100039CE 0xA00046AE
+
+CAPABILITY NetworkServices UserEnvironment
+
+EPOCSTACKSIZE 81920
+EPOCHEAPSIZE 1024000 32768000
+
+START BITMAP PodcastClient.mbm
+	TARGETPATH \resource\apps
+	HEADER
+	SOURCEPATH ..\..\common\images
+	SOURCE c16 PodcastClient_64x64.bmp
+	SOURCE 8 PodcastClient_64x64_mask.bmp
+	SOURCE c16 PodcastClient_40x40.bmp
+	SOURCE 8 PodcastClient_40x40_mask.bmp
+	SOURCE c16 PodcastClient_18x18.bmp
+	SOURCE 8 PodcastClient_18x18_mask.bmp
+	SOURCE c16 feeds_40x40.bmp
+	SOURCE 8 feeds_40x40m.bmp
+	SOURCE c16 feed_40x40.bmp
+	SOURCE 8 feed_40x40m.bmp
+	SOURCE c16 play_40x40.bmp
+	SOURCE 8 play_40x40m.bmp
+	SOURCE c16 downloaded_view_40x40.bmp
+	SOURCE 8 downloaded_view_40x40m.bmp
+	SOURCE c16 pending_view_40x40.bmp
+	SOURCE 8 pending_view_40x40m.bmp
+	SOURCE c16 show_40x40.bmp
+	SOURCE 8 show_40x40m.bmp
+	SOURCE c16 show_playing_40x40.bmp
+	SOURCE 8 show_playing_40x40m.bmp
+	SOURCE c16 downloading_40x40.bmp
+	SOURCE 8 downloading_40x40m.bmp 
+	SOURCE c16 audiobooks_40x40.bmp
+	SOURCE 8 audiobooks_40x40m.bmp
+	SOURCE c16 new_40x40.bmp
+	SOURCE 8 new_40x40m.bmp
+	SOURCE c16 queued_40x40.bmp
+	SOURCE 8 queued_40x40m.bmp
+	SOURCE c16 suspended_40x40.bmp
+	SOURCE 8 suspended_40x40m.bmp
+	SOURCE c16 AudioBookChapter_40x40.bmp
+	SOURCE 8 AudioBookChapter_40x40m.bmp
+	SOURCE c16 AudioBookIndividual_40x40.bmp
+	SOURCE 8 AudioBookIndividual_40x40m.bmp
+	SOURCE c16 AudioBook_120.bmp
+	SOURCE 8 AudioBook_120m.bmp
+	SOURCE c16 Show_120.bmp
+	SOURCE 8 Show_120m.bmp 
+	SOURCE 8 emptyimage.bmp
+END
+ 
+SOURCEPATH        ..\group
+DOCUMENT		  PodcastClientMainView.ra
+DOCUMENT		  PodcastClientPlayView.ra
+DOCUMENT		  PodcastClientShowsView.ra
+DOCUMENT		  PodcastClientFeedView.ra
+
+USERINCLUDE	  ..\..\common\resources
+START RESOURCE    PodcastClient.rss
+TARGETPATH        \resource\apps
+LANG			  01 02 03 04 05 06 07 16 17 25 27 44 49
+HEADER
+END
+
+START RESOURCE    PodcastClient_loc.rss
+TARGETPATH        \resource\apps
+HEADER
+END
+
+START RESOURCE    PodcastClient_reg.rss
+TARGETPATH        \private\10003A3F\apps
+END
+
+SYSTEMINCLUDE   \epoc32\include\ecom
+SYSTEMINCLUDE   \epoc32\include
+SYSTEMINCLUDE   \epoc32\include\libc
+
+USERINCLUDE     ..\inc 
+USERINCLUDE		..\..\common
+USERINCLUDE		..\..\common\engine
+USERINCLUDE     ..\..\common\sqlite\src
+USERINCLUDE		..\..\common\libid3tag
+
+SOURCEPATH      ..\src
+SOURCE          PodcastClientAppUi.cpp
+SOURCE          PodcastClientDocument.cpp
+SOURCE          PodcastClientApplication.cpp
+SOURCE			PodcastClientView.cpp
+SOURCE			PodcastClientBaseView.cpp
+SOURCE			PodcastClientShowsView.cpp
+SOURCE			PodcastClientFeedView.cpp
+SOURCE			PodcastClientPlayView.cpp
+SOURCE			PodcastClientAddFeedDlg.cpp
+SOURCE			PodcastClientSettingsDlg.cpp
+SOURCE			PodcastClientAudioBookDlg.cpp
+
+STATICLIBRARY	engine.lib
+STATICLIBRARY	libid3tag.lib
+STATICLIBRARY	sqlite.lib
+
+LIBRARY         euser.lib
+LIBRARY         apparc.lib
+LIBRARY         cone.lib
+LIBRARY         eikcore.lib
+LIBRARY         eikcoctl.lib
+LIBRARY         qikcore.lib
+LIBRARY         apgrfx.lib
+LIBRARY         ws32.lib
+LIBRARY         fbscli.lib
+LIBRARY         bafl.lib
+LIBRARY         gdi.lib
+LIBRARY         quiconfigclient.lib
+LIBRARY			qikctl.lib
+LIBRARY			eikctl.lib
+LIBRARY			qikdlg.lib
+LIBRARY			qikallocdll.lib 
+LIBRARY			estor.lib 
+LIBRARY			efsrv.lib
+LIBRARY			mediaclientaudio.lib
+LIBRARY			mediaclient.lib
+LIBRARY			mmcommon.lib 
+LIBRARY			http.lib 
+LIBRARY			inetprotutil.lib
+LIBRARY			charconv.lib
+LIBRARY			xmlframework.lib
+LIBRARY			qiklbx.lib 
+LIBRARY			eikdlg.lib
+LIBRARY			mmfcontrollerframework.lib 
+LIBRARY		    qikutils.lib
+LIBRARY			commdb.lib
+LIBRARY			esock.lib 
+LIBRARY			estlib.lib
+LIBRARY			etel3rdparty.lib
+LIBRARY			ezlib.lib
+LIBRARY         remconcoreapi.lib
+LIBRARY 		remconinterfacebase.lib
+LIBRARY			flogger.lib
+LIBRARY			apmime.lib 

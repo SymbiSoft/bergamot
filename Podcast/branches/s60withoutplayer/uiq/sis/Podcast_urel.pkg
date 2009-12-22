@@ -1,0 +1,38 @@
+; EN=01 FR=02 GE=03 SP=04 IT=05 SW=06 DA=07 RU=16 HU=17 CS=25 PL=27 CA=44 ET=49; 
+
+&EN,FR,GE,SP,IT,SW,DA,RU,HU,CS,PL,CA,ET
+:"Bergamot Project"
+%{"Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project"}
+#{"Escarpod","Escarpod","Escarpod","Escarpod","Escarpod","Escarpod","Escarpod","Escarpod","Escarpod","Escarpod","Escarpod", "Escarpod","Escarpod"}, (0xA00046BD), 1, 20, 0, TYPE=SA
+
+;(0x101F6300), 3, 0, 0, {"UIQ30ProductID"}
+
+"/epoc32/release/gcce/urel/PodcastClient.exe"-"!:\sys\bin\PodcastClient.exe"
+"/epoc32/data/z/resource/apps/PodcastClient.mbm"-"!:\resource\apps\PodcastClient.mbm"
+"/epoc32/data/z/private/10003A3F/apps/PodcastClient_reg.rsc"-"!:\private\10003a3f\import\apps\PodcastClient_reg.rsc"
+
+; configuration and DB
+"../../common/config/config.cfg"-"c:\private\A00046ae\config.cfg"
+"../../common/config/defaultfeeds.xml"-"c:\private\A00046ae\defaultfeeds.xml"
+"../../common/config/escarpod.sqlite"-"c:\private\A00046ae\escarpod.sqlite.template"
+
+{
+"/epoc32/data/z/resource/apps/PodcastClient.R01"
+"/epoc32/data/z/resource/apps/PodcastClient.R02"
+"/epoc32/data/z/resource/apps/PodcastClient.R03"
+"/epoc32/data/z/resource/apps/PodcastClient.R04"
+"/epoc32/data/z/resource/apps/PodcastClient.R05"
+"/epoc32/data/z/resource/apps/PodcastClient.R06"
+"/epoc32/data/z/resource/apps/PodcastClient.R07"
+"/epoc32/data/z/resource/apps/PodcastClient.R16"
+"/epoc32/data/z/resource/apps/PodcastClient.R17"
+"/epoc32/data/z/resource/apps/PodcastClient.R25"
+"/epoc32/data/z/resource/apps/PodcastClient.R27"
+"/epoc32/data/z/resource/apps/PodcastClient.R44"
+"/epoc32/data/z/resource/apps/PodcastClient.R49"
+}-"!:\resource\apps\PodcastClient.rsc"
+
+; backup
+"../../common/resources/backup_registration.xml" - "c:\private\A00046ae\backup_registration.xml"
+
+"/epoc32/data/z/resource/apps/PodcastClient_loc.rsc"-"!:\resource\apps\PodcastClient_loc.rsc"

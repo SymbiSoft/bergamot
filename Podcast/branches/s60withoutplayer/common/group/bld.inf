@@ -1,0 +1,26 @@
+#include "..\libid3tag\bld.inf"
+#include "..\sqlite\group\bld.inf"
+
+PRJ_PLATFORMS
+GCCE
+WINSCW
+
+PRJ_MMPFILES
+
+..\..\common\engine\engine.mmp
+#if defined(__UIQ3_SDK__)
+..\..\uiq\group\PodcastClient.mmp
+#else
+gnumakefile ..\..\s60\group\icons.mk
+..\..\s60\group\Podcast.mmp
+#endif
+
+PRJ_EXPORTS
+
+#if defined(__UIQ3_SDK__)
+..\..\common\config\defaultfeeds.xml \epoc32\winscw\c\private\A00046ae\defaultfeeds.xml
+..\..\common\config\escarpod.sqlite \epoc32\winscw\c\private\A00046ae\escarpod.sqlite.template
+#else
+..\..\common\config\defaultfeeds_emu.xml \epoc32\winscw\c\private\A0009D00\defaultfeeds.xml
+..\..\common\config\escarpod.sqlite \epoc32\winscw\c\private\A0009D00\escarpod.sqlite.template
+#endif

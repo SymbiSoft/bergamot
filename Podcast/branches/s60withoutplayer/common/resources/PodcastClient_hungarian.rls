@@ -1,0 +1,210 @@
+CHARACTER_SET UTF8
+/////////////////////////////////////////////////////////////////////
+// Escarpod language file
+//
+// Language:   Hungarian HU/17
+// Translator: Balázs Szücs (Balinov)
+
+// list view commands
+rls_string STRING_r_listbox_listview_cmd_close_debug "Bezárás (debug)"
+rls_string STRING_r_listbox_listview_cmd_close_debug_shorttext "Bezárás"
+
+// Menu commands, view filtering and navigation
+rls_string STRING_r_view_cmd "Megnéz"
+
+// Navigation to shows view
+rls_string STRING_r_view_main_cmd "Fõ"
+rls_string STRING_r_view_shows_cmd "Mûsorszámok a Telefonon"
+rls_string STRING_r_view_all_shows_cmd "Összes mûsorszám"
+rls_string STRING_r_view_new_shows_cmd "Lejátszatlan"
+rls_string STRING_r_view_dl_shows_cmd "Mûsorszámok a Telefonon"
+rls_string STRING_r_view_dling_shows_cmd "Letöltõ"
+rls_string STRING_r_view_about_cmd "Infó"
+
+// Navigation to feeds
+rls_string STRING_r_view_feeds_cmd "Feedek"
+
+// Navigation to the player
+rls_string STRING_r_view_player_cmd "Lejátszó"
+
+// Navigation to the audio books
+rls_string STRING_r_view_audiobooks_cmd "Hangoskönyvek"
+rls_string STRING_r_view_new_audiobook_cmd "Új hangoskönyv"
+rls_string STRING_r_view_remove_audiobook_cmd "Hangoskönyv eltávol­tása"
+
+// Actions for the player
+rls_string STRING_r_play_cmd "Lejátszás"
+rls_string STRING_r_stop_cmd "Állj"
+rls_string STRING_r_pause_cmd "Pillanatállj"
+rls_string STRING_r_volume_cmd "Hangerõ"
+
+rls_string STRING_r_view_download_cmd "Letölt"
+rls_string STRING_r_view_download_short_cmd "Lekap"
+rls_string STRING_r_view_remove_download_short_cmd "Eltávol­t"
+rls_string STRING_r_view_remove_download_cmd "Letöltés eltávol­tása"
+
+rls_string STRING_r_view_show_cmd "Mûsorszám"
+rls_string STRING_r_view_cmd "Megnéz"
+rls_string STRING_r_view_play_cmd "Lejátszás"
+rls_string STRING_r_view_mark_as_played_cmd "Megjelölés lejátszottként"
+rls_string STRING_r_view_mark_as_unplayed_cmd "Megjelölés lejátszatlanként"
+
+// Actions for feeds
+rls_string STRING_r_view_add_feed_cmd "Feed hozzáadása"
+rls_string STRING_r_view_edit_feed_cmd "Feed szerkesztése"
+rls_string STRING_r_view_delete_feed_cmd "Feed eltávol­tása"
+rls_string STRING_r_view_purge_feed_cmd "Összes eltávo­ltása"
+rls_string STRING_r_update_feed_cmd "Feed friss­tésse"
+rls_string STRING_r_update_feed_short_cmd "Friss­tés"
+rls_string STRING_r_update_all_feeds_cmd "Összes friss­tése"
+rls_string STRING_r_update_all_feeds_short_cmd "Össz. Friss­t."
+
+rls_string STRING_r_podcast_feeds_update_message "Friss­tés..."
+rls_string STRING_r_podcast_feeds_update_error "Sikertelen friss­tés!"
+
+// Actions for shows
+rls_string STRING_r_view_download_show_cmd "Letölt"
+rls_string STRING_r_view_delete_show_cmd "Töröl"
+rls_string STRING_r_view_delete_shows_cmd "Mindent töröl"
+rls_string STRING_r_view_purge_show_cmd "Töröl"
+rls_string STRING_r_view_remove_download_cmd "Sorbaáll­tás megszüntetése"
+rls_string STRING_r_view_stop_downloads_cmd "Letöltés felfüggesztése"
+rls_string STRING_r_view_resume_downloads_cmd "Letöltés folytatása"
+rls_string STRING_r_view_mark_all_played_cmd "Összes jelölése lejátszottnak"
+rls_string STRING_r_view_show_unplayed_cmd "Csak a lejátszatlanok mutatása"
+
+// Common actions
+rls_string STRING_r_zoom_cmd "Zoom"
+rls_string STRING_r_settings_cmd "Beáll­tások"
+
+// Categories (strings max 20 character long)
+rls_string STRING_r_category_all "Összes mûsorszám"
+rls_string STRING_r_category_new "Lejátszatlanok"
+rls_string STRING_r_category_dled "Mûsorszámok a telef" //onon" // string too long (teknolog)
+rls_string STRING_r_category_pending "Letöltõ"
+
+// View titles
+rls_string STRING_r_view_feeds_title "Feedek"
+rls_string STRING_r_view_audiobooks_title "Hangoskönyvek"
+
+// Shows view status strings
+rls_string STRING_r_podcast_shows_title_format "%d lejátszatlan, %d összesen";
+rls_string STRING_r_podcast_shows_title_download "%d Queued"
+rls_string STRING_r_podcast_shows_downloads_suspended "%d Queued (Suspended)"
+rls_string STRING_r_podcast_shows_no_items "Nincsenek elemek";
+
+// Feeds view status strings
+rls_string STRING_r_podcast_feeds_title_format "%d Feedek"
+rls_string STRING_r_podcast_books_title_format "%d könyvek"
+rls_string STRING_r_podcast_feeds_status_format "%d/%d Mûsorszámok"
+rls_string STRING_r_podcast_shows_never_updated "Soha"
+rls_string STRING_r_podcast_feeds_is_updating "Friss­tés alatt"
+rls_string STRING_r_podcast_no_feeds "Nincsenek feedek"
+
+// DIALOG string
+rls_string STRING_r_about_title "Az Escarpodról";
+
+rls_string STRING_r_add_feed_title "Feed hozzáadása"
+rls_string STRING_r_edit_feed_title "Feed szerkesztése"
+
+rls_string STRING_r_add_feed_prompt "Feed URL-je"
+rls_string STRING_r_add_feed_title_prompt "Feed C­mer"
+
+rls_string STRING_r_remove_feed_title "Feed eltávol­tása"
+rls_string STRING_r_remove_feed_prompt "Biztos benne,hogy el k­vánja ezt a feedet távol­tani?"
+
+rls_string STRING_r_enable_downloads_title "Letöltés folytatása"
+rls_string STRING_r_enable_downloads_prompt "Nincs mûsorszám a sorbaáll­tott letöltések között. Le k­vánja most tölteni?"
+
+rls_string STRING_r_update_new_feed_title "Feed friss­tése"
+rls_string STRING_r_update_new_feed_prompt "K­vánja most friss­teni a feedet?"
+
+rls_string STRING_r_purge_feed_title "Feed karbantartása"
+rls_string STRING_r_purge_feed_prompt "Biztos benne,hogy ki k­vánja ezt a feedet tiszt­tani és eltávol­tani az összes letöltött mûsorszámot?"
+
+rls_string STRING_r_purge_show_title "Mûsorszám karbantartása"
+rls_string STRING_r_purge_show_prompt "Biztosan törölni k­vánja ezt a mûsorszámot?"
+
+rls_string STRING_r_podcast_settings_title "Beáll­tások"
+rls_string STRING_r_podcast_setting_showdir "Podcastok könyvtára"
+rls_string STRING_r_podcast_setting_autoupdate "Automatikus friss­tés"
+rls_string STRING_r_podcast_setting_autodownload "Automatikus letöltés"
+rls_string STRING_r_podcast_setting_checkevery "Letöltési idõköz"
+rls_string STRING_r_podcast_setting_updateat "Update at"
+rls_string STRING_r_podcast_setting_minutes "percek"
+
+rls_string STRING_r_podcast_setting_connection "Kapcsolat"
+rls_string STRING_r_podcast_setting_default "Alapértelmezett használata"
+rls_string STRING_r_podcast_setting_wlanonly "Mind­g rákérdez"
+rls_string STRING_r_podcast_setting_usespecified "Meghatározott használata"
+rls_string STRING_r_podcast_setting_iaplist "Kapcsolatok"
+rls_string STRING_r_podcast_setting_cancel_cmd "Mégsem" // Cancel command in settings dialog
+rls_string STRING_r_podcast_setting_done_cmd "Rendben" // Done command in settings dialog
+rls_string STRING_r_podcast_setting_showdir_cmd "Kiválaszt" // Use to select show dir
+rls_string STRING_r_podcast_setting_volume "Hangerõ" 
+
+// Choicelist for autodownload
+rls_string STRING_podcast_autodl_off "Kikapcs."
+rls_string STRING_podcast_audodl_feeds "Csak feedek" 
+rls_string STRING_podcast_audodl_feedsandshows "Feedek és mûsorszámok"
+
+rls_string STRING_r_podcast_iap_dlg_title "Internetelérés kiválasztása"
+
+// Audio book dialog
+rls_string STRING_r_podcast_new_audiobook_title "Új hangoskönyv kész­tése"
+rls_string STRING_r_podcast_new_audiobook_prompt "Hangoskönyv c­me"
+rls_string STRING_r_podcast_new_audiobook_label "%d fájlok kiválasztva ehez a könyvhöz."
+rls_string STRING_r_podcast_new_audiobook_select_files "Könyv fájlok kiválasztása" // Max 80 chars
+
+// Latest strings here
+rls_string STRING_r_view_books_no_books "Nincsenek könyvek" // No Books
+
+rls_string STRING_r_view_import_feeds_cmd "Feedek importálása" // Import feeds cmd in feedview
+rls_string STRING_r_view_import_feeds_title "OPML fájl kiválasztása itt"
+
+rls_string STRING_r_view_books_status "%d Könyvek" // Used in base view listbox status text max 32 chars
+rls_string STRING_r_view_feeds_status "%d Feedek" // Used in base view listbox for feeds status text max 32 chars
+
+rls_string STRING_r_cancel_update_all_feeds_cmd "Friss­tés megszak­tása"
+rls_string STRING_r_cancel_update_all_feeds_short_cmd "Mégsem"
+
+rls_string STRING_r_suspend_download_cmd "Felfüggeszt" // String used for cmd to suspend current download rather than removing it from the que.
+rls_string STRING_r_view_resume_short_dls_cmd "Folytat" // Short download cmd
+rls_string STRING_r_view_onphone_status "%d Unplayed, %d Total" // Used in base view listbox status for shows on phone text max 32 chars
+rls_string STRING_r_view_onphone_status_unknown "Ismeretlen" // Used for unknown status event
+
+// Strings used to set the playorder of an audio book
+rls_string STRING_r_view_books_setorder "Lejátszási sorrend beáll­tása" // cmd for set audio book playorder
+rls_string STRING_r_view_books_setorder_dlgtitle "Lejátszási sorrend beáll­tása"
+rls_string STRING_r_view_books_setorder_dlg_swapcmd "Felcserél"
+rls_string STRING_r_view_books_setorder_dlg_label "Válassza ki a felcserélendő bejegyzést"
+rls_string STRING_r_view_books_setorder_dlg_selectlabel "Válassza ki a mozgatni k­vánt bejegyzést"
+
+rls_string STRING_r_view_remove_all_downloads_cmd "Mind Eltavolitasa"
+
+rls_string STRING_r_podcast_subtitle "Az Symbian Podcatcher" // shown beneath main view title
+
+rls_string STRING_r_add_feed_exists "Mar letezik feed ilyen URL-lel!" // shown when adding or changing a feed to a URL that already exists
+rls_string STRING_r_add_feed_exists_title "Feed kettozese" // title of error dialogs when adding feeds
+
+rls_string STRING_r_add_feed_replace "Minden letezo show torolve lesz! Folytatja?" // shown when changing an existing feed URL
+rls_string STRING_r_add_feed_replace_title "Figyelem" // title to dialog
+rls_string STRING_r_view_export_feeds_cmd "Feedek exportja" // Export feeds cmd in feedview
+
+rls_string STRING_r_catchup_feed "Megjelol minden musorszamot lejatszottkent?" // shown when first updating a new feed
+rls_string STRING_r_catchup_feed_title "Elso Frissites" // title to dialog
+
+rls_string STRING_r_remove_book_title "Audiobook eltavolitasa"
+rls_string STRING_r_remove_book_prompt "Biztosan el kivanja tavolitani ezt az audiobookot?"
+
+rls_string STRING_r_remove_chapter_title "Fejezet eltavolitasa"
+rls_string STRING_r_remove_chapter_prompt "Biztosan el kivanja tavolitani ezt a fejezetet?"
+
+rls_string STRING_r_podcast_books_status_format "%d/%d Fejezetek"
+rls_string STRING_r_podcast_books_add_chapter "Fejezetek hozzaadasa"
+
+rls_string STRING_r_view_import_audiobook_cmd "Import Book"
+rls_string STRING_r_view_import_book_title "Select M3U file"
+
+rls_string STRING_r_on "On"
+rls_string STRING_r_off "Off"

@@ -1,0 +1,1 @@
+Warning! Downloading large files such as podcasts over mobile phone networks can be extremely expensive. Before running this program, please check your data rates with your service provider. If you are not on a flat rate plan, consider using the WLAN only mode found in the settings.

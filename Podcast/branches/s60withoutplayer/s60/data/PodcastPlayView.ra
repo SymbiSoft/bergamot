@@ -1,0 +1,104 @@
+/**
+ * This file is a part of Escarpod Podcast project
+ * (c) 2008 The Bergamot Project
+ * (c) 2008 Teknolog (Sebastian Brännström)
+ * (c) 2008 Anotherguest (Lars Persson)
+ */
+
+RESOURCE HOTKEYS r_podcast_playview_hotkeys
+    {
+    control =
+        {
+        HOTKEY { command = EAknCmdExit; key='e'; }
+        };
+    }
+
+RESOURCE MENU_BAR r_podcast_playview_menubar
+    {
+    titles =
+        {
+        MENU_TITLE { menu_pane = r_podcast_playview_menu; txt = "Play"; }
+        };
+    }
+
+RESOURCE MENU_PANE r_podcast_playview_menu
+    {
+    items =
+        {        
+  	MENU_ITEM
+			{
+			command = EPodcastPlay;
+			
+			txt = STRING_r_play_cmd;
+			},
+	MENU_ITEM
+			{
+			command = EPodcastDownloadShow;
+			
+			txt = STRING_r_view_download_cmd;
+			},
+		MENU_ITEM
+			{
+			command = EPodcastRemoveDownload;
+			
+			txt = STRING_r_view_remove_download_cmd;
+
+			},	
+		MENU_ITEM
+			{		
+			command = EPodcastResumeDownloads;
+			
+			txt = STRING_r_view_resume_downloads_cmd;
+		
+			},					
+		MENU_ITEM
+			{
+			command = EPodcastStop;
+			
+			txt = STRING_r_stop_cmd;
+			
+			},
+	MENU_ITEM
+			{
+			command = EPodcastMarkAsPlayed;
+			
+			txt = STRING_r_view_mark_as_played_cmd;
+			
+			},
+	MENU_ITEM
+			{
+			command = EPodcastMarkAsUnplayed;
+			
+			txt = STRING_r_view_mark_as_unplayed_cmd;
+			
+			}
+     
+        };
+    }
+
+
+RESOURCE AVKON_VIEW r_podcast_playview
+{
+	hotkeys = r_podcast_playview_hotkeys;
+	menubar = r_podcast_playview_menubar;
+	cba = R_AVKON_SOFTKEYS_OPTIONS_BACK;    
+}
+
+RESOURCE SLIDER r_podcast_playview_slider
+    {
+    layout = EAknSettingsItemSliderLayout;
+    minvalue = 0;
+    maxvalue = 100;
+    step = 5;
+    valuetype = EAknSliderValuePercentage;
+    minlabel = "Min";
+    maxlabel = "Max";
+    }
+	
+// Player
+RESOURCE TBUF r_podcast_player_pause_cmd{buf = STRING_r_pause_cmd;}
+RESOURCE TBUF r_podcast_player_play_cmd{buf = STRING_r_play_cmd;}
+RESOURCE TBUF r_podcast_player_suspend_dl_cmd{buf = STRING_r_suspend_download_cmd;}
+RESOURCE TBUF r_podcast_player_remove_dl_cmd{buf = STRING_r_view_remove_download_short_cmd;}
+RESOURCE TBUF r_playview_tab_info{buf = STRING_r_playview_tab_info; }
+RESOURCE TBUF r_playview_tab_play{buf = STRING_r_playview_tab_play; }

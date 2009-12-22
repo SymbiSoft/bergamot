@@ -1,0 +1,108 @@
+#ifndef PODCAST_HRH
+#define PODCAST_HRH
+
+#define KOneHundredPercent 100
+
+enum TPodcastCommandIds
+	{
+	EPodcastView = 0x1000,
+	EPodcastViewMain,	
+	EPodcastViewNewShows,
+	EPodcastViewDownloadedShows,
+	EPodcastViewPendingShows,
+	EPodcastViewFeeds,
+	EPodcastViewPlayer,
+	EPodcastViewAudioBooks,
+	EPodcastPlay,
+	EPodcastStop,
+	EPodcastPause,
+	// Feeds commands
+	EPodcastAddFeed,
+	EPodcastEditFeed,
+	EPodcastDeleteFeed,
+	EPodcastDeleteFeedHardware,
+	EPodcastDeleteAllPlayed,
+	EPodcastUpdateFeed,
+	EPodcastUpdateAllFeeds,
+	EPodcastCancelUpdateAllFeeds,
+	EPodcastImportFeeds,
+	EPodcastExportFeeds,
+	// Show commands
+	EPodcastDownloadShow,
+	EPodcastDeleteShow,
+	EPodcastDeleteShowHardware,
+	EPodcastRemoveDownload,
+	EPodcastRemoveDownloadHardware,
+	EPodcastRemoveAllDownloads,
+	EPodcastStopDownloads,
+	EPodcastResumeDownloads,
+	EPodcastMarkAllPlayed,
+	EPodcastMarkAsPlayed,
+	EPodcastMarkAsUnplayed,
+	EPodcastShowUnplayedOnly,
+	EPodcastShowUnplayedOnlyOn,
+	EPodcastShowUnplayedOnlyOff,
+	EPodcastUpdateLibrary,
+	// Audio book commands
+	EPodcastAddNewAudioBook,
+	EPodcastAddAudioBookChapter,
+	EPodcastRemoveAudioBook,
+	EPodcastRemoveAudioBookHardware,
+	EPodcastImportAudioBook,
+	EPodcastSetOrderAudioBook,
+	EPodcastPlayAudioBook,
+	EPodcastPauseAudioBook,
+	// Common commands
+	EPodcastBack,
+	EPodcastZoomSetting,
+	EPodcastSettings,
+	EPodcastSelectShowDir,
+	EPodcastSetVolume,
+	EPodcastSetAudioBookPlayOrderSwap,
+	EPodcastAbout
+};
+
+enum TPodcastControl
+	{
+	EPodcastListViewListCtrl= 0x1000,	
+	// Controls for view context	
+	// Settings View controls
+	EPodcastSettingShowDir,
+	EPodcastSettingAutoDownload,
+	EPodcastSettingAutoUpdate,
+	EPodcastSettingUpdateInterval,
+	EPodcastSettingUpdateTime,
+	EPodcastSettingMaxsimdls,
+	EPodcastSettingConnection,
+	EPodcastSettingIAPList,
+	EPodcastSettingsVolume,
+	EPodcastAboutDlg
+	};
+enum TPodcastClientShowCategory
+	{
+	EShowAllShows = 0x4000,
+	EShowNewShows,
+	EShowFeedShows,
+	EShowDownloadedShows,
+	EShowPendingShows
+	};
+
+enum TFeedsViewMode
+{
+	EFeedsNormalMode = 0x100,
+	EFeedsAudioBooksMode = 0x101
+};
+
+enum TShowsIconIndex
+	{
+	EShowNoIcon,
+	EShowIcon,
+	ENewShowIcon,
+	EPlayingShowIcon,
+	EDownloadingShowIcon,
+	ESuspendedShowIcon,
+	EQuedShowIcon,
+	EAudiobookChapterIcon	
+	};
+
+#endif

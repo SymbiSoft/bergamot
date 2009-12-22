@@ -1,0 +1,209 @@
+CHARACTER_SET UTF8
+/////////////////////////////////////////////////////////////////////
+// Escarpod language file
+//
+// Language:   Catalan
+// Translator: Santi Güell 
+
+// list view commands
+rls_string STRING_r_listbox_listview_cmd_close_debug "Tanca (debug)"
+rls_string STRING_r_listbox_listview_cmd_close_debug_shorttext "Tanca"
+
+// Menu commands, view filtering and navigation
+rls_string STRING_r_view_cmd "Anar a"
+
+// Navigation to shows view
+rls_string STRING_r_view_main_cmd "Principal"
+rls_string STRING_r_view_shows_cmd "Programes guardats"
+rls_string STRING_r_view_all_shows_cmd "Tots els programes"
+rls_string STRING_r_view_new_shows_cmd "Sense reproduir"
+rls_string STRING_r_view_dl_shows_cmd "Programes guardats"
+rls_string STRING_r_view_dling_shows_cmd "Descarregador"
+rls_string STRING_r_view_about_cmd "Sobre"
+
+// Navigation to feeds
+rls_string STRING_r_view_feeds_cmd "Fonts"
+
+// Navigation to the player
+rls_string STRING_r_view_player_cmd "Reproductor"
+
+// Navigation to the audio books
+rls_string STRING_r_view_audiobooks_cmd "Audiollibres"
+rls_string STRING_r_view_new_audiobook_cmd "Llibre nou"
+rls_string STRING_r_view_remove_audiobook_cmd "Esborrar llibre"
+
+// Actions for the player
+rls_string STRING_r_play_cmd "Reproduir"
+rls_string STRING_r_stop_cmd "Parar"
+rls_string STRING_r_pause_cmd "Pausa"
+rls_string STRING_r_volume_cmd "Volum"
+
+rls_string STRING_r_view_download_cmd "Descarregar"
+rls_string STRING_r_view_download_short_cmd "Baixa"
+rls_string STRING_r_view_remove_download_short_cmd "Esborra"
+rls_string STRING_r_view_remove_download_cmd "Esborra descàrrega"
+
+rls_string STRING_r_view_show_cmd "Programa"
+rls_string STRING_r_view_cmd "Veure"
+rls_string STRING_r_view_play_cmd "Reproduir"
+rls_string STRING_r_view_mark_as_played_cmd "Marcar com reproduït"
+rls_string STRING_r_view_mark_as_unplayed_cmd "Marcar com no reproduït"
+
+// Actions for feeds
+rls_string STRING_r_view_add_feed_cmd "Afegir font"
+rls_string STRING_r_view_edit_feed_cmd "Editar font"
+rls_string STRING_r_view_delete_feed_cmd "Esborrar font"
+rls_string STRING_r_view_delete_played_cmd "Esborrar els reproduïts"
+rls_string STRING_r_update_feed_cmd "Actualitzar font"
+rls_string STRING_r_update_feed_short_cmd "Actualitzar"
+rls_string STRING_r_update_all_feeds_cmd "Actualitzar tot"
+rls_string STRING_r_update_all_feeds_short_cmd "Act. tot"
+
+rls_string STRING_r_podcast_feeds_update_message "Actualitzant..."
+rls_string STRING_r_podcast_feeds_update_error "L'actualització ha fallat!"
+
+// Actions for shows
+rls_string STRING_r_view_download_show_cmd "Descarregar"
+rls_string STRING_r_view_delete_show_cmd "Esborrar"
+rls_string STRING_r_view_delete_shows_cmd "Esborrar tot"
+rls_string STRING_r_view_delete_show_cmd "Esborrar"
+rls_string STRING_r_view_stop_downloads_cmd "Suspendre descàrrega"
+rls_string STRING_r_view_resume_downloads_cmd "Reiniciar descàrrega"
+rls_string STRING_r_view_mark_all_played_cmd "Marcar com reproduïts"
+rls_string STRING_r_view_show_unplayed_cmd "Només no reproduïts"
+
+// Common actions
+rls_string STRING_r_zoom_cmd "Mida de lletra"
+rls_string STRING_r_settings_cmd "Preferències"
+
+// Categories (strings max 20 character long)
+rls_string STRING_r_category_all "Tots els programes"
+rls_string STRING_r_category_new "No reproduïts"
+rls_string STRING_r_category_dled "Programes guardats"
+rls_string STRING_r_category_pending "Descarregador"
+
+// View titles
+rls_string STRING_r_view_feeds_title "Fonts"
+rls_string STRING_r_view_audiobooks_title "Audiollibres"
+
+// Shows view status strings
+rls_string STRING_r_podcast_shows_title_format "%d no reproduïts, %d en total"
+rls_string STRING_r_podcast_shows_title_download "%d en espera"
+rls_string STRING_r_podcast_shows_downloads_suspended "%d en espera (Suspesos)"
+rls_string STRING_r_podcast_shows_no_items "Buit"
+
+// Feeds view status strings
+rls_string STRING_r_podcast_feeds_title_format "%d Fonts"
+rls_string STRING_r_podcast_books_title_format "%d Llibres"
+rls_string STRING_r_podcast_feeds_status_format "%d/%d Programes"
+rls_string STRING_r_podcast_shows_never_updated "Mai"
+rls_string STRING_r_podcast_feeds_is_updating "Actualitzant..."
+rls_string STRING_r_podcast_no_feeds "Sense fonts"
+
+// DIALOG string
+rls_string STRING_r_about_title "Sobre Escarpod"
+
+rls_string STRING_r_add_feed_title "Afegir font"
+rls_string STRING_r_edit_feed_title "Editar font"
+
+rls_string STRING_r_add_feed_prompt "URL de la font"
+rls_string STRING_r_add_feed_title_prompt "Títol de la font"
+
+rls_string STRING_r_remove_feed_title "Esborrar font"
+rls_string STRING_r_remove_feed_prompt "Segur que vols esborrar aquesta font?"
+
+rls_string STRING_r_enable_downloads_title "Reiniciar descàrrega"
+rls_string STRING_r_enable_downloads_prompt "Hi ha programes a la cua de descàrrega. Els vols baixar ara?"
+
+rls_string STRING_r_update_new_feed_title "Actualitzar font"
+rls_string STRING_r_update_new_feed_prompt "Vols actualitzar la font ara?"
+
+rls_string STRING_r_delete_played_title "Esborrar els reproduïts"
+rls_string STRING_r_delete_played_prompt "Segur que vols esborrar els programes reproduïts?"
+
+rls_string STRING_r_delete_show_title "Esborrar programa"
+rls_string STRING_r_delete_show_prompt "Segur que vols esborrar el programa seleccionat?"
+
+rls_string STRING_r_podcast_settings_title "Preferències"
+rls_string STRING_r_podcast_setting_showdir "Directori de podcasts"
+rls_string STRING_r_podcast_setting_autoupdate "Actualització automàtica"
+rls_string STRING_r_podcast_setting_autodownload "Descàrrega automàtica"
+rls_string STRING_r_podcast_setting_checkevery "Interval d'actualització"
+rls_string STRING_r_podcast_setting_updateat "Actualitzar a les"
+rls_string STRING_r_podcast_setting_minutes "minuts"
+
+rls_string STRING_r_podcast_setting_connection "Connexió"
+rls_string STRING_r_podcast_setting_default "Usar la disponible"
+rls_string STRING_r_podcast_setting_wlanonly "Preguntar sempre"
+rls_string STRING_r_podcast_setting_usespecified "Usar l'especificada"
+rls_string STRING_r_podcast_setting_iaplist "Connexions"
+rls_string STRING_r_podcast_setting_cancel_cmd "Cancel·lar" // Cancel command in settings dialog
+rls_string STRING_r_podcast_setting_done_cmd "Fet" // Done command in settings dialog
+rls_string STRING_r_podcast_setting_showdir_cmd "Triar" // Use to select show dir
+rls_string STRING_r_podcast_setting_volume "Volum" 
+
+// Choicelist for autodownload
+rls_string STRING_podcast_autoupdate_off "Desactivat"
+rls_string STRING_podcast_autoupdate_perodical "Periòdica" 
+rls_string STRING_podcast_autoupdate_attime "A les"
+
+rls_string STRING_r_podcast_iap_dlg_title "Tria la connexió a internet"
+
+// Audio book dialog
+rls_string STRING_r_podcast_new_audiobook_title "Afegir llibre nou"
+rls_string STRING_r_podcast_new_audiobook_prompt "Títol del llibre"
+rls_string STRING_r_podcast_new_audiobook_label "%d Arxius seleccionats"
+rls_string STRING_r_podcast_new_audiobook_select_files "Tria arxius" // Max 80 chars
+
+// Latest strings here
+rls_string STRING_r_view_books_no_books "Buit" // No Books
+
+rls_string STRING_r_view_import_feeds_cmd "Importar fonts" // Import feeds cmd in feedview
+rls_string STRING_r_view_import_feeds_title "Tria arxiu OPML"
+
+rls_string STRING_r_view_books_status "%d Llibres" // Used in base view listbox status text max 32 chars
+rls_string STRING_r_view_feeds_status "%d Fonts" // Used in base view listbox for feeds status text max 32 chars
+
+rls_string STRING_r_cancel_update_all_feeds_cmd "Cancel·lar actualització"
+rls_string STRING_r_cancel_update_all_feeds_short_cmd "Cancel·lar"
+
+rls_string STRING_r_suspend_download_cmd "Suspendre" // String used for cmd to suspend current download rather than removing it from the que.
+rls_string STRING_r_view_resume_short_dls_cmd "Reiniciar" // Short download cmd
+rls_string STRING_r_view_onphone_status "%d no reproduïts, %d en total" // Used in base view listbox status for shows on phone text max 32 chars
+rls_string STRING_r_view_onphone_status_unknown "Desconegut" // Used for unknown status event
+
+// Strings used to set the playorder of an audio book
+rls_string STRING_r_view_books_setorder "Canviar ordre" // cmd for set audio book playorder
+rls_string STRING_r_view_books_setorder_dlgtitle "Triar ordre dels capítols"
+rls_string STRING_r_view_books_setorder_dlg_swapcmd "Intercanviar"
+rls_string STRING_r_view_books_setorder_dlg_label "Triar capítol per intercanviar"
+rls_string STRING_r_view_books_setorder_dlg_selectlabel "Tria el capítol per intercanviar"
+
+rls_string STRING_r_view_remove_all_downloads_cmd "Esborrar tot"
+
+rls_string STRING_r_podcast_subtitle "El Podcatcher Symbian" // shown beneath main view title
+
+rls_string STRING_r_add_feed_exists "Ja existeix una font amb aquesta URL!" // shown when adding or changing a feed to a URL that already exists
+rls_string STRING_r_add_feed_exists_title "Font duplicada" // title of error dialogs when adding feeds
+
+rls_string STRING_r_add_feed_replace "S'esborraran tots els programes d'aquesta font! Seguir?" // shown when changing an existing feed URL
+rls_string STRING_r_add_feed_replace_title "Avís" // title to dialog
+rls_string STRING_r_view_export_feeds_cmd "Exportar fonts" // Export feeds cmd in feedview
+
+rls_string STRING_r_catchup_feed "Marcar tots els programes com reproduïts?" // shown when first updating a new feed
+rls_string STRING_r_catchup_feed_title "Primera actualització" // title to dialog
+
+rls_string STRING_r_remove_book_title "Esborra audiollibre"
+rls_string STRING_r_remove_book_prompt "Segur que vols esborrar aquest audiollibre?"
+
+rls_string STRING_r_remove_chapter_title "Esborrar capítol"
+rls_string STRING_r_remove_chapter_prompt "Segur que vols esborrar aquest capítol?"
+
+rls_string STRING_r_podcast_books_status_format "%d/%d capítols"
+rls_string STRING_r_podcast_books_add_chapter "Afegir capítols"
+
+rls_string STRING_r_view_import_audiobook_cmd "Import Book"
+rls_string STRING_r_view_import_book_title "Select M3U file"
+
+rls_string STRING_r_on "On"
+rls_string STRING_r_off "Off"

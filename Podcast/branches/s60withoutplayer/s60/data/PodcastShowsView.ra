@@ -1,0 +1,171 @@
+/**
+ * This file is a part of Escarpod Podcast project
+ * (c) 2008 The Bergamot Project
+ * (c) 2008 Teknolog (Sebastian Brännström)
+ * (c) 2008 Anotherguest (Lars Persson)
+ */
+
+RESOURCE HOTKEYS r_podcast_showsview_hotkeys
+    {
+    control =
+        {
+        HOTKEY { command = EAknCmdExit; key='e'; }
+        };
+    }
+
+
+RESOURCE MENU_PANE r_onoff_menu
+	{
+	items =	{
+		MENU_ITEM
+			{
+			command = EPodcastShowUnplayedOnlyOn;
+			txt = STRING_r_on;
+			flags = EEikMenuItemRadioStart|EEikMenuItemSymbolOn;
+			},
+		MENU_ITEM
+			{
+			command = EPodcastShowUnplayedOnlyOff;
+			txt = STRING_r_off;
+	        flags = EEikMenuItemRadioEnd;
+			}
+	};
+			
+	}
+
+RESOURCE MENU_PANE r_podcast_showsview_menu
+    {
+    items =
+		{
+		// Feed handling
+		MENU_ITEM
+			{
+			command = EPodcastUpdateFeed;
+			txt = STRING_r_update_feed_cmd;
+			},
+		MENU_ITEM
+			{
+			command = EPodcastCancelUpdateAllFeeds;
+			txt = STRING_r_cancel_update_all_feeds_cmd;
+			},
+		// Show handling		
+		MENU_ITEM
+			{
+			command = EPodcastDownloadShow;
+			txt = STRING_r_view_download_show_cmd " (#)";
+			},
+		MENU_ITEM
+			{
+			command = EPodcastMarkAsPlayed;
+			txt = STRING_r_view_mark_as_played_cmd " (*)";
+			},
+		MENU_ITEM
+			{
+			command = EPodcastMarkAsUnplayed;
+			txt = STRING_r_view_mark_as_unplayed_cmd " (*)";
+			},
+		MENU_ITEM
+			{
+			command = EPodcastDeleteShow;
+			txt = STRING_r_view_delete_show_cmd;
+			},
+
+		MENU_ITEM
+			{
+			command = EPodcastAddAudioBookChapter;
+			txt = STRING_r_podcast_books_add_chapter;
+			},
+		MENU_ITEM
+			{
+			command = EPodcastSetOrderAudioBook;
+			txt = STRING_r_view_books_setorder;
+			},
+		MENU_ITEM
+			{
+			command = EPodcastRemoveDownload;
+			txt = STRING_r_view_remove_download_cmd;			
+			},
+		MENU_ITEM
+			{
+			command = EPodcastRemoveAllDownloads;
+
+			txt = STRING_r_view_remove_all_downloads_cmd;
+			},
+		MENU_ITEM
+			{
+			command = EPodcastStopDownloads;
+			txt = STRING_r_view_stop_downloads_cmd;
+			},
+		MENU_ITEM
+			{
+			command = EPodcastResumeDownloads;
+			txt = STRING_r_view_resume_downloads_cmd;
+			},
+		// Show filter handling and item marking for this
+		MENU_ITEM
+			{
+			command = EPodcastShowUnplayedOnly;
+			txt = STRING_r_view_show_unplayed_cmd;
+			cascade = r_onoff_menu;
+			},
+		MENU_ITEM
+			{
+			command = EPodcastMarkAllPlayed;
+			txt = STRING_r_view_mark_all_played_cmd;
+			},
+
+		MENU_ITEM
+			{
+			command = EPodcastDeleteAllPlayed;
+			txt = STRING_r_view_delete_played_cmd;
+			},
+		MENU_ITEM
+			{
+			//
+			command = EPodcastUpdateLibrary;
+			txt = STRING_r_update_feed_short_cmd;
+			}//,        		
+	// Other commands
+		/*MENU_ITEM
+			{
+			command = EPodcastZoomSetting;
+			txt = STRING_r_zoom_cmd;
+			}		*/	
+   };
+    }
+
+
+RESOURCE MENU_BAR r_podcast_showsview_menubar
+    {
+    titles =
+        {
+        MENU_TITLE { menu_pane = r_podcast_showsview_menu; txt = "Shows"; }
+        };
+    }
+
+RESOURCE AVKON_VIEW r_podcast_showsview
+{
+	hotkeys = r_podcast_showsview_hotkeys;
+	menubar = r_podcast_showsview_menubar;
+	cba = R_AVKON_SOFTKEYS_OPTIONS_BACK;    
+}
+
+RESOURCE TBUF r_podcast_shows_no_items {buf = STRING_r_podcast_shows_no_items;}
+
+RESOURCE TBUF r_podcast_new_audiobook_select_files { buf = STRING_r_podcast_new_audiobook_select_files;}
+// Shows view status strings
+RESOURCE TBUF r_podcast_shows_title_format { buf =  STRING_r_podcast_shows_title_format;}
+RESOURCE TBUF r_podcast_shows_title_download {buf = STRING_r_podcast_shows_title_download;}
+RESOURCE TBUF r_podcast_shows_downloads_suspended { buf = STRING_r_podcast_shows_downloads_suspended;}
+
+RESOURCE ARRAY r_podcast_new_audiobook_mimearray
+{
+	items = 
+	{
+	 LBUF {txt = "audio/wav";},
+	 LBUF {txt = "audio/mp3";},
+	 LBUF {txt = "audio/mp4";},
+	 LBUF {txt = "audio/*";}
+	};
+
+}

@@ -1,0 +1,545 @@
+//----------------------------------------------------
+//------------ CONFIGURATION FOR THE SHOWS LISTVIEW ------------
+//----------------------------------------------------
+// The application supports the reference UI Configurations that are supported
+// in the UIQ 3 SDK. Use the UiqEnv tool, to change the UI Configuration in the
+// emulator in order to develop and test the application with varying phone styles.
+RESOURCE QIK_VIEW_CONFIGURATIONS r_podcast_showsview_ui_configurations
+	{
+	configurations = 
+		{
+		QIK_VIEW_CONFIGURATION
+			{
+			ui_config_mode = KQikPenStyleTouchPortrait;
+			command_list = r_podcast_showview_commands;
+			view = r_podcast_showsview_layout;
+			},
+		QIK_VIEW_CONFIGURATION
+			{
+			ui_config_mode = KQikPenStyleTouchLandscape;
+			command_list = r_podcast_showview_commands;
+			view = r_podcast_showsview_layout;
+			},
+		QIK_VIEW_CONFIGURATION
+			{
+			ui_config_mode = KQikSoftkeyStyleTouchPortrait;
+			command_list = r_podcast_showview_commands;
+			view = r_podcast_showsview_layout;
+			},
+		QIK_VIEW_CONFIGURATION
+			{
+			ui_config_mode = KQikSoftkeyStylePortrait;
+			command_list = r_podcast_showview_commands;
+			view = r_podcast_showsview_layout;
+			},
+		QIK_VIEW_CONFIGURATION
+			{
+			ui_config_mode = KQikSoftkeyStyleSmallPortrait;
+			command_list = r_podcast_showview_commands;
+			view = r_podcast_showsview_layout;
+			}
+		};
+	}
+
+//----------------------------------------------------
+//------------------ VIEW COMMANDS -------------------
+//----------------------------------------------------
+RESOURCE QIK_COMMAND_LIST r_podcast_showview_commands
+	{
+	items=
+		{
+		QIK_COMMAND
+			{
+			id = EPodcastView;
+			type = EQikCommandTypeScreen;
+			text = STRING_r_view_cmd;
+			groupId = 10; 
+			namedGroupLinkId= 1;
+			},
+				QIK_COMMAND
+				{
+				id = EPodcastViewMain;
+				type = EQikCommandTypeScreen;
+				text = STRING_r_view_main_cmd;
+				namedGroupId = 1;
+				groupId = 1;
+				},			
+				QIK_COMMAND
+				{
+				id = EPodcastViewPlayer;
+				type = EQikCommandTypeScreen;
+				text = STRING_r_view_player_cmd;
+				namedGroupId = 1;
+				groupId = 2;
+				},		
+				QIK_COMMAND
+				{
+				id = EPodcastViewDownloadedShows;
+				type = EQikCommandTypeScreen;
+				text = STRING_r_view_dl_shows_cmd;
+				namedGroupId = 1;
+				groupId = 3;
+				},		
+
+				QIK_COMMAND
+				{
+				id = EPodcastViewPendingShows;
+				type = EQikCommandTypeScreen;
+				text = STRING_r_view_dling_shows_cmd;
+				namedGroupId = 1;
+				groupId = 3;
+				},					
+				QIK_COMMAND
+				{
+				id = EPodcastViewFeeds;
+				type = EQikCommandTypeScreen;
+				text = STRING_r_view_feeds_cmd;
+				namedGroupId = 1;
+				groupId = 3;
+				},
+				QIK_COMMAND
+				{
+				id = EPodcastViewAudioBooks;
+				type = EQikCommandTypeScreen;
+				text = STRING_r_view_audiobooks_cmd;
+				namedGroupId = 1;
+				groupId = 3;
+				},
+// Feed handling
+		QIK_COMMAND
+			{
+		//	groupId = 5;
+			id = EPodcastUpdateFeed;
+			type = EQikCommandTypeDone;
+			text = STRING_r_update_feed_cmd;
+			shortText = STRING_r_update_feed_short_cmd;
+			priority = 2;
+			},
+		QIK_COMMAND
+			{
+		//	groupId = 5;
+			id = EPodcastCancelUpdateAllFeeds;
+			type = EQikCommandTypeDone;
+			text = STRING_r_cancel_update_all_feeds_cmd;
+			shortText = STRING_r_cancel_update_all_feeds_short_cmd;
+			},	
+// Show handling		
+	QIK_COMMAND
+			{
+			groupId = 5;
+			id = EPodcastDownloadShow;
+			type = EQikCommandTypeScreen;
+			text = STRING_r_view_download_show_cmd " (#)";
+			},
+	QIK_COMMAND
+			{
+			id = EPodcastMarkAsPlayed;
+			type = EQikCommandTypeScreen;
+			text = STRING_r_view_mark_as_played_cmd " (*)";
+			groupId = 5;
+			},
+	QIK_COMMAND
+			{
+			id = EPodcastMarkAsUnplayed;
+			type = EQikCommandTypeScreen;
+			text = STRING_r_view_mark_as_unplayed_cmd " (*)";
+			groupId = 5;
+			},
+		QIK_COMMAND
+			{
+			groupId = 5;
+			id = EPodcastDeleteShow;
+			type = EQikCommandTypeScreen;
+			text = STRING_r_view_delete_show_cmd;
+			},
+		QIK_COMMAND
+			{
+			groupId = 8;
+			id = EPodcastDeleteShowHardware;
+			type = EQikCommandTypeDelete;
+			cpfFlags = EQikCpfFlagHardwarekeyOnly;
+			},
+
+	QIK_COMMAND
+			{
+			groupId = 6;
+			id = EPodcastAddAudioBookChapter;		
+			type = EQikCommandTypeScreen;
+			text = STRING_r_podcast_books_add_chapter;
+			},	
+	QIK_COMMAND
+			{
+			groupId = 6;
+			id = EPodcastSetOrderAudioBook;		
+			type = EQikCommandTypeScreen;
+			text = STRING_r_view_books_setorder;
+			},
+	QIK_COMMAND
+			{				
+			id = EPodcastRemoveDownload;
+			type = EQikCommandTypeScreen;
+			text = STRING_r_view_remove_download_cmd;
+			shortText = STRING_r_view_remove_download_cmd;
+			},
+	QIK_COMMAND
+			{				
+			id = EPodcastRemoveAllDownloads;
+			type = EQikCommandTypeScreen;
+			text = STRING_r_view_remove_all_downloads_cmd;
+			shortText = STRING_r_view_remove_all_downloads_cmd;
+			},
+	QIK_COMMAND
+			{				
+			id = EPodcastRemoveDownloadHardware;
+			type = EQikCommandTypeDelete;
+			cpfFlags = EQikCpfFlagHardwarekeyOnly;
+			},
+	QIK_COMMAND
+			{		
+			id = EPodcastStopDownloads;
+			type = EQikCommandTypeDone;
+			text = STRING_r_view_stop_downloads_cmd;
+			shortText = STRING_r_suspend_download_cmd;
+			},
+		QIK_COMMAND
+			{		
+			id = EPodcastResumeDownloads;
+			type = EQikCommandTypeDone;
+			text = STRING_r_view_resume_downloads_cmd;
+			shortText = STRING_r_view_resume_short_dls_cmd;
+			},
+// Show filter handling and item marking for this
+	QIK_COMMAND
+			{
+			groupId = 7;
+			id = EPodcastShowUnplayedOnly;
+			type = EQikCommandTypeScreen;
+			text = STRING_r_view_show_unplayed_cmd;
+			stateFlags = EQikCmdFlagCheckBox;
+			},	
+		QIK_COMMAND
+			{
+			groupId = 7;
+			id = EPodcastMarkAllPlayed;
+			type = EQikCommandTypeScreen;
+			text = STRING_r_view_mark_all_played_cmd;
+			},
+			
+		QIK_COMMAND
+			{
+			groupId = 7;
+			id = EPodcastDeleteAllPlayed;
+			type = EQikCommandTypeScreen;
+			text = STRING_r_view_delete_played_cmd;
+			},	
+		QIK_COMMAND
+			{
+			//groupId = 7;
+			id = EPodcastUpdateLibrary;
+			type = EQikCommandTypeDone;
+			text = STRING_r_update_feed_short_cmd;
+			shortText = STRING_r_update_feed_short_cmd;
+			},
+// Other commands
+		/*QIK_COMMAND
+			{
+			id = EPodcastSettings;
+			type = EQikCommandTypeScreen;
+			text = STRING_r_settings_cmd;
+			groupId = 11;  
+			},*/
+		QIK_COMMAND
+			{
+			id = EPodcastZoomSetting;
+			type = EQikCommandTypeScreen;
+			text = STRING_r_zoom_cmd;
+			groupId = 11;  
+			},
+		// This command shall only be visible in debug mode because it is only
+		// used to find memory leaks during development of the application.					
+		QIK_COMMAND
+			{
+			id = EEikCmdExit;
+			type = EQikCommandTypeScreen;
+			// Indicate that it will only be created in debug builds
+			stateFlags = EQikCmdFlagDebugOnly;
+			text = STRING_r_listbox_listview_cmd_close_debug;
+			shortText = STRING_r_listbox_listview_cmd_close_debug_shorttext;
+			groupId = 255;
+			}
+		};
+	}
+//----------------------------------------------------
+//----------------- LISTVIEW LAYOUT ------------------
+//----------------------------------------------------
+RESOURCE QIK_VIEW r_podcast_showsview_layout
+	{
+	pages = r_podcast_showsview_layout_pages;
+	}
+
+RESOURCE QIK_VIEW_PAGES r_podcast_showsview_layout_pages
+	{
+	pages = 
+		{
+		QIK_VIEW_PAGE
+			{
+			page_id = EPodcastListViewPage;
+			page_content = r_podcast_showsview_page_control;
+			}
+		};
+	}
+
+// The page contains a list box that fills the whole application space.
+RESOURCE QIK_CONTAINER_SETTINGS r_podcast_showsview_page_control
+	{
+	layout_manager_type = EQikRowLayoutManager;
+	layout_manager = r_podcast_row_layout_manager_default;
+	controls = 
+		{
+		QIK_CONTAINER_ITEM_CI_LI
+			{ 
+			unique_handle = EPodcastListViewListCtrl;
+			type = EQikCtListBox; 
+			control = r_podcast_showsview_listbox;
+			// This will make it so that the list box fills the whole 
+			// application space.
+			layout_data = r_podcast_row_layout_data_fill;
+			}
+		};
+	}
+
+//----------------------------------------------------
+//----------- LISTVIEW CONTROL: LISTBOX --------------
+//----------------------------------------------------
+// The list box structs type property default to EQikRowListBox, so we need to 
+// redefine it. As we want default values for the QIK_LISTBOX_ROW_VIEW struct, 
+// we do not need to declare such a resource and link to it, since the default 
+// behavior is to load a resource for the row view which already has all 
+// properties set to default. All we really have to do is to define our layout 
+// pair and add them to the list box.
+RESOURCE QIK_LISTBOX r_podcast_showsview_listbox
+	{
+	layouts = { r_podcast_showsview_normal_layout_pair };
+	}
+
+// Layouts are always added in layout pair to the list box. A layout pair 
+// consists of one mandatory normal layout and an optional highlight layout.
+// Normal layout - The layout used when an item is not highlighted, or is 
+// highlighted but has no additional highlight layout.
+RESOURCE QIK_LISTBOX_LAYOUT_PAIR r_podcast_showsview_normal_layout_pair
+	{
+	custom_normal_layout = r_podcast_showsview_listbox_layout;
+	custom_highlight_layout= r_podcast_showsview_listbox_layout;
+	}
+
+RESOURCE QIK_LISTBOX_LAYOUT r_podcast_showsview_listbox_layout
+{
+	columns = 
+	{
+
+	QIK_LISTBOX_COLUMN
+			{
+				width_type = EQikListBoxColWidthFromContentType;
+				slot_id = EQikListBoxSlotLeftMediumIcon1;
+				type = QIK_LISTBOX_ICON_TYPE
+				{
+					size = EQikListBoxSizeMediumIcon;
+				};
+			},
+	QIK_LISTBOX_COLUMN
+	{
+		width_type = EQikListBoxColWidthGrab;
+        width_value = 1;
+		slot_id = EQikListBoxSlotParent1;
+		type = QIK_LISTBOX_PARENT_TYPE;
+	
+		rows = 
+		{
+			QIK_LISTBOX_ROW
+			{					
+				slot_id = EQikListBoxSlotText1;
+				type = QIK_LISTBOX_TEXT_TYPE
+				{
+					emphasis_font_style = EQikListBoxFontBold;
+					font_size = EQikListBoxFontMedium;
+					emphasis_font_size = EQikListBoxFontMedium;
+					scroll = EQikListBoxTextScrollWhenHighlighted;
+				};				
+			},
+			QIK_LISTBOX_ROW
+			{
+
+				type = QIK_LISTBOX_PARENT_TYPE;
+				slot_id = EQikListBoxSlotParent2;
+				columns = 
+				{
+					QIK_LISTBOX_COLUMN
+					{
+
+						slot_id = EQikListBoxSlotText3;
+						width_type = EQikListBoxColWidthFromContentType;
+						type = QIK_LISTBOX_TEXT_TYPE
+						{
+							font_size = EQikListBoxFontExtraSmall;
+							emphasis_font_size = EQikListBoxFontExtraSmall;
+							alignment = EQikListBoxTextAlignLeft;
+							
+						};
+					},
+					QIK_LISTBOX_COLUMN
+					{
+						width_type = EQikListBoxColWidthGrab;
+						width_value = 1;
+						slot_id = EQikListBoxSlotText2;
+						type = QIK_LISTBOX_TEXT_TYPE
+						{
+							font_size = EQikListBoxFontExtraSmall;
+							emphasis_font_size = EQikListBoxFontExtraSmall;
+							
+						};
+					},
+					QIK_LISTBOX_COLUMN
+					{
+
+						slot_id = EQikListBoxSlotText4;
+						width_type = EQikListBoxColWidthFromContentType;
+						type = QIK_LISTBOX_TEXT_TYPE
+						{
+							font_size = EQikListBoxFontExtraSmall;
+							emphasis_font_size = EQikListBoxFontExtraSmall;
+							alignment = EQikListBoxTextAlignRight;
+						};
+					}
+				};
+				
+			}
+
+		};
+	}
+	};
+}
+
+
+// DIALOGS
+
+RESOURCE TBUF r_podcast_sort_audioBook_select { buf = STRING_r_view_books_setorder_dlg_selectlabel;}
+
+RESOURCE TBUF r_podcast_sort_audioBook_swap { buf = STRING_r_view_books_setorder_dlg_label;}
+
+RESOURCE DLG_BUTTONS r_podcast_setplayorder_buttons
+    {
+    buttons=
+        {
+		DLG_BUTTON { id=EPodcastSetAudioBookPlayOrderSwap; button=CMBUT {txt=STRING_r_view_books_setorder_dlg_swapcmd;};  flags=EEikLabeledButtonIsDefault; },     
+        DLG_BUTTON { id=EEikBidOk; button=CMBUT {txt=STRING_r_podcast_setting_done_cmd;}; hotkey=EEikBidOk; flags=0; }
+        };
+    }
+
+RESOURCE QIK_LISTBOX_LAYOUT r_podcast_playorder_listbox_layout
+{
+	columns = 
+	{
+
+	QIK_LISTBOX_COLUMN
+	{
+		width_type = EQikListBoxColWidthGrab;
+        width_value = 1;
+		slot_id = EQikListBoxSlotParent1;
+		type = QIK_LISTBOX_PARENT_TYPE;
+	
+		rows = 
+		{
+			QIK_LISTBOX_ROW
+			{		
+				slot_id = EQikListBoxSlotParent2;
+				type = QIK_LISTBOX_PARENT_TYPE;
+				columns = 
+				{			
+					QIK_LISTBOX_COLUMN
+					{
+						slot_id = EQikListBoxSlotText1;
+						width_type = EQikListBoxColWidthFromContentType;
+						type = QIK_LISTBOX_TEXT_TYPE
+						{
+							emphasis_font_style = EQikListBoxFontBold;
+							font_size = EQikListBoxFontMedium;
+							emphasis_font_size = EQikListBoxFontMedium;							
+						};				
+					},
+					QIK_LISTBOX_COLUMN
+					{
+						slot_id = EQikListBoxSlotText2;
+						interlacing_grab_priority = 100;
+						interlacing = EQikInterlacingExpandPrevious;
+						width_type = EQikListBoxColWidthGrab;
+						type = QIK_LISTBOX_TEXT_TYPE
+						{
+							emphasis_font_style = EQikListBoxFontBold;
+							font_size = EQikListBoxFontMedium;
+							emphasis_font_size = EQikListBoxFontMedium;	
+							scroll = EQikListBoxTextScrollWhenHighlighted;					
+						};				
+					}
+				};
+			},
+			QIK_LISTBOX_ROW
+			{
+
+				slot_id = EQikListBoxSlotText3;
+				type = QIK_LISTBOX_TEXT_TYPE
+				{
+					emphasis_font_style = EQikListBoxFontBold;
+					font_size = EQikListBoxFontExtraSmall;
+					emphasis_font_size = EQikListBoxFontExtraSmall;				
+				};						
+			}
+
+		};
+	}
+	};
+}
+
+
+RESOURCE QIK_LISTBOX_LAYOUT_PAIR r_podcast_setplayorder_normal_layout_pair
+	{
+	custom_normal_layout = r_podcast_playorder_listbox_layout;
+	custom_highlight_layout= r_podcast_playorder_listbox_layout;
+	}
+
+RESOURCE DIALOG r_podcast_audiobook_playorderdlg
+{
+	buttons = r_podcast_setplayorder_buttons;
+
+	flags = EEikDialogFlagWait|EEikDialogFlagButtonsBelow;
+	title = STRING_r_view_books_setorder_dlgtitle;
+	items = 
+	{
+		DLG_LINE
+		{
+			id = EPodcastSetAudioBookPlayOrderListbox;
+			itemflags = EQikDlgItemCaptionAboveControl|EQikDlgItemCtlIsEditInPlace|EQikDlgItemHideHighlight|EQikDlgItemShareAvailableHeight;			
+			type = EQikCtListBox;
+			control = QIK_LISTBOX 
+			{
+				layouts = { r_podcast_setplayorder_normal_layout_pair };
+			};
+		},
+		DLG_LINE
+		{
+			id = EPodcastSetAudioBookPlayOrderLabel;
+			itemflags = EQikDlgItemCaptionAboveControl|EQikDlgItemCtlIsEditInPlace|EQikDlgItemHideHighlight;
+			type = EEikCtLabel;
+			control = LABEL
+			{		
+			horiz_align=EEikLabelAlignHLeft;
+			txt =STRING_r_view_books_setorder_dlg_selectlabel;
+			};
+		}
+	};
+}
+
+// Shows view status strings
+RESOURCE TBUF r_podcast_shows_title_format { buf =  STRING_r_podcast_shows_title_format;}
+RESOURCE TBUF r_podcast_shows_title_download {buf = STRING_r_podcast_shows_title_download;}
+RESOURCE TBUF r_podcast_shows_downloads_suspended { buf = STRING_r_podcast_shows_downloads_suspended;}
+

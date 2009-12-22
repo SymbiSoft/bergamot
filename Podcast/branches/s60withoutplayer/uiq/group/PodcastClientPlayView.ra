@@ -1,0 +1,431 @@
+//----------------------------------------------------
+//------------ CONFIGURATION FOR THE COMMON PLAYVIEW ------------
+//----------------------------------------------------
+// The application supports the reference UI Configurations that are supported
+// in the UIQ 3 SDK. Use the UiqEnv tool, to change the UI Configuration in the
+// emulator in order to develop and test the application with varying phone styles.
+RESOURCE QIK_VIEW_CONFIGURATIONS r_podcast_playview_ui_configurations
+	{
+	configurations = 
+		{
+		QIK_VIEW_CONFIGURATION
+			{
+			ui_config_mode = KQikPenStyleTouchPortrait;
+			command_list = r_podcast_playview_commands;
+			view = r_podcast_playview_layout;
+			},
+		QIK_VIEW_CONFIGURATION
+			{
+			ui_config_mode = KQikPenStyleTouchLandscape;
+			command_list = r_podcast_playview_commands;
+			view = r_podcast_playview_layout;
+			},
+		QIK_VIEW_CONFIGURATION
+			{
+			ui_config_mode = KQikSoftkeyStyleTouchPortrait;
+			command_list = r_podcast_playview_commands;
+			view = r_podcast_playview_layout;
+			},
+		QIK_VIEW_CONFIGURATION
+			{
+			ui_config_mode = KQikSoftkeyStylePortrait;
+			command_list = r_podcast_playview_commands;
+			view = r_podcast_playview_layout;
+			},
+		QIK_VIEW_CONFIGURATION
+			{
+			ui_config_mode = KQikSoftkeyStyleSmallPortrait;
+			command_list = r_podcast_playview_commands;
+			view = r_podcast_playview_layout;
+			}
+		};
+	}
+
+//----------------------------------------------------
+//------------------ PLAY COMMANDS -------------------
+//----------------------------------------------------
+RESOURCE QIK_COMMAND_LIST r_podcast_playview_commands
+	{
+	items=
+		{
+		// This command shall only be visible in debug mode because it is only
+		// used to find memory leaks during development of the application.
+		QIK_COMMAND
+			{
+			id = EPodcastPlay;
+			type = EQikCommandTypeDone;
+			text = STRING_r_play_cmd;
+			},
+	QIK_COMMAND
+			{
+			id = EPodcastDownloadShow;
+			type = EQikCommandTypeDone;
+			text = STRING_r_view_download_cmd;
+			shortText = STRING_r_view_download_short_cmd;
+			},
+		QIK_COMMAND
+			{
+			id = EPodcastRemoveDownload;
+			type = EQikCommandTypeDone;
+			text = STRING_r_view_remove_download_cmd;
+			shortText = STRING_r_view_remove_download_short_cmd;
+			},	
+		QIK_COMMAND
+			{		
+			id = EPodcastResumeDownloads;
+			type = EQikCommandTypeDone;
+			text = STRING_r_view_resume_downloads_cmd;
+			shortText = STRING_r_view_resume_short_dls_cmd;
+			},					
+		QIK_COMMAND
+			{
+			id = EPodcastStop;
+			type = EQikCommandTypeScreen;
+			text = STRING_r_stop_cmd;
+			groupId = 1;
+			},
+		QIK_COMMAND
+			{
+			id = EPodcastSetVolume;
+			type = EQikCommandTypeDone;
+			text = STRING_r_volume_cmd;
+			},
+	QIK_COMMAND
+			{
+			id = EPodcastMarkAsPlayed;
+			type = EQikCommandTypeScreen;
+			text = STRING_r_view_mark_as_played_cmd;
+			groupId = 1;
+			},
+	QIK_COMMAND
+			{
+			id = EPodcastMarkAsUnplayed;
+			type = EQikCommandTypeScreen;
+			text = STRING_r_view_mark_as_unplayed_cmd;
+			groupId = 1;
+			},
+		QIK_COMMAND
+			{
+			id = EPodcastView;
+			type = EQikCommandTypeScreen;
+			text = STRING_r_view_cmd;
+			namedGroupLinkId= 1;
+			groupId = 2;
+			},
+			QIK_COMMAND
+			{
+			id = EPodcastViewMain;
+			type = EQikCommandTypeScreen;
+			text = STRING_r_view_main_cmd;
+			namedGroupId = 1;
+			groupId = 1;
+			},
+
+				QIK_COMMAND
+				{
+				id = EPodcastViewDownloadedShows;
+				type = EQikCommandTypeScreen;
+				text = STRING_r_view_dl_shows_cmd;
+				namedGroupId = 1;
+				groupId = 2;
+				},		
+
+				QIK_COMMAND
+				{
+				id = EPodcastViewPendingShows;
+				type = EQikCommandTypeScreen;
+				text = STRING_r_view_dling_shows_cmd;
+				namedGroupId = 1;
+				groupId = 2;
+				},					
+				QIK_COMMAND
+				{
+				id = EPodcastViewFeeds;
+				type = EQikCommandTypeScreen;
+				text = STRING_r_view_feeds_cmd;
+				namedGroupId = 1;
+				groupId = 2;
+				},
+		/*QIK_COMMAND
+			{
+			id = EPodcastSettings;
+			type = EQikCommandTypeScreen;
+			text = STRING_r_settings_cmd;
+			groupId = 11;  
+			},*/
+		QIK_COMMAND
+			{
+			id = EPodcastZoomSetting;
+			type = EQikCommandTypeScreen;
+			text = STRING_r_zoom_cmd;
+			groupId = 11;  
+			},		
+		QIK_COMMAND
+			{
+			id = EEikCmdExit;
+			type = EQikCommandTypeScreen;
+			// Indicate that it will only be created in debug builds
+			stateFlags = EQikCmdFlagDebugOnly;
+			text = STRING_r_listbox_listview_cmd_close_debug;
+			shortText = STRING_r_listbox_listview_cmd_close_debug_shorttext;
+			groupId = 255;  
+			}
+		};
+	}
+//----------------------------------------------------
+//----------------- PLAYVIEW LAYOUT ------------------
+//----------------------------------------------------
+RESOURCE QIK_VIEW r_podcast_playview_layout
+	{
+	pages = r_podcast_playview_layout_pages;
+	}
+
+
+RESOURCE QIK_VIEW_PAGES r_podcast_playview_layout_pages
+	{
+	pages = 
+		{
+		QIK_VIEW_PAGE
+			{
+			page_id = EPodcastListViewPage;
+			page_content = r_podcast_playview_page_control;
+			}
+		};
+	}
+
+//----------------------------------------------------
+//----------------- ROW LAYOUT DATA ------------------
+//----------------------------------------------------
+RESOURCE QIK_ROW_LAYOUT_DATA r_podcast_row_layout_data_nofill
+	{
+	vertical_alignment = EQikLayoutVAlignFill;
+	horizontal_alignment = EQikLayoutHAlignFill;
+	vertical_excess_grab_weight = 0;
+	minimum_width = EQikLayoutUseControlMinimum;
+	layout_when_invisible = EQikLayoutFalseValue;
+	}
+
+RESOURCE QIK_ROW_LAYOUT_DATA r_podcast_row_layout_data_fillhigher
+	{
+	vertical_alignment = EQikLayoutVAlignFill;
+	horizontal_alignment = EQikLayoutHAlignFill;
+	vertical_excess_grab_weight = 3;
+	minimum_width = EQikLayoutUseControlMinimum;
+	}
+
+RESOURCE LABEL r_podcast_playview_time
+{
+txt = "00:00";
+horiz_align=EEikLabelAlignHRight;
+}
+
+RESOURCE LABEL r_podcast_playview_title
+{
+horiz_align=EEikLabelAlignHCenter;
+standard_font=EEikLabelFontLegend;
+
+}
+
+
+RESOURCE LABEL r_podcast_playview_info
+{
+	horiz_align=EEikLabelAlignHLeft;
+	//horiz_align=EEikLabelAlignHCenter;
+}
+
+RESOURCE QIK_SLIDER r_podcast_playview_progress
+{
+	min_value = 0;
+	max_value = 100;
+	num_markers = 10;
+}
+
+RESOURCE QIK_SLIDER r_podcast_playview_volume
+{
+	min_value = 0;
+	max_value = 32;
+	num_markers = 16;
+}
+
+RESOURCE QIK_IMAGE r_podcast_playview_coverimage
+{
+	content = QIK_CONTENT_MBM
+	{
+		bmpid = EMbmPodcastclientEmptyimage;
+		bmpmask = EMbmPodcastclientEmptyimage;
+	};
+}
+
+
+// The page contains a list box that fills the whole application space.
+RESOURCE QIK_SCROLLABLE_CONTAINER_SETTINGS r_podcast_playview_info_container
+{
+	layout_manager_type = EQikRowLayoutManager;
+	layout_manager = r_podcast_row_layout_manager_default;
+	flags = EMyQikScrollableContainerDefaultFlags;
+	controls = 
+	{
+	QIK_CONTAINER_ITEM_CI_LI
+			{ 
+			itemflags = 6;//(EQikCtrlFlagIsEditInPlace|EQikCtrlFlagIsNonFocusing);
+			unique_handle = EPodcastPlayViewTitleCtrl;
+			type = EEikCtLabel; 
+			control = r_podcast_playview_title;
+			// This will make it so that the list box fills the whole 
+			// application space.
+			layout_data = r_podcast_row_layout_data_fill;
+			},
+		QIK_CONTAINER_ITEM_CI_LI
+			{ 
+			unique_handle = EPodcastPlayViewCoverImage;
+			type = EEikCtImage; 
+			control = r_podcast_playview_coverimage;
+			// This will make it so that the list box fills the whole 
+			// application space.
+			layout_data = r_podcast_row_layout_data_nofill;
+			},
+	
+		QIK_CONTAINER_ITEM_CI_LI
+			{ 
+			itemflags =6;//(EQikCtrlFlagIsEditInPlace|EQikCtrlFlagIsNonFocusing);
+			unique_handle = EPodcastPlayViewInformation;
+			type = EEikCtLabel; 
+			control = r_podcast_playview_info;
+			// This will make it so that the list box fills the whole 
+			// application space.
+			layout_data = r_podcast_row_layout_data_fillhigher;
+			}
+	};
+}
+
+RESOURCE QIK_SCROLLABLE_CONTAINER r_podcast_playview_scroll_container
+{
+	flags = EMyQikScrollableContainerDefaultFlags;
+}
+
+RESOURCE PROGRESSINFO r_podcast_playview_dl_progress
+{
+ finalval = 100;
+ //splits_in_block = 10;
+ text_type = EEikProgressTextPercentage;
+}
+
+// The page contains a list box that fills the whole application space.
+RESOURCE QIK_CONTAINER_SETTINGS r_podcast_playview_page_control
+	{
+	layout_manager_type = EQikRowLayoutManager;
+	layout_manager = r_podcast_row_layout_manager_default;
+	controls = 
+		{
+		QIK_CONTAINER_ITEM_NESTED_CONTAINER_CI_LI
+			{ 
+			itemflags = EQikCtrlFlagIsEditInPlace;
+			unique_handle = EPodcastPlayViewScrollContainer;
+			type = EQikCtScrollableContainer; 
+			control = r_podcast_playview_scroll_container;
+			// This will make it so that the list box fills the whole 
+			// application space.
+			layout_data = r_podcast_row_layout_data_fillhigher;
+			container = r_podcast_playview_info_container;
+			},
+		QIK_CONTAINER_ITEM_CI_LI
+			{ 
+			itemflags = EQikCtrlFlagIsEditInPlace;
+			unique_handle = EPodcastPlayViewProgressCtrl;
+			type = EQikCtSlider; 
+			control = r_podcast_playview_progress;
+			// This will make it so that the list box fills the whole 
+			// application space.
+			layout_data = r_podcast_row_layout_data_nofill;
+			},
+		QIK_CONTAINER_ITEM_CI_LI
+			{ 
+			itemflags = EQikCtrlFlagIsEditInPlace;
+			unique_handle = EPodcastPlayViewProgressInfo;
+			type = EEikCtProgInfo; 
+			control = r_podcast_playview_dl_progress;
+			// This will make it so that the list box fills the whole 
+			// application space.
+			layout_data = r_podcast_row_layout_data_nofill;
+			}
+	/*	QIK_CONTAINER_ITEM_CI_LI
+			{ 
+			itemflags = EQikCtrlFlagIsEditInPlace;
+			unique_handle = EPodcastPlayViewBottomLineBB;
+			type = EQikCtGenericBuildingBlock; 
+			control = r_podcast_playview_bottom_bb;
+			// This will make it so that the list box fills the whole 
+			// application space.
+			layout_data = r_podcast_row_layout_data_nofill;
+			}*/
+		};
+	}
+
+RESOURCE QIK_GENERIC_BUILDING_BLOCK r_podcast_playview_bottom_bb
+{
+	columns = 
+	{
+		QIK_GENERIC_BUILDING_BLOCK_COLUMN
+		{
+			slot_id = EQikItemSlot1; 
+			horizontal_alignment = EQikLayoutHAlignRight;
+			number_of_visible_lines = 1;
+			control_internal_alignment = EQikAlignHRightVCenter;
+			grabweight = 0;
+			fixed_width = EQikLayoutUseControlMinimum;
+		},
+		QIK_GENERIC_BUILDING_BLOCK_COLUMN
+		{
+			slot_id = EQikItemSlot2; 
+			grabweight = 1;
+			horizontal_alignment = EQikLayoutHAlignLeft;
+			control_internal_alignment = EQikAlignHLeftVCenter;
+		//	fixed_width = 100;
+			auto_wrapping = 0;
+			max_num = 2;
+		},
+		QIK_GENERIC_BUILDING_BLOCK_COLUMN
+		{
+			slot_id = EQikItemSlot7; 
+			horizontal_alignment = EQikLayoutHAlignLeft;
+			number_of_visible_lines = 1;
+			control_internal_alignment = EQikAlignHLeftVCenter;
+			grabweight = 0;
+			fixed_width = EQikLayoutUseControlMinimum;
+		}
+	};
+
+	content = 
+	{
+		QIK_SLOT_CONTENT_DIRECT
+		{
+			unique_handle = EPodcastPlayViewProgressTime;
+			type = EEikCtLabel; 
+			slot_id = EQikItemSlot1; 
+			control = LABEL
+			{
+			horiz_align = EEikLabelAlignHLeft;
+			txt ="0:00:00";
+			};
+		},
+		QIK_SLOT_CONTENT_INDIRECT
+		{
+			itemflags = EQikCtrlFlagIsEditInPlace;
+			unique_handle = EPodcastPlayViewProgressCtrl;
+			type = EQikCtSlider; 
+			control = r_podcast_playview_progress;
+			slot_id = EQikItemSlot2; 
+		},
+		QIK_SLOT_CONTENT_DIRECT
+		{		
+			unique_handle = EPodcastPlayViewProgressTotTime;
+			type = EEikCtLabel; 
+			slot_id = EQikItemSlot7; 
+			control = LABEL
+			{
+			horiz_align = EEikLabelAlignHRight;
+			txt ="0:00:00";
+			};
+		}
+	};
+}

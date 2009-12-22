@@ -1,0 +1,13 @@
+// _reg.rss
+#include <appinfo.rh>
+
+UID2 KUidAppRegistrationResourceFile
+UID3 0xA00046AE
+RESOURCE APP_REGISTRATION_INFO
+{
+    app_file="PodcastClient";
+    localisable_resource_file="\\resource\\apps\\PodcastClient_loc";
+    }
+
+
+

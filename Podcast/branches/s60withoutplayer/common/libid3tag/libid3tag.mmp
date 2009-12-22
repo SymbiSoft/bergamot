@@ -1,0 +1,13 @@
+target libid3tag.lib
+targettype lib
+
+sourcepath .
+userinclude .
+systeminclude \epoc32\include \epoc32\include\libc
+
+source compat.c         crc.c            debug.c          field.c          file.c           frame.c          frametype.c
+source genre.c          latin1.c         parse.c          render.c         tag.c            ucs4.c           utf8.c
+source utf16.c          util.c           version.c
+
+
+MACRO HAVE_CONFIG_H

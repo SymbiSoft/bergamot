@@ -1,0 +1,24 @@
+// bld.inf
+#include <eikcore.rsg>
+
+RESOURCE QIK_COMMAND_LIST r_PodcastClient_baseview_commands
+  {
+  items=
+    {
+    QIK_COMMAND
+      {
+      id = EMyAbout;
+      type = EQikCommandTypeScreen;
+      text = "About";
+      },
+
+
+    QIK_COMMAND
+      {
+      id = EEikCmdExit;
+      type = EQikCommandTypeScreen;
+      stateFlags = EQikCmdFlagDebugOnly;
+      text = "Close (Debug)";
+      }
+    };
+  }

@@ -1,0 +1,533 @@
+// PodcastClient.Rss
+//
+// (c) The bergamot project
+//
+
+#include <eikon.rh>
+#include <qikon.rh>
+#include <qikcommand.rh>
+#include <qiklistbox.rh>
+#include <qiklistboxstandardlayouts.hrh>
+#include <PodcastClient.mbg>
+#include <eikon.rsg>
+#include <QikCategory.hrh>
+
+#include "PodcastClient.hrh"
+
+#include "..\..\common\resources\languages.rss"
+
+// Use this statement to ensure that the resources in the file have a unique ID
+// so that an application can use multiple resource files without resource ID
+// conflict. This statement must be the first non-comment statement in the file.
+NAME LIST
+
+// The three following resources are mandatory fields and need to be the 
+// first resource fields in the resource file. Need to be defined in this order.
+// These resources don't need to contain any useful info, just need to be there.
+
+// RSS_SIGNATURE can be used to specify version information
+RESOURCE RSS_SIGNATURE { }
+
+// Defines the name of the default file the application framework creates.
+// This resource must always be the second resource in the resource file.
+RESOURCE TBUF { buf = ""; }
+
+// This resource is used to define an application's GUI. 
+// Although it's not used directly by UIQ, its declaration is mandatory.
+RESOURCE EIK_APP_INFO
+	{
+	}
+
+#include "PodcastClientMainView.ra"
+#include "PodcastClientPlayView.ra"
+#include "PodcastClientShowsView.ra"
+#include "PodcastClientFeedView.ra"
+
+//----------------------------------------------------
+//--------------- DEFAULT ROW LAYOUT MANAGER -----------------
+//----------------------------------------------------
+RESOURCE QIK_ROW_LAYOUT_MANAGER r_podcast_row_layout_manager_default
+	{
+	default_layout_data = QIK_ROW_LAYOUT_DATA {};
+	}
+
+//----------------------------------------------------
+//----------------- DEFAULT ROW LAYOUT DATA ------------------
+//----------------------------------------------------
+RESOURCE QIK_ROW_LAYOUT_DATA r_podcast_row_layout_data_fill
+	{
+	vertical_alignment = EQikLayoutVAlignFill;
+	vertical_excess_grab_weight = 1;
+	}
+
+// Common string resources
+RESOURCE TBUF r_podcast_feeds_title{buf = STRING_r_view_feeds_title;}
+RESOURCE TBUF r_podcast_feeds_category{	buf = STRING_r_view_feeds_cmd;}
+RESOURCE TBUF r_podcast_feeds_download_cmd{	buf = STRING_r_view_download_cmd;}
+RESOURCE TBUF r_podcast_feeds_download_short_cmd{	buf = STRING_r_view_download_short_cmd;}
+RESOURCE TBUF r_podcast_feeds_play_cmd{buf = STRING_r_view_play_cmd;}
+
+// Audio books
+RESOURCE TBUF r_podcast_audiobooks_title{ buf = STRING_r_view_audiobooks_title;}
+
+// Player
+RESOURCE TBUF r_podcast_player_pause_cmd{buf = STRING_r_pause_cmd;}
+RESOURCE TBUF r_podcast_player_play_cmd{buf = STRING_r_play_cmd;}
+RESOURCE TBUF r_podcast_player_suspend_dl_cmd{buf = STRING_r_suspend_download_cmd;}
+RESOURCE TBUF r_podcast_player_remove_dl_cmd{buf = STRING_r_view_remove_download_short_cmd;}
+
+// Main
+RESOURCE TBUF r_podcast_main_player_cmd{buf = STRING_r_view_player_cmd;}
+
+
+RESOURCE TBUF r_podcast_show_cmd{buf = STRING_r_view_show_cmd;}
+RESOURCE TBUF r_podcast_update_cmd{buf = STRING_r_update_feeds_cmd;}
+
+RESOURCE TBUF r_podcast_update_all_cmd{buf = STRING_r_update_all_feeds_cmd;}
+RESOURCE TBUF r_podcast_view_cmd {buf = STRING_r_view_cmd;}
+
+RESOURCE TBUF r_podcast_remove_feed_title {buf = STRING_r_remove_feed_title;}
+RESOURCE TBUF r_podcast_remove_feed_prompt {buf = STRING_r_remove_feed_prompt;}
+
+RESOURCE TBUF r_podcast_update_new_feed_title {buf = STRING_r_update_new_feed_title;}
+RESOURCE TBUF r_podcast_update_new_feed_prompt {buf = STRING_r_update_new_feed_prompt;}
+
+RESOURCE TBUF r_podcast_delete_played_title {buf = STRING_r_delete_played_title;}
+RESOURCE TBUF r_podcast_delete_played_prompt {buf = STRING_r_delete_played_prompt;}
+
+RESOURCE TBUF r_podcast_delete_show_title {buf = STRING_r_delete_show_title;}
+RESOURCE TBUF r_podcast_delete_show_prompt {buf = STRING_r_delete_show_prompt;}
+
+RESOURCE TBUF r_podcast_remove_book_title {buf = STRING_r_remove_book_title;}
+RESOURCE TBUF r_podcast_remove_book_prompt {buf = STRING_r_remove_book_prompt;}
+
+RESOURCE TBUF r_podcast_remove_chapter_title {buf = STRING_r_remove_chapter_title;}
+RESOURCE TBUF r_podcast_remove_chapter_prompt {buf = STRING_r_remove_chapter_prompt;}
+
+
+RESOURCE TBUF r_podcast_enable_downloads_title {buf = STRING_r_enable_downloads_title;}
+RESOURCE TBUF r_podcast_enable_downloads_prompt {buf = STRING_r_enable_downloads_prompt;}
+
+RESOURCE TBUF r_podcast_feeds_title_format {buf = STRING_r_podcast_feeds_title_format;}
+RESOURCE TBUF r_podcast_feeds_status_format {buf = STRING_r_podcast_feeds_status_format;}
+
+RESOURCE TBUF r_podcast_onphone_status {buf = STRING_r_view_onphone_status;}
+RESOURCE TBUF r_podcast_onphone_status_unknown {buf = STRING_r_view_onphone_status_unknown;}
+
+
+// Books
+RESOURCE TBUF r_podcast_books_title_format {buf = STRING_r_podcast_books_title_format;}
+RESOURCE TBUF r_podcast_books_status_format {buf = STRING_r_podcast_books_status_format;}
+RESOURCE TBUF r_podcast_import_book_title {buf = STRING_r_view_import_book_title;}
+
+
+RESOURCE TBUF r_podcast_feeds_update_message {buf = STRING_r_podcast_feeds_update_message;}
+RESOURCE TBUF r_podcast_feeds_update_error {buf = STRING_r_podcast_feeds_update_error;}
+
+RESOURCE TBUF r_podcast_shows_no_items {buf = STRING_r_podcast_shows_no_items;}
+
+// Feeds status
+RESOURCE TBUF r_podcast_feeds_never_updated {buf = STRING_r_podcast_shows_never_updated;}
+RESOURCE TBUF r_podcast_feeds_is_updating {buf = STRING_r_podcast_feeds_is_updating;}
+
+RESOURCE TBUF r_podcast_feeds_no_feeds {buf = STRING_r_podcast_no_feeds;}
+RESOURCE TBUF r_podcast_import_feeds_title {buf = STRING_r_view_import_feeds_title;}
+RESOURCE TBUF r_podcast_books_no_books {buf = STRING_r_view_books_no_books;}
+
+RESOURCE TBUF r_podcast_pending_status_active {buf = STRING_r_podcast_shows_title_download;}
+RESOURCE TBUF r_podcast_pending_status_suspended {buf = STRING_r_podcast_shows_downloads_suspended;}
+RESOURCE TBUF r_podcast_books_status {buf = STRING_r_view_books_status;}
+RESOURCE TBUF r_podcast_feeds_status {buf = STRING_r_view_feeds_status;}
+
+RESOURCE TBUF r_podcast_subtitle {buf = STRING_r_podcast_subtitle;}
+
+RESOURCE TBUF r_add_feed_exists {buf = STRING_r_add_feed_exists;}
+RESOURCE TBUF r_add_feed_exists_title {buf = STRING_r_add_feed_exists_title;}
+
+RESOURCE TBUF r_add_feed_replace {buf = STRING_r_add_feed_replace;}
+RESOURCE TBUF r_add_feed_replace_title {buf = STRING_r_add_feed_replace_title;}
+
+RESOURCE TBUF r_catchup_feed {buf = STRING_r_catchup_feed;}
+RESOURCE TBUF r_catchup_feed_title {buf = STRING_r_catchup_feed_title;}
+RESOURCE TBUF r_remove_all_dlg {buf = STRING_r_remove_all_dlg;}
+RESOURCE TBUF r_question_title {buf = STRING_r_question_title;}
+RESOURCE ARRAY r_podcast_shows_categories
+	{
+	items=
+		{
+		QIK_CATEGORY
+			{
+			name = STRING_r_category_all;
+			flags = EQikCategoryCantBeRenamed | EQikCategoryCantBeDeleted;
+			handle = EShowAllShows;			
+			},
+		QIK_CATEGORY
+			{
+			name = STRING_r_category_new;
+			flags = EQikCategoryCantBeRenamed | EQikCategoryCantBeDeleted ;
+			handle = EShowNewShows;
+			},
+		QIK_CATEGORY
+			{
+			name = STRING_r_category_dled;
+			flags = EQikCategoryCantBeRenamed | EQikCategoryCantBeDeleted;
+			handle = EShowDownloadedShows;
+			},
+		QIK_CATEGORY
+			{
+			name = STRING_r_category_pending;
+			flags = EQikCategoryCantBeRenamed | EQikCategoryCantBeDeleted;
+			handle = EShowPendingShows;
+			},
+		QIK_CATEGORY
+			{
+			name = "";
+			flags = EQikCategoryHiddenInList;
+			handle = EShowFeedShows;
+			}
+		};
+	}
+
+RESOURCE ARRAY r_podcast_category
+	{
+	items=
+		{
+		QIK_CATEGORY
+			{
+			name = STRING_r_category_all;
+			flags = EQikCategoryCantBeRenamed | EQikCategoryCantBeDeleted | EQikCategoryAll;
+			handle = EShowAllShows;			
+			}
+		};
+	}
+
+// DIALOGS
+RESOURCE DIALOG r_podcast_add_feed_dlg
+{
+	buttons = R_EIK_BUTTONS_CANCEL_DONE;
+
+	flags = EEikDialogFlagWait|EEikDialogFlagButtonsBelow;
+	title = STRING_r_add_feed_title;
+	items = 
+	{
+	DLG_LINE
+	{
+	id = EPodcastAddEditFeedDlgUrl;
+	itemflags = EQikDlgItemCaptionAboveControl|EQikDlgItemCtlIsEditInPlace|EQikDlgItemHideHighlight;
+	prompt = STRING_r_add_feed_prompt;
+	type = EEikCtEdwin;
+	control = EDWIN
+	{
+	lines = 5;
+	};
+	}
+	};
+}
+
+RESOURCE TBUF r_podcast_about_text{buf = STRING_r_about_text;}
+
+
+RESOURCE DIALOG r_podcast_about_dlg
+{
+	buttons = R_EIK_BUTTONS_DONE;
+
+	flags = EEikDialogFlagWait|EEikDialogFlagButtonsBelow;
+	title = STRING_r_about_title;
+	items = 
+		{
+			DLG_LINE
+			{
+			id = EPodcastAboutIcon;
+			type = EEikCtImage;
+			control = IMAGE
+				{
+			    bmpfile = "\\Resource\\Apps\\PodcastClient.mbm";
+			    bmpid = 2;
+			    bmpmask = 3;
+			};
+			},
+			DLG_LINE
+			{
+			id = EPodcastAboutText;
+			itemflags = EQikDlgItemCaptionAboveControl|EQikDlgItemCtlIsEditInPlace|EQikDlgItemHideHighlight;			
+			type = EEikCtLabel;
+			control = LABEL
+			{
+			
+			};
+			}
+		};
+}
+
+
+
+RESOURCE DIALOG r_podcast_edit_feed_dlg
+{
+	buttons = R_EIK_BUTTONS_CANCEL_DONE;
+
+	flags = EEikDialogFlagWait|EEikDialogFlagButtonsBelow;
+	title = STRING_r_edit_feed_title;
+	items = 
+	{
+	DLG_LINE
+		{
+		id = EPodcastAddEditFeedDlgTitle;
+		itemflags = EQikDlgItemCaptionAboveControl;
+		prompt = STRING_r_add_feed_title_prompt;
+		type = EEikCtEdwin;
+		control = EDWIN
+			{
+			lines = 1;
+			};
+		},
+	DLG_LINE
+		{
+		id = EPodcastAddEditFeedDlgUrl;
+		itemflags = EQikDlgItemCaptionAboveControl;
+		prompt = STRING_r_add_feed_prompt;
+		type = EEikCtEdwin;
+		control = EDWIN
+			{
+			lines = 5;
+			};
+		}
+	};
+}
+
+RESOURCE DIALOG r_podcast_volume_dlg
+{
+	buttons = r_podcast_settings_buttons;
+
+	flags = EEikDialogFlagButtonsBelow|EEikDialogFlagDensePacking|EEikDialogFlagWait;
+	title = STRING_r_podcast_setting_volume;
+	items = 
+	{	
+		DLG_LINE
+		{
+			id = EPodcastSettingsVolume;
+			itemflags = EQikDlgItemCaptionAboveControl|EQikDlgItemCtlIsEditInPlace|EQikDlgItemHideHighlight;
+			prompt = "";
+			type = EQikCtSlider;
+			control = QIK_SLIDER 
+			{
+				min_value = 0;
+				max_value = 10;
+				num_markers = 10;
+			};
+		}
+	};
+}
+
+
+RESOURCE ARRAY r_podcast_connection_selection_array
+{
+	items = 
+	{
+	 LBUF {txt = STRING_r_podcast_setting_default;},
+	 LBUF {txt = STRING_r_podcast_setting_wlanonly;},
+	 LBUF {txt = STRING_r_podcast_setting_usespecified;}
+	};
+
+}
+
+RESOURCE ARRAY r_podcast_settings_autoupdate_array
+{
+	items = 
+	{
+	 LBUF {txt = STRING_podcast_autoupdate_off;},
+	 LBUF {txt = STRING_podcast_autoupdate_perodical;},
+	 LBUF {txt = STRING_podcast_autoupdate_attime;}
+	};
+
+}
+
+RESOURCE DLG_BUTTONS r_podcast_settings_buttons
+    {
+    buttons=
+        {
+        DLG_BUTTON { id=EEikBidCancel; button=CMBUT {txt=STRING_r_podcast_setting_cancel_cmd;}; hotkey=EEikBidCancel; flags=0; },
+		DLG_BUTTON { id=EPodcastSelectShowDir; button=CMBUT {txt=STRING_r_podcast_setting_showdir_cmd;};  flags=0; },     
+        DLG_BUTTON { id=EEikBidOk; button=CMBUT {txt=STRING_r_podcast_setting_done_cmd;}; hotkey=EEikBidOk; flags=EEikLabeledButtonIsDefault; }
+        };
+    }
+
+
+
+RESOURCE DIALOG r_podcast_iap_dlg
+{
+	buttons = R_EIK_BUTTONS_CANCEL_DONE;
+	flags = EEikDialogFlagButtonsBelow|EEikDialogFlagDensePacking|EEikDialogFlagWait|EEikDialogFlagNotifyEsc;
+    title = STRING_r_podcast_iap_dlg_title;
+	items = 
+	{
+		DLG_LINE
+		{
+			id = EPodcastSettingIAPList;
+			itemflags = EQikDlgItemCaptionAboveControl|EQikDlgItemHideHighlight;
+			prompt = STRING_r_podcast_setting_iaplist;
+			type = EEikCtChoiceList;
+			control = CHOICELIST
+			{
+			};
+		}
+	};
+}
+
+RESOURCE DIALOG r_podcast_settings_dlg
+{
+	buttons = r_podcast_settings_buttons;
+
+	flags = EEikDialogFlagButtonsBelow|EEikDialogFlagDensePacking|EEikDialogFlagWait;
+	title = STRING_r_podcast_settings_title;
+	items = 
+	{
+		DLG_LINE
+		{
+			id = EPodcastSettingShowDir;
+			itemflags = EQikDlgItemCaptionAboveControl;
+			prompt = STRING_r_podcast_setting_showdir;
+			type = EEikCtEdwin;
+			control = EDWIN
+			{
+				lines = 3;
+				maxlength = 256;
+			};
+		},	
+
+		DLG_LINE
+		{
+			id = EPodcastSettingAutoUpdate;
+			itemflags = EQikDlgItemCaptionAboveControl;
+			prompt = STRING_r_podcast_setting_autoupdate;
+			type = EEikCtChoiceList;
+			control = CHOICELIST
+			{
+			array_id = r_podcast_settings_autoupdate_array;
+			};
+		},
+		DLG_LINE
+		{
+			id = EPodcastSettingUpdateInterval;
+			itemflags = EQikDlgItemDenselyPacked;//EQikDlgItemCaptionAboveControl;
+			prompt = STRING_r_podcast_setting_checkevery;
+			type = EQikCtNumberEditor;
+			trailer = STRING_r_podcast_setting_minutes;
+			control = QIK_NUMBER_EDITOR
+			{
+				min = 0;
+				max = 1440;
+			};
+		},
+		DLG_LINE
+		{
+			id = EPodcastSettingUpdateTime;
+			itemflags = EQikDlgItemDenselyPacked;//EQikDlgItemCaptionAboveControl;
+			prompt = STRING_r_podcast_setting_updateat;
+			type = EQikCtTimeEditor;		
+			control = QIK_TIME_EDITOR
+			{
+				minTime = TIME
+				{
+				};
+
+				maxTime = TIME
+				{
+				hour = 23;
+				minute = 59;
+				second = 59;
+				};
+			};
+		},
+
+		DLG_LINE
+		{
+		 id = EPodcastSettingAutoDownload;
+		 itemflags = EQikDlgItemCaptionAboveControl; 
+		 prompt = STRING_r_podcast_setting_autodownload;
+		 type = EEikCtCheckBox;
+		 control = CHECKBOX
+		 {
+		 };
+		},	
+		DLG_LINE
+		{
+			id = EPodcastSettingConnection;
+			itemflags = EQikDlgItemCaptionAboveControl;
+			prompt = STRING_r_podcast_setting_connection;
+			type = EEikCtChoiceList;
+			control = CHOICELIST
+			{
+				array_id = r_podcast_connection_selection_array;
+			};
+		},
+		DLG_LINE
+		{
+			id = EPodcastSettingIAPList;
+			itemflags = EQikDlgItemCaptionAboveControl;
+			prompt = STRING_r_podcast_setting_iaplist;
+			type = EEikCtChoiceList;
+			control = CHOICELIST
+			{
+			};
+		}
+	};
+}
+
+
+
+RESOURCE DIALOG r_podcast_new_audiobook_dlg
+{
+	buttons = R_EIK_BUTTONS_CANCEL_DONE;
+	flags = EEikDialogFlagButtonsBelow|EEikDialogFlagDensePacking|EEikDialogFlagWait;
+	title = STRING_r_podcast_new_audiobook_title;
+	items = 
+	{
+	DLG_LINE
+		{
+		id = EPodcastNewAudioBookTitle;
+		itemflags = EQikDlgItemCaptionAboveControl|EQikDlgItemCtlIsEditInPlace|EQikDlgItemHideHighlight;
+		prompt = STRING_r_podcast_new_audiobook_prompt;
+		type = EEikCtEdwin;
+		control = EDWIN
+			{
+			lines = 5;
+			};
+		},
+	DLG_LINE
+		{
+		id = EPodcastNewAudioBookLabel;
+		itemflags = EQikDlgItemCaptionAboveControl;
+		type = EEikCtLabel;
+		control = LABEL
+			{
+			txt = STRING_r_podcast_new_audiobook_label;
+			horiz_align=EEikLabelAlignHLeft;
+			};
+		}
+
+	};
+}
+
+RESOURCE TBUF r_podcast_new_audiobook_select_files { buf = STRING_r_podcast_new_audiobook_select_files;}
+
+RESOURCE ARRAY r_podcast_new_audiobook_mimearray
+{
+	items = 
+	{
+	 LBUF {txt = "audio/wav";},
+	 LBUF {txt = "audio/mp3";},
+	 LBUF {txt = "audio/mp4";},
+	 LBUF {txt = "audio/*";}
+	};
+
+}
+
+RESOURCE ARRAY r_podcast_import_audiobook_mimearray
+{
+	items = 
+	{
+	 LBUF {txt = "audio/x-mpegurl";},
+	 LBUF {txt = "application/x-mpegurl";}
+	};
+
+}

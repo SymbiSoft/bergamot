@@ -1,0 +1,33 @@
+TARGET engine.lib
+TARGETTYPE lib
+
+SOURCEPATH .
+USERINCLUDE .
+USERINCLUDE ..\libid3tag ..\sqlite\src
+SYSTEMINCLUDE \epoc32\include \epoc32\include\libc
+
+// Engine
+SOURCE			HttpClient.cpp
+SOURCE			HttpEventHandler.cpp 
+SOURCE			FeedParser.cpp 
+SOURCE			FeedEngine.cpp 
+SOURCE			ShowInfo.cpp
+SOURCE			SoundEngine.cpp
+SOURCE			PodCastModel.cpp 
+SOURCE			FeedInfo.cpp
+SOURCE			FeedTimer.cpp
+SOURCE			ShowEngine.cpp
+SOURCE			SettingsEngine.cpp
+SOURCE			MetaDataReader.cpp 
+SOURCE			TelephonyListener.cpp 
+SOURCE			OpmlParser.cpp 
+SOURCE			RemoteControlListener.cpp
+SOURCE			PodcastUtils.cpp
+
+MACRO HAVE_CONFIG_H // for libid3tag
+
+#ifdef __UIQ3_SDK__
+MACRO UIQ3
+#else
+MACRO S60
+#endif

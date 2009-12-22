@@ -1,0 +1,309 @@
+/**
+ * This file is a part of Escarpod Podcast project
+ * (c) 2008 The Bergamot Project
+ * (c) 2008 Teknolog (Sebastian Brännström)
+ * (c) 2008 Anotherguest (Lars Persson)
+ */
+
+RESOURCE HOTKEYS r_podcast_settingsview_hotkeys
+    {
+    control =
+        {
+        HOTKEY { command = EAknCmdExit; key='e'; }
+        };
+    }
+
+RESOURCE MENU_BAR r_podcast_settingsview_menubar
+    {
+    titles =
+        {
+        MENU_TITLE { menu_pane = r_podcast_settingsview_menu; txt = "Settings"; }
+        };
+    }
+
+RESOURCE MENU_PANE r_podcast_settingsview_menu
+    {
+    items =
+        {        
+	// Other commands	
+		/*MENU_ITEM
+			{
+			command = EPodcastZoomSetting;
+			txt = STRING_r_zoom_cmd;
+			},*/
+		MENU_ITEM
+			{
+			command = EPodcastAbout;
+			txt = STRING_r_view_about_cmd;
+			}		
+		};
+    }
+
+
+RESOURCE AVKON_VIEW r_podcast_settingsview
+{
+	hotkeys = r_podcast_settingsview_hotkeys;
+	menubar = r_podcast_settingsview_menubar;
+	cba = R_AVKON_SOFTKEYS_BACK;    
+}
+
+RESOURCE AVKON_SETTING_ITEM_LIST r_podcast_settings
+{
+title = STRING_r_podcast_settings_title;
+items =
+	{
+			AVKON_SETTING_ITEM
+			{
+				name = STRING_r_podcast_setting_showdir;
+				identifier = EPodcastSettingShowDir;
+				setting_page_resource = r_podcast_showdir_page;
+			},
+			AVKON_SETTING_ITEM
+			{
+				identifier = EPodcastSettingAutoUpdate;
+				setting_page_resource = r_podcast_autoupdate_page_resource;
+				associated_resource = r_podcast_autoupdate_texts;
+				name = STRING_r_podcast_setting_autoupdate;
+			},
+			AVKON_SETTING_ITEM
+			{
+				identifier= EPodcastSettingUpdateInterval;			
+				name= STRING_r_podcast_setting_checkevery;
+				setting_page_resource = r_podcast_updateinterval_page;
+			},
+			AVKON_SETTING_ITEM
+			{
+				identifier= EPodcastSettingUpdateTime;			
+				name= STRING_r_podcast_setting_updateat;
+				setting_page_resource = r_podcast_updatetime_page;
+			},
+			AVKON_SETTING_ITEM
+				{
+				identifier = EPodcastSettingAutoDownload;
+				setting_page_resource = r_podcast_autodownload_page_resource;
+				associated_resource = r_on_off_texts;
+				name = STRING_r_podcast_setting_autodownload;
+				},
+			AVKON_SETTING_ITEM
+			{
+				identifier = EPodcastSettingConnection;
+				setting_page_resource = r_podcast_connection_page_resource;
+				associated_resource = r_podcast_connection_texts;
+				name = STRING_r_podcast_setting_connection;
+			},
+			AVKON_SETTING_ITEM
+			{
+				identifier = EPodcastSettingIAPList;
+				setting_page_resource = r_setting_iap_page_resource;
+				associated_resource = r_setting_iap_texts;
+				name = STRING_r_podcast_setting_iaplist;
+			}		
+	};
+}
+
+RESOURCE AVKON_SETTING_PAGE r_podcast_updateinterval_page
+{
+label=STRING_r_podcast_setting_checkevery;
+type = EAknCtIntegerEdwin;
+editor_resource_id = r_podcast_updateinterval;
+}
+
+RESOURCE AVKON_INTEGER_EDWIN r_podcast_updateinterval
+	{
+	min = 0;
+	max = 1440;
+	}
+
+RESOURCE AVKON_SETTING_PAGE r_podcast_updatetime_page
+{
+label=STRING_r_podcast_setting_updateat;
+type = EEikCtTimeEditor;
+editor_resource_id = r_podcast_updatetime;
+}
+
+RESOURCE TIME_EDITOR r_podcast_updatetime
+	{
+	minTime = TIME
+	{
+	second = 0;
+	minute = 0;
+	hour = 0;
+	};
+	maxTime = TIME
+	{
+	second = 59;
+	minute = 59;
+	hour = 23;
+	};
+	}
+
+RESOURCE AVKON_SETTING_PAGE r_podcast_showdir_page
+{
+label=STRING_r_podcast_setting_showdir;
+type = EEikCtEdwin;
+editor_resource_id = r_podcast_showdir;
+}
+
+RESOURCE EDWIN r_podcast_showdir
+{
+lines = 3;
+maxlength = 256;
+default_input_mode = EAknEditorTextInputMode;
+}
+
+RESOURCE AVKON_SETTING_PAGE r_podcast_connection_page_resource
+{
+    label= STRING_r_podcast_setting_connection;
+    type = EAknCtPopupSettingList;
+    editor_resource_id = r_setting_connection_popup_list_entry;
+}
+
+RESOURCE POPUP_SETTING_LIST r_setting_connection_popup_list_entry
+{
+}
+
+RESOURCE AVKON_POPUP_SETTING_TEXTS r_podcast_connection_texts
+{
+    setting_texts_resource = r_podcast_connection_closed;
+    popped_up_texts_resource = r_podcast_connection_opened;
+}
+
+RESOURCE ARRAY r_podcast_connection_closed
+{
+    items = 
+    {
+//    AVKON_ENUMERATED_TEXT{value=0; text = STRING_r_podcast_setting_default;},
+    AVKON_ENUMERATED_TEXT{value=-1; text = STRING_r_podcast_setting_wlanonly;},
+    AVKON_ENUMERATED_TEXT{value=1; text = STRING_r_podcast_setting_usespecified;}
+    };
+}
+
+RESOURCE ARRAY r_podcast_connection_opened
+{
+    items = 
+    {
+//    LBUF { txt=STRING_r_podcast_setting_default; },
+    LBUF { txt=STRING_r_podcast_setting_wlanonly; },	
+    LBUF { txt=STRING_r_podcast_setting_usespecified; }
+    };
+}
+
+RESOURCE AVKON_SETTING_PAGE r_podcast_autodownload_page_resource
+{
+    label= STRING_r_podcast_setting_autodownload;
+    type = EAknCtPopupSettingList;
+    number= 0;
+}
+
+RESOURCE AVKON_POPUP_SETTING_TEXTS r_on_off_texts
+{
+    flags = 0;
+    setting_texts_resource = r_setting_on_off_closed;
+    popped_up_texts_resource = r_setting_on_off_opened;
+}
+
+RESOURCE ARRAY r_setting_on_off_closed
+{
+    items =
+    {
+        AVKON_ENUMERATED_TEXT { value=1; text=STRING_r_on; },
+    	AVKON_ENUMERATED_TEXT { value=0; text=STRING_r_off; }
+    };
+}
+
+RESOURCE ARRAY r_setting_on_off_opened
+{
+    items =
+    {
+        LBUF { txt=STRING_r_on; },
+        LBUF { txt=STRING_r_off; }
+    };
+}
+
+RESOURCE AVKON_SETTING_PAGE r_podcast_autoupdate_page_resource
+{
+    label= STRING_r_podcast_setting_autoupdate;
+    type = EAknCtPopupSettingList;
+    editor_resource_id = r_setting_autoupdate_popup_list_entry;
+}
+
+RESOURCE POPUP_SETTING_LIST r_setting_autoupdate_popup_list_entry
+{
+}
+
+RESOURCE AVKON_POPUP_SETTING_TEXTS r_podcast_autoupdate_texts
+{
+    flags = 0;
+    setting_texts_resource = r_podcast_autoupdate_closed;
+    popped_up_texts_resource = r_podcast_autoupdate_opened;
+}
+
+RESOURCE ARRAY r_podcast_autoupdate_closed
+{
+    items =
+    {
+	AVKON_ENUMERATED_TEXT { value=0; text=STRING_podcast_autoupdate_off; },
+    AVKON_ENUMERATED_TEXT { value=1; text=STRING_podcast_autoupdate_perodical; },
+    AVKON_ENUMERATED_TEXT { value=2; text=STRING_podcast_autoupdate_attime; }    
+    };
+}
+
+RESOURCE ARRAY r_podcast_autoupdate_opened
+{
+    items =
+    {
+        LBUF { txt=STRING_podcast_autoupdate_off; },
+        LBUF { txt=STRING_podcast_autoupdate_perodical; },
+        LBUF { txt=STRING_podcast_autoupdate_attime; }
+    };
+}
+
+RESOURCE FILESELECTIONDIALOG r_podcast_showdir_selector
+{
+ title = STRING_r_view_export_feeds_title;
+ root_path = "";
+ filters =
+ {
+  FILTER
+  {
+  filter_type = EFilenameFilter;
+  filter_style = EInclusiveFilter;
+  filter_data = { "*.*" };
+  }
+ };
+}
+
+RESOURCE TBUF r_podcast_softkey_select { buf = STRING_r_view_export_feeds_softkey; }
+RESOURCE TBUF r_settings_title { buf = STRING_r_podcast_settings_title; }
+RESOURCE AVKON_SETTING_PAGE r_setting_iap_page_resource
+{
+    label= STRING_r_podcast_setting_iaplist;
+    type = EAknCtPopupSettingList;
+    editor_resource_id = r_setting_iap_popup_list_entry;
+}
+
+RESOURCE POPUP_SETTING_LIST r_setting_iap_popup_list_entry
+{
+}
+
+RESOURCE AVKON_POPUP_SETTING_TEXTS r_setting_iap_texts
+{
+    setting_texts_resource = r_setting_iap_closed;
+    popped_up_texts_resource = r_setting_iap_opened;
+}
+
+RESOURCE ARRAY r_setting_iap_closed
+{
+    items = 
+    {
+    AVKON_ENUMERATED_TEXT{value=0; text = "Dummy";}
+    };
+}
+
+RESOURCE ARRAY r_setting_iap_opened
+{
+    items = 
+    {
+    LBUF { txt="Dummy"; }
+    };
+}

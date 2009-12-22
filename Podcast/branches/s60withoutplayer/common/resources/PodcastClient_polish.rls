@@ -1,0 +1,210 @@
+CHARACTER_SET UTF8
+/////////////////////////////////////////////////////////////////////
+// Escarpod language file
+//
+// Language:   Polish PL/27
+// Translator:  Bartek Foks
+
+// list view commands
+rls_string STRING_r_listbox_listview_cmd_close_debug "Zamknij (debug)"
+rls_string STRING_r_listbox_listview_cmd_close_debug_shorttext "Zamknij"
+
+// Menu commands, view filtering and navigation
+rls_string STRING_r_view_cmd "Pokaż"
+
+// Navigation to shows view
+rls_string STRING_r_view_main_cmd "Strona główna"
+rls_string STRING_r_view_shows_cmd "Audycje"
+rls_string STRING_r_view_all_shows_cmd "Wszystkie audycje"
+rls_string STRING_r_view_new_shows_cmd "Nieodtworzone"
+rls_string STRING_r_view_dl_shows_cmd "Audycje"
+rls_string STRING_r_view_dling_shows_cmd "Menedżer pobierania"
+rls_string STRING_r_view_about_cmd "O programie"
+
+// Navigation to feeds
+rls_string STRING_r_view_feeds_cmd "Kanały"
+
+// Navigation to the player
+rls_string STRING_r_view_player_cmd "Odtwarzacz"
+
+// Navigation to the audio books
+rls_string STRING_r_view_audiobooks_cmd "Audiobooki"
+rls_string STRING_r_view_new_audiobook_cmd "Nowy audiobook"
+rls_string STRING_r_view_remove_audiobook_cmd "Usuń audiobook"
+
+// Actions for the player
+rls_string STRING_r_play_cmd "Odtwórz"
+rls_string STRING_r_stop_cmd "Zatrzymaj"
+rls_string STRING_r_pause_cmd "Pauza"
+rls_string STRING_r_volume_cmd "Głośność"
+
+rls_string STRING_r_view_download_cmd "Pobierz"
+rls_string STRING_r_view_download_short_cmd "Pobierz"
+rls_string STRING_r_view_remove_download_short_cmd "Usuń"
+rls_string STRING_r_view_remove_download_cmd "Usuń"
+
+rls_string STRING_r_view_show_cmd "Pokaż"
+rls_string STRING_r_view_cmd "Pokaż"
+rls_string STRING_r_view_play_cmd "Odtwórz"
+rls_string STRING_r_view_mark_as_played_cmd "Zaznacz jako odtworzony"
+rls_string STRING_r_view_mark_as_unplayed_cmd "Zaznacz jako nieodtworzony"
+
+// Actions for feeds
+rls_string STRING_r_view_add_feed_cmd "Dodaj kanał"
+rls_string STRING_r_view_edit_feed_cmd "Edytuj kanał"
+rls_string STRING_r_view_delete_feed_cmd "Usuń kanał"
+rls_string STRING_r_view_purge_feed_cmd "Usuń wszystko"
+rls_string STRING_r_update_feed_cmd "Odśwież kanał"
+rls_string STRING_r_update_feed_short_cmd "Odśwież"
+rls_string STRING_r_update_all_feeds_cmd "Odśwież wszystko"
+rls_string STRING_r_update_all_feeds_short_cmd "Odśwież"
+
+rls_string STRING_r_podcast_feeds_update_message "Aktualizuję..."
+rls_string STRING_r_podcast_feeds_update_error "Nie powiodło się!"
+
+// Actions for shows
+rls_string STRING_r_view_download_show_cmd "Pobierz"
+rls_string STRING_r_view_delete_show_cmd "Usuń"
+rls_string STRING_r_view_delete_shows_cmd "Usuń wszystko"
+rls_string STRING_r_view_purge_show_cmd "Usuń"
+rls_string STRING_r_view_remove_download_cmd "Dodaj do kolejki"
+rls_string STRING_r_view_stop_downloads_cmd "Pauza"
+rls_string STRING_r_view_resume_downloads_cmd "Wznów"
+rls_string STRING_r_view_mark_all_played_cmd "Wszystko jako odtworzone"
+rls_string STRING_r_view_show_unplayed_cmd "Tylko nieodtworzone"
+
+// Common actions
+rls_string STRING_r_zoom_cmd "Powiększenie"
+rls_string STRING_r_settings_cmd "Konfiguracja"
+
+// Categories (strings max 20 character long)
+rls_string STRING_r_category_all "Wszystkie audycje"
+rls_string STRING_r_category_new "Nieodtworzone"
+rls_string STRING_r_category_dled "Audycje"
+rls_string STRING_r_category_pending "Menedżer pobierania"
+
+// View titles
+rls_string STRING_r_view_feeds_title "Kanały"
+rls_string STRING_r_view_audiobooks_title "Audiobooki"
+
+// Shows view status strings
+rls_string STRING_r_podcast_shows_title_format "%d nieodtworzone, %d wszystkich";
+rls_string STRING_r_podcast_shows_title_download "%d w kolejce"
+rls_string STRING_r_podcast_shows_downloads_suspended "%d w kolejce (Suspended)"
+rls_string STRING_r_podcast_shows_no_items "Lista pusta";
+
+// Feeds view status strings
+rls_string STRING_r_podcast_feeds_title_format "%d kanałów"
+rls_string STRING_r_podcast_books_title_format "%d książek"
+rls_string STRING_r_podcast_feeds_status_format "%d/%d audycji"
+rls_string STRING_r_podcast_shows_never_updated "Nigdy"
+rls_string STRING_r_podcast_feeds_is_updating "Aktualizacja..."
+rls_string STRING_r_podcast_no_feeds "Brak kanałów"
+
+// DIALOG string
+rls_string STRING_r_about_title "O programie Escarpod";
+
+rls_string STRING_r_add_feed_title "Dodaj kanał"
+rls_string STRING_r_edit_feed_title "Edytuj kanał"
+
+rls_string STRING_r_add_feed_prompt "Adres URL"
+rls_string STRING_r_add_feed_title_prompt "Nazwa kanału"
+
+rls_string STRING_r_remove_feed_title "Usuń kanał"
+rls_string STRING_r_remove_feed_prompt "Czy jesteś pewien?"
+
+rls_string STRING_r_enable_downloads_title "Wznów"
+rls_string STRING_r_enable_downloads_prompt "Audycje w kolejce. Czy chcesz je pobrać?"
+
+rls_string STRING_r_update_new_feed_title "Odśwież kanał"
+rls_string STRING_r_update_new_feed_prompt "Czy chcesz odświeżyć ten kanał?"
+
+rls_string STRING_r_purge_feed_title "Wyczyść kanał"
+rls_string STRING_r_purge_feed_prompt "Czy jesteś pewien, że chcesz wyczyścić ten kanał i usunąć wszystkie pobrane audycje?"
+
+rls_string STRING_r_purge_show_title "Usuń audycję"
+rls_string STRING_r_purge_show_prompt "Czy jesteś pewien, że chcesz usunąć audycję?"
+
+rls_string STRING_r_podcast_settings_title "Ustawienia"
+rls_string STRING_r_podcast_setting_showdir "Katalog audycji"
+rls_string STRING_r_podcast_setting_autoupdate "Automatyczna aktualizacja"
+rls_string STRING_r_podcast_setting_autodownload "Automatyczne  pobieranie"
+rls_string STRING_r_podcast_setting_checkevery "Interwał pobierania"
+rls_string STRING_r_podcast_setting_updateat "Aktualizuj o"
+rls_string STRING_r_podcast_setting_minutes "min"
+
+rls_string STRING_r_podcast_setting_connection "Połączenie"
+rls_string STRING_r_podcast_setting_default "Domyślne"
+rls_string STRING_r_podcast_setting_wlanonly "Zawsze pytaj"
+rls_string STRING_r_podcast_setting_usespecified "Używaj wybranego"
+rls_string STRING_r_podcast_setting_iaplist "Połączenia"
+rls_string STRING_r_podcast_setting_cancel_cmd "Anuluj" // Cancel command in settings dialog
+rls_string STRING_r_podcast_setting_done_cmd "Gotowe" // Done command in settings dialog
+rls_string STRING_r_podcast_setting_showdir_cmd "Wybierz" // Use to select show dir
+rls_string STRING_r_podcast_setting_volume "Głośność" 
+
+// Choicelist for autodownload
+rls_string STRING_podcast_autodl_off "Wyłączone"
+rls_string STRING_podcast_audodl_feeds "Tylko kanały" 
+rls_string STRING_podcast_audodl_feedsandshows "Kanały i audycje"
+
+rls_string STRING_r_podcast_iap_dlg_title "Wybierz połączenie"
+
+// Audio book dialog
+rls_string STRING_r_podcast_new_audiobook_title "Utwórz nowy audiobook"
+rls_string STRING_r_podcast_new_audiobook_prompt "Tytuł"
+rls_string STRING_r_podcast_new_audiobook_label "%d wybranych plików."
+rls_string STRING_r_podcast_new_audiobook_select_files "Wybierz pliki" // Max 80 chars
+
+// Latest strings here
+rls_string STRING_r_view_books_no_books "Brak audiobooków" // No Books
+
+rls_string STRING_r_view_import_feeds_cmd "Importuj kanały" // Import feeds cmd in feedview
+rls_string STRING_r_view_import_feeds_title "Wybierz plik OPML"
+
+rls_string STRING_r_view_books_status "%d audiobooków" // Used in base view listbox status text max 32 chars
+rls_string STRING_r_view_feeds_status "%d kanałów" // Used in base view listbox for feeds status text max 32 chars
+
+rls_string STRING_r_cancel_update_all_feeds_cmd "Przerwij"
+rls_string STRING_r_cancel_update_all_feeds_short_cmd "Anuluj"
+
+rls_string STRING_r_suspend_download_cmd "Wstrzymaj" // String used for cmd to suspend current download rather than removing it from the que.
+rls_string STRING_r_view_resume_short_dls_cmd "Wznów" // Short download cmd
+rls_string STRING_r_view_onphone_status "%d nieodtw., %d wszystkich" // Used in base view listbox status for shows on phone text max 32 chars
+rls_string STRING_r_view_onphone_status_unknown "N/A" // Used for unknown status event
+
+// Strings used to set the playorder of an audio book
+rls_string STRING_r_view_books_setorder "Ustaw kolejność" // cmd for set audio book playorder
+rls_string STRING_r_view_books_setorder_dlgtitle "Ustaw kolejność"
+rls_string STRING_r_view_books_setorder_dlg_swapcmd "Przesuń"
+rls_string STRING_r_view_books_setorder_dlg_label "Element docelowy"
+rls_string STRING_r_view_books_setorder_dlg_selectlabel "Element do przesunięcia"
+
+rls_string STRING_r_view_remove_all_downloads_cmd "Usuń wszystkie"
+
+rls_string STRING_r_podcast_subtitle "The Symbian Podcatcher" // shown beneath main view title
+
+rls_string STRING_r_add_feed_exists "Kanał z tym adresem już istnieje" // shown when adding or changing a feed to a URL that already exists
+rls_string STRING_r_add_feed_exists_title "Duplikuj kanał" // title of error dialogs when adding feeds
+
+rls_string STRING_r_add_feed_replace "Wszystkie istniejące pokazy w tym kanale zostaną usunięte! Kontynuować?" // shown when changing an existing feed URL
+rls_string STRING_r_add_feed_replace_title "Uwaga" // title to dialog
+rls_string STRING_r_view_export_feeds_cmd "Eksportuj kanały" // Export feeds cmd in feedview
+
+rls_string STRING_r_catchup_feed "Zaznaczyć wszystkie pokazy jako odtworzone?" // shown when first updating a new feed
+rls_string STRING_r_catchup_feed_title "Pierwsza aktualizacja" // title to dialog
+
+rls_string STRING_r_remove_book_title "Usuń audiobook"
+rls_string STRING_r_remove_book_prompt "Czy jesteś pewien, że chcesz usunąć ten audiobook?"
+
+rls_string STRING_r_remove_chapter_title "Usuń rozdział"
+rls_string STRING_r_remove_chapter_prompt "Czy jesteś pewien, że chcesz usunąć ten rozdział?"
+
+rls_string STRING_r_podcast_books_status_format "%d/%d rozdziałów"
+rls_string STRING_r_podcast_books_add_chapter "Dodaj rozdział"
+
+rls_string STRING_r_view_import_audiobook_cmd "Importuj audiobook"
+rls_string STRING_r_view_import_book_title "Wybierz plik M3U"
+
+rls_string STRING_r_on "Włącz"
+rls_string STRING_r_off "Wyłącz"

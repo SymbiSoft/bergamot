@@ -1,0 +1,210 @@
+CHARACTER_SET UTF8
+
+/////////////////////////////////////////////////////////////////////
+// Escarpod language file
+//
+// Language:   French FR/02
+// Translator: Cedric GODART <cedric@cedricgodart.net>
+
+// list view commands
+rls_string STRING_r_listbox_listview_cmd_close_debug "Fermer (debog.)"
+rls_string STRING_r_listbox_listview_cmd_close_debug_shorttext "Fermer"
+
+// Menu commands, view filtering and navigation
+rls_string STRING_r_view_cmd "Voir"
+
+// Navigation to shows view
+rls_string STRING_r_view_main_cmd "Principal"
+rls_string STRING_r_view_shows_cmd "Podcasts sur le téléphone"
+rls_string STRING_r_view_all_shows_cmd "Tous les podcasts"
+rls_string STRING_r_view_new_shows_cmd "Non lu(s)"
+rls_string STRING_r_view_dl_shows_cmd "Podcasts sur le téléphone"
+rls_string STRING_r_view_dling_shows_cmd "Gestionnaire de téléchargement"
+rls_string STRING_r_view_about_cmd "A propos"
+
+// Navigation to feeds
+rls_string STRING_r_view_feeds_cmd "Flux"
+
+// Navigation to the player
+rls_string STRING_r_view_player_cmd "Lecteur"
+
+// Navigation to the audio books
+rls_string STRING_r_view_audiobooks_cmd "Livres audio"
+rls_string STRING_r_view_new_audiobook_cmd "Nouveau livre"
+rls_string STRING_r_view_remove_audiobook_cmd "Retirer le livre"
+
+// Actions for the player
+rls_string STRING_r_play_cmd "Démarrer"
+rls_string STRING_r_stop_cmd "Stop"
+rls_string STRING_r_pause_cmd "Pause"
+rls_string STRING_r_volume_cmd "Volume"
+
+rls_string STRING_r_view_download_cmd "Télécharger"
+rls_string STRING_r_view_download_short_cmd "Téléch."
+rls_string STRING_r_view_remove_download_short_cmd "Supprimer"
+rls_string STRING_r_view_remove_download_cmd "Supprimer le téléchargement"
+
+rls_string STRING_r_view_show_cmd "Montrer"
+rls_string STRING_r_view_cmd "Voir"
+rls_string STRING_r_view_play_cmd "Lancer"
+rls_string STRING_r_view_mark_as_played_cmd "Marquer comme lu"
+rls_string STRING_r_view_mark_as_unplayed_cmd "Marquer comme non lu"
+
+// Actions for feeds
+rls_string STRING_r_view_add_feed_cmd "Ajouter un flux"
+rls_string STRING_r_view_edit_feed_cmd "Editer un flux"
+rls_string STRING_r_view_delete_feed_cmd "Retirer un flux"
+rls_string STRING_r_view_delete_played_cmd "Supprimer tous les fichiers lus"
+rls_string STRING_r_update_feed_cmd "Mettre à jour le flux"
+rls_string STRING_r_update_feed_short_cmd "MàJ"
+rls_string STRING_r_update_all_feeds_cmd "Tout mettre à jour"
+rls_string STRING_r_update_all_feeds_short_cmd "MàJ"
+
+rls_string STRING_r_podcast_feeds_update_message "Mise à jour..."
+rls_string STRING_r_podcast_feeds_update_error "Impossible de mettre à jour !"
+
+// Actions for shows
+rls_string STRING_r_view_download_show_cmd "Télécharger"
+rls_string STRING_r_view_delete_show_cmd "Supprimer"
+rls_string STRING_r_view_delete_shows_cmd "TOUT supprimer"
+rls_string STRING_r_view_delete_show_cmd "Effacer"
+rls_string STRING_r_view_stop_downloads_cmd "Suspendre le téléchargement"
+rls_string STRING_r_view_resume_downloads_cmd "Reprendre le téléchargement"
+rls_string STRING_r_view_mark_all_played_cmd "Marquer tout comme lu"
+rls_string STRING_r_view_show_unplayed_cmd "Ne montre que les fichiers non lus"
+
+// Common actions
+rls_string STRING_r_zoom_cmd "Zoom"
+rls_string STRING_r_settings_cmd "Préférences"
+
+// Categories (strings max 20 character long)
+rls_string STRING_r_category_all "Tous les podcasts"
+rls_string STRING_r_category_new "Non lu(s)"
+rls_string STRING_r_category_dled "Podcasts sur le tél."//éphone"
+rls_string STRING_r_category_pending "Téléchargement"
+
+// View titles
+rls_string STRING_r_view_feeds_title "Flux"
+rls_string STRING_r_view_audiobooks_title "Livres audio"
+
+// Shows view status strings
+rls_string STRING_r_podcast_shows_title_format "%d non lu(s), %d au total"
+rls_string STRING_r_podcast_shows_title_download "%d en attente"
+rls_string STRING_r_podcast_shows_downloads_suspended "%d en attente (suspendu)"
+rls_string STRING_r_podcast_shows_no_items "Aucun élément"
+
+// Feeds view status strings
+rls_string STRING_r_podcast_feeds_title_format "%d flux"
+rls_string STRING_r_podcast_books_title_format "%d livres"
+rls_string STRING_r_podcast_feeds_status_format "%d/%d podcast"
+rls_string STRING_r_podcast_shows_never_updated "Jamais"
+rls_string STRING_r_podcast_feeds_is_updating "est en cours de mise à jour..."
+rls_string STRING_r_podcast_no_feeds "Aucun flux"
+
+// DIALOG string
+rls_string STRING_r_about_title "A propos d'Escarpod"
+
+rls_string STRING_r_add_feed_title "Ajouter un flux"
+rls_string STRING_r_edit_feed_title "Editer un flux"
+
+rls_string STRING_r_add_feed_prompt "URL du flux"
+rls_string STRING_r_add_feed_title_prompt "Titre du flux"
+
+rls_string STRING_r_remove_feed_title "Retirer le flux"
+rls_string STRING_r_remove_feed_prompt "Veuillez confirmer la suppression du flux !"
+
+rls_string STRING_r_enable_downloads_title "Reprendre le téléchargement"
+rls_string STRING_r_enable_downloads_prompt "Plusieurs podcasts sont en attente de téléchargement. Voulez-vous vraiment télécharger ?"
+
+rls_string STRING_r_update_new_feed_title "Mise à jour du flux."
+rls_string STRING_r_update_new_feed_prompt "Voulez-vous mettre à jour le flux ?"
+
+rls_string STRING_r_delete_played_title "Supprimer tous les fichiers lus"
+rls_string STRING_r_delete_played_prompt "Veuillez confirmer la suppression des fichiers lus !"
+
+rls_string STRING_r_delete_show_title "Supprimer le podcast"
+rls_string STRING_r_delete_show_prompt "Veuillez confirmer la suppression du podcast !"
+
+rls_string STRING_r_podcast_settings_title "Paramètres"
+rls_string STRING_r_podcast_setting_showdir "Dossier des podcasts"
+rls_string STRING_r_podcast_setting_autoupdate "Mise à jour automatique"
+rls_string STRING_r_podcast_setting_autodownload "Téléchargement automatique"
+rls_string STRING_r_podcast_setting_checkevery "Mise à jour programmée"
+rls_string STRING_r_podcast_setting_updateat "Mise à jour à"
+rls_string STRING_r_podcast_setting_minutes "minutes"
+
+rls_string STRING_r_podcast_setting_connection "Connexion"
+rls_string STRING_r_podcast_setting_default "Utiliser par défaut"
+rls_string STRING_r_podcast_setting_wlanonly "Toujours demander"
+rls_string STRING_r_podcast_setting_usespecified "Utiliser plutôt"
+rls_string STRING_r_podcast_setting_iaplist "Connexions"
+rls_string STRING_r_podcast_setting_cancel_cmd "Annuler" // Cancel command in settings dialog
+rls_string STRING_r_podcast_setting_done_cmd "Valider" // Done command in settings dialog
+rls_string STRING_r_podcast_setting_showdir_cmd "Select." // Use to select show dir
+rls_string STRING_r_podcast_setting_volume "Volume" 
+
+// Choicelist for autodownload
+rls_string STRING_podcast_autoupdate_off "Non"
+rls_string STRING_podcast_autoupdate_perodical "Périodique" 
+rls_string STRING_podcast_autoupdate_attime "A"
+
+rls_string STRING_r_podcast_iap_dlg_title "Selection de la connexion Internet"
+
+// Audio book dialog
+rls_string STRING_r_podcast_new_audiobook_title "Ajouter un nouveau livre"
+rls_string STRING_r_podcast_new_audiobook_prompt "Titre du livre"
+rls_string STRING_r_podcast_new_audiobook_label "%d fichier(s) sélectionné(s)"
+rls_string STRING_r_podcast_new_audiobook_select_files "Choisir les fichiers" // Max 80 chars
+
+// Latest strings here
+rls_string STRING_r_view_books_no_books "Aucun livre" // No Books
+
+rls_string STRING_r_view_import_feeds_cmd "Importer des flux" // Import feeds cmd in feedview
+rls_string STRING_r_view_import_feeds_title "Selection du fichier OPML"
+
+rls_string STRING_r_view_books_status "%d Livres" // Used in base view listbox status text max 32 chars
+rls_string STRING_r_view_feeds_status "%d Flux" // Used in base view listbox for feeds status text max 32 chars
+
+rls_string STRING_r_cancel_update_all_feeds_cmd "Annuler la mise à jour"
+rls_string STRING_r_cancel_update_all_feeds_short_cmd "Annuler"
+
+rls_string STRING_r_suspend_download_cmd "Suspendre" // String used for cmd to suspend current download rather than removing it from the que.
+rls_string STRING_r_view_resume_short_dls_cmd "Reprendre" // Short download cmd
+rls_string STRING_r_view_onphone_status "%d non lu(s), %d au total" // Used in base view listbox status for shows on phone text max 32 chars
+rls_string STRING_r_view_onphone_status_unknown "Inconnu" // Used for unknown status event
+
+// Strings used to set the playorder of an audio book
+rls_string STRING_r_view_books_setorder "Changer l'ordre" // cmd for set audio book playorder
+rls_string STRING_r_view_books_setorder_dlgtitle "Ordre des chapitres"
+rls_string STRING_r_view_books_setorder_dlg_swapcmd "Passer"
+rls_string STRING_r_view_books_setorder_dlg_label "Sélectionner le chapitre à remplacer par"
+rls_string STRING_r_view_books_setorder_dlg_selectlabel "Sélectionner le chapitre à remplacer"
+
+rls_string STRING_r_view_remove_all_downloads_cmd "Tout supprimer"
+
+rls_string STRING_r_podcast_subtitle "Podcast en mode Symbian" // shown beneath main view title
+
+rls_string STRING_r_add_feed_exists "Un flux existe déjà avec cette adresse !" // shown when adding or changing a feed to a URL that already exists
+rls_string STRING_r_add_feed_exists_title "Dupliquer le flux" // title of error dialogs when adding feeds
+
+rls_string STRING_r_add_feed_replace "Tous les fichiers de ce flux seront supprimés. Vous confirmez ?" // shown when changing an existing feed URL
+rls_string STRING_r_add_feed_replace_title "Attention" // title to dialog
+rls_string STRING_r_view_export_feeds_cmd "Exporter les flux" // Export feeds cmd in feedview
+
+rls_string STRING_r_catchup_feed "Marquer tous les fichiers comme lus ?" // shown when first updating a new feed
+rls_string STRING_r_catchup_feed_title "Première mise à jour" // title to dialog
+
+rls_string STRING_r_remove_book_title "Supprimer le livre audio"
+rls_string STRING_r_remove_book_prompt "Confirmez-vous la suppression de ce livre audio ?"
+
+rls_string STRING_r_remove_chapter_title "Supprimer un chapitre"
+rls_string STRING_r_remove_chapter_prompt "Veuillez confirmer la suppression du chapitre."
+
+rls_string STRING_r_podcast_books_status_format "%d/%d chapitres"
+rls_string STRING_r_podcast_books_add_chapter "Ajouter des chapitres"
+
+rls_string STRING_r_view_import_audiobook_cmd "Import Book"
+rls_string STRING_r_view_import_book_title "Select M3U file"
+
+rls_string STRING_r_on "On"
+rls_string STRING_r_off "Off"
