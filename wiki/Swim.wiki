@@ -24,9 +24,14 @@ http://bergamot.googlecode.com/svn/wiki/Swim_N95_1.jpg http://bergamot.googlecod
 To use Swim, you need to do three things:
 
   # Download the latest unsigned Swim SIS file from our [http://code.google.com/p/bergamot/downloads/list download page] *onto your computer*.
+    * There are 3 versions of Swim
+      * S60 3rd edition FP2 and 5th edition (FP2 & 5th for short)
+      * S60 3rd edition FP1
+      * UIQ 3
     * Most new Nokia phones will need the FP2 & 5th edition version
-    * Samsung i8910 and Sony Ericsson Satio need the FP2 & 5th edition version
     * If that doesn't work, try the FP1 version
+    * Samsung i8910 and Sony Ericsson Satio need the FP2 & 5th edition version
+    * And if you have a UIQ phone, you obviously need that version
   # Sign Swim using Symbian [https://www.symbiansigned.com/app/page/public/openSignedOnline.do Open Signed Online]. 
     * Get your IMEI by typing `*#06#` on your phone
     * Select the following capabilities: `LocalServices NetworkServices WriteDeviceData ReadDeviceData ReadUserData WriteUserData ProtServ`, or simply select all.
