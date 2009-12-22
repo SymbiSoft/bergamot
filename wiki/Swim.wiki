@@ -43,6 +43,22 @@ To use Swim, you need to do three things:
 
 The sync timer is set relative to the time of day when you enable it. So if you enable hourly sync at 12:03, it will sync at 13:03, 14:03 etc. Similarly, if you set it for daily sync, it will sync at 12:03 every day. This part could certainly be improved :)
 
+
+== How to specify data connection for an account ==
+
+Many people are asking where to specify which data connection to use.
+
+=== S60 3rd edition ===
+
+  * Have to check
+
+=== 5th edition ===
+
+  # Go to _Settings_ > _Connectivity_ > _Data transfer_ > _Sync_
+  # Select the profile you want to change through _Options_ > _Change active profile_.
+  # Select _Options_ > _Edit profile_
+  # Under _Network connection_ you can set _User defined_ and then select your preferred connection.
+
 == Releases ==
 
 The complete source code is found in the [http://bergamot.googlecode.com/svn/Sync/trunk subversion repository]. Compiled binaries for each release can be found on our [http://code.google.com/p/bergamot/downloads/list Downloads page]. Note that the unsigned binaries are unusable without signing them yourself!
