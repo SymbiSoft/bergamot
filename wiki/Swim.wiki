@@ -63,6 +63,10 @@ Many people are asking where to specify which data connection to use.
 
 The complete source code is found in the [http://bergamot.googlecode.com/svn/Sync/trunk subversion repository]. Compiled binaries for each release can be found on our [http://code.google.com/p/bergamot/downloads/list Downloads page]. Note that the unsigned binaries are unusable without signing them yourself!
 
+  * 0.60 (When I get around to it)
+    * Syncing at fixed times of day
+    * Possibly provide a signed version through Horizon
+
   * 0.50 (2009-12-22) [http://bergamot.googlecode.com/svn/Sync/tags/v050 Source]
     * *Support for S60 3rd FP2 and S60 5th ed*
 
