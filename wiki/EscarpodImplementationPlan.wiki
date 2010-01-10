@@ -16,10 +16,14 @@
   * Fix backend issues (pointers versus SQLite)
   * Switch to Symbian SQLite instead of our own version
   * Scrap player view
+    * Disable audio books (won't work without our own player)
   * Integrate with Music player
   * Fix UI issues
+    * Single/multi tap inconsistencies
+      * But consider that S^3 has changed behavior here
     * Screen rotation in all views
     * Common icons with S60
+    * Rearrange menu items
   * Fix user reported bugs
   * Update settings
     * Make it simpler for users?
