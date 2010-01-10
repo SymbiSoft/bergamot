@@ -27,6 +27,7 @@ All the below issues are also [http://code.google.com/p/bergamot/issues/list?q=l
     * Common icons with S60
     * Rearrange menu items
   * Fix user reported bugs
+  * Remove list of shows on phone
   * Update settings
     * Make it simpler for users?
   * Rename to Podcasting
