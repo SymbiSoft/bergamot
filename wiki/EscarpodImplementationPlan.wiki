@@ -13,7 +13,7 @@
 
 == Implementation plan ==
 
-All the below issues are also listed in the issue tracker with the tag "Implementation".
+All the below issues are also [http://code.google.com/p/bergamot/issues/list?q=label:Implementation listed in the issue tracker with the tag "Implementation"].
 
   * Fix backend issues (pointers versus SQLite)
   * Switch to Symbian SQLite instead of our own version
