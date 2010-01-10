@@ -1,0 +1,17 @@
+== Requirements ==
+
+  * Download RSS, list podcasts
+  * Download podcast
+  * Show podcast information
+    * Including cover art?
+
+== Implementation plan ==
+
+  * Fix backend issues (pointers versus SQLite)
+  * Switch to Symbian SQLite instead of our own version
+  * Fix UI issues
+    * Screen rotation in all views
+    * Common icons with S60
+  * Rename to Podcasting
+    * Change license to EPL
+  * Move to Symbian Mercurial repositories
