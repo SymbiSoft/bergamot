@@ -19,7 +19,7 @@ All the below issues are also listed in the issue tracker with the tag "Implemen
   * Switch to Symbian SQLite instead of our own version
   * Scrap player view
     * Disable audio books (won't work without our own player)
-  * Integrate with Music player
+    * Integrate with Music player
   * Fix UI issues
     * Single/multi tap inconsistencies
       * But consider that S^3 has changed behavior here
