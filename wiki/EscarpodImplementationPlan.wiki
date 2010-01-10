@@ -13,6 +13,8 @@
 
 == Implementation plan ==
 
+All the below issues are also listed in the issue tracker with the tag "Implementation".
+
   * Fix backend issues (pointers versus SQLite)
   * Switch to Symbian SQLite instead of our own version
   * Scrap player view
