@@ -3,13 +3,13 @@
   * Download RSS, list podcasts
   * Download podcasts
   * Manage podcasts
-    * Delete old
-    * Organize?
+    * Delete old/played
+    * Organize
   * Call on music and video players to play content
   * Show podcast information
     * Including cover art?
 
-  * Maintaining compatibility with UIQ would be nice, but is hardly a requirement
+  * Maintaining engine compatibility with UIQ would be nice, but is hardly a requirement
 
 == Implementation plan ==
 
@@ -32,3 +32,4 @@
   * Move to Symbian Mercurial repositories
   * Implement podcast browsing and search
   * Create daemon that starts with your phone?
+  * Create Qt GUI
