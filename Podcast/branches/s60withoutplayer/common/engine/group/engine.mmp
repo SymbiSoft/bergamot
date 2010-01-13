@@ -4,7 +4,6 @@ UID             0x1000008d 0xA11F867F
 
 SOURCEPATH ..\src
 USERINCLUDE ..\inc
-USERINCLUDE ..\..\sqlite\src
 SYSTEMINCLUDE \epoc32\include \epoc32\include\libc
 
 // Engine
@@ -28,7 +27,7 @@ SOURCE			PodCastModel.cpp
 MACRO S60
 
 CAPABILITY NetworkServices UserEnvironment
-STATICLIBRARY	sqlite.lib
+LIBRARY	sqlite3.lib
 
 LIBRARY	euser.lib 
 LIBRARY	bafl.lib

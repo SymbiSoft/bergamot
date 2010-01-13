@@ -1,5 +1,3 @@
-#include "..\sqlite\group\bld.inf"
-
 PRJ_PLATFORMS
 GCCE
 WINSCW

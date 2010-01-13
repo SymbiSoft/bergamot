@@ -68,7 +68,6 @@ SYSTEMINCLUDE \epoc32\include\mmf\common
 SYSTEMINCLUDE \epoc32\include\domain\middleware
 
 USERINCLUDE ..\..\common\engine\inc
-USERINCLUDE ..\..\common\sqlite\src
 USERINCLUDE . 
 USERINCLUDE ..\inc
 
