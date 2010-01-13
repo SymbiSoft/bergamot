@@ -1,9 +1,9 @@
 TARGET engine.lib
 TARGETTYPE lib
 
-SOURCEPATH .\src
-USERINCLUDE .\inc
-USERINCLUDE ..\sqlite\src
+SOURCEPATH ..\src
+USERINCLUDE ..\inc
+USERINCLUDE ..\..\sqlite\src
 SYSTEMINCLUDE \epoc32\include \epoc32\include\libc
 
 // Engine
@@ -24,9 +24,4 @@ SOURCE			OpmlParser.cpp
 SOURCE			RemoteControlListener.cpp
 SOURCE			PodcastUtils.cpp
 
-
-#ifdef __UIQ3_SDK__
-MACRO UIQ3
-#else
 MACRO S60
-#endif
