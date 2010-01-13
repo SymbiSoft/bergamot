@@ -3,7 +3,7 @@ TARGETTYPE lib
 
 SOURCEPATH .
 USERINCLUDE .
-USERINCLUDE ..\libid3tag ..\sqlite\src
+USERINCLUDE ..\sqlite\src
 SYSTEMINCLUDE \epoc32\include \epoc32\include\libc
 
 // Engine
@@ -24,7 +24,6 @@ SOURCE			OpmlParser.cpp
 SOURCE			RemoteControlListener.cpp
 SOURCE			PodcastUtils.cpp
 
-MACRO HAVE_CONFIG_H // for libid3tag
 
 #ifdef __UIQ3_SDK__
 MACRO UIQ3
