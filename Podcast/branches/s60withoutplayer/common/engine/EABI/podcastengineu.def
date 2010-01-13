@@ -301,4 +301,21 @@ EXPORTS
 	sqlite3_vfs_register @ 300 NONAME
 	sqlite3_vfs_unregister @ 301 NONAME
 	sqlite3_vmprintf @ 302 NONAME
+	_ZN13CPodcastModel14ActiveFeedInfoEv @ 303 NONAME
+	_ZN13CPodcastModel14ActiveShowListEv @ 304 NONAME
+	_ZN13CPodcastModel17SetActiveFeedInfoEP9CFeedInfo @ 305 NONAME
+	_ZN13CPodcastModel17PlayPausePodcastLEP9CShowInfoi @ 306 NONAME
+	_ZN11CFeedEngine11RemoveBookLEj @ 307 NONAME
+	_ZN11CFeedEngine14GetSortedBooksEv @ 308 NONAME
+	_ZN11CFeedEngine15UpdateAllFeedsLEv @ 309 NONAME
+	_ZN11CFeedEngine16GetFeedInfoByUidEj @ 310 NONAME
+	_ZN11CFeedEngine18GetDownloadedStatsERjS0_ @ 311 NONAME
+	_ZN11CFeedEngine21CancelUpdateAllFeedsLEv @ 312 NONAME
+	_ZN11CFeedEngine8AddBookLERK7TDesC16P16CDesC16ArrayFlat @ 313 NONAME
+	_ZN11CFeedEngine14GetStatsByFeedEjRjS0_i @ 314 NONAME
+	_ZN11CFeedEngine16AddBookChaptersLER9CFeedInfoP16CDesC16ArrayFlat @ 315 NONAME
+	_ZN11CShowEngine11AddDownloadEP9CShowInfo @ 316 NONAME
+	_ZN11CShowEngine13GetShowByUidLEj @ 317 NONAME
+	_ZN11CShowEngine18RemoveAllDownloadsEv @ 318 NONAME
+	_ZN11CShowEngine20DeleteAllShowsByFeedEji @ 319 NONAME
 

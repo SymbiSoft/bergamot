@@ -94,7 +94,7 @@ EXPORT_C TBool CShowEngine::DownloadsStopped()
 	return iDownloadsSuspended;
 	}
 
-void CShowEngine::RemoveAllDownloads()
+EXPORT_C void CShowEngine::RemoveAllDownloads()
 	{
 	if (!iDownloadsSuspended)
 		{
@@ -285,7 +285,7 @@ EXPORT_C CShowInfo* CShowEngine::ShowDownloading()
 	return iShowDownloading;
 	}
 
-CShowInfo* CShowEngine::GetShowByUidL(TUint aShowUid)
+EXPORT_C CShowInfo* CShowEngine::GetShowByUidL(TUint aShowUid)
 	{
 	return DBGetShowByUid(aShowUid);
 	}
@@ -1002,7 +1002,7 @@ EXPORT_C void CShowEngine::DeletePlayedShows(RShowInfoArray &aShowInfoArray)
 		}
 	}
 
-void CShowEngine::DeleteAllShowsByFeed(TUint aFeedUid, TBool aDeleteFiles)
+EXPORT_C void CShowEngine::DeleteAllShowsByFeed(TUint aFeedUid, TBool aDeleteFiles)
 	{
 	RShowInfoArray array;
 	DBGetShowsByFeed(array, aFeedUid);
@@ -1076,7 +1076,7 @@ EXPORT_C TInt CShowEngine::GetNumDownloadingShowsL()
 	return (const TInt) DBGetDownloadsCount();
 	}
 
-void CShowEngine::AddDownload(CShowInfo *info)
+EXPORT_C void CShowEngine::AddDownload(CShowInfo *info)
 	{
 	info->SetDownloadState(EQueued);
 	DBUpdateShow(info);

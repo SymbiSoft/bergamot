@@ -153,7 +153,7 @@ EXPORT_C CSettingsEngine& CPodcastModel::SettingsEngine()
 	return *iSettingsEngine;
 }
 
-void CPodcastModel::PlayPausePodcastL(CShowInfo* aPodcast, TBool aPlayOnInit) 
+EXPORT_C void CPodcastModel::PlayPausePodcastL(CShowInfo* aPodcast, TBool aPlayOnInit) 
 	{
 	
 	// special treatment if this podcast is already active
@@ -190,17 +190,17 @@ void CPodcastModel::PlayPausePodcastL(CShowInfo* aPodcast, TBool aPlayOnInit)
 	}
 }
 
-CFeedInfo* CPodcastModel::ActiveFeedInfo()
+EXPORT_C CFeedInfo* CPodcastModel::ActiveFeedInfo()
 {
 	return iActiveFeed;
 }
 
-void CPodcastModel::SetActiveFeedInfo(CFeedInfo* aFeedInfo)
+EXPORT_C void CPodcastModel::SetActiveFeedInfo(CFeedInfo* aFeedInfo)
 {
 	iActiveFeed = aFeedInfo;
 }
 
-RShowInfoArray& CPodcastModel::ActiveShowList()
+EXPORT_C RShowInfoArray& CPodcastModel::ActiveShowList()
 {
 	return iActiveShowList;
 }

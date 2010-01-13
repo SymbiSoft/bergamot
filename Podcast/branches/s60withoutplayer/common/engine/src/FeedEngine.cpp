@@ -109,7 +109,7 @@ void CFeedEngine::RunFeedTimer()
 	
 	}
 
-void CFeedEngine::UpdateAllFeedsL()
+EXPORT_C void CFeedEngine::UpdateAllFeedsL()
 	{
 	if (iFeedsUpdating.Count() > 0) {
 		DP("Cancelling update");
@@ -126,7 +126,7 @@ void CFeedEngine::UpdateAllFeedsL()
 	UpdateNextFeedL();
 	}
 
-void CFeedEngine::CancelUpdateAllFeedsL()
+EXPORT_C void CFeedEngine::CancelUpdateAllFeedsL()
 	{
 	if(iClientState != ENotUpdating)
 	{
@@ -708,7 +708,7 @@ EXPORT_C TBool CFeedEngine::ExportFeedsL(TFileName& aFile)
 	return ETrue;
 	}
 
-CFeedInfo* CFeedEngine::GetFeedInfoByUid(TUint aFeedUid)
+EXPORT_C CFeedInfo* CFeedEngine::GetFeedInfoByUid(TUint aFeedUid)
 	{
 	TInt cnt = iSortedFeeds.Count();
 	for (TInt i=0;i<cnt;i++)
@@ -739,7 +739,7 @@ EXPORT_C const RFeedInfoArray& CFeedEngine::GetSortedFeeds()
 	return iSortedFeeds;
 }
 
-void CFeedEngine::AddBookChaptersL(CFeedInfo& aFeedInfo, CDesCArrayFlat* aFileNameArray)
+EXPORT_C void CFeedEngine::AddBookChaptersL(CFeedInfo& aFeedInfo, CDesCArrayFlat* aFileNameArray)
 {
 	TInt cnt = aFileNameArray->Count();
 	CShowInfo* showInfo = NULL;
@@ -783,7 +783,7 @@ void CFeedEngine::AddBookChaptersL(CFeedInfo& aFeedInfo, CDesCArrayFlat* aFileNa
 }
 
 
-void CFeedEngine::AddBookL(const TDesC& aBookTitle, CDesCArrayFlat* aFileNameArray)
+EXPORT_C void CFeedEngine::AddBookL(const TDesC& aBookTitle, CDesCArrayFlat* aFileNameArray)
 	{
 	
 	if(aFileNameArray && aFileNameArray->Count() > 0)
@@ -824,7 +824,7 @@ void CFeedEngine::AddBookL(const TDesC& aBookTitle, CDesCArrayFlat* aFileNameArr
 		}
 	}
 
-void CFeedEngine::RemoveBookL(TUint aUid)
+EXPORT_C void CFeedEngine::RemoveBookL(TUint aUid)
 	{
 		for (int i=0;i<iSortedBooks.Count();i++) 
 		{
@@ -851,7 +851,7 @@ void CFeedEngine::RemoveBookL(TUint aUid)
 		}
 	}
 
-const RFeedInfoArray& CFeedEngine::GetSortedBooks() 
+EXPORT_C const RFeedInfoArray& CFeedEngine::GetSortedBooks() 
 {
 	TLinearOrder<CFeedInfo> sortOrder( CFeedEngine::CompareFeedsByTitle);
 	
@@ -922,7 +922,7 @@ TInt CFeedEngine::CompareFeedsByTitle(const CFeedInfo &a, const CFeedInfo &b)
 		return a.Title().CompareF(b.Title());
 	}
 
-void CFeedEngine::GetDownloadedStats(TUint &aNumShows, TUint &aNumUnplayed)
+EXPORT_C void CFeedEngine::GetDownloadedStats(TUint &aNumShows, TUint &aNumUnplayed)
 	{
 	DP("CFeedEngine::GetDownloadedStats");
 	iSqlBuffer.Format(_L("select count(*) from shows where downloadstate=%u and showtype!=%u"), EDownloaded, EAudioBook);
@@ -957,7 +957,7 @@ void CFeedEngine::GetDownloadedStats(TUint &aNumShows, TUint &aNumUnplayed)
 	sqlite3_finalize(st);
 	}
 
-void CFeedEngine::GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed, TBool /* aIsBookFeed */)
+EXPORT_C void CFeedEngine::GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed, TBool /* aIsBookFeed */)
 	{
 	DP1("CFeedEngine::GetStatsByFeed, aFeedUid=%u", aFeedUid);
 	DBGetStatsByFeed(aFeedUid, aNumShows, aNumUnplayed);
