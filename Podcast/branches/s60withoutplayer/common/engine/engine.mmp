@@ -1,8 +1,8 @@
 TARGET engine.lib
 TARGETTYPE lib
 
-SOURCEPATH .
-USERINCLUDE .
+SOURCEPATH .\src
+USERINCLUDE .\inc
 USERINCLUDE ..\sqlite\src
 SYSTEMINCLUDE \epoc32\include \epoc32\include\libc
 
