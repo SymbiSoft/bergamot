@@ -1,4 +1,3 @@
-#include "..\libid3tag\bld.inf"
 #include "..\sqlite\group\bld.inf"
 
 PRJ_PLATFORMS
