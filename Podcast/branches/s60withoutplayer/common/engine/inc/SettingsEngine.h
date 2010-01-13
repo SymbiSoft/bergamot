@@ -53,37 +53,37 @@ class CSettingsEngine : public CBase
 
 		TInt MaxListItems();
 
-		TFileName& BaseDir();
-		void SetBaseDir(TFileName& aFileName);
+		IMPORT_C TFileName& BaseDir();
+		IMPORT_C void SetBaseDir(TFileName& aFileName);
 
-		TInt UpdateFeedInterval();
-		void SetUpdateFeedInterval(TInt aInterval);
+		IMPORT_C TInt UpdateFeedInterval();
+		IMPORT_C void SetUpdateFeedInterval(TInt aInterval);
 
-		TInt MaxSimultaneousDownloads();
-		void SetMaxSimultaneousDownloads(TInt aMaxDownloads);
+		IMPORT_C TInt MaxSimultaneousDownloads();
+		IMPORT_C void SetMaxSimultaneousDownloads(TInt aMaxDownloads);
 		
-		TAutoUpdateSetting UpdateAutomatically();	
-		void SetUpdateAutomatically(TAutoUpdateSetting aAutoOn);
+		IMPORT_C TAutoUpdateSetting UpdateAutomatically();	
+		IMPORT_C void SetUpdateAutomatically(TAutoUpdateSetting aAutoOn);
 		
-		TBool DownloadAutomatically();
-		void SetDownloadAutomatically(TBool aAutoDownloadOn);
+		IMPORT_C TBool DownloadAutomatically();
+		IMPORT_C void SetDownloadAutomatically(TBool aAutoDownloadOn);
 		
-		TTime UpdateFeedTime();
-		void SetUpdateFeedTime(TTime aTime);
+		IMPORT_C TTime UpdateFeedTime();
+		IMPORT_C void SetUpdateFeedTime(TTime aTime);
 		
-		TInt SpecificIAP();
-		void SetSpecificIAP(TInt aIap);
+		IMPORT_C TInt SpecificIAP();
+		IMPORT_C void SetSpecificIAP(TInt aIap);
 		
 		TInt Volume();
 		void SetVolume(TInt aVolume);
 
-		TInt SeekStepTime();
-		void SetSeekStepTimek(TInt aSeekStepTime);
+		IMPORT_C TInt SeekStepTime();
+		IMPORT_C void SetSeekStepTimek(TInt aSeekStepTime);
 
-		void SetSelectUnplayedOnly(TBool aOnlyUnplayed);
-		TBool SelectUnplayedOnly();
+		IMPORT_C void SetSelectUnplayedOnly(TBool aOnlyUnplayed);
+		IMPORT_C TBool SelectUnplayedOnly();
 
-		void SaveSettingsL();
+		IMPORT_C void SaveSettingsL();
 
 
 	private:

@@ -161,7 +161,7 @@ void CSettingsEngine::LoadSettingsL()
 	CleanupStack::PopAndDestroy();// close store
 }
 
-void CSettingsEngine::SaveSettingsL()
+EXPORT_C void CSettingsEngine::SaveSettingsL()
 	{
 	DP("CSettingsEngine::SaveSettingsL\tTrying to save settings");
 
@@ -297,12 +297,12 @@ TInt CSettingsEngine::MaxListItems()
 	return iMaxListItems;
 	}
 
-TFileName& CSettingsEngine::BaseDir()
+EXPORT_C TFileName& CSettingsEngine::BaseDir()
 	{
 	return iBaseDir;
 	}
 
-void CSettingsEngine::SetBaseDir(TFileName& aFileName)
+EXPORT_C void CSettingsEngine::SetBaseDir(TFileName& aFileName)
 	{
 	TInt length = aFileName.Length();
 	if (length > 0) 
@@ -315,64 +315,64 @@ void CSettingsEngine::SetBaseDir(TFileName& aFileName)
 	iBaseDir = aFileName;
 	}
 
-TInt CSettingsEngine::UpdateFeedInterval() 
+EXPORT_C TInt CSettingsEngine::UpdateFeedInterval() 
 	{
 	return iUpdateFeedInterval;
 	}
 
-void CSettingsEngine::SetUpdateFeedInterval(TInt aInterval)
+EXPORT_C void CSettingsEngine::SetUpdateFeedInterval(TInt aInterval)
 	{
 	iUpdateFeedInterval = aInterval;
 	iPodcastModel.FeedEngine().RunFeedTimer();
 	}
 
-TInt CSettingsEngine::MaxSimultaneousDownloads() 
+EXPORT_C TInt CSettingsEngine::MaxSimultaneousDownloads() 
 	{
 	return iMaxSimultaneousDownloads;
 	}
 
-void CSettingsEngine::SetMaxSimultaneousDownloads(TInt aMaxDownloads)
+EXPORT_C void CSettingsEngine::SetMaxSimultaneousDownloads(TInt aMaxDownloads)
 	{
 	iMaxSimultaneousDownloads = aMaxDownloads;
 	}
 
-TAutoUpdateSetting CSettingsEngine::UpdateAutomatically() 
+EXPORT_C TAutoUpdateSetting CSettingsEngine::UpdateAutomatically() 
 	{
 	return iUpdateAutomatically;
 	}
 
-void CSettingsEngine::SetUpdateAutomatically(TAutoUpdateSetting aAutoSetting)
+EXPORT_C void CSettingsEngine::SetUpdateAutomatically(TAutoUpdateSetting aAutoSetting)
 	{
 	iUpdateAutomatically = aAutoSetting;
 	}
 
-TBool CSettingsEngine::DownloadAutomatically() 
+EXPORT_C TBool CSettingsEngine::DownloadAutomatically() 
 	{
 	return iDownloadAutomatically;
 	}
 
-void CSettingsEngine::SetDownloadAutomatically(TBool aDownloadAuto)
+EXPORT_C void CSettingsEngine::SetDownloadAutomatically(TBool aDownloadAuto)
 	{
 	iDownloadAutomatically = aDownloadAuto;
 	}
 
-TTime CSettingsEngine::UpdateFeedTime()
+EXPORT_C TTime CSettingsEngine::UpdateFeedTime()
 	{
 	return iUpdateFeedTime;
 	}
 
-void CSettingsEngine::SetUpdateFeedTime(TTime aUpdateTime)
+EXPORT_C void CSettingsEngine::SetUpdateFeedTime(TTime aUpdateTime)
 	{
 	iUpdateFeedTime = aUpdateTime;
 	iPodcastModel.FeedEngine().RunFeedTimer();
 	}
 
-TInt CSettingsEngine::SpecificIAP()
+EXPORT_C TInt CSettingsEngine::SpecificIAP()
 	{
 	return iIap;
 	}
 
-void CSettingsEngine::SetSpecificIAP(TInt aIap)
+EXPORT_C void CSettingsEngine::SetSpecificIAP(TInt aIap)
 	{
 	iIap = aIap;
 	}
@@ -391,22 +391,22 @@ void CSettingsEngine::SetVolume(TInt aVolume)
 		}
 	}
 
-void CSettingsEngine::SetSelectUnplayedOnly(TBool aOnlyUnplayed)
+EXPORT_C void CSettingsEngine::SetSelectUnplayedOnly(TBool aOnlyUnplayed)
 	{
 	iSelectOnlyUnplayed = aOnlyUnplayed;
 	}
 
-TBool CSettingsEngine::SelectUnplayedOnly()
+EXPORT_C TBool CSettingsEngine::SelectUnplayedOnly()
 	{
 	return iSelectOnlyUnplayed;
 	}
 
-TInt CSettingsEngine::SeekStepTime()
+EXPORT_C TInt CSettingsEngine::SeekStepTime()
 	{
 	return iSeekStepTime;
 	}
 
-void CSettingsEngine::SetSeekStepTimek(TInt aSeekStepTime)
+EXPORT_C void CSettingsEngine::SetSeekStepTimek(TInt aSeekStepTime)
 	{
 	iSeekStepTime = aSeekStepTime;
 	}

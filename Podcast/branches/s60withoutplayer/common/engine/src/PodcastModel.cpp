@@ -17,7 +17,7 @@ _LIT(KDBTemplateFileName, "escarpod.sqlite.template");
 #define EQikCmdZoomLevel3							0x0802
 /** @publishedAll @released */
 
-CPodcastModel* CPodcastModel::NewL()
+EXPORT_C CPodcastModel* CPodcastModel::NewL()
 {
 	CPodcastModel* self = new (ELeave) CPodcastModel;
 	CleanupStack::PushL(self);
@@ -106,12 +106,12 @@ void CPodcastModel::UpdateIAPListL()
 	CleanupStack::PopAndDestroy(); // Close table
 }
 
-CDesCArrayFlat* CPodcastModel::IAPNames()
+EXPORT_C CDesCArrayFlat* CPodcastModel::IAPNames()
 {
 	return iIapNameArray;
 }
 
-RArray<TPodcastIAPItem>& CPodcastModel::IAPIds()
+EXPORT_C RArray<TPodcastIAPItem>& CPodcastModel::IAPIds()
 {
 	return iIapIdArray;
 }
@@ -123,32 +123,32 @@ CEikonEnv* CPodcastModel::EikonEnv()
 	return iEnv;
 }
 
-void CPodcastModel::SetPlayingPodcast(CShowInfo* aPodcast)
+EXPORT_C void CPodcastModel::SetPlayingPodcast(CShowInfo* aPodcast)
 {
 	iPlayingPodcast = aPodcast;
 }
 
-CShowInfo* CPodcastModel::PlayingPodcast()
+EXPORT_C CShowInfo* CPodcastModel::PlayingPodcast()
 {
 	return iPlayingPodcast;
 }
 
-CFeedEngine& CPodcastModel::FeedEngine()
+EXPORT_C CFeedEngine& CPodcastModel::FeedEngine()
 {
 	return *iFeedEngine;
 }
 	
-CShowEngine& CPodcastModel::ShowEngine()
+EXPORT_C CShowEngine& CPodcastModel::ShowEngine()
 {
 	return *iShowEngine;
 }
 
-CSoundEngine& CPodcastModel::SoundEngine()
+EXPORT_C CSoundEngine& CPodcastModel::SoundEngine()
 {
 	return *iSoundEngine;
 }
 
-CSettingsEngine& CPodcastModel::SettingsEngine()
+EXPORT_C CSettingsEngine& CPodcastModel::SettingsEngine()
 {
 	return *iSettingsEngine;
 }
@@ -161,6 +161,7 @@ void CPodcastModel::PlayPausePodcastL(CShowInfo* aPodcast, TBool aPlayOnInit)
 		if (aPodcast->PlayState() == EPlaying) {
 			SoundEngine().Pause();
 			aPodcast->SetPosition(iSoundEngine->Position());
+			aPodcast->SetPlayState(EPlayed);
 			aPodcast->SetPlayState(EPlayed);
 		} else {
 			iSoundEngine->Play();
@@ -344,7 +345,7 @@ TBool CPodcastModel::ConnectHttpSessionL(RHTTPSession &aSession)
 	return ETrue;
 }
 
-void CPodcastModel::SetIap(TInt aIap)
+EXPORT_C void CPodcastModel::SetIap(TInt aIap)
 	{
 	if (aIap == -1) {
 		iConnPref.SetDialogPreference(ECommDbDialogPrefDoNotPrompt);
@@ -429,37 +430,37 @@ TInt CPodcastModel::GetIapId()
 	return iapId;
 	}
 
-void CPodcastModel::GetAllShows()
+EXPORT_C void CPodcastModel::GetAllShows()
 	{
 	iActiveShowList.ResetAndDestroy();
 	iShowEngine->GetAllShows(iActiveShowList);
 	}
 
-void CPodcastModel::GetNewShows()
+EXPORT_C void CPodcastModel::GetNewShows()
 	{
 	iActiveShowList.ResetAndDestroy();
 	iShowEngine->GetNewShows(iActiveShowList);	
 	}
 
-void CPodcastModel::GetShowsDownloaded()
+EXPORT_C void CPodcastModel::GetShowsDownloaded()
 	{
 	iActiveShowList.ResetAndDestroy();
 	iShowEngine->GetShowsDownloaded(iActiveShowList);
 	}
 
-void CPodcastModel::GetShowsDownloading()
+EXPORT_C void CPodcastModel::GetShowsDownloading()
 	{
 	iActiveShowList.ResetAndDestroy();
 	iShowEngine->GetShowsDownloading(iActiveShowList);
 	}
 
-void CPodcastModel::GetShowsByFeed(TUint aFeedUid)
+EXPORT_C void CPodcastModel::GetShowsByFeed(TUint aFeedUid)
 	{
 	iActiveShowList.ResetAndDestroy();
 	iShowEngine->GetShowsByFeed(iActiveShowList, aFeedUid);
 	}
 
-void CPodcastModel::MarkSelectionPlayed()
+EXPORT_C void CPodcastModel::MarkSelectionPlayed()
 	{
 	for (int i=0;i<iActiveShowList.Count();i++) {
 		if(iActiveShowList[i]->PlayState() != EPlayed) {

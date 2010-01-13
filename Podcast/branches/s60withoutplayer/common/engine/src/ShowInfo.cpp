@@ -1,7 +1,7 @@
 #include "ShowInfo.h"
 #include <e32hashtab.h>
 
-CShowInfo* CShowInfo::NewL(TUint aVersion)
+EXPORT_C CShowInfo* CShowInfo::NewL(TUint aVersion)
 	{
 	CShowInfo* self = new (ELeave) CShowInfo();
 	CleanupStack::PushL(self);
@@ -22,7 +22,7 @@ CShowInfo::CShowInfo()
 	iTrackNo = KMaxTUint; 
 	}
 
-CShowInfo::~CShowInfo()
+EXPORT_C CShowInfo::~CShowInfo()
 	{
 	delete iTitle;
 	delete iUrl;
@@ -30,12 +30,12 @@ CShowInfo::~CShowInfo()
 	delete iFileName;
 	}
 
-const TDesC& CShowInfo::Title() const
+EXPORT_C const TDesC& CShowInfo::Title() const
 	{
 	return iTitle ? *iTitle : KNullDesC();
 	}
 
-void CShowInfo::SetTitleL(const TDesC &aTitle)
+EXPORT_C void CShowInfo::SetTitleL(const TDesC &aTitle)
 	{
 	if (iTitle)
 		{
@@ -45,12 +45,12 @@ void CShowInfo::SetTitleL(const TDesC &aTitle)
 	iTitle = aTitle.AllocL();
 	}
 
-const TDesC& CShowInfo::Url() const
+EXPORT_C const TDesC& CShowInfo::Url() const
 	{
 	return iUrl ? *iUrl : KNullDesC();
 	}
 
-void CShowInfo::SetUrlL(const TDesC &aUrl)
+EXPORT_C void CShowInfo::SetUrlL(const TDesC &aUrl)
 	{
 	if (iUrl)
 		{
@@ -61,12 +61,12 @@ void CShowInfo::SetUrlL(const TDesC &aUrl)
 	iUid = DefaultHash::Des16(Url());
 	}
 
-const TDesC& CShowInfo::Description() const
+EXPORT_C const TDesC& CShowInfo::Description() const
 	{
 	return iDescription ? *iDescription : KNullDesC();
 	}
 
-void CShowInfo::SetDescriptionL(const TDesC &aDescription)
+EXPORT_C void CShowInfo::SetDescriptionL(const TDesC &aDescription)
 	{
 	if (iDescription)
 		{
@@ -77,92 +77,92 @@ void CShowInfo::SetDescriptionL(const TDesC &aDescription)
 	iDescription = aDescription.AllocL();
 	}
 
-TTimeIntervalMicroSeconds CShowInfo::Position() const
+EXPORT_C TTimeIntervalMicroSeconds CShowInfo::Position() const
 	{
 	return iPosition;
 	}
 
-void CShowInfo::SetPosition(TTimeIntervalMicroSeconds aPosition)
+EXPORT_C void CShowInfo::SetPosition(TTimeIntervalMicroSeconds aPosition)
 	{
 	iPosition = aPosition;
 	}
 
-TUint CShowInfo::PlayTime() const
+EXPORT_C TUint CShowInfo::PlayTime() const
 	{
 	return iPlayTime;
 	}
 
-void CShowInfo::SetPlayTime(TUint aPlayTime)
+EXPORT_C void CShowInfo::SetPlayTime(TUint aPlayTime)
 	{
 	iPlayTime = aPlayTime;
 	}
 
-TPlayState CShowInfo::PlayState()
+EXPORT_C TPlayState CShowInfo::PlayState()
 	{
 	return iPlayState;
 	}
 
-void CShowInfo::SetPlayState(TPlayState aPlayState)
+EXPORT_C void CShowInfo::SetPlayState(TPlayState aPlayState)
 	{
 	iPlayState = aPlayState;
 	}
 
-TDownloadState CShowInfo::DownloadState()
+EXPORT_C TDownloadState CShowInfo::DownloadState()
 	{
 	return iDownloadState;
 	}
 
-void CShowInfo::SetDownloadState(TDownloadState aDownloadState)
+EXPORT_C void CShowInfo::SetDownloadState(TDownloadState aDownloadState)
 	{
 	iDownloadState = aDownloadState;
 	}
 
-TUint CShowInfo::FeedUid()
+EXPORT_C TUint CShowInfo::FeedUid()
 	{
 	return iFeedUid;
 	}
 
-void CShowInfo::SetFeedUid(TUint aFeedUid)
+EXPORT_C void CShowInfo::SetFeedUid(TUint aFeedUid)
 	{
 	iFeedUid = aFeedUid;
 	}
 
-void CShowInfo::SetUid(TUint aUid)
+EXPORT_C void CShowInfo::SetUid(TUint aUid)
 	{
 	iUid = aUid;
 	}
 		
-TUint CShowInfo::Uid() const
+EXPORT_C TUint CShowInfo::Uid() const
 	{
 	return iUid;
 	}
 
-TUint CShowInfo::ShowSize()
+EXPORT_C TUint CShowInfo::ShowSize()
 	{
 	return iShowSize;
 	}
 
-void CShowInfo::SetShowSize(TUint aShowSize)
+EXPORT_C void CShowInfo::SetShowSize(TUint aShowSize)
 	{
 	iShowSize = aShowSize;
 	}
 
-const TTime CShowInfo::PubDate() const
+EXPORT_C const TTime CShowInfo::PubDate() const
 	{
 	return iPubDate;
 	}
 
-void CShowInfo::SetPubDate(TTime aPubDate)
+EXPORT_C void CShowInfo::SetPubDate(TTime aPubDate)
 	{
 	iPubDate = aPubDate;
 	}
 
-const TDesC& CShowInfo::FileName() const
+EXPORT_C const TDesC& CShowInfo::FileName() const
 	{
 	return iFileName ? *iFileName : KNullDesC();
 	}
 
-void CShowInfo::SetFileNameL(const TDesC &aFileName)
+EXPORT_C void CShowInfo::SetFileNameL(const TDesC &aFileName)
 	{
 	if (iFileName)
 		{
@@ -172,27 +172,27 @@ void CShowInfo::SetFileNameL(const TDesC &aFileName)
 	iFileName = aFileName.AllocL();
 	}
 
-void CShowInfo::SetShowType(TShowType aShowType)
+EXPORT_C void CShowInfo::SetShowType(TShowType aShowType)
 	{
 	iShowType = aShowType;
 	}
 
-TShowType CShowInfo::ShowType()
+EXPORT_C TShowType CShowInfo::ShowType()
 	{
 	return iShowType;
 	}
 
-void CShowInfo::SetTrackNo(TUint aTrackId)
+EXPORT_C void CShowInfo::SetTrackNo(TUint aTrackId)
 	{
 	iTrackNo = aTrackId;
 	}
 
-TUint CShowInfo::TrackNo() const
+EXPORT_C TUint CShowInfo::TrackNo() const
 	{
 	return iTrackNo;
 	}
 
-CShowInfo::CShowInfo(CShowInfo *aInfo)
+EXPORT_C CShowInfo::CShowInfo(CShowInfo *aInfo)
 	{
 	iTitle = aInfo->Title().Alloc();
 	iUrl = aInfo->Url().Alloc();

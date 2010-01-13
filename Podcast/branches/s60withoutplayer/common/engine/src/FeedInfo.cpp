@@ -2,7 +2,7 @@
 #include <e32hashtab.h>
 
 
-CFeedInfo* CFeedInfo::NewL()
+EXPORT_C CFeedInfo* CFeedInfo::NewL()
 	{
 	CFeedInfo* self = new (ELeave) CFeedInfo();
 	CleanupStack::PushL(self);
@@ -11,7 +11,7 @@ CFeedInfo* CFeedInfo::NewL()
 	return self;
 	}
 
-CFeedInfo* CFeedInfo::NewLC()
+EXPORT_C CFeedInfo* CFeedInfo::NewLC()
 	{
 	CFeedInfo* self = new (ELeave) CFeedInfo();
 	CleanupStack::PushL(self);
@@ -24,7 +24,7 @@ CFeedInfo::CFeedInfo()
 	iCustomTitle = EFalse;
 	}
 
-CFeedInfo::~CFeedInfo()
+EXPORT_C CFeedInfo::~CFeedInfo()
 	{
 	delete iUrl;
 	delete iTitle;
@@ -38,12 +38,12 @@ void CFeedInfo::ConstructL()
 	{
 	}
 
-const TDesC& CFeedInfo::Url() const
+EXPORT_C const TDesC& CFeedInfo::Url() const
 	{
 	return iUrl ? *iUrl : KNullDesC();
 	}
 
-void CFeedInfo::SetUrlL(const TDesC &aUrl) 
+EXPORT_C void CFeedInfo::SetUrlL(const TDesC &aUrl) 
 	{
 	if (iUrl)
 		{
@@ -55,12 +55,12 @@ void CFeedInfo::SetUrlL(const TDesC &aUrl)
 	iUid = DefaultHash::Des16(Url());
 	}
 
-const TDesC& CFeedInfo::Title() const
+EXPORT_C const TDesC& CFeedInfo::Title() const
 	{
 	return iTitle ? *iTitle : KNullDesC();
 	}
 
-void CFeedInfo::SetTitleL(const TDesC &aTitle)
+EXPORT_C void CFeedInfo::SetTitleL(const TDesC &aTitle)
 	{
 	if(iTitle)
 		{
@@ -70,12 +70,12 @@ void CFeedInfo::SetTitleL(const TDesC &aTitle)
 	iTitle = aTitle.AllocL();
 	}
 
-const TDesC& CFeedInfo::Description() const
+EXPORT_C const TDesC& CFeedInfo::Description() const
 	{
 	return iDescription ? *iDescription : KNullDesC();
 	}
 
-void CFeedInfo::SetDescriptionL(const TDesC &aDescription)
+EXPORT_C void CFeedInfo::SetDescriptionL(const TDesC &aDescription)
 	{
 	if (iDescription)
 		{
@@ -86,12 +86,12 @@ void CFeedInfo::SetDescriptionL(const TDesC &aDescription)
 	iDescription = aDescription.AllocL(); 
 	}
 
-const TDesC& CFeedInfo::ImageUrl() const
+EXPORT_C const TDesC& CFeedInfo::ImageUrl() const
 	{
 	return iImageUrl ? *iImageUrl : KNullDesC();
 	}
 
-void CFeedInfo::SetImageUrlL(const TDesC &aImageUrl)
+EXPORT_C void CFeedInfo::SetImageUrlL(const TDesC &aImageUrl)
 	{
 	if (iImageUrl)
 		{
@@ -101,12 +101,12 @@ void CFeedInfo::SetImageUrlL(const TDesC &aImageUrl)
 	iImageUrl = aImageUrl.AllocL();
 	}
 
-const TDesC& CFeedInfo::Link() const
+EXPORT_C const TDesC& CFeedInfo::Link() const
 	{
 	return iLink ? *iLink : KNullDesC();
 	}
 
-void CFeedInfo::SetLinkL(const TDesC& aLink)
+EXPORT_C void CFeedInfo::SetLinkL(const TDesC& aLink)
 	{
 	if (iLink)
 		{
@@ -116,37 +116,37 @@ void CFeedInfo::SetLinkL(const TDesC& aLink)
 	iLink = aLink.AllocL();
 	}
 
-TTime CFeedInfo::BuildDate()
+EXPORT_C TTime CFeedInfo::BuildDate()
 	{
 	return iBuildDate;
 	}
 
-void CFeedInfo::SetBuildDate(TTime aBuildDate)
+EXPORT_C void CFeedInfo::SetBuildDate(TTime aBuildDate)
 	{
 	iBuildDate = aBuildDate;
 	}
 
-TTime CFeedInfo::LastUpdated()
+EXPORT_C TTime CFeedInfo::LastUpdated()
 	{
 	return iLastUpdated;
 	}
 
-void CFeedInfo::SetLastUpdated(TTime aUpdated)
+EXPORT_C void CFeedInfo::SetLastUpdated(TTime aUpdated)
 	{
 	iLastUpdated = aUpdated;
 	}
 
-TUint CFeedInfo::Uid()
+EXPORT_C TUint CFeedInfo::Uid()
 	{
 	return iUid;
 	}
 
-const TDesC& CFeedInfo::ImageFileName() const
+EXPORT_C const TDesC& CFeedInfo::ImageFileName() const
 	{
 	return iImageFileName ? *iImageFileName : KNullDesC();
 	}
 
-void CFeedInfo::SetImageFileNameL(const TDesC& aFileName)
+EXPORT_C void CFeedInfo::SetImageFileNameL(const TDesC& aFileName)
 	{
 	if (iImageFileName)
 		{
@@ -157,22 +157,22 @@ void CFeedInfo::SetImageFileNameL(const TDesC& aFileName)
 	}
 
 
-TBool CFeedInfo::IsBookFeed()
+EXPORT_C TBool CFeedInfo::IsBookFeed()
 	{
 	return iIsBookFeed;
 	}
 
-void CFeedInfo::SetIsBookFeed()
+EXPORT_C void CFeedInfo::SetIsBookFeed()
 	{
 	iIsBookFeed = ETrue;
 	}
 
-TBool CFeedInfo::CustomTitle()
+EXPORT_C TBool CFeedInfo::CustomTitle()
 	{
 	return iCustomTitle;
 	}
 
-void CFeedInfo::SetCustomTitle()
+EXPORT_C void CFeedInfo::SetCustomTitle()
 	{
 	iCustomTitle = ETrue;
 	}

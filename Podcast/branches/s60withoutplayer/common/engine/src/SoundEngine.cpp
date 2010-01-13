@@ -29,7 +29,7 @@ void CSoundEngine::ConstructL()
     iPlayer = CMdaAudioPlayerUtility::NewL(*this);
 }
 
-void CSoundEngine::AddObserver(MSoundEngineObserver* aObserver)
+EXPORT_C void CSoundEngine::AddObserver(MSoundEngineObserver* aObserver)
 {
 	iObservers.Append(aObserver);
 }
@@ -130,7 +130,7 @@ const TFileName& CSoundEngine::LastFileName()
 	return iLastOpenedFileName;
 }
 
-TTimeIntervalMicroSeconds CSoundEngine::Position()
+EXPORT_C TTimeIntervalMicroSeconds CSoundEngine::Position()
 {
 	TTimeIntervalMicroSeconds pos = 0;
 	
@@ -146,7 +146,7 @@ TTimeIntervalMicroSeconds CSoundEngine::Position()
 	return iMaxPos;
 }
 
-void CSoundEngine::SetPosition(TUint aPos)
+EXPORT_C void CSoundEngine::SetPosition(TUint aPos)
 {
 	if(iState > ESoundEngineOpening)
 	{
@@ -167,7 +167,7 @@ void CSoundEngine::SetPosition(TUint aPos)
 }
 
 
-TUint CSoundEngine::PlayTime()
+EXPORT_C TUint CSoundEngine::PlayTime()
 {
 	if(iState > ESoundEngineOpening)
 	{
@@ -178,7 +178,7 @@ TUint CSoundEngine::PlayTime()
 }
 
 
-void CSoundEngine::Play()
+EXPORT_C void CSoundEngine::Play()
 {
 	if(iState > ESoundEngineOpening)
 	{
@@ -195,7 +195,7 @@ void CSoundEngine::Play()
 	}
 }
 
-void CSoundEngine::Stop(TBool aMarkPlayed)
+EXPORT_C void CSoundEngine::Stop(TBool aMarkPlayed)
 {
 	if(iState > ESoundEngineOpening)
 	{
@@ -213,7 +213,7 @@ void CSoundEngine::Stop(TBool aMarkPlayed)
 	}
 }
 
-void CSoundEngine::Pause(TBool aOverrideState)
+EXPORT_C void CSoundEngine::Pause(TBool aOverrideState)
 {
 	DP("Pause");
 	if(iState > ESoundEngineOpening || aOverrideState)
@@ -230,12 +230,12 @@ void CSoundEngine::Pause(TBool aOverrideState)
 	}
 }
 
-TSoundEngineState CSoundEngine::State()
+EXPORT_C TSoundEngineState CSoundEngine::State()
 {
 	return iState;
 }
 
-void CSoundEngine::VolumeUp()
+EXPORT_C void CSoundEngine::VolumeUp()
 	{
 	if(iState <= ESoundEngineOpening) {
 		return ;
@@ -250,7 +250,7 @@ void CSoundEngine::VolumeUp()
 	NotifyVolumeChanged();
 	}
 
-void CSoundEngine::VolumeDown()
+EXPORT_C void CSoundEngine::VolumeDown()
 	{
 	if(iState <= ESoundEngineOpening) {
 		return;

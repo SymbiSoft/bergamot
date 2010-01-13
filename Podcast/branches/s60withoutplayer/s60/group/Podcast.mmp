@@ -67,8 +67,7 @@ SYSTEMINCLUDE   \epoc32\include\libc \epoc32\include\osextensions
 SYSTEMINCLUDE \epoc32\include\mmf\common 
 SYSTEMINCLUDE \epoc32\include\domain\middleware
 
-USERINCLUDE ..\..\common\engine
-USERINCLUDE ..\..\common\libid3tag
+USERINCLUDE ..\..\common\engine\inc
 USERINCLUDE ..\..\common\sqlite\src
 USERINCLUDE . 
 USERINCLUDE ..\inc
@@ -103,10 +102,7 @@ TARGETPATH 	  \private\10003a3f\import\apps
 #endif
 END
 
-STATICLIBRARY	engine.lib
-STATICLIBRARY	libid3tag.lib
-STATICLIBRARY	sqlite.lib
-
+LIBRARY PodCastEngine.lib
 LIBRARY	euser.lib 
 LIBRARY	apparc.lib
 LIBRARY	cone.lib

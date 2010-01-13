@@ -72,7 +72,7 @@ CFeedEngine::~CFeedEngine()
 /**
  * Returns the current internal state of the feed engine4
  */
-TClientState CFeedEngine::ClientState()
+EXPORT_C TClientState CFeedEngine::ClientState()
 	{
 	return iClientState;
 	}
@@ -82,7 +82,7 @@ TClientState CFeedEngine::ClientState()
  * Returns the current updating client UID if clientstate is != ENotUpdateing
  * @return TUint
  */
-TUint CFeedEngine::ActiveClientUid()
+EXPORT_C TUint CFeedEngine::ActiveClientUid()
 	{
 		if(iActiveFeed != NULL)
 			{
@@ -162,7 +162,7 @@ void CFeedEngine::UpdateNextFeedL()
 	}
 }
 
-TBool CFeedEngine::UpdateFeedL(TUint aFeedUid)
+EXPORT_C TBool CFeedEngine::UpdateFeedL(TUint aFeedUid)
 	{
 	iActiveFeed = GetFeedInfoByUid(aFeedUid);
 	iCatchupCounter = 0;
@@ -311,7 +311,7 @@ void CFeedEngine::ReplaceString(TDes & aString, const TDesC& aStringToReplace,
 
 	}
 
-TBool CFeedEngine::AddFeed(CFeedInfo *aItem) 
+EXPORT_C TBool CFeedEngine::AddFeed(CFeedInfo *aItem) 
 	{
 	DP2("CFeedEngine::AddFeed, title=%S, URL=%S", &aItem->Title(), &aItem->Url());
 	for (TInt i=0;i<iSortedFeeds.Count();i++) 
@@ -371,7 +371,7 @@ TBool CFeedEngine::DBAddFeed(CFeedInfo *aItem)
 	return EFalse;
 	}
 
-void CFeedEngine::RemoveFeed(TUint aUid) 
+EXPORT_C void CFeedEngine::RemoveFeed(TUint aUid) 
 	{
 	for (int i=0;i<iSortedFeeds.Count();i++) 
 		{
@@ -484,12 +484,12 @@ void CFeedEngine::ParsingComplete(CFeedInfo *item)
 	}
 
 
-void CFeedEngine::AddObserver(MFeedEngineObserver *observer)
+EXPORT_C void CFeedEngine::AddObserver(MFeedEngineObserver *observer)
 	{
 	iObservers.Append(observer);
 	}
 
-void CFeedEngine::RemoveObserver(MFeedEngineObserver *observer)
+EXPORT_C void CFeedEngine::RemoveObserver(MFeedEngineObserver *observer)
 	{
 	TInt index = iObservers.Find(observer);
 	
@@ -607,7 +607,7 @@ void CFeedEngine::DownloadInfo(CHttpClient* /*aHttpClient */, int /*aTotalBytes*
 		}*/
 	}
 
-void CFeedEngine::ImportFeedsL(const TDesC& aFile)
+EXPORT_C void CFeedEngine::ImportFeedsL(const TDesC& aFile)
 	{
 	TFileName opmlPath;
 	opmlPath.Copy(aFile);
@@ -616,7 +616,7 @@ void CFeedEngine::ImportFeedsL(const TDesC& aFile)
 	opmlParser.ParseOpmlL(opmlPath);
 	}
 
-void CFeedEngine::ImportBookL(const TDesC& aTitle, const TDesC& aFile)
+EXPORT_C void CFeedEngine::ImportBookL(const TDesC& aTitle, const TDesC& aFile)
 	{
 	CDesCArrayFlat *files = new (ELeave) CDesCArrayFlat(5);
 	CleanupStack::PushL(files);
@@ -670,7 +670,7 @@ void CFeedEngine::ImportBookL(const TDesC& aTitle, const TDesC& aFile)
 	CleanupStack::PopAndDestroy(files);
 	}
 
-TBool CFeedEngine::ExportFeedsL(TFileName& aFile)
+EXPORT_C TBool CFeedEngine::ExportFeedsL(TFileName& aFile)
 	{
 	RFile rfile;
 	TBuf<1024> privatePath;
@@ -731,7 +731,7 @@ CFeedInfo* CFeedEngine::GetFeedInfoByUid(TUint aFeedUid)
 	return NULL;
 	}
 		
-const RFeedInfoArray& CFeedEngine::GetSortedFeeds()
+EXPORT_C const RFeedInfoArray& CFeedEngine::GetSortedFeeds()
 {
 	TLinearOrder<CFeedInfo> sortOrder( CFeedEngine::CompareFeedsByTitle);
 
@@ -1168,7 +1168,7 @@ CFeedInfo* CFeedEngine::DBGetFeedInfoByUid(TUint aFeedUid)
 	return feedInfo;
 }
 
-void CFeedEngine::UpdateFeed(CFeedInfo *aItem)
+EXPORT_C void CFeedEngine::UpdateFeed(CFeedInfo *aItem)
 	{
 	DBUpdateFeed(aItem);
 	}

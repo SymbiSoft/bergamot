@@ -36,24 +36,24 @@ public:
 	static CSoundEngine* NewL(CPodcastModel& aPodcastModel);
 	~CSoundEngine();
 	void OpenFileL(const TDesC& aFileName, TBool aPlayOnInit);
-	void Play();
-	void Stop(TBool aMarkPlayed=ETrue);
-	TTimeIntervalMicroSeconds Position();
-	void SetPosition(TUint aPos);
+	IMPORT_C void Play();
+	IMPORT_C void Stop(TBool aMarkPlayed=ETrue);
+	IMPORT_C TTimeIntervalMicroSeconds Position();
+	IMPORT_C void SetPosition(TUint aPos);
 
 	/**
 	 * Returns the playtime/duration in seconds 
 	 * @return Value in a TUint
 	 */
-	TUint PlayTime();
-	void Pause(TBool aOverrideState = EFalse);
+	IMPORT_C TUint PlayTime();
+	IMPORT_C void Pause(TBool aOverrideState = EFalse);
 
-	TSoundEngineState State();
-	void AddObserver(MSoundEngineObserver* aObserver);
+	IMPORT_C TSoundEngineState State();
+	IMPORT_C void AddObserver(MSoundEngineObserver* aObserver);
 	void RemoveObserver(MSoundEngineObserver* aObserver);
 	
-	void VolumeUp();
-	void VolumeDown();
+	IMPORT_C void VolumeUp();
+	IMPORT_C void VolumeDown();
 	void SetVolume(TUint aVolume);
 	const TFileName& LastFileName();
 	

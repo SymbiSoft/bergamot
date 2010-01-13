@@ -1,6 +1,7 @@
+#include <e32std.h>
 #include "PodcastUtils.h"
 			
-void PodcastUtils::FixProtocolsL(TDes &aUrl)
+EXPORT_C void PodcastUtils::FixProtocolsL(TDes &aUrl)
 	{
 	// url is always present so access that								
 	// Some pod links are written in format itpc://mylink.net/podcast.xml
@@ -35,3 +36,4 @@ void PodcastUtils::FixProtocolsL(TDes &aUrl)
 		delete newUrl;					
 		}
 	}
+

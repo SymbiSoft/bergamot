@@ -32,44 +32,44 @@ public:
 	virtual ~CFeedEngine();
 	
 public:
-	TBool AddFeed(CFeedInfo *item);
-	void ImportFeedsL(const TDesC& aFile);
-	TBool ExportFeedsL(TFileName& aFile);
-	void RemoveFeed(TUint aUid);
-	TBool UpdateFeedL(TUint aFeedUid);
-	void UpdateAllFeedsL();
-	void CancelUpdateAllFeedsL();
-	const RFeedInfoArray& GetSortedFeeds();
-	CFeedInfo* GetFeedInfoByUid(TUint aFeedUid);	
-	void GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed, TBool aIsBookFeed );
-	void GetDownloadedStats(TUint &aNumShows, TUint &aNumUnplayed);
+	IMPORT_C TBool AddFeed(CFeedInfo *item);
+	IMPORT_C void ImportFeedsL(const TDesC& aFile);
+	IMPORT_C TBool ExportFeedsL(TFileName& aFile);
+	IMPORT_C void RemoveFeed(TUint aUid);
+	IMPORT_C TBool UpdateFeedL(TUint aFeedUid);
+	IMPORT_C void UpdateAllFeedsL();
+	IMPORT_C void CancelUpdateAllFeedsL();
+	IMPORT_C const RFeedInfoArray& GetSortedFeeds();
+	IMPORT_C CFeedInfo* GetFeedInfoByUid(TUint aFeedUid);	
+	IMPORT_C void GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed, TBool aIsBookFeed );
+	IMPORT_C void GetDownloadedStats(TUint &aNumShows, TUint &aNumUnplayed);
 
-	void AddBookL(const TDesC& aBookTitle, CDesCArrayFlat* aFileNameArray);
-	void AddBookChaptersL(CFeedInfo& aFeedInfo, CDesCArrayFlat* aFileNameArray);
-	void RemoveBookL(TUint aUid);
-	const RFeedInfoArray& GetSortedBooks();
-	void ImportBookL(const TDesC& aTitle, const TDesC& aFile);
+	IMPORT_C void AddBookL(const TDesC& aBookTitle, CDesCArrayFlat* aFileNameArray);
+	IMPORT_C void AddBookChaptersL(CFeedInfo& aFeedInfo, CDesCArrayFlat* aFileNameArray);
+	IMPORT_C void RemoveBookL(TUint aUid);
+	IMPORT_C const RFeedInfoArray& GetSortedBooks();
+	IMPORT_C void ImportBookL(const TDesC& aTitle, const TDesC& aFile);
 
 
-	void AddObserver(MFeedEngineObserver *observer);
-	void RemoveObserver(MFeedEngineObserver *observer);
+	IMPORT_C void AddObserver(MFeedEngineObserver *observer);
+	IMPORT_C void RemoveObserver(MFeedEngineObserver *observer);
 
 	void RunFeedTimer();
 	
 	void FileNameFromUrl(const TDesC &aUrl, TFileName &aFileName);
 	void EnsureProperPathName(TFileName &aPath);
 
-	void UpdateFeed(CFeedInfo *aItem);
+	IMPORT_C void UpdateFeed(CFeedInfo *aItem);
 	/**
 	 * Returns the current internal state of the feed engine4
 	 */
-	TClientState ClientState();
+	IMPORT_C TClientState ClientState();
 
 	/**
 	 * Returns the current updating client UID if clientstate is != ENotUpdateing
 	 * @return TUint
 	 */
-	TUint ActiveClientUid();
+	IMPORT_C TUint ActiveClientUid();
 protected:
 	
 	static TInt CompareFeedsByTitle(const CFeedInfo &a, const CFeedInfo &b);

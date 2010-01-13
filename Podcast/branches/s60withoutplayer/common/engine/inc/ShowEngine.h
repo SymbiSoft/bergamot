@@ -17,17 +17,17 @@ public:
 	virtual ~CShowEngine();
 	
 public:
-	void AddDownload(CShowInfo *info);
-	TBool RemoveDownload(TUint aUid);
-	void RemoveAllDownloads();
+	IMPORT_C void AddDownload(CShowInfo *info);
+	IMPORT_C TBool RemoveDownload(TUint aUid);
+	IMPORT_C void RemoveAllDownloads();
 
-	void StopDownloads();
-	void ResumeDownloads();
-	TBool DownloadsStopped();
+	IMPORT_C void StopDownloads();
+	IMPORT_C void ResumeDownloads();
+	IMPORT_C TBool DownloadsStopped();
 
-	TInt GetNumDownloadingShowsL();
-	CShowInfo* ShowDownloading();
-	CShowInfo* GetShowByUidL(TUint aShowUid);
+	IMPORT_C TInt GetNumDownloadingShowsL();
+	IMPORT_C CShowInfo* ShowDownloading();
+	IMPORT_C CShowInfo* GetShowByUidL(TUint aShowUid);
 	CShowInfo* GetNextShowByTrackL(CShowInfo* aShowInfo);
 	
 	// show access methods
@@ -40,19 +40,19 @@ public:
 	
 	void CompleteL(CHttpClient* aClient, TBool aSuccessful);
 	TBool AddShow(CShowInfo *item);
-	void DeletePlayedShows(RShowInfoArray &aShowInfoArray);
-	void DeleteAllShowsByFeed(TUint aFeedUid,TBool aDeleteFiles=ETrue);
-	void DeleteShow(TUint aShowUid, TBool aRemoveFile=ETrue);
+	IMPORT_C void DeletePlayedShows(RShowInfoArray &aShowInfoArray);
+	IMPORT_C void DeleteAllShowsByFeed(TUint aFeedUid,TBool aDeleteFiles=ETrue);
+	IMPORT_C void DeleteShow(TUint aShowUid, TBool aRemoveFile=ETrue);
 	void DeleteOldShowsByFeed(TUint aFeedUid);
 	
-	void CheckFilesL();
-	void AddObserver(MShowEngineObserver *observer);
-	void RemoveObserver(MShowEngineObserver *observer);
+	IMPORT_C void CheckFilesL();
+	IMPORT_C void AddObserver(MShowEngineObserver *observer);
+	IMPORT_C void RemoveObserver(MShowEngineObserver *observer);
 
 	void NotifyShowListUpdated();
-	void UpdateShow(CShowInfo *aInfo);
+	IMPORT_C void UpdateShow(CShowInfo *aInfo);
 
-	void GetMimeType(const TDesC& aFileName, TDes& aMimeType);
+	IMPORT_C void GetMimeType(const TDesC& aFileName, TDes& aMimeType);
 
 	CMetaDataReader& MetaDataReader();
 protected:

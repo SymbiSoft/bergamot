@@ -35,7 +35,7 @@ CShowEngine* CShowEngine::NewL(CPodcastModel& aPodcastModel)
 	return self;
 	}
 
-void CShowEngine::GetMimeType(const TDesC& aFileName, TDes& aMimeType)
+IMPORT_C void CShowEngine::GetMimeType(const TDesC& aFileName, TDes& aMimeType)
 	{
 	aMimeType.Zero();
 	RFile file;
@@ -68,7 +68,7 @@ void CShowEngine::ConstructL()
 	DownloadNextShow();
 	}
 
-void CShowEngine::StopDownloads()
+EXPORT_C void CShowEngine::StopDownloads()
 	{
 	DP("StopDownloads");
 	iDownloadsSuspended = ETrue;
@@ -78,7 +78,7 @@ void CShowEngine::StopDownloads()
 		}
 	}
 
-void CShowEngine::ResumeDownloads()
+EXPORT_C void CShowEngine::ResumeDownloads()
 	{
 	DP("ResumeDownloads");
 	if (iDownloadsSuspended)
@@ -89,7 +89,7 @@ void CShowEngine::ResumeDownloads()
 		}
 	}
 
-TBool CShowEngine::DownloadsStopped()
+EXPORT_C TBool CShowEngine::DownloadsStopped()
 	{
 	return iDownloadsSuspended;
 	}
@@ -104,7 +104,7 @@ void CShowEngine::RemoveAllDownloads()
 	DBRemoveAllDownloads();
 	}
 
-TBool CShowEngine::RemoveDownload(TUint aUid)
+EXPORT_C TBool CShowEngine::RemoveDownload(TUint aUid)
 	{
 	DP("CShowEngine::RemoveDownload\t Trying to remove download");
 
@@ -220,12 +220,12 @@ TBool CShowEngine::AddShow(CShowInfo *item)
 	return ETrue;
 	}
 
-void CShowEngine::AddObserver(MShowEngineObserver *observer)
+EXPORT_C void CShowEngine::AddObserver(MShowEngineObserver *observer)
 	{
 	iObservers.Append(observer);
 	}
 
-void CShowEngine::RemoveObserver(MShowEngineObserver *observer)
+EXPORT_C void CShowEngine::RemoveObserver(MShowEngineObserver *observer)
 	{
 	TInt index = iObservers.Find(observer);
 
@@ -280,7 +280,7 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TBool aSuccessful)
 	DownloadNextShow();
 	}
 
-CShowInfo* CShowEngine::ShowDownloading()
+EXPORT_C CShowInfo* CShowEngine::ShowDownloading()
 	{
 	return iShowDownloading;
 	}
@@ -982,7 +982,7 @@ TInt CShowEngine::CompareShowsByTitle(const CShowInfo &a, const CShowInfo &b)
 		}
 	}
 
-void CShowEngine::DeletePlayedShows(RShowInfoArray &aShowInfoArray)
+EXPORT_C void CShowEngine::DeletePlayedShows(RShowInfoArray &aShowInfoArray)
 	{
 	for (TInt i = 0; i < aShowInfoArray.Count(); i++)
 		{
@@ -1023,7 +1023,7 @@ void CShowEngine::DeleteAllShowsByFeed(TUint aFeedUid, TBool aDeleteFiles)
 	DBDeleteAllShowsByFeed(aFeedUid);
 	}
 
-void CShowEngine::DeleteShow(TUint aShowUid, TBool aRemoveFile)
+EXPORT_C void CShowEngine::DeleteShow(TUint aShowUid, TBool aRemoveFile)
 	{
 
 	CShowInfo *info = DBGetShowByUid(aShowUid);
@@ -1071,7 +1071,7 @@ void CShowEngine::GetShowsDownloading(RShowInfoArray &aArray)
 	DBGetAllDownloads(aArray);
 	}
 
-TInt CShowEngine::GetNumDownloadingShowsL()
+EXPORT_C TInt CShowEngine::GetNumDownloadingShowsL()
 	{
 	return (const TInt) DBGetDownloadsCount();
 	}
@@ -1242,7 +1242,7 @@ void CShowEngine::ListDirL(TFileName &folder)
 	CleanupStack::PopAndDestroy(dirScan);
 	}
 
-void CShowEngine::CheckFilesL()
+EXPORT_C void CShowEngine::CheckFilesL()
 	{
 	// check to see if any downloaded files were removed
 
@@ -1285,7 +1285,7 @@ void CShowEngine::ReadMetaDataComplete()
 	MetaDataReader().SetIgnoreTrackNo(EFalse);
 	}
 
-void CShowEngine::UpdateShow(CShowInfo *aInfo)
+EXPORT_C void CShowEngine::UpdateShow(CShowInfo *aInfo)
 	{
 	DBUpdateShow(aInfo);
 	}

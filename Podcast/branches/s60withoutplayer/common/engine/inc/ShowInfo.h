@@ -29,52 +29,52 @@ enum TShowType {
 
 class CShowInfo: public CBase {
 public:
-	static CShowInfo* NewL(TUint aVersion=KShowInfoVersion);
+	IMPORT_C static CShowInfo* NewL(TUint aVersion=KShowInfoVersion);
 	~CShowInfo();
-	CShowInfo(CShowInfo *aInfo); // copy constructor
+	IMPORT_C CShowInfo(CShowInfo *aInfo); // copy constructor
 
 public:
-	const TDesC& Title() const;
-	void SetTitleL(const TDesC& aTitle);
+	IMPORT_C const TDesC& Title() const;
+	IMPORT_C void SetTitleL(const TDesC& aTitle);
 
-	const TDesC& Url() const;
-	void SetUrlL(const TDesC &aUrl);
+	IMPORT_C const TDesC& Url() const;
+	IMPORT_C void SetUrlL(const TDesC &aUrl);
 	
-	const TDesC& Description() const;
-	void SetDescriptionL(const TDesC &aDescription);
+	IMPORT_C const TDesC& Description() const;
+	IMPORT_C void SetDescriptionL(const TDesC &aDescription);
 		
-	TTimeIntervalMicroSeconds Position() const;
-	void SetPosition(TTimeIntervalMicroSeconds aPosition);
+	IMPORT_C TTimeIntervalMicroSeconds Position() const;
+	IMPORT_C void SetPosition(TTimeIntervalMicroSeconds aPosition);
 
-	TUint PlayTime() const;
-	void SetPlayTime(TUint aPlayTime);
+	IMPORT_C TUint PlayTime() const;
+	IMPORT_C void SetPlayTime(TUint aPlayTime);
 
-	TPlayState PlayState();
-	void SetPlayState(TPlayState aPlayState);
+	IMPORT_C TPlayState PlayState();
+	IMPORT_C void SetPlayState(TPlayState aPlayState);
 
-	TDownloadState DownloadState();
-	void SetDownloadState(TDownloadState aDownloadState);
+	IMPORT_C TDownloadState DownloadState();
+	IMPORT_C void SetDownloadState(TDownloadState aDownloadState);
 
-	TUint FeedUid();
-	void SetFeedUid(TUint aFeedUid);
+	IMPORT_C TUint FeedUid();
+	IMPORT_C void SetFeedUid(TUint aFeedUid);
 
-	void SetUid(TUint aUid);
-	TUint Uid() const;
+	IMPORT_C void SetUid(TUint aUid);
+	IMPORT_C TUint Uid() const;
 	
-	TUint ShowSize();
-	void SetShowSize(TUint aShowSize);
+	IMPORT_C TUint ShowSize();
+	IMPORT_C void SetShowSize(TUint aShowSize);
 	
-	const TTime PubDate() const;
-	void SetPubDate(TTime aPubDate);
+	IMPORT_C const TTime PubDate() const;
+	IMPORT_C void SetPubDate(TTime aPubDate);
 	
-	const TDesC &FileName() const;
-	void SetFileNameL(const TDesC &aFileName);
+	IMPORT_C const TDesC &FileName() const;
+	IMPORT_C void SetFileNameL(const TDesC &aFileName);
 	
-	void SetShowType(TShowType aShowType);
-	TShowType ShowType();
+	IMPORT_C void SetShowType(TShowType aShowType);
+	IMPORT_C TShowType ShowType();
 
-	void SetTrackNo(TUint aTrackNo);
-	TUint TrackNo() const;
+	IMPORT_C void SetTrackNo(TUint aTrackNo);
+	IMPORT_C TUint TrackNo() const;
 private:
 	CShowInfo();
 	void ConstructL();

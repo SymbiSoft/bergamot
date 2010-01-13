@@ -11,34 +11,42 @@ const TInt KFeedDescriptionLength=2048;
 class CFeedInfo : public CBase
 	{
 	public:
-		static CFeedInfo* NewL();
-		static CFeedInfo* NewLC();
+		IMPORT_C static CFeedInfo* NewL();
+		IMPORT_C static CFeedInfo* NewLC();
 	
 		~CFeedInfo();
 		
-		const TDesC& Url() const;
-		void SetUrlL(const TDesC &aUrl);
-		const TDesC& Title() const;
-		void SetTitleL(const TDesC &aTitle);
-		const TDesC& Description() const;
-		void SetDescriptionL(const TDesC &aDescription);
-		const TDesC& ImageUrl() const;
-		void SetImageUrlL(const TDesC &aImageUrl);
-		const TDesC& Link() const;
-		void SetLinkL(const TDesC &aLink);
-		TTime BuildDate();
-		void SetBuildDate(TTime aBuildDate);
-		TTime LastUpdated();
-		void SetLastUpdated(TTime aUpdated);
-		TUint Uid();
-		const TDesC& ImageFileName() const;
-		void SetImageFileNameL(const TDesC &aFileName);
+		IMPORT_C const TDesC& Url() const;
+		IMPORT_C void SetUrlL(const TDesC &aUrl);
+
+		IMPORT_C const TDesC& Title() const;
+		IMPORT_C void SetTitleL(const TDesC &aTitle);
+
+		IMPORT_C const TDesC& Description() const;
+		IMPORT_C void SetDescriptionL(const TDesC &aDescription);
+
+		IMPORT_C const TDesC& ImageUrl() const;
+		IMPORT_C void SetImageUrlL(const TDesC &aImageUrl);
+
+		IMPORT_C const TDesC& Link() const;
+		IMPORT_C void SetLinkL(const TDesC &aLink);
+
+		IMPORT_C TTime BuildDate();
+		IMPORT_C void SetBuildDate(TTime aBuildDate);
+
+		IMPORT_C TTime LastUpdated();
+		IMPORT_C void SetLastUpdated(TTime aUpdated);
+
+		IMPORT_C TUint Uid();
+
+		IMPORT_C const TDesC& ImageFileName() const;
+		IMPORT_C void SetImageFileNameL(const TDesC &aFileName);
 	
-		TBool IsBookFeed();
-		void SetIsBookFeed();
+		IMPORT_C TBool IsBookFeed();
+		IMPORT_C void SetIsBookFeed();
 		
-		void SetCustomTitle();
-		TBool CustomTitle();
+		IMPORT_C void SetCustomTitle();
+		IMPORT_C TBool CustomTitle();
 	private:
 		CFeedInfo();
 		void ConstructL();

@@ -1,5 +1,6 @@
-TARGET engine.lib
-TARGETTYPE lib
+TARGET podcastengine.dll
+TARGETTYPE DLL
+UID             0x1000008d 0xA11F867F
 
 SOURCEPATH ..\src
 USERINCLUDE ..\inc
@@ -13,7 +14,6 @@ SOURCE			FeedParser.cpp
 SOURCE			FeedEngine.cpp 
 SOURCE			ShowInfo.cpp
 SOURCE			SoundEngine.cpp
-SOURCE			PodCastModel.cpp 
 SOURCE			FeedInfo.cpp
 SOURCE			FeedTimer.cpp
 SOURCE			ShowEngine.cpp
@@ -23,5 +23,31 @@ SOURCE			TelephonyListener.cpp
 SOURCE			OpmlParser.cpp 
 SOURCE			RemoteControlListener.cpp
 SOURCE			PodcastUtils.cpp
+SOURCE			PodCastModel.cpp 
 
 MACRO S60
+
+CAPABILITY NetworkServices UserEnvironment
+STATICLIBRARY	sqlite.lib
+
+LIBRARY	euser.lib 
+LIBRARY	bafl.lib
+LIBRARY	efsrv.lib
+LIBRARY	etel3rdparty.lib
+LIBRARY	mediaclientaudio.lib
+LIBRARY	inetprotutil.lib
+LIBRARY	charconv.lib
+LIBRARY	xmlframework.lib
+LIBRARY	http.lib 
+LIBRARY	flogger.lib
+LIBRARY	ezlib.lib
+LIBRARY	estor.lib 
+LIBRARY	commdb.lib
+LIBRARY esock.lib
+LIBRARY mmfcontrollerframework.lib 
+LIBRARY apgrfx.lib
+LIBRARY estlib.lib
+LIBRARY remconcoreapi.lib
+LIBRARY remconinterfacebase.lib
+LIBRARY cone.lib
+LIBRARY apmime.lib 
