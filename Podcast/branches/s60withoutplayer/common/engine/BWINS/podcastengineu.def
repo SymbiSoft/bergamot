@@ -1,0 +1,287 @@
+EXPORTS
+	??0CShowInfo@@QAE@PAV0@@Z @ 1 NONAME ; CShowInfo::CShowInfo(class CShowInfo *)
+	??1CFeedInfo@@UAE@XZ @ 2 NONAME ; CFeedInfo::~CFeedInfo(void)
+	??1CPodcastModel@@UAE@XZ @ 3 NONAME ; CPodcastModel::~CPodcastModel(void)
+	??1CShowInfo@@UAE@XZ @ 4 NONAME ; CShowInfo::~CShowInfo(void)
+	?ActiveClientUid@CFeedEngine@@QAEIXZ @ 5 NONAME ; unsigned int CFeedEngine::ActiveClientUid(void)
+	?ActiveFeedInfo@CPodcastModel@@QAEPAVCFeedInfo@@XZ @ 6 NONAME ; class CFeedInfo * CPodcastModel::ActiveFeedInfo(void)
+	?ActiveShowList@CPodcastModel@@QAEAAV?$RPointerArray@VCShowInfo@@@@XZ @ 7 NONAME ; class RPointerArray<class CShowInfo> & CPodcastModel::ActiveShowList(void)
+	?AddBookChaptersL@CFeedEngine@@QAEXAAVCFeedInfo@@PAVCDesC16ArrayFlat@@@Z @ 8 NONAME ; void CFeedEngine::AddBookChaptersL(class CFeedInfo &, class CDesC16ArrayFlat *)
+	?AddBookL@CFeedEngine@@QAEXABVTDesC16@@PAVCDesC16ArrayFlat@@@Z @ 9 NONAME ; void CFeedEngine::AddBookL(class TDesC16 const &, class CDesC16ArrayFlat *)
+	?AddDownload@CShowEngine@@QAEXPAVCShowInfo@@@Z @ 10 NONAME ; void CShowEngine::AddDownload(class CShowInfo *)
+	?AddFeed@CFeedEngine@@QAEHPAVCFeedInfo@@@Z @ 11 NONAME ; int CFeedEngine::AddFeed(class CFeedInfo *)
+	?AddObserver@CFeedEngine@@QAEXPAVMFeedEngineObserver@@@Z @ 12 NONAME ; void CFeedEngine::AddObserver(class MFeedEngineObserver *)
+	?AddObserver@CShowEngine@@QAEXPAVMShowEngineObserver@@@Z @ 13 NONAME ; void CShowEngine::AddObserver(class MShowEngineObserver *)
+	?AddObserver@CSoundEngine@@QAEXPAVMSoundEngineObserver@@@Z @ 14 NONAME ; void CSoundEngine::AddObserver(class MSoundEngineObserver *)
+	?BaseDir@CSettingsEngine@@QAEAAV?$TBuf@$0BAA@@@XZ @ 15 NONAME ; class TBuf<256> & CSettingsEngine::BaseDir(void)
+	?BuildDate@CFeedInfo@@QAE?AVTTime@@XZ @ 16 NONAME ; class TTime CFeedInfo::BuildDate(void)
+	?CancelUpdateAllFeedsL@CFeedEngine@@QAEXXZ @ 17 NONAME ; void CFeedEngine::CancelUpdateAllFeedsL(void)
+	?CheckFilesL@CShowEngine@@QAEXXZ @ 18 NONAME ; void CShowEngine::CheckFilesL(void)
+	?ClientState@CFeedEngine@@QAE?AW4TClientState@@XZ @ 19 NONAME ; enum TClientState CFeedEngine::ClientState(void)
+	?CustomTitle@CFeedInfo@@QAEHXZ @ 20 NONAME ; int CFeedInfo::CustomTitle(void)
+	?DeleteAllShowsByFeed@CShowEngine@@QAEXIH@Z @ 21 NONAME ; void CShowEngine::DeleteAllShowsByFeed(unsigned int, int)
+	?DeletePlayedShows@CShowEngine@@QAEXAAV?$RPointerArray@VCShowInfo@@@@@Z @ 22 NONAME ; void CShowEngine::DeletePlayedShows(class RPointerArray<class CShowInfo> &)
+	?DeleteShow@CShowEngine@@QAEXIH@Z @ 23 NONAME ; void CShowEngine::DeleteShow(unsigned int, int)
+	?Description@CFeedInfo@@QBEABVTDesC16@@XZ @ 24 NONAME ; class TDesC16 const & CFeedInfo::Description(void) const
+	?Description@CShowInfo@@QBEABVTDesC16@@XZ @ 25 NONAME ; class TDesC16 const & CShowInfo::Description(void) const
+	?DownloadAutomatically@CSettingsEngine@@QAEHXZ @ 26 NONAME ; int CSettingsEngine::DownloadAutomatically(void)
+	?DownloadState@CShowInfo@@QAE?AW4TDownloadState@@XZ @ 27 NONAME ; enum TDownloadState CShowInfo::DownloadState(void)
+	?DownloadsStopped@CShowEngine@@QAEHXZ @ 28 NONAME ; int CShowEngine::DownloadsStopped(void)
+	?ExportFeedsL@CFeedEngine@@QAEHAAV?$TBuf@$0BAA@@@@Z @ 29 NONAME ; int CFeedEngine::ExportFeedsL(class TBuf<256> &)
+	?FeedEngine@CPodcastModel@@QAEAAVCFeedEngine@@XZ @ 30 NONAME ; class CFeedEngine & CPodcastModel::FeedEngine(void)
+	?FeedUid@CShowInfo@@QAEIXZ @ 31 NONAME ; unsigned int CShowInfo::FeedUid(void)
+	?FileName@CShowInfo@@QBEABVTDesC16@@XZ @ 32 NONAME ; class TDesC16 const & CShowInfo::FileName(void) const
+	?FixProtocolsL@PodcastUtils@@SAXAAVTDes16@@@Z @ 33 NONAME ; void PodcastUtils::FixProtocolsL(class TDes16 &)
+	?GetAllShows@CPodcastModel@@QAEXXZ @ 34 NONAME ; void CPodcastModel::GetAllShows(void)
+	?GetDownloadedStats@CFeedEngine@@QAEXAAI0@Z @ 35 NONAME ; void CFeedEngine::GetDownloadedStats(unsigned int &, unsigned int &)
+	?GetFeedInfoByUid@CFeedEngine@@QAEPAVCFeedInfo@@I@Z @ 36 NONAME ; class CFeedInfo * CFeedEngine::GetFeedInfoByUid(unsigned int)
+	?GetMimeType@CShowEngine@@QAEXABVTDesC16@@AAVTDes16@@@Z @ 37 NONAME ; void CShowEngine::GetMimeType(class TDesC16 const &, class TDes16 &)
+	?GetNewShows@CPodcastModel@@QAEXXZ @ 38 NONAME ; void CPodcastModel::GetNewShows(void)
+	?GetNumDownloadingShowsL@CShowEngine@@QAEHXZ @ 39 NONAME ; int CShowEngine::GetNumDownloadingShowsL(void)
+	?GetShowByUidL@CShowEngine@@QAEPAVCShowInfo@@I@Z @ 40 NONAME ; class CShowInfo * CShowEngine::GetShowByUidL(unsigned int)
+	?GetShowsByFeed@CPodcastModel@@QAEXI@Z @ 41 NONAME ; void CPodcastModel::GetShowsByFeed(unsigned int)
+	?GetShowsDownloaded@CPodcastModel@@QAEXXZ @ 42 NONAME ; void CPodcastModel::GetShowsDownloaded(void)
+	?GetShowsDownloading@CPodcastModel@@QAEXXZ @ 43 NONAME ; void CPodcastModel::GetShowsDownloading(void)
+	?GetSortedBooks@CFeedEngine@@QAEABV?$RPointerArray@VCFeedInfo@@@@XZ @ 44 NONAME ; class RPointerArray<class CFeedInfo> const & CFeedEngine::GetSortedBooks(void)
+	?GetSortedFeeds@CFeedEngine@@QAEABV?$RPointerArray@VCFeedInfo@@@@XZ @ 45 NONAME ; class RPointerArray<class CFeedInfo> const & CFeedEngine::GetSortedFeeds(void)
+	?GetStatsByFeed@CFeedEngine@@QAEXIAAI0H@Z @ 46 NONAME ; void CFeedEngine::GetStatsByFeed(unsigned int, unsigned int &, unsigned int &, int)
+	?IAPIds@CPodcastModel@@QAEAAV?$RArray@VTPodcastIAPItem@@@@XZ @ 47 NONAME ; class RArray<class TPodcastIAPItem> & CPodcastModel::IAPIds(void)
+	?IAPNames@CPodcastModel@@QAEPAVCDesC16ArrayFlat@@XZ @ 48 NONAME ; class CDesC16ArrayFlat * CPodcastModel::IAPNames(void)
+	?ImageFileName@CFeedInfo@@QBEABVTDesC16@@XZ @ 49 NONAME ; class TDesC16 const & CFeedInfo::ImageFileName(void) const
+	?ImageUrl@CFeedInfo@@QBEABVTDesC16@@XZ @ 50 NONAME ; class TDesC16 const & CFeedInfo::ImageUrl(void) const
+	?ImportBookL@CFeedEngine@@QAEXABVTDesC16@@0@Z @ 51 NONAME ; void CFeedEngine::ImportBookL(class TDesC16 const &, class TDesC16 const &)
+	?ImportFeedsL@CFeedEngine@@QAEXABVTDesC16@@@Z @ 52 NONAME ; void CFeedEngine::ImportFeedsL(class TDesC16 const &)
+	?IsBookFeed@CFeedInfo@@QAEHXZ @ 53 NONAME ; int CFeedInfo::IsBookFeed(void)
+	?LastUpdated@CFeedInfo@@QAE?AVTTime@@XZ @ 54 NONAME ; class TTime CFeedInfo::LastUpdated(void)
+	?Link@CFeedInfo@@QBEABVTDesC16@@XZ @ 55 NONAME ; class TDesC16 const & CFeedInfo::Link(void) const
+	?MarkSelectionPlayed@CPodcastModel@@QAEXXZ @ 56 NONAME ; void CPodcastModel::MarkSelectionPlayed(void)
+	?MaxSimultaneousDownloads@CSettingsEngine@@QAEHXZ @ 57 NONAME ; int CSettingsEngine::MaxSimultaneousDownloads(void)
+	?NewL@CFeedInfo@@SAPAV1@XZ @ 58 NONAME ; class CFeedInfo * CFeedInfo::NewL(void)
+	?NewL@CPodcastModel@@SAPAV1@XZ @ 59 NONAME ; class CPodcastModel * CPodcastModel::NewL(void)
+	?NewL@CShowInfo@@SAPAV1@I@Z @ 60 NONAME ; class CShowInfo * CShowInfo::NewL(unsigned int)
+	?NewLC@CFeedInfo@@SAPAV1@XZ @ 61 NONAME ; class CFeedInfo * CFeedInfo::NewLC(void)
+	?Pause@CSoundEngine@@QAEXH@Z @ 62 NONAME ; void CSoundEngine::Pause(int)
+	?Play@CSoundEngine@@QAEXXZ @ 63 NONAME ; void CSoundEngine::Play(void)
+	?PlayPausePodcastL@CPodcastModel@@QAEXPAVCShowInfo@@H@Z @ 64 NONAME ; void CPodcastModel::PlayPausePodcastL(class CShowInfo *, int)
+	?PlayState@CShowInfo@@QAE?AW4TPlayState@@XZ @ 65 NONAME ; enum TPlayState CShowInfo::PlayState(void)
+	?PlayTime@CShowInfo@@QBEIXZ @ 66 NONAME ; unsigned int CShowInfo::PlayTime(void) const
+	?PlayTime@CSoundEngine@@QAEIXZ @ 67 NONAME ; unsigned int CSoundEngine::PlayTime(void)
+	?PlayingPodcast@CPodcastModel@@QAEPAVCShowInfo@@XZ @ 68 NONAME ; class CShowInfo * CPodcastModel::PlayingPodcast(void)
+	?Position@CShowInfo@@QBE?AVTTimeIntervalMicroSeconds@@XZ @ 69 NONAME ; class TTimeIntervalMicroSeconds CShowInfo::Position(void) const
+	?Position@CSoundEngine@@QAE?AVTTimeIntervalMicroSeconds@@XZ @ 70 NONAME ; class TTimeIntervalMicroSeconds CSoundEngine::Position(void)
+	?PubDate@CShowInfo@@QBE?BVTTime@@XZ @ 71 NONAME ; class TTime const CShowInfo::PubDate(void) const
+	?RemoveAllDownloads@CShowEngine@@QAEXXZ @ 72 NONAME ; void CShowEngine::RemoveAllDownloads(void)
+	?RemoveBookL@CFeedEngine@@QAEXI@Z @ 73 NONAME ; void CFeedEngine::RemoveBookL(unsigned int)
+	?RemoveDownload@CShowEngine@@QAEHI@Z @ 74 NONAME ; int CShowEngine::RemoveDownload(unsigned int)
+	?RemoveFeed@CFeedEngine@@QAEXI@Z @ 75 NONAME ; void CFeedEngine::RemoveFeed(unsigned int)
+	?RemoveObserver@CFeedEngine@@QAEXPAVMFeedEngineObserver@@@Z @ 76 NONAME ; void CFeedEngine::RemoveObserver(class MFeedEngineObserver *)
+	?RemoveObserver@CShowEngine@@QAEXPAVMShowEngineObserver@@@Z @ 77 NONAME ; void CShowEngine::RemoveObserver(class MShowEngineObserver *)
+	?ResumeDownloads@CShowEngine@@QAEXXZ @ 78 NONAME ; void CShowEngine::ResumeDownloads(void)
+	?SaveSettingsL@CSettingsEngine@@QAEXXZ @ 79 NONAME ; void CSettingsEngine::SaveSettingsL(void)
+	?SeekStepTime@CSettingsEngine@@QAEHXZ @ 80 NONAME ; int CSettingsEngine::SeekStepTime(void)
+	?SelectUnplayedOnly@CSettingsEngine@@QAEHXZ @ 81 NONAME ; int CSettingsEngine::SelectUnplayedOnly(void)
+	?SetActiveFeedInfo@CPodcastModel@@QAEXPAVCFeedInfo@@@Z @ 82 NONAME ; void CPodcastModel::SetActiveFeedInfo(class CFeedInfo *)
+	?SetBaseDir@CSettingsEngine@@QAEXAAV?$TBuf@$0BAA@@@@Z @ 83 NONAME ; void CSettingsEngine::SetBaseDir(class TBuf<256> &)
+	?SetBuildDate@CFeedInfo@@QAEXVTTime@@@Z @ 84 NONAME ; void CFeedInfo::SetBuildDate(class TTime)
+	?SetCustomTitle@CFeedInfo@@QAEXXZ @ 85 NONAME ; void CFeedInfo::SetCustomTitle(void)
+	?SetDescriptionL@CFeedInfo@@QAEXABVTDesC16@@@Z @ 86 NONAME ; void CFeedInfo::SetDescriptionL(class TDesC16 const &)
+	?SetDescriptionL@CShowInfo@@QAEXABVTDesC16@@@Z @ 87 NONAME ; void CShowInfo::SetDescriptionL(class TDesC16 const &)
+	?SetDownloadAutomatically@CSettingsEngine@@QAEXH@Z @ 88 NONAME ; void CSettingsEngine::SetDownloadAutomatically(int)
+	?SetDownloadState@CShowInfo@@QAEXW4TDownloadState@@@Z @ 89 NONAME ; void CShowInfo::SetDownloadState(enum TDownloadState)
+	?SetFeedUid@CShowInfo@@QAEXI@Z @ 90 NONAME ; void CShowInfo::SetFeedUid(unsigned int)
+	?SetFileNameL@CShowInfo@@QAEXABVTDesC16@@@Z @ 91 NONAME ; void CShowInfo::SetFileNameL(class TDesC16 const &)
+	?SetIap@CPodcastModel@@QAEXH@Z @ 92 NONAME ; void CPodcastModel::SetIap(int)
+	?SetImageFileNameL@CFeedInfo@@QAEXABVTDesC16@@@Z @ 93 NONAME ; void CFeedInfo::SetImageFileNameL(class TDesC16 const &)
+	?SetImageUrlL@CFeedInfo@@QAEXABVTDesC16@@@Z @ 94 NONAME ; void CFeedInfo::SetImageUrlL(class TDesC16 const &)
+	?SetIsBookFeed@CFeedInfo@@QAEXXZ @ 95 NONAME ; void CFeedInfo::SetIsBookFeed(void)
+	?SetLastUpdated@CFeedInfo@@QAEXVTTime@@@Z @ 96 NONAME ; void CFeedInfo::SetLastUpdated(class TTime)
+	?SetLinkL@CFeedInfo@@QAEXABVTDesC16@@@Z @ 97 NONAME ; void CFeedInfo::SetLinkL(class TDesC16 const &)
+	?SetMaxSimultaneousDownloads@CSettingsEngine@@QAEXH@Z @ 98 NONAME ; void CSettingsEngine::SetMaxSimultaneousDownloads(int)
+	?SetPlayState@CShowInfo@@QAEXW4TPlayState@@@Z @ 99 NONAME ; void CShowInfo::SetPlayState(enum TPlayState)
+	?SetPlayTime@CShowInfo@@QAEXI@Z @ 100 NONAME ; void CShowInfo::SetPlayTime(unsigned int)
+	?SetPlayingPodcast@CPodcastModel@@QAEXPAVCShowInfo@@@Z @ 101 NONAME ; void CPodcastModel::SetPlayingPodcast(class CShowInfo *)
+	?SetPosition@CShowInfo@@QAEXVTTimeIntervalMicroSeconds@@@Z @ 102 NONAME ; void CShowInfo::SetPosition(class TTimeIntervalMicroSeconds)
+	?SetPosition@CSoundEngine@@QAEXI@Z @ 103 NONAME ; void CSoundEngine::SetPosition(unsigned int)
+	?SetPubDate@CShowInfo@@QAEXVTTime@@@Z @ 104 NONAME ; void CShowInfo::SetPubDate(class TTime)
+	?SetSeekStepTimek@CSettingsEngine@@QAEXH@Z @ 105 NONAME ; void CSettingsEngine::SetSeekStepTimek(int)
+	?SetSelectUnplayedOnly@CSettingsEngine@@QAEXH@Z @ 106 NONAME ; void CSettingsEngine::SetSelectUnplayedOnly(int)
+	?SetShowSize@CShowInfo@@QAEXI@Z @ 107 NONAME ; void CShowInfo::SetShowSize(unsigned int)
+	?SetShowType@CShowInfo@@QAEXW4TShowType@@@Z @ 108 NONAME ; void CShowInfo::SetShowType(enum TShowType)
+	?SetSpecificIAP@CSettingsEngine@@QAEXH@Z @ 109 NONAME ; void CSettingsEngine::SetSpecificIAP(int)
+	?SetTitleL@CFeedInfo@@QAEXABVTDesC16@@@Z @ 110 NONAME ; void CFeedInfo::SetTitleL(class TDesC16 const &)
+	?SetTitleL@CShowInfo@@QAEXABVTDesC16@@@Z @ 111 NONAME ; void CShowInfo::SetTitleL(class TDesC16 const &)
+	?SetTrackNo@CShowInfo@@QAEXI@Z @ 112 NONAME ; void CShowInfo::SetTrackNo(unsigned int)
+	?SetUid@CShowInfo@@QAEXI@Z @ 113 NONAME ; void CShowInfo::SetUid(unsigned int)
+	?SetUpdateAutomatically@CSettingsEngine@@QAEXW4TAutoUpdateSetting@@@Z @ 114 NONAME ; void CSettingsEngine::SetUpdateAutomatically(enum TAutoUpdateSetting)
+	?SetUpdateFeedInterval@CSettingsEngine@@QAEXH@Z @ 115 NONAME ; void CSettingsEngine::SetUpdateFeedInterval(int)
+	?SetUpdateFeedTime@CSettingsEngine@@QAEXVTTime@@@Z @ 116 NONAME ; void CSettingsEngine::SetUpdateFeedTime(class TTime)
+	?SetUrlL@CFeedInfo@@QAEXABVTDesC16@@@Z @ 117 NONAME ; void CFeedInfo::SetUrlL(class TDesC16 const &)
+	?SetUrlL@CShowInfo@@QAEXABVTDesC16@@@Z @ 118 NONAME ; void CShowInfo::SetUrlL(class TDesC16 const &)
+	?SettingsEngine@CPodcastModel@@QAEAAVCSettingsEngine@@XZ @ 119 NONAME ; class CSettingsEngine & CPodcastModel::SettingsEngine(void)
+	?ShowDownloading@CShowEngine@@QAEPAVCShowInfo@@XZ @ 120 NONAME ; class CShowInfo * CShowEngine::ShowDownloading(void)
+	?ShowEngine@CPodcastModel@@QAEAAVCShowEngine@@XZ @ 121 NONAME ; class CShowEngine & CPodcastModel::ShowEngine(void)
+	?ShowSize@CShowInfo@@QAEIXZ @ 122 NONAME ; unsigned int CShowInfo::ShowSize(void)
+	?ShowType@CShowInfo@@QAE?AW4TShowType@@XZ @ 123 NONAME ; enum TShowType CShowInfo::ShowType(void)
+	?SoundEngine@CPodcastModel@@QAEAAVCSoundEngine@@XZ @ 124 NONAME ; class CSoundEngine & CPodcastModel::SoundEngine(void)
+	?SpecificIAP@CSettingsEngine@@QAEHXZ @ 125 NONAME ; int CSettingsEngine::SpecificIAP(void)
+	?State@CSoundEngine@@QAE?AW4TSoundEngineState@@XZ @ 126 NONAME ; enum TSoundEngineState CSoundEngine::State(void)
+	?Stop@CSoundEngine@@QAEXH@Z @ 127 NONAME ; void CSoundEngine::Stop(int)
+	?StopDownloads@CShowEngine@@QAEXXZ @ 128 NONAME ; void CShowEngine::StopDownloads(void)
+	?Title@CFeedInfo@@QBEABVTDesC16@@XZ @ 129 NONAME ; class TDesC16 const & CFeedInfo::Title(void) const
+	?Title@CShowInfo@@QBEABVTDesC16@@XZ @ 130 NONAME ; class TDesC16 const & CShowInfo::Title(void) const
+	?TrackNo@CShowInfo@@QBEIXZ @ 131 NONAME ; unsigned int CShowInfo::TrackNo(void) const
+	?Uid@CFeedInfo@@QAEIXZ @ 132 NONAME ; unsigned int CFeedInfo::Uid(void)
+	?Uid@CShowInfo@@QBEIXZ @ 133 NONAME ; unsigned int CShowInfo::Uid(void) const
+	?UpdateAllFeedsL@CFeedEngine@@QAEXXZ @ 134 NONAME ; void CFeedEngine::UpdateAllFeedsL(void)
+	?UpdateAutomatically@CSettingsEngine@@QAE?AW4TAutoUpdateSetting@@XZ @ 135 NONAME ; enum TAutoUpdateSetting CSettingsEngine::UpdateAutomatically(void)
+	?UpdateFeed@CFeedEngine@@QAEXPAVCFeedInfo@@@Z @ 136 NONAME ; void CFeedEngine::UpdateFeed(class CFeedInfo *)
+	?UpdateFeedInterval@CSettingsEngine@@QAEHXZ @ 137 NONAME ; int CSettingsEngine::UpdateFeedInterval(void)
+	?UpdateFeedL@CFeedEngine@@QAEHI@Z @ 138 NONAME ; int CFeedEngine::UpdateFeedL(unsigned int)
+	?UpdateFeedTime@CSettingsEngine@@QAE?AVTTime@@XZ @ 139 NONAME ; class TTime CSettingsEngine::UpdateFeedTime(void)
+	?UpdateShow@CShowEngine@@QAEXPAVCShowInfo@@@Z @ 140 NONAME ; void CShowEngine::UpdateShow(class CShowInfo *)
+	?Url@CFeedInfo@@QBEABVTDesC16@@XZ @ 141 NONAME ; class TDesC16 const & CFeedInfo::Url(void) const
+	?Url@CShowInfo@@QBEABVTDesC16@@XZ @ 142 NONAME ; class TDesC16 const & CShowInfo::Url(void) const
+	?VolumeDown@CSoundEngine@@QAEXXZ @ 143 NONAME ; void CSoundEngine::VolumeDown(void)
+	?VolumeUp@CSoundEngine@@QAEXXZ @ 144 NONAME ; void CSoundEngine::VolumeUp(void)
+	sqlite3_aggregate_context @ 145 NONAME
+	sqlite3_aggregate_count @ 146 NONAME
+	sqlite3_auto_extension @ 147 NONAME
+	sqlite3_bind_blob @ 148 NONAME
+	sqlite3_bind_double @ 149 NONAME
+	sqlite3_bind_int @ 150 NONAME
+	sqlite3_bind_int64 @ 151 NONAME
+	sqlite3_bind_null @ 152 NONAME
+	sqlite3_bind_parameter_count @ 153 NONAME
+	sqlite3_bind_parameter_index @ 154 NONAME
+	sqlite3_bind_parameter_name @ 155 NONAME
+	sqlite3_bind_text @ 156 NONAME
+	sqlite3_bind_text16 @ 157 NONAME
+	sqlite3_bind_value @ 158 NONAME
+	sqlite3_bind_zeroblob @ 159 NONAME
+	sqlite3_blob_bytes @ 160 NONAME
+	sqlite3_blob_close @ 161 NONAME
+	sqlite3_blob_open @ 162 NONAME
+	sqlite3_blob_read @ 163 NONAME
+	sqlite3_blob_write @ 164 NONAME
+	sqlite3_busy_handler @ 165 NONAME
+	sqlite3_busy_timeout @ 166 NONAME
+	sqlite3_changes @ 167 NONAME
+	sqlite3_clear_bindings @ 168 NONAME
+	sqlite3_close @ 169 NONAME
+	sqlite3_collation_needed @ 170 NONAME
+	sqlite3_collation_needed16 @ 171 NONAME
+	sqlite3_column_blob @ 172 NONAME
+	sqlite3_column_bytes @ 173 NONAME
+	sqlite3_column_bytes16 @ 174 NONAME
+	sqlite3_column_count @ 175 NONAME
+	sqlite3_column_decltype @ 176 NONAME
+	sqlite3_column_decltype16 @ 177 NONAME
+	sqlite3_column_double @ 178 NONAME
+	sqlite3_column_int @ 179 NONAME
+	sqlite3_column_int64 @ 180 NONAME
+	sqlite3_column_name @ 181 NONAME
+	sqlite3_column_name16 @ 182 NONAME
+	sqlite3_column_text @ 183 NONAME
+	sqlite3_column_text16 @ 184 NONAME
+	sqlite3_column_type @ 185 NONAME
+	sqlite3_column_value @ 186 NONAME
+	sqlite3_commit_hook @ 187 NONAME
+	sqlite3_complete @ 188 NONAME
+	sqlite3_complete16 @ 189 NONAME
+	sqlite3_create_collation @ 190 NONAME
+	sqlite3_create_collation16 @ 191 NONAME
+	sqlite3_create_collation_v2 @ 192 NONAME
+	sqlite3_create_function @ 193 NONAME
+	sqlite3_create_function16 @ 194 NONAME
+	sqlite3_create_module @ 195 NONAME
+	sqlite3_create_module_v2 @ 196 NONAME
+	sqlite3_data_count @ 197 NONAME
+	sqlite3_db_handle @ 198 NONAME
+	sqlite3_declare_vtab @ 199 NONAME
+	sqlite3_enable_load_extension @ 200 NONAME
+	sqlite3_enable_shared_cache @ 201 NONAME
+	sqlite3_errcode @ 202 NONAME
+	sqlite3_errmsg @ 203 NONAME
+	sqlite3_errmsg16 @ 204 NONAME
+	sqlite3_exec @ 205 NONAME
+	sqlite3_expired @ 206 NONAME
+	sqlite3_extended_result_codes @ 207 NONAME
+	sqlite3_file_control @ 208 NONAME
+	sqlite3_finalize @ 209 NONAME
+	sqlite3_free @ 210 NONAME
+	sqlite3_free_table @ 211 NONAME
+	sqlite3_get_autocommit @ 212 NONAME
+	sqlite3_get_auxdata @ 213 NONAME
+	sqlite3_get_table @ 214 NONAME
+	sqlite3_global_recover @ 215 NONAME
+	sqlite3_interrupt @ 216 NONAME
+	sqlite3_last_insert_rowid @ 217 NONAME
+	sqlite3_libversion @ 218 NONAME
+	sqlite3_libversion_number @ 219 NONAME
+	sqlite3_load_extension @ 220 NONAME
+	sqlite3_malloc @ 221 NONAME
+	sqlite3_memory_alarm @ 222 NONAME
+	sqlite3_memory_highwater @ 223 NONAME
+	sqlite3_memory_used @ 224 NONAME
+	sqlite3_mprintf @ 225 NONAME
+	sqlite3_open @ 226 NONAME
+	sqlite3_open16 @ 227 NONAME
+	sqlite3_open_v2 @ 228 NONAME
+	sqlite3_overload_function @ 229 NONAME
+	sqlite3_prepare @ 230 NONAME
+	sqlite3_prepare16 @ 231 NONAME
+	sqlite3_prepare16_v2 @ 232 NONAME
+	sqlite3_prepare_v2 @ 233 NONAME
+	sqlite3_profile @ 234 NONAME
+	sqlite3_progress_handler @ 235 NONAME
+	sqlite3_realloc @ 236 NONAME
+	sqlite3_release_memory @ 237 NONAME
+	sqlite3_reset @ 238 NONAME
+	sqlite3_reset_auto_extension @ 239 NONAME
+	sqlite3_result_blob @ 240 NONAME
+	sqlite3_result_double @ 241 NONAME
+	sqlite3_result_error @ 242 NONAME
+	sqlite3_result_error16 @ 243 NONAME
+	sqlite3_result_error_nomem @ 244 NONAME
+	sqlite3_result_error_toobig @ 245 NONAME
+	sqlite3_result_int @ 246 NONAME
+	sqlite3_result_int64 @ 247 NONAME
+	sqlite3_result_null @ 248 NONAME
+	sqlite3_result_text @ 249 NONAME
+	sqlite3_result_text16 @ 250 NONAME
+	sqlite3_result_text16be @ 251 NONAME
+	sqlite3_result_text16le @ 252 NONAME
+	sqlite3_result_value @ 253 NONAME
+	sqlite3_result_zeroblob @ 254 NONAME
+	sqlite3_rollback_hook @ 255 NONAME
+	sqlite3_set_authorizer @ 256 NONAME
+	sqlite3_set_auxdata @ 257 NONAME
+	sqlite3_sleep @ 258 NONAME
+	sqlite3_snprintf @ 259 NONAME
+	sqlite3_soft_heap_limit @ 260 NONAME
+	sqlite3_sql @ 261 NONAME
+	sqlite3_step @ 262 NONAME
+	sqlite3_thread_cleanup @ 263 NONAME
+	sqlite3_threadsafe @ 264 NONAME
+	sqlite3_total_changes @ 265 NONAME
+	sqlite3_trace @ 266 NONAME
+	sqlite3_transfer_bindings @ 267 NONAME
+	sqlite3_update_hook @ 268 NONAME
+	sqlite3_user_data @ 269 NONAME
+	sqlite3_value_blob @ 270 NONAME
+	sqlite3_value_bytes @ 271 NONAME
+	sqlite3_value_bytes16 @ 272 NONAME
+	sqlite3_value_double @ 273 NONAME
+	sqlite3_value_int @ 274 NONAME
+	sqlite3_value_int64 @ 275 NONAME
+	sqlite3_value_numeric_type @ 276 NONAME
+	sqlite3_value_text @ 277 NONAME
+	sqlite3_value_text16 @ 278 NONAME
+	sqlite3_value_text16be @ 279 NONAME
+	sqlite3_value_text16le @ 280 NONAME
+	sqlite3_value_type @ 281 NONAME
+	sqlite3_vfs_find @ 282 NONAME
+	sqlite3_vfs_register @ 283 NONAME
+	sqlite3_vfs_unregister @ 284 NONAME
+	sqlite3_vmprintf @ 285 NONAME
+

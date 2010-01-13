@@ -35,7 +35,7 @@ CShowEngine* CShowEngine::NewL(CPodcastModel& aPodcastModel)
 	return self;
 	}
 
-IMPORT_C void CShowEngine::GetMimeType(const TDesC& aFileName, TDes& aMimeType)
+EXPORT_C void CShowEngine::GetMimeType(const TDesC& aFileName, TDes& aMimeType)
 	{
 	aMimeType.Zero();
 	RFile file;
