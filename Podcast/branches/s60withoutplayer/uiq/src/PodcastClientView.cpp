@@ -13,7 +13,6 @@
 #include "PodcastClient.hrh"
 #include "PodcastClientView.h"
 #include "PodcastClientGlobals.h"
-#include "SoundEngine.h"
 #include "PodcastClientSettingsDlg.h"
 #include "PodcastClientFeedView.h"
 #include "SettingsEngine.h"

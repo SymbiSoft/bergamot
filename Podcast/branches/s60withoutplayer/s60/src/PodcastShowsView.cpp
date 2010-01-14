@@ -7,10 +7,8 @@
 
 #include "PodcastShowsView.h"
 #include "PodcastAppUi.h"
-#include "PodcastPlayView.h"
 #include "ShowEngine.h"
 #include "SettingsEngine.h"
-#include "SoundEngine.h"
 #include "PodcastApp.h"
 #include "Constants.h"
 #include <aknnavide.h> 
@@ -270,8 +268,9 @@ void CPodcastShowsView::HandleListBoxEventL(CEikListBox* /*aListBox*/,
 
 				TPckgBuf<TInt> showUid;
 				showUid() = fItems[index]->Uid();
-				AppUi()->ActivateLocalViewL(KUidPodcastPlayViewID,
-						TUid::Uid(KActiveShowUIDCmd), showUid);
+#pragma message("LAPER Replace activate playview with activate playback in mpx")
+			/*	AppUi()->ActivateLocalViewL(KUidPodcastPlayViewID,
+						TUid::Uid(KActiveShowUIDCmd), showUid);*/
 				}
 			}
 			break;
@@ -285,8 +284,9 @@ void CPodcastShowsView::GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex)
 	TBool dlStop = iPodcastModel.ShowEngine().DownloadsStopped();
 	TUint showDownloadingUid = iPodcastModel.ShowEngine().ShowDownloading() ? iPodcastModel.ShowEngine().ShowDownloading()->Uid() : 0;
 	TUint showPlayingUid = iPodcastModel.PlayingPodcast() ? iPodcastModel.PlayingPodcast()->Uid() : 0;
-	TBool playingOrPaused = iPodcastModel.SoundEngine().State() == ESoundEnginePlaying || 
-							iPodcastModel.SoundEngine().State() == ESoundEnginePaused;
+	TBool playingOrPaused = EFalse;/*iPodcastModel.SoundEngine().State() == ESoundEnginePlaying || 
+							iPodcastModel.SoundEngine().State() == ESoundEnginePaused;*/
+#pragma message("LAPER Need to rework playing api if it should still exist")
 	
 	if (aShowInfo->ShowType() == EAudioBook)
 		{
@@ -728,11 +728,11 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 
 			if (index >= 0 && index < iPodcastModel.ActiveShowList().Count())
 				{
-				if (iPodcastModel.PlayingPodcast()
+			/*	if (iPodcastModel.PlayingPodcast()
 						== iPodcastModel.ActiveShowList()[index] && iPodcastModel.SoundEngine().State() != ESoundEngineNotInitialized)
 					{
 					iPodcastModel.SoundEngine().Stop();
-					}
+					}*/
 
 				TBool isBook = (iPodcastModel.ActiveShowList()[index]->ShowType() == EAudioBook);
 				if (iEikonEnv->QueryWinL(isBook?R_PODCAST_REMOVE_CHAPTER_TITLE:R_PODCAST_DELETE_SHOW_TITLE,
@@ -895,8 +895,8 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 					}
 					
 					removeDeleteShowCmd = fItems[index]->DownloadState() != EDownloaded || updatingState || 
-						(iPodcastModel.PlayingPodcast() != NULL && fItems[index] == iPodcastModel.PlayingPodcast() && iPodcastModel.SoundEngine().State() == ESoundEnginePlaying);
-					
+						(iPodcastModel.PlayingPodcast() != NULL && fItems[index] == iPodcastModel.PlayingPodcast() /*&& iPodcastModel.SoundEngine().State() == ESoundEnginePlaying*/);
+#pragma message("LAPER FIX SOUNDENGINE HANDLING HERE")
 					if(fItems[index]->DownloadState() == ENotDownloaded)
 					{
 						removeDownloadShowCmd = EFalse;

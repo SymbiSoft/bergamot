@@ -247,7 +247,8 @@ void CPodcastMainView::HandleListBoxEventL(CEikListBox* /*aListBox*/, TListBoxEv
 			case 0:
 				if(iPodcastModel.PlayingPodcast() != NULL && (iPodcastModel.SoundEngine().State() == ESoundEnginePlaying || iPodcastModel.SoundEngine().State() == ESoundEnginePaused))
 					{
-					newview = KUidPodcastPlayViewID;
+#pragma message("LAPER GOTO MPX playview here!!")
+					//newview = KUidPodcastPlayViewID;
 					}
 				break;
 			case 1:

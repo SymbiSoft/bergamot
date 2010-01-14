@@ -10,8 +10,6 @@
 #include "FeedEngine.h"
 #include "ShowEngine.h"
 #include "SettingsEngine.h"
-#include "SoundEngine.h"
-#include "PodcastPlayView.h"
 #include "PodcastApp.h"
 #include "PodcastUtils.h"
 #include <caknfileselectiondialog.h>
@@ -807,7 +805,10 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 
 					TPckgBuf<TInt> showUid;
 					showUid() = startShow->Uid();
-					AppUi()->ActivateLocalViewL(KUidPodcastPlayViewID, TUid::Uid(KActiveShowUIDCmd), showUid);											
+					/*
+					AppUi()->ActivateLocalViewL(KUidPodcastPlayViewID, TUid::Uid(KActiveShowUIDCmd), showUid);
+					*/
+#pragma message("LAPER Handle MPX activate here. Or in themodel perhaps??")
 					iPodcastModel.PlayPausePodcastL(startShow, ETrue);
 					}
 
@@ -817,7 +818,8 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			break;
 		case EPodcastPauseAudioBook:
 			{
-			iPodcastModel.SoundEngine().Pause();			
+#pragma message("LAPER Handle MPX activate here. Or in themodel perhaps??")
+			//iPodcastModel.SoundEngine().Pause();			
 			}
 			break;
 		case EPodcastAddNewAudioBook:
@@ -938,8 +940,8 @@ void CPodcastFeedView::DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane
 		aMenuPane->SetItemDimmed(EPodcastAddFeed, (isBookMode||iUpdatingAllRunning));
 		aMenuPane->SetItemDimmed(EPodcastImportFeeds, (isBookMode||iUpdatingAllRunning));
 		aMenuPane->SetItemDimmed(EPodcastExportFeeds, (isBookMode||iUpdatingAllRunning));
-		
-		TBool playingThisBook = (iPodcastModel.PlayingPodcast() != NULL) && (sortedItems != NULL && sortedItems->Count() > 0) && (iPodcastModel.PlayingPodcast()->FeedUid() == (*sortedItems)[index]->Uid()) && iPodcastModel.SoundEngine().State() == ESoundEnginePlaying;
+#pragma message("LAPER Handle MPX activate here. Or in themodel perhaps??")
+		TBool playingThisBook = EFalse;//(iPodcastModel.PlayingPodcast() != NULL) && (sortedItems != NULL && sortedItems->Count() > 0) && (iPodcastModel.PlayingPodcast()->FeedUid() == (*sortedItems)[index]->Uid()) && iPodcastModel.SoundEngine().State() == ESoundEnginePlaying;
 		aMenuPane->SetItemDimmed(EPodcastPlayAudioBook, !(isBookMode && cnt && !playingThisBook));
 		aMenuPane->SetItemDimmed(EPodcastPauseAudioBook, !(isBookMode && cnt && playingThisBook));
 		
@@ -979,9 +981,7 @@ void CPodcastFeedView::HandleAddNewAudioBookL()
 		CDesCArrayFlat* fileNameArray = new (ELeave) CDesCArrayFlat(KDefaultGran);
 
 		if(dlg->ExecuteL(importName))
-			{
-			RFs fs;
-			fs.Connect();
+			{			
 			CDirScan *dirScan = CDirScan::NewLC(fs);
 			//DP1("Listing dir: %S", &folder);
 			dirScan ->SetScanDataL(importName, KEntryAttDir, ESortByName);
@@ -1023,8 +1023,7 @@ void CPodcastFeedView::HandleAddNewAudioBookL()
 				// Add book // See CPodcastClientAudioBookDlg
 				iPodcastModel.FeedEngine().AddBookL(title, fileNameArray);
 				UpdateListboxItemsL();
-				}
-			fs.Close();
+				}			
 			CleanupStack::PopAndDestroy(3, inputprompt);
 			}
 		

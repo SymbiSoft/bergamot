@@ -58,12 +58,12 @@ EXPORT_C void CShowEngine::GetMimeType(const TDesC& aFileName, TDes& aMimeType)
 
 void CShowEngine::ConstructL()
 	{
-	iFs.Connect();
+	User::LeaveIfError(iFs.Connect());
 	iShowClient = CHttpClient::NewL(iPodcastModel, *this);
 	iShowClient->SetResumeEnabled(ETrue);
 	iMetaDataReader = new (ELeave) CMetaDataReader(*this);
 	iMetaDataReader->ConstructL();
-	iApaSession.Connect();
+	User::LeaveIfError(iApaSession.Connect());
 	CheckFilesL();
 	DownloadNextShow();
 	}

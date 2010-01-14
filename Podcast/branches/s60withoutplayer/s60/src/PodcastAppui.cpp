@@ -4,7 +4,6 @@
 #include "PodcastMainView.h"
 #include "PodcastFeedView.h"
 #include "PodcastShowsView.h"
-#include "PodcastPlayView.h"
 #include "PodcastSettingsView.h"
 #include "ShowEngine.h"
 #include "PodcastModel.h"
@@ -28,9 +27,6 @@ void CPodcastAppUi::ConstructL()
 
 	iShowsView = CPodcastShowsView::NewL(*iPodcastModel);
 	this->AddViewL(iShowsView);
-
-	iPlayView = CPodcastPlayView::NewL(*iPodcastModel);
-	this->AddViewL(iPlayView);
 
 	iSettingsView = CPodcastSettingsView::NewL(*iPodcastModel);
 	this->AddViewL(iSettingsView);
