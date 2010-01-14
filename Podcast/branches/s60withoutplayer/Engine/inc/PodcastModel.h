@@ -8,8 +8,6 @@
 #include <http/rhttpsession.h>
 #include "FeedInfo.h"
 #include "ShowInfo.h"
-#include "TelephonyListener.h"
-#include "RemoteControlListener.h"
 #include "debug.h"
 #include "sqlite3.h"
 
@@ -105,9 +103,6 @@ private:
 
    RConnection iConnection;
    TCommDbConnPref iConnPref;
-   
-   CTelephonyListener *iTelephonyListener;
-   CRemoteControlListener *iRemConListener;
    
    sqlite3* iDB;   
 };

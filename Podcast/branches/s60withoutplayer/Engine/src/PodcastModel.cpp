@@ -43,8 +43,7 @@ CPodcastModel::~CPodcastModel()
 	iIapIdArray.Close();
 	delete iCommDB;
 	iConnection.Close();
-	iSocketServ.Close();
-	delete iRemConListener;
+	iSocketServ.Close();	
 	sqlite3_close(iDB);
 }
 

@@ -377,20 +377,6 @@ EXPORT_C void CSettingsEngine::SetSpecificIAP(TInt aIap)
 	iIap = aIap;
 	}
 
-TInt CSettingsEngine::Volume()
-	{
-	return iVolume;
-	}
-
-void CSettingsEngine::SetVolume(TInt aVolume)
-	{
-	iVolume = aVolume;
-	if(&iPodcastModel.SoundEngine() != NULL) 
-		{
-		iPodcastModel.SoundEngine().SetVolume(iVolume);
-		}
-	}
-
 EXPORT_C void CSettingsEngine::SetSelectUnplayedOnly(TBool aOnlyUnplayed)
 	{
 	iSelectOnlyUnplayed = aOnlyUnplayed;

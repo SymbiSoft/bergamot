@@ -73,10 +73,7 @@ class CSettingsEngine : public CBase
 		
 		IMPORT_C TInt SpecificIAP();
 		IMPORT_C void SetSpecificIAP(TInt aIap);
-		
-		TInt Volume();
-		void SetVolume(TInt aVolume);
-
+			
 		IMPORT_C TInt SeekStepTime();
 		IMPORT_C void SetSeekStepTimek(TInt aSeekStepTime);
 

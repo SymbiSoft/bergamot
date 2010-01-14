@@ -19,7 +19,6 @@ SOURCE			ShowEngine.cpp
 SOURCE			SettingsEngine.cpp
 SOURCE			MetaDataReader.cpp 
 SOURCE			OpmlParser.cpp 
-SOURCE			RemoteControlListener.cpp
 SOURCE			PodcastUtils.cpp
 SOURCE			PodCastModel.cpp 
 

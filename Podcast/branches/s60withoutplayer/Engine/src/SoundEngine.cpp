@@ -15,8 +15,7 @@ CSoundEngine* CSoundEngine::NewL(CPodcastModel& aPodcastModel)
 }
 
 CSoundEngine::~CSoundEngine()
-{
-	delete iPlayer;
+{	
 	iObservers.Close();
 }
 
@@ -25,8 +24,7 @@ CSoundEngine::CSoundEngine(CPodcastModel& aPodcastModel): iPodcastModel(aPodcast
 }
 
 void CSoundEngine::ConstructL()
-{
-    iPlayer = CMdaAudioPlayerUtility::NewL(*this);
+{   
 }
 
 EXPORT_C void CSoundEngine::AddObserver(MSoundEngineObserver* aObserver)
@@ -44,83 +42,12 @@ void CSoundEngine::RemoveObserver(MSoundEngineObserver* observer)
 		}
 	}
 
-void CSoundEngine::MapcPlayComplete(TInt aError) {
-	DP1("MapcPlayComplete: %d", aError);
-		
-	if (iPodcastModel.PlayingPodcast() != NULL) {
-		if(aError == KErrNone) // normal ending
-			{
-			iMaxPos = 0;
-			iPodcastModel.PlayingPodcast()->SetPlayState(EPlayed);
-			iPodcastModel.PlayingPodcast()->SetPosition(0);
-			iPodcastModel.ShowEngine().UpdateShow(iPodcastModel.PlayingPodcast());
-			}
-	}
-
-	iState = ESoundEngineStopped;
-	iPodcastModel.ShowEngine().NotifyShowListUpdated();
-	NotifyPlaybackStopped();
-
-	if(iPodcastModel.PlayingPodcast() != NULL && iPodcastModel.PlayingPodcast()->ShowType() == EAudioBook)
-	{
-		CShowInfo* nextShow = NULL;
-		
-		TRAP_IGNORE(nextShow = iPodcastModel.ShowEngine().GetNextShowByTrackL(iPodcastModel.PlayingPodcast()));
-		if(nextShow != NULL)
-		{
-			TRAP_IGNORE(iPodcastModel.PlayPausePodcastL(nextShow, ETrue));
-		}
-	}
-}	
-
-void CSoundEngine::MapcInitComplete(TInt aError, const TTimeIntervalMicroSeconds &/*aDuration */) {
-	if (aError != KErrNone)
-		{
-		DP1("MapcInitComplete error=%d", aError);	
-		
-		iState = ESoundEngineNotInitialized;		
-		}
-	else
-		{
-		iState = ESoundEngineStopped;
-		
-		iPlayer->SetVolume((iPodcastModel.SettingsEngine().Volume() * iPlayer->MaxVolume()) / 100);
-		
-		if (iPodcastModel.PlayingPodcast() != NULL) 
-			{
-			DP1("Resuming from position: %ld", iPodcastModel.PlayingPodcast()->Position().Int64());
-			TInt duration = (iPlayer->Duration().Int64()/1000000);
-			if(duration == 0) // sounds should at least be marked as one second long if they are <1 second
-				{
-				duration++;
-				}
-
-			iPodcastModel.PlayingPodcast()->SetPlayTime(duration);
-			iPlayer->SetPosition(iPodcastModel.PlayingPodcast()->Position());			
-			}
-		}
-
-	if(aError == KErrNone)
-		{
-		NotifyPlaybackInitialized();
-		if(iPlayOnInit)
-			{
-			
-			TRAP_IGNORE(iPodcastModel.PlayPausePodcastL(iPodcastModel.PlayingPodcast()));
-			}
-		}
-
-	iPlayOnInit = EFalse;
-}
-
 void CSoundEngine::OpenFileL(const TDesC& aFileName, TBool aPlayOnInit)
 {
 	iState = ESoundEngineNotInitialized;
 	iMaxPos = 0;
 	iLastOpenedFileName= aFileName;
-	iPlayer->Stop();
-	iPlayer->Close();
-	iPlayer->OpenFileL(aFileName);
+	
 	iPlayOnInit = aPlayOnInit;
 	iState = ESoundEngineOpening;
 }
@@ -136,7 +63,7 @@ EXPORT_C TTimeIntervalMicroSeconds CSoundEngine::Position()
 	
 	if(iState > ESoundEngineOpening)
 	{
-		iPlayer->GetPosition(pos);
+		
 	}
 
 	// store maximum position, we need this if we get interrupted by a phone call
@@ -153,42 +80,25 @@ EXPORT_C void CSoundEngine::SetPosition(TUint aPos)
 		TTimeIntervalMicroSeconds pos = ((TUint64)aPos)*1000000;
 		if(iState == ESoundEnginePlaying)
 		{
-			iPlayer->Pause();
+			//iPlayer->Pause();
 		}
 
 		iMaxPos = pos;
-		iPlayer->SetPosition(pos);
+		//iPlayer->SetPosition(pos);
 		
 		if(iState == ESoundEnginePlaying)
 		{
-			iPlayer->Play();
+			//iPlayer->Play();
 		}
 	}
 }
-
-
-EXPORT_C TUint CSoundEngine::PlayTime()
-{
-	if(iState > ESoundEngineOpening)
-	{
-		return iPlayer->Duration().Int64()/1000000;
-	}
-
-	return 0;
-}
-
 
 EXPORT_C void CSoundEngine::Play()
 {
 	if(iState > ESoundEngineOpening)
 	{
-		/*TUint skipBack = 5000000; // 5 seconds
-		TTimeIntervalMicroSeconds newPos;
-		
-		newPos = (iMaxPos.Int64() - skipBack > 0 ? iMaxPos.Int64() - skipBack : 0) ;
-		iMaxPos = newPos;*/
-		iPlayer->SetPosition(iMaxPos);
-		iPlayer->Play();
+		//iPlayer->SetPosition(iMaxPos);
+		//iPlayer->Play();
 		iState = ESoundEnginePlaying;
 
 		NotifyPlaybackStarted();
@@ -205,8 +115,8 @@ EXPORT_C void CSoundEngine::Stop(TBool aMarkPlayed)
 		}
 		iState = ESoundEngineStopped;
 		SetPosition(0);
-		iPlayer->Stop();
-		iPlayer->Close();
+		//iPlayer->Stop();
+		//iPlayer->Close();
 		iMaxPos = 0;
 		
 		NotifyPlaybackStopped();
@@ -219,7 +129,7 @@ EXPORT_C void CSoundEngine::Pause(TBool aOverrideState)
 	if(iState > ESoundEngineOpening || aOverrideState)
 	{
 		iState = ESoundEnginePaused;
-		iPlayer->Pause();
+		//iPlayer->Pause();
 
 		// had a crash here, so we check for NULL first
 		if (iPodcastModel.PlayingPodcast() != NULL) {
@@ -233,48 +143,6 @@ EXPORT_C void CSoundEngine::Pause(TBool aOverrideState)
 EXPORT_C TSoundEngineState CSoundEngine::State()
 {
 	return iState;
-}
-
-EXPORT_C void CSoundEngine::VolumeUp()
-	{
-	if(iState <= ESoundEngineOpening) {
-		return ;
-	}
-	TInt max = iPlayer->MaxVolume();
-	TInt step = max / KVolumeSteps;
-	
-	TInt now;
-	iPlayer->GetVolume(now);
-	iPlayer->SetVolume(now+step > max ? max : now+step);	
-	
-	NotifyVolumeChanged();
-	}
-
-EXPORT_C void CSoundEngine::VolumeDown()
-	{
-	if(iState <= ESoundEngineOpening) {
-		return;
-	}
-	TInt max = iPlayer->MaxVolume();
-	DP1("max=%d", max);
-	TInt step = max / KVolumeSteps;
-	DP1("step=%d", step);
-	TInt now;
-	iPlayer->GetVolume(now);
-	DP1("now=%d", now);
-	iPlayer->SetVolume(now-step < 0 ? 0 : now-step);
-
-	NotifyVolumeChanged();
-	}
-
-void CSoundEngine::SetVolume(TUint aVolume)
-{
-	if(iState > ESoundEngineOpening)
-		{
-			iPlayer->SetVolume((aVolume*iPlayer->MaxVolume()) / 100);
-		}
-	
-	NotifyVolumeChanged();
 }
 
 void CSoundEngine::NotifyPlaybackStopped()
@@ -303,10 +171,10 @@ void CSoundEngine::NotifyPlaybackInitialized()
 
 void CSoundEngine::NotifyVolumeChanged()
 	{
-	TInt max = iPlayer->MaxVolume();
+	TInt max = 0;//iPlayer->MaxVolume();
 	
-	TInt vol;
-	iPlayer->GetVolume(vol);
+	TInt vol = 0;
+	//iPlayer->GetVolume(vol);
 	
 	DP2("NotifyVolumeChanged, vol=%d, max=%d", vol, max);
 	for (int i=0;i<iObservers.Count();i++) {

@@ -1,8 +1,6 @@
 #ifndef SOUND_ENGINE_H
 #define SOUND_ENGINE_H
 #include <e32base.h>
-#include <mdaaudiosampleplayer.h>
-#include "TelephonyListener.h"
 
 class CPodcastModel;
 
@@ -30,7 +28,7 @@ public:
 /**
  * This class handles all playback and audio associated resources that the application/client needs
  */
-class CSoundEngine : public CBase, public MMdaAudioPlayerCallback
+class CSoundEngine : public CBase
 {
 public:
 	static CSoundEngine* NewL(CPodcastModel& aPodcastModel);
@@ -40,21 +38,13 @@ public:
 	IMPORT_C void Stop(TBool aMarkPlayed=ETrue);
 	IMPORT_C TTimeIntervalMicroSeconds Position();
 	IMPORT_C void SetPosition(TUint aPos);
-
-	/**
-	 * Returns the playtime/duration in seconds 
-	 * @return Value in a TUint
-	 */
-	IMPORT_C TUint PlayTime();
+	
 	IMPORT_C void Pause(TBool aOverrideState = EFalse);
 
 	IMPORT_C TSoundEngineState State();
 	IMPORT_C void AddObserver(MSoundEngineObserver* aObserver);
 	void RemoveObserver(MSoundEngineObserver* aObserver);
-	
-	IMPORT_C void VolumeUp();
-	IMPORT_C void VolumeDown();
-	void SetVolume(TUint aVolume);
+			
 	const TFileName& LastFileName();
 	
 private:
@@ -65,12 +55,9 @@ private:
 	
 protected:
 	CSoundEngine(CPodcastModel& aPodcastModel);
-	void ConstructL();
-	void MapcPlayComplete(TInt aError);
-	void MapcInitComplete(TInt aError, const TTimeIntervalMicroSeconds &aDuration);
+	void ConstructL();	
 	
-private:
-    CMdaAudioPlayerUtility *iPlayer;
+private:    
 	CPodcastModel& iPodcastModel;
 	TSoundEngineState iState;
 	RArray<MSoundEngineObserver*> iObservers;
