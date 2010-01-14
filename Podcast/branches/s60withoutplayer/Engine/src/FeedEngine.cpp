@@ -8,6 +8,11 @@
 #include <TXTETEXT.H> // for ELineBreak
 #include "OpmlParser.h"
 
+#define KMaxUidBufLen 20
+const TInt KMaxDescriptionLength = 2048;
+const TInt KMaxURLLength = 512;
+const TInt KMaxLineLength = 1024;
+
 CFeedEngine* CFeedEngine::NewL(CPodcastModel& aPodcastModel)
 	{
 	CFeedEngine* self = new (ELeave) CFeedEngine(aPodcastModel);
@@ -173,7 +178,7 @@ EXPORT_C TBool CFeedEngine::UpdateFeedL(TUint aFeedUid)
 
 	TFileName filePath;
 	filePath.Copy (iPodcastModel.SettingsEngine().PrivatePath ());
-	TBuf<20> feedUidNum;
+	TBuf<KMaxUidBufLen> feedUidNum;
 	feedUidNum.Format(_L("%lu"), aFeedUid);
 	filePath.Append(feedUidNum);
 	filePath.Append(_L(".xml"));
@@ -202,7 +207,7 @@ TBool CFeedEngine::NewShowL(CShowInfo *item)
 	{
 	//DP4("\nTitle: %S\nURL: %S\nDescription length: %d\nFeed: %d", &(item->Title()), &(item->Url()), item->Description().Length(), item->FeedUid());
 	
-	HBufC* description = HBufC::NewLC(2048);
+	HBufC* description = HBufC::NewLC(KMaxDescriptionLength);
 	TPtr ptr(description->Des());
 	ptr.Copy(item->Description());
 	CleanHtmlL(ptr);
@@ -472,7 +477,7 @@ TBool CFeedEngine::DBUpdateFeed(CFeedInfo *aItem)
 
 void CFeedEngine::ParsingCompleteL(CFeedInfo *item)
 	{
-	TBuf<1024> title;
+	TBuf<KMaxLineLength> title;
 	title.Copy(item->Title());
 	TRAP_IGNORE(CleanHtmlL(title));
 	TRAP_IGNORE(item->SetTitleL(title));
@@ -629,14 +634,14 @@ EXPORT_C void CFeedEngine::ImportBookL(const TDesC& aTitle, const TDesC& aFile)
 		DP("CFeedEngine::ImportBookL\tFailed to read M3U");
 		User::Leave(KErrNotFound);
 		}
-	
+	CleanupClosePushL(rfile);
 	TFileName path;
 	path.Copy(aFile.Left(aFile.LocateReverse('\\')));
 	path.Append('\\');
 	
 	TBuf8<1> buf8;
 	TBuf<1> buf16;
-	TBuf<1024> line16;
+	HBufC* line16 = HBufC::NewLC(KMaxLineLength);
 	
 	error = rfile.Read(buf8);
 	buf16.Copy(buf8);
@@ -644,27 +649,27 @@ EXPORT_C void CFeedEngine::ImportBookL(const TDesC& aTitle, const TDesC& aFile)
 	while (error == KErrNone && buf16.Length() != 0) 
 		{
 		if (buf16[0] == '\r' || buf16[0] == '\n') {
-			if (line16.Length() > 0 && line16[0] != '#') {
-				if (line16.Length() > 1 && line16[1] != ':') {
+			if (line16->Length() > 0 && (*line16)[0] != '#') {
+				if (line16->Length() > 1 && (*line16)[1] != ':') {
 					TFileName tmp;
 					tmp.Copy(path);
-					tmp.Append(line16);
-					line16.Copy(tmp);
+					tmp.Append(*line16);
+					line16->Des().Copy(tmp);
 				}
 				
 				DP1("File: %S", &line16);
-				files->AppendL(line16);
+				files->AppendL(*line16);
 			}
-			line16.Zero();
+			line16->Des().Zero();
 		} else {
-			line16.Append(buf16);
+			line16->Des().Append(buf16);
 		}
 			
 		error = rfile.Read(buf8);
 		buf16.Copy(buf8);
 		}
 	
-	rfile.Close();
+	CleanupStack::PopAndDestroy(2); // Destroy line 16 and close file
 	iPodcastModel.ShowEngine().MetaDataReader().SetIgnoreTrackNo(ETrue);
 	AddBookL(aTitle, files);
 	CleanupStack::PopAndDestroy(files);
@@ -673,7 +678,7 @@ EXPORT_C void CFeedEngine::ImportBookL(const TDesC& aTitle, const TDesC& aFile)
 EXPORT_C TBool CFeedEngine::ExportFeedsL(TFileName& aFile)
 	{
 	RFile rfile;
-	TBuf<1024> privatePath;
+	TFileName privatePath;
 	iFs.PrivatePath(privatePath);
 	TInt error = rfile.Temp(iFs, privatePath, aFile, EFileWrite);
 	if (error != KErrNone) 
@@ -681,29 +686,32 @@ EXPORT_C TBool CFeedEngine::ExportFeedsL(TFileName& aFile)
 		DP("CFeedEngine::ExportFeedsL()\tFailed to open file");
 		return EFalse;
 		}
-	
+	CleanupClosePushL(rfile);
 	TFileText tft;
 	tft.Set(rfile);
+	HBufC* templ = HBufC::NewLC(KMaxLineLength);
 	
-	TBuf<1024> templ;
-	templ.Copy(KOpmlFeed());
-	TBuf<1024> line;
-			
-	TBuf<512> url;
+	templ->Des().Copy(KOpmlFeed());
+	
+	HBufC* line = HBufC::NewLC(KMaxLineLength);
+	
+	HBufC* url = HBufC::NewLC(KMaxURLLength);		
+
 
 	tft.Write(KOpmlHeader());
 	for (int i=0; i<iSortedFeeds.Count(); i++)
 		{
-		url.Copy(iSortedFeeds[i]->Url());
-		ReplaceString(url, _L("&"), _L("&amp;"));
+		url->Des().Copy(iSortedFeeds[i]->Url());
+		TPtr ptr(url->Des());
+		ReplaceString(ptr, _L("&"), _L("&amp;"));
 
-		line.Format(templ, &iSortedFeeds[i]->Title(), &url);
-		tft.Write(line);
+		line->Des().Format(*templ, &iSortedFeeds[i]->Title(), &url);
+		tft.Write(*line);
 		}
 
 	tft.Write(KOpmlFooter());
 		
-	rfile.Close();
+	CleanupStack::PopAndDestroy(4);//destroy 3 bufs & close rfile
 	
 	return ETrue;
 	}
@@ -867,7 +875,7 @@ void CFeedEngine::CleanHtmlL(TDes &str)
 	TInt startPos = str.Locate('<');
 	TInt endPos = str.Locate('>');
 	//DP3("length: %d, startPos: %d, endPos: %d", str.Length(), startPos, endPos);
-	HBufC* tmpBuf = HBufC::NewLC(2048);
+	HBufC* tmpBuf = HBufC::NewLC(KMaxDescriptionLength);
 	TPtr tmp(tmpBuf->Des());
 	while (startPos != KErrNotFound && endPos != KErrNotFound && endPos > startPos) {
 		//DP1("Cleaning out %S", &str.Mid(startPos, endPos-startPos+1));

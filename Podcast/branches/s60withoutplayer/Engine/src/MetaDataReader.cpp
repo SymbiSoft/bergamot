@@ -5,6 +5,8 @@
 #include <mmf\common\mmfMeta.h>
 #include "debug.h"
 
+const TInt KMaxParseBuffer = 1024;
+
 CMetaDataReader::CMetaDataReader(MMetaDataReaderObserver& aObserver) : iObserver(aObserver), iFs(CEikonEnv::Static()->FsSession())
 {
 	iShow = NULL;
@@ -91,27 +93,28 @@ void CMetaDataReader::MapcInitComplete(TInt aError, const TTimeIntervalMicroSeco
 				if (error != KErrNone) {
 					continue;
 				}
-				TBuf<1024> buf;
+				HBufC* buf = HBufC::NewLC(KMaxParseBuffer);
+				
 				if (entry->Name() == KMMFMetaEntrySongTitle) {
-					buf.Copy(entry->Value());
-					TRAP_IGNORE(iShow->SetTitleL(buf));
+					buf->Des().Copy(entry->Value());
+					TRAP_IGNORE(iShow->SetTitleL(*buf));
 					DP1("title: %S", &(iShow->Title()));
 				} else if (entry->Name() == _L("artist")) {
 					if (iShow->Description().Length() > 0) {
-						buf.Copy(iShow->Description());
+						buf->Des().Copy(iShow->Description());
 					}
-					buf.Append(_L("\n"));
-					buf.Append(entry->Value());
+					buf->Des().Append(_L("\n"));
+					buf->Des().Append(entry->Value());
 					
-					TRAP_IGNORE(iShow->SetDescriptionL(buf));
+					TRAP_IGNORE(iShow->SetDescriptionL(*buf));
 				} else if (entry->Name() == KMMFMetaEntryAlbum) {
 					if (iShow->Description().Length() > 0) {
-						buf.Copy(iShow->Description());
+					buf->Des().Copy(iShow->Description());
 					}
-					buf.Append(_L("\n"));
-					buf.Append(entry->Value());
+					buf->Des().Append(_L("\n"));
+					buf->Des().Append(entry->Value());
 					
-					TRAP_IGNORE(iShow->SetDescriptionL(buf));
+					TRAP_IGNORE(iShow->SetDescriptionL(*buf));
 				}	
 				else if (entry->Name() == KMMFMetaEntryAlbumTrack) {
 					TLex lexer(entry->Value());
@@ -120,6 +123,7 @@ void CMetaDataReader::MapcInitComplete(TInt aError, const TTimeIntervalMicroSeco
 						iShow->SetTrackNo(value);
 					}
 				}
+				CleanupStack::PopAndDestroy(buf);
 			}
 		}
 	}

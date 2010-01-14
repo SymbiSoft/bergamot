@@ -8,6 +8,8 @@
 const TUid KMainSettingsStoreUid = {0x1000};
 const TUid KMainSettingsUid = {0x1002};
 const TUid KExtraSettingsUid = {0x2001};
+const TInt KMaxParseBuffer = 1024;
+
 CSettingsEngine::CSettingsEngine(CPodcastModel& aPodcastModel) : iPodcastModel(aPodcastModel)
 	{
 		iSelectOnlyUnplayed = ETrue;
@@ -210,26 +212,27 @@ void CSettingsEngine::ImportSettings()
 		DP("CSettingsEngine::ImportSettings()\tFailed to read settings");
 		return;
 		}
-	
+	CleanupClosePushL(rfile);
 	TFileText tft;
 	tft.Set(rfile);
 	
-	TBuf<1024> line;
-	error = tft.Read(line);
+	HBufC* line = HBufC::NewLC(KMaxParseBuffer);
+	TPtr linePtr(line->Des());
+	error = tft.Read(linePtr);
 	
 	while (error == KErrNone) 
 		{
-		if (line.Locate('#') == 0) 
+		if (line->Locate('#') == 0) 
 			{
-			error = tft.Read(line);
+			error = tft.Read(linePtr);
 			continue;
 			}
 		
-		TInt equalsPos = line.Locate('=');
+		TInt equalsPos = line->Locate('=');
 		if (equalsPos != KErrNotFound) 
 			{
-			TPtrC tag = line.Left(equalsPos);
-			TPtrC value = line.Mid(equalsPos+1);
+			TPtrC tag = line->Left(equalsPos);
+			TPtrC value = line->Mid(equalsPos+1);
 			DP3("line: %S, tag: '%S', value: '%S'", &line, &tag, &value);
 			if (tag.CompareF(_L("BaseDir")) == 0) 
 				{
@@ -261,9 +264,9 @@ void CSettingsEngine::ImportSettings()
 				}
 			}
 		
-		error = tft.Read(line);
+		error = tft.Read(linePtr);
 		}
-	rfile.Close();
+	CleanupStack::PopAndDestroy(2);//rfile.Close(); & delete buffer
 	}
 
 TFileName CSettingsEngine::DefaultFeedsFileName()

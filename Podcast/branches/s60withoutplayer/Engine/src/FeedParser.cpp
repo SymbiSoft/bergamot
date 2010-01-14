@@ -9,6 +9,8 @@
 #include "debug.h"
 
 using namespace Xml;
+const TInt KMaxParseBuffer = 1024;
+const TInt KMaxStringBuffer = 100;
 
 CFeedParser::CFeedParser(MFeedParserObserver& aCallbacks) : 	iCallbacks(aCallbacks)
 {
@@ -46,17 +48,18 @@ void CFeedParser::ParseFeedL(const TFileName &feedFileName, CFeedInfo *info, TUi
 void CFeedParser::OnStartDocumentL(const RDocumentParameters& aDocParam, TInt /*aErrorCode*/)
 	{
 	DP("OnStartDocumentL()");
-	TBuf<1024> charset;
-	charset.Copy(aDocParam.CharacterSetName().DesC());
+	HBufC* charset = HBufC::NewLC(KMaxParseBuffer);
+	charset->Des().Copy(aDocParam.CharacterSetName().DesC());
 	iEncoding = EUtf8;
-	if (charset.CompareF(_L("utf-8")) == 0) {
+	if (charset->CompareF(_L("utf-8")) == 0) {
 		DP("setting UTF8");
 		iEncoding = EUtf8;
-	} else if (charset.CompareF(_L("ISO-8859-1")) == 0) {
+	} else if (charset->CompareF(_L("ISO-8859-1")) == 0) {
 		iEncoding = EUtf8; //Latin1;
 	} else {
 		DP1("unknown charset: %S", &charset);
 	}
+	CleanupStack::PopAndDestroy(charset);//buffer
 	}
 
 void CFeedParser::OnEndDocumentL(TInt /*aErrorCode*/)
@@ -72,7 +75,7 @@ void CFeedParser::OnStartElementL(const RTagInfo& aElement, const RAttributeArra
 		return;
 	}
 	
-	TBuf<100> str;
+	TBuf<KMaxStringBuffer> str;
 	str.Copy(aElement.LocalName().DesC());
 	//DP2("OnStartElementL START state=%d, element=%S", iFeedState, &str);
 	iBuffer.Zero();
@@ -136,13 +139,14 @@ void CFeedParser::OnStartElementL(const RTagInfo& aElement, const RAttributeArra
 			//DP("Enclosure START");
 			for (int i=0;i<aAttributes.Count();i++) {
 				RAttribute attr = aAttributes[i];
-				TBuf<100> attr16;
+				TBuf<KMaxStringBuffer> attr16;
 				attr16.Copy(attr.Attribute().LocalName().DesC());
 				// url=...
 				if (attr16.Compare(KTagUrl) == 0) {
-					TBuf<1024> val16;
-					val16.Copy(attr.Value().DesC());
-					iActiveShow->SetUrlL(val16);
+					HBufC* val16 = HBufC::NewLC(KMaxParseBuffer);
+					val16->Des().Copy(attr.Value().DesC());
+					iActiveShow->SetUrlL(*val16);
+					CleanupStack::PopAndDestroy(val16);
 				// length=...
 				} else if (attr16.Compare(KTagLength) == 0) {
 					TLex8 lex(attr.Value().DesC());
@@ -177,7 +181,7 @@ void CFeedParser::OnEndElementL(const RTagInfo& aElement, TInt /*aErrorCode*/)
 	iBuffer.Trim();
 	
 	TDesC8 lName = aElement.LocalName().DesC();
-	TBuf<100> str;
+	TBuf<KMaxStringBuffer> str;
 	str.Copy(aElement.LocalName().DesC());
 
 	//DP2("OnEndElementL START state=%d, element=%S", iFeedState, &str);
@@ -262,7 +266,7 @@ void CFeedParser::OnEndElementL(const RTagInfo& aElement, TInt /*aErrorCode*/)
 				TChar six(iBuffer[6]);
 				
 				if (five.IsDigit() && !six.IsDigit()) {
-					TBuf<100> fix;
+					TBuf<KMaxStringBuffer> fix;
 					fix.Copy(iBuffer.Left(4));
 					fix.Append(_L(" 0"));
 					fix.Append(iBuffer.Mid(5));

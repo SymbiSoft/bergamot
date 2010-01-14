@@ -9,6 +9,7 @@
 #include "debug.h"
 
 const TUint KMaxDownloadErrors = 3;
+const TInt KMimeBufLength = 100;
 
 CShowEngine::CShowEngine(CPodcastModel& aPodcastModel) :
 	iPodcastModel(aPodcastModel)
@@ -242,7 +243,7 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TBool aSuccessful)
 		DP1("CShowEngine::Complete\tDownload of file: %S is complete", &iShowDownloading->FileName());
 
 		// decide what kind of file this is
-		TBuf<100> mimeType;
+		TBuf<KMimeBufLength> mimeType;
 		GetMimeType(iShowDownloading->FileName(), mimeType);
 
 		if (mimeType.Left(5) == _L("audio"))
@@ -1188,7 +1189,7 @@ void CShowEngine::ListDirL(TFileName &folder)
 			TShowType showType;
 
 			// decide what kind of file this is
-			TBuf<100> mimeType;
+			TBuf<KMimeBufLength> mimeType;
 			GetMimeType(pathName, mimeType);DP2("'%S' has mime: '%S'", &pathName, &mimeType);
 #ifdef __WINS__
 			if (mimeType.Length() == 0)

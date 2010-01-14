@@ -8,7 +8,8 @@
 #include <utf.h>
 
 using namespace Xml;
-
+const TInt KMaxParseBuffer = 1024;
+const TInt KMaxStringBuffer = 100;
 COpmlParser::COpmlParser(CFeedEngine& aFeedEngine) : iFeedEngine(aFeedEngine)
 {
 	TInt err = iFs.Connect();
@@ -39,17 +40,18 @@ void COpmlParser::ParseOpmlL(const TFileName &feedFileName)
 void COpmlParser::OnStartDocumentL(const RDocumentParameters& aDocParam, TInt /*aErrorCode*/)
 	{
 	DP("OnStartDocumentL()");
-	TBuf<1024> charset;
-	charset.Copy(aDocParam.CharacterSetName().DesC());
+	HBufC* charset = HBufC::NewLC(KMaxParseBuffer);
+	charset->Des().Copy(aDocParam.CharacterSetName().DesC());
 	iEncoding = EUtf8;
-	if (charset.CompareF(_L("utf-8")) == 0) {
+	if (charset->CompareF(_L("utf-8")) == 0) {
 		DP("setting UTF8");
 		iEncoding = EUtf8;
-	} else if (charset.CompareF(_L("ISO-8859-1")) == 0) {
+	} else if (charset->CompareF(_L("ISO-8859-1")) == 0) {
 		iEncoding = EUtf8; //Latin1;
 	} else {
 		DP1("unknown charset: %S", &charset);
 	}
+	CleanupStack::PopAndDestroy(charset);
 	}
 
 void COpmlParser::OnEndDocumentL(TInt /*aErrorCode*/)
@@ -59,7 +61,7 @@ void COpmlParser::OnEndDocumentL(TInt /*aErrorCode*/)
 
 void COpmlParser::OnStartElementL(const RTagInfo& aElement, const RAttributeArray& aAttributes, TInt /*aErrorCode*/)
 	{
-	TBuf<100> str;
+	TBuf<KMaxStringBuffer> str;
 	str.Copy(aElement.LocalName().DesC());
 	DP2("OnStartElementL START state=%d, element=%S", iOpmlState, &str);
 	iBuffer.Zero();
@@ -82,20 +84,22 @@ void COpmlParser::OnStartElementL(const RTagInfo& aElement, const RAttributeArra
 			
 			for (int i=0;i<aAttributes.Count();i++) {
 				RAttribute attr = aAttributes[i];
-				TBuf<100> attr16;
+				TBuf<KMaxStringBuffer> attr16;
 				attr16.Copy(attr.Attribute().LocalName().DesC());
-				TBuf<1024> val16;
-				val16.Copy(attr.Value().DesC());
+				HBufC* val16 = HBufC::NewLC(KMaxParseBuffer);
+				
+				val16->Des().Copy(attr.Value().DesC());
 				// xmlUrl=...
 				if (attr16.Compare(KTagXmlUrl) == 0 || attr16.Compare(KTagUrl) == 0) {
-					newFeed->SetUrlL(val16);
+					newFeed->SetUrlL(*val16);
 					hasUrl = ETrue;
 				// text=...
 				} else if (attr16.Compare(KTagText) == 0) {
-					newFeed->SetTitleL(val16);
+					newFeed->SetTitleL(*val16);
 					newFeed->SetCustomTitle();
 					hasTitle = ETrue;
 				}
+				CleanupStack::PopAndDestroy(val16);
 			}
 
 			if (!hasUrl) {
@@ -120,7 +124,7 @@ void COpmlParser::OnEndElementL(const RTagInfo& aElement, TInt /*aErrorCode*/)
 	{
 	
 	TDesC8 lName = aElement.LocalName().DesC();
-	TBuf<100> str;
+	TBuf<KMaxStringBuffer> str;
 	str.Copy(aElement.LocalName().DesC());
 
 	//DP("OnEndElementL START state=%d, element=%S"), iFeedState, &str);

@@ -11,4 +11,6 @@ _LIT(KDateFormatShort,"%D%M%/0%4%/1%5");
 // Date/time format string
 _LIT(KTimeFormat, "%-B%:0%J%:1%T%+B");
 
+#define KDefaultSQLDataBufferLength 2048
+
 #endif

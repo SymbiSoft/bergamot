@@ -32,6 +32,9 @@ const TInt KMaxUnplayedFeedsLength =64;
 const TInt KADayInHours = 24;
 const TInt KDefaultGran = 5;
 const TInt KNumberOfFilesMaxLength = 4;
+#define KMaxMessageLength 200
+#define KMaxTitleLength 100
+const TInt KMimeBufLength = 100;
 
 _LIT(KUnknownUpdateDateString, "?/?");
 _LIT(KFeedFormat, "%d\t%S\t%S %S");
@@ -563,8 +566,8 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 				TBool added = iPodcastModel.FeedEngine().AddFeedL(newFeedInfo); // takes ownership
 				if (!added)
 					{
-					TBuf<200> message;
-					TBuf<100> title;
+					TBuf<KMaxMessageLength> message;
+					TBuf<KMaxTitleLength> title;
 					iEikonEnv->ReadResourceL(message, R_ADD_FEED_EXISTS);
 					iEikonEnv->ReadResourceL(title, R_ADD_FEED_EXISTS_TITLE);
 					iEikonEnv->InfoWinL(title, message);				
@@ -674,8 +677,8 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 					
 					if(info->Url().Compare(url) != 0)
 						{
-						TBuf<200> dlgMessage;
-						TBuf<100> dlgTitle;
+						TBuf<KMaxMessageLength> dlgMessage;
+						TBuf<KMaxTitleLength> dlgTitle;
 						iEikonEnv->ReadResourceL(dlgMessage, R_ADD_FEED_REPLACE);
 						iEikonEnv->ReadResourceL(dlgTitle, R_ADD_FEED_REPLACE_TITLE);
 
@@ -707,8 +710,8 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 								UpdateListboxItemsL();
 							} else {
 								// the feed existed. Object deleted in AddFeed.	
-								TBuf<200> dlgMessage;
-								TBuf<100> dlgTitle;
+								TBuf<KMaxMessageLength> dlgMessage;
+								TBuf<KMaxTitleLength> dlgTitle;
 								iEikonEnv->ReadResourceL(dlgMessage, R_ADD_FEED_EXISTS);
 								iEikonEnv->ReadResourceL(dlgTitle, R_ADD_FEED_EXISTS_TITLE);
 								iEikonEnv->InfoWinL(dlgTitle, dlgMessage);		
@@ -854,7 +857,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 					{
 					if(importName.Length()>0)
 						{
-						TBuf<128> title;
+						TBuf<KMaxTitleLength> title;
 						CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(title) ;//CPodcastClientAddFeedDlg(iPodcastModel);
 
 						HBufC* prompt= iEikonEnv->AllocReadResourceLC(R_PODCAST_ADDBOOK_PROMPT);
@@ -994,7 +997,7 @@ void CPodcastFeedView::HandleAddNewAudioBookL()
 					pathName.Copy(importName);
 					pathName.Append(entry.iName);
 
-					TBuf<100> mimeType;
+					TBuf<KMimeBufLength> mimeType;
 					iPodcastModel.ShowEngine().GetMimeType(pathName, mimeType);
 					DP2("'%S' has mime: '%S'", &pathName, &mimeType);
 					if (mimeType.Left(5) == _L("audio"))

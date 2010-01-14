@@ -7,7 +7,7 @@
 #include "MetaDataReaderObserver.h"
 
 class CCnvCharacterSetConverter;
-
+#define KMetaDataBufferLength  1024
 class CMetaDataReader : public CBase, public MMdaAudioPlayerCallback
 {
 public:
@@ -29,10 +29,10 @@ private:
 	RShowInfoArray iShowsToParse;
 	CShowInfo *iShow;
 	MMetaDataReaderObserver &iObserver;
-	TBuf8<256> iTempFileName;
-	TBuf8<1024> iTempDataBuffer;
-	TBuf<1024> iStringBuffer;
-	TBuf<1024> iStringBuffer2;
+	TBuf8<KMaxFileName> iTempFileName;	
+	TBuf8<KMetaDataBufferLength> iTempDataBuffer;
+	TBuf<KMetaDataBufferLength> iStringBuffer;
+	TBuf<KMetaDataBufferLength> iStringBuffer2;
 	CAsyncCallBack* iParseNextShowCallBack;
 	CCnvCharacterSetConverter* iCharConverter;
 	TUint iLastConverterCharset;
