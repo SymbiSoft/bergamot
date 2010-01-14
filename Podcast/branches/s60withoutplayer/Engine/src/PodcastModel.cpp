@@ -28,10 +28,6 @@ EXPORT_C CPodcastModel* CPodcastModel::NewL()
 
 CPodcastModel::~CPodcastModel()
 {
-#if defined (__WINS__)
-#else
-	delete iTelephonyListener;
-#endif
 	iActiveShowList.ResetAndDestroy();
 	delete iFeedEngine;
 	delete iSoundEngine;
@@ -67,13 +63,7 @@ void CPodcastModel::ConstructL()
 	iShowEngine = CShowEngine::NewL(*this);
 
 	iSoundEngine = CSoundEngine::NewL(*this);
-#if defined (__WINS__)
-#else
-	iTelephonyListener = CTelephonyListener::NewL(*this);
-	iTelephonyListener->StartL();
-	// Crashing on WINS
-    iRemConListener = CRemoteControlListener::NewL(*this);
-#endif	
+
 	User::LeaveIfError(iSocketServ.Connect());
 	User::LeaveIfError(iConnection.Open(iSocketServ));
 }
