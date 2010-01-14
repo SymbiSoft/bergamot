@@ -12,8 +12,12 @@ CMetaDataReader::CMetaDataReader(MMetaDataReaderObserver& aObserver) : iObserver
 
 CMetaDataReader::~CMetaDataReader()
 {
-	iPlayer->Close();
-	delete iPlayer;
+	if( iPlayer )
+		{
+		iPlayer->Close();
+		delete iPlayer;
+		}
+	
 	delete iParseNextShowCallBack;
 	iShowsToParse.Close();
 	delete iCharConverter;

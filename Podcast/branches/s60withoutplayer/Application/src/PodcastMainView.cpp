@@ -210,7 +210,7 @@ void CPodcastMainView::CheckForQuedDownloadsL()
 	if (iPodcastModel.ShowEngine().GetNumDownloadingShowsL() > 0) {
 		if(iEikonEnv->QueryWinL(R_PODCAST_ENABLE_DOWNLOADS_TITLE, R_PODCAST_ENABLE_DOWNLOADS_PROMPT))
 		{
-			iPodcastModel.ShowEngine().ResumeDownloads();
+			iPodcastModel.ShowEngine().ResumeDownloadsL();
 		} else {
 			iPodcastModel.ShowEngine().StopDownloads();
 		}

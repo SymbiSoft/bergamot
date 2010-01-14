@@ -691,7 +691,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 							if (added) {
 								// The Feed URL did not exist
 								// Remove the temp entry so that the correct entry could be changed
-								iPodcastModel.FeedEngine().RemoveFeed(temp->Uid());	
+								iPodcastModel.FeedEngine().RemoveFeedL(temp->Uid());	
 								
 								// user has accepted that shows will be deleted
 								iPodcastModel.ShowEngine().DeleteAllShowsByFeedL(info->Uid());
@@ -742,7 +742,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 						CFeedInfo *info = iPodcastModel.FeedEngine().GetFeedInfoByUid(iItemIdArray[index]);
 						
 						DP1("Removing feed '%S'", &info->Title());
-						iPodcastModel.FeedEngine().RemoveFeed(iItemIdArray[index]);
+						iPodcastModel.FeedEngine().RemoveFeedL(iItemIdArray[index]);
 						iItemArray->Delete(index);
 						iItemIdArray.Remove(index);
 						iListContainer->Listbox()->HandleItemRemovalL();
