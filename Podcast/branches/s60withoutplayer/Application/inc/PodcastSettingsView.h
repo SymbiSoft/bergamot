@@ -68,7 +68,6 @@ class CPodcastSettingsView : public CAknView
 		 CAknNavigationDecorator* iNaviDecorator;
 		 CAknNavigationControlContainer* iNaviPane;
 		 CPodcastSettingItemList  * iListbox;
-
 };
 
 #endif // PODCASTSETTINGSVIEWH
