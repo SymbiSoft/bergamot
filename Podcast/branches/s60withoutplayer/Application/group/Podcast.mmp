@@ -61,8 +61,8 @@ START BITMAP Podcast.mbm
 	SOURCE 8 emptyimage.bmp
 END
 
-SYSTEMINCLUDE   \epoc32\include \epoc32\include\middleware
-SYSTEMINCLUDE   \epoc32\include\libc \epoc32\include\osextensions
+SYSTEMINCLUDE   \epoc32\include
+SYSTEMINCLUDE   \epoc32\include\libc
 SYSTEMINCLUDE \epoc32\include\mmf\common 
 SYSTEMINCLUDE \epoc32\include\domain\middleware
 

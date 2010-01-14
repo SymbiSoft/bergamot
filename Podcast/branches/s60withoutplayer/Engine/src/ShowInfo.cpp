@@ -1,7 +1,7 @@
 #include "ShowInfo.h"
 #include <e32hashtab.h>
 
-EXPORT_C CShowInfo* CShowInfo::NewL(TUint aVersion)
+EXPORT_C CShowInfo* CShowInfo::NewL(TUint /* aVersion */)
 	{
 	CShowInfo* self = new (ELeave) CShowInfo();
 	CleanupStack::PushL(self);
