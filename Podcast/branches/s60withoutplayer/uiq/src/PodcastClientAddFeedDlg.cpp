@@ -80,9 +80,9 @@ TBool CPodcastClientAddFeedDlg::OkToExitL(TInt aCommandId)
 			{
 			TBuf<200> message;
 			TBuf<100> title;
-			CEikonEnv::Static()->ReadResourceL(message, R_ADD_FEED_EXISTS);
-			CEikonEnv::Static()->ReadResourceL(title, R_ADD_FEED_EXISTS_TITLE);
-			CEikonEnv::Static()->InfoWinL(title, message);
+			iEikonEnv->ReadResourceL(message, R_ADD_FEED_EXISTS);
+			iEikonEnv->ReadResourceL(title, R_ADD_FEED_EXISTS_TITLE);
+			iEikonEnv->InfoWinL(title, message);
 			exitDialog = EFalse;
 			}
 		}
@@ -95,11 +95,11 @@ TBool CPodcastClientAddFeedDlg::OkToExitL(TInt aCommandId)
 			{
 			TBuf<200> message;
 			TBuf<100> title;
-			CEikonEnv::Static()->ReadResourceL(message, R_ADD_FEED_REPLACE);
-			CEikonEnv::Static()->ReadResourceL(title, R_ADD_FEED_REPLACE_TITLE);
+			iEikonEnv->ReadResourceL(message, R_ADD_FEED_REPLACE);
+			iEikonEnv->ReadResourceL(title, R_ADD_FEED_REPLACE_TITLE);
 
 			// Ask the user if it is OK to remove all shows
-			if ( CEikonEnv::Static()->QueryWinL(title, message))
+			if ( iEikonEnv->QueryWinL(title, message))
 				{
 				
 				//----- HACK ---- //
@@ -132,9 +132,9 @@ TBool CPodcastClientAddFeedDlg::OkToExitL(TInt aCommandId)
 					// the feed existed. Object deleted in AddFeed.	
 					TBuf<200> message;
 					TBuf<100> title;
-					CEikonEnv::Static()->ReadResourceL(message, R_ADD_FEED_EXISTS);
-					CEikonEnv::Static()->ReadResourceL(title, R_ADD_FEED_EXISTS_TITLE);
-					CEikonEnv::Static()->InfoWinL(title, message);
+					iEikonEnv->ReadResourceL(message, R_ADD_FEED_EXISTS);
+					iEikonEnv->ReadResourceL(title, R_ADD_FEED_EXISTS_TITLE);
+					iEikonEnv->InfoWinL(title, message);
 					exitDialog = EFalse;
 								
 				}

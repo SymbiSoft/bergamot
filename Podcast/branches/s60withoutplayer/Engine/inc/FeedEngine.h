@@ -32,7 +32,7 @@ public:
 	virtual ~CFeedEngine();
 	
 public:
-	IMPORT_C TBool AddFeed(CFeedInfo *item);
+	IMPORT_C TBool AddFeedL(CFeedInfo *item);
 	IMPORT_C void ImportFeedsL(const TDesC& aFile);
 	IMPORT_C TBool ExportFeedsL(TFileName& aFile);
 	IMPORT_C void RemoveFeed(TUint aUid);
@@ -86,21 +86,21 @@ private:
 	void CompleteL(CHttpClient* aClient, TBool aSuccessful);
 	void FileError(TUint /*aError*/) { }
 	// from FeedParser
-	TBool NewShow(CShowInfo *item);
-	void ParsingComplete(CFeedInfo *item);
+	TBool NewShowL(CShowInfo *item);
+	void ParsingCompleteL(CFeedInfo *item);
 
 	void GetFeedImageL(CFeedInfo *aFeedInfo);
 	void ReplaceString(TDes & aString, const TDesC& aStringToReplace,const TDesC& aReplacement);
-	void CleanHtml(TDes &str);
+	void CleanHtmlL(TDes &str);
 	
 	void UpdateNextFeedL();
 	void NotifyFeedUpdateComplete();
 
 private:
-	void DBLoadFeeds();
+	void DBLoadFeedsL();
 	TBool DBRemoveFeed(TUint aUid);
-	TBool DBAddFeed(CFeedInfo *item);
-	CFeedInfo* DBGetFeedInfoByUid(TUint aFeedUid);	
+	TBool DBAddFeedL(CFeedInfo *item);
+	CFeedInfo* DBGetFeedInfoByUidL(TUint aFeedUid);	
 	TUint DBGetFeedCount();
 	TBool DBUpdateFeed(CFeedInfo *aItem);
 	void DBGetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed);

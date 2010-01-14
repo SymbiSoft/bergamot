@@ -560,7 +560,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 				newFeedInfo->SetTitleL(newFeedInfo->Url());
 				CleanupStack::Pop(newFeedInfo);
 
-				TBool added = iPodcastModel.FeedEngine().AddFeed(newFeedInfo); // takes ownership
+				TBool added = iPodcastModel.FeedEngine().AddFeedL(newFeedInfo); // takes ownership
 				if (!added)
 					{
 					TBuf<200> message;
@@ -645,12 +645,9 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 						{
 						pathName.Append(fileName);
 						TFileName temp;
-						iPodcastModel.FeedEngine().ExportFeedsL(temp);
-						RFs fs;
-						fs.Connect();
-						BaflUtils::CopyFile(fs, temp, pathName);
-						BaflUtils::DeleteFile(fs,temp);
-						fs.Close();
+						iPodcastModel.FeedEngine().ExportFeedsL(temp);						
+						BaflUtils::CopyFile(iEikonEnv->FsSession(), temp, pathName);
+						BaflUtils::DeleteFile(iFs,temp);						
 						}
 					CleanupStack::PopAndDestroy(fileDlg);
 					}
@@ -679,18 +676,18 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 						{
 						TBuf<200> dlgMessage;
 						TBuf<100> dlgTitle;
-						CEikonEnv::Static()->ReadResourceL(dlgMessage, R_ADD_FEED_REPLACE);
-						CEikonEnv::Static()->ReadResourceL(dlgTitle, R_ADD_FEED_REPLACE_TITLE);
+						iEikonEnv->ReadResourceL(dlgMessage, R_ADD_FEED_REPLACE);
+						iEikonEnv->ReadResourceL(dlgTitle, R_ADD_FEED_REPLACE_TITLE);
 
 						// Ask the user if it is OK to remove all shows
-						if ( CEikonEnv::Static()->QueryWinL(dlgTitle, dlgMessage))
+						if ( iEikonEnv->QueryWinL(dlgTitle, dlgMessage))
 							{
 							PodcastUtils::FixProtocolsL(url);
 							
 							//----- HACK ---- //
 							CFeedInfo* temp = CFeedInfo::NewL();
 							temp->SetUrlL(url);
-							TBool added = iPodcastModel.FeedEngine().AddFeed(temp);
+							TBool added = iPodcastModel.FeedEngine().AddFeedL(temp);
 							if (added) {
 								// The Feed URL did not exist
 								// Remove the temp entry so that the correct entry could be changed
@@ -712,9 +709,9 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 								// the feed existed. Object deleted in AddFeed.	
 								TBuf<200> dlgMessage;
 								TBuf<100> dlgTitle;
-								CEikonEnv::Static()->ReadResourceL(dlgMessage, R_ADD_FEED_EXISTS);
-								CEikonEnv::Static()->ReadResourceL(dlgTitle, R_ADD_FEED_EXISTS_TITLE);
-								CEikonEnv::Static()->InfoWinL(dlgTitle, dlgMessage);		
+								iEikonEnv->ReadResourceL(dlgMessage, R_ADD_FEED_EXISTS);
+								iEikonEnv->ReadResourceL(dlgTitle, R_ADD_FEED_EXISTS_TITLE);
+								iEikonEnv->InfoWinL(dlgTitle, dlgMessage);		
 							}
 						}
 					} else { // no url change, maybe title?

@@ -314,6 +314,7 @@ void CPodcastSettingsView::DoActivateL(const TVwsViewId& aPrevViewId,
 	
 	if (iListbox) {
 		delete iListbox;
+		iListbox = NULL;
 	}
 	
 	iListbox =new (ELeave) CPodcastSettingItemList(iPodcastModel);
@@ -354,6 +355,7 @@ void CPodcastSettingsView::DoDeactivate()
 		{
 		iNaviPane->Pop(iNaviDecorator);
 		delete iNaviDecorator;
+		iNaviDecorator = NULL;
 		}
 	DP("CPodcastSettingsView::DoDeactivate END");
 	}

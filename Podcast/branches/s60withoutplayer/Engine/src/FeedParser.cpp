@@ -12,18 +12,17 @@ using namespace Xml;
 
 CFeedParser::CFeedParser(MFeedParserObserver& aCallbacks) : 	iCallbacks(aCallbacks)
 {
+	TInt err = iRfs.Connect();
 }
 
 CFeedParser::~CFeedParser()
 {
+	iRfs.Close();
 }
 
 void CFeedParser::ParseFeedL(const TFileName &feedFileName, CFeedInfo *info, TUint aMaxItems)
 	{
-	//DP1("ParseFeedL BEGIN: %S", &feedFileName);
-	RFs rfs;
-	rfs.Connect();
-	CleanupClosePushL(rfs);
+	//DP1("ParseFeedL BEGIN: %S", &feedFileName);		
 	
 	_LIT8(KXmlMimeType, "text/xml");
 	// Contruct the parser object
@@ -36,10 +35,9 @@ void CFeedParser::ParseFeedL(const TFileName &feedFileName, CFeedInfo *info, TUi
 	iStoppedParsing = EFalse;
 	iEncoding = ELatin1;
 
-	ParseL(*parser, rfs, feedFileName);
+	ParseL(*parser, iRfs, feedFileName);
 
-	CleanupStack::PopAndDestroy(parser);
-	CleanupStack::PopAndDestroy(&rfs); // this makes sure the file was closed
+	CleanupStack::PopAndDestroy(parser);	
 	
 	//DP("ParseFeedL END");
 	}
@@ -64,7 +62,7 @@ void CFeedParser::OnStartDocumentL(const RDocumentParameters& aDocParam, TInt /*
 void CFeedParser::OnEndDocumentL(TInt /*aErrorCode*/)
 	{
 	//DP("OnEndDocumentL()");
-	iCallbacks.ParsingComplete(iActiveFeed);
+	iCallbacks.ParsingCompleteL(iActiveFeed);
 	}
 
 void CFeedParser::OnStartElementL(const RTagInfo& aElement, const RAttributeArray& aAttributes, TInt /*aErrorCode*/)
@@ -236,7 +234,7 @@ void CFeedParser::OnEndElementL(const RTagInfo& aElement, TInt /*aErrorCode*/)
 		case EStateItem:
 			if (str.CompareF(KTagItem) == 0) 
 				{
-				TBool isShowAdded = iCallbacks.NewShow(iActiveShow);
+				TBool isShowAdded = iCallbacks.NewShowL(iActiveShow);
 				if (!isShowAdded)
 					{
 					delete iActiveShow;

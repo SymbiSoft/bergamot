@@ -66,7 +66,7 @@ public:
 	TConnPref& ConnPref();
 	TBool ConnectHttpSessionL(RHTTPSession& aSession);
 	
-	void SetProxyUsageIfNeeded(RHTTPSession& aSession);
+	void SetProxyUsageIfNeededL(RHTTPSession& aSession);
 	void GetProxyInformationForConnectionL(TBool& aIsUsed, HBufC*& aServerName, TUint32& aPort);
 	TInt GetIapId();
 	
@@ -109,7 +109,7 @@ private:
    CTelephonyListener *iTelephonyListener;
    CRemoteControlListener *iRemConListener;
    
-   sqlite3* iDB;
+   sqlite3* iDB;   
 };
 
 #endif // PODCASTMODEL_H

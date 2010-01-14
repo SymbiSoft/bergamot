@@ -79,7 +79,7 @@ private:
 	TUint iItemsParsed;
 	TBool iStoppedParsing;
 	TEncoding iEncoding;
-
+	RFs iRfs;
 };
 
 #endif

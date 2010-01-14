@@ -56,6 +56,7 @@ CPodcastModel::CPodcastModel()
 void CPodcastModel::ConstructL()
 {
 	iEnv = CEikonEnv::Static();
+	
 	iCommDB = CCommsDatabase::NewL (EDatabaseTypeUnspecified);
 	//iCommDB ->ShowHiddenRecords(); // magic
 	iIapNameArray = new (ELeave) CDesCArrayFlat(KDefaultGranu);
@@ -245,20 +246,18 @@ TConnPref& CPodcastModel::ConnPref()
 
 sqlite3* CPodcastModel::DB()
 {
-	if (iDB == NULL) {
-		RFs fs;
-		fs.Connect();
+	if (iDB == NULL) {		
 
 		TFileName dbFileName;
-		fs.PrivatePath(dbFileName);
+		iEnv->FsSession().PrivatePath(dbFileName);
 		dbFileName.Append(KDBFileName);
 		DP1("DB is at %S", &dbFileName);
-		if (!BaflUtils::FileExists(fs, dbFileName)) {
+		if (!BaflUtils::FileExists(iEnv->FsSession(), dbFileName)) {
 			TFileName dbTemplate;
-			fs.PrivatePath(dbTemplate);
+			iEnv->FsSession().PrivatePath(dbTemplate);
 			dbTemplate.Append(KDBTemplateFileName);
 			DP1("No DB found, copying template from %S", &dbTemplate);
-			BaflUtils::CopyFile(fs,dbTemplate,dbFileName);
+			BaflUtils::CopyFile(iEnv->FsSession(), dbTemplate,dbFileName);
 		}
 		
 		TBuf8<KMaxFileName> filename8;
@@ -267,8 +266,7 @@ sqlite3* CPodcastModel::DB()
 		if( rc != SQLITE_OK){
 			DP("Error loading DB");
 			User::Panic(_L("Escarpod"), 10);
-		}
-		fs.Close();
+		}		
 
 	}
 	return iDB;
@@ -337,7 +335,7 @@ TBool CPodcastModel::ConnectHttpSessionL(RHTTPSession &aSession)
 	connInfo.SetPropertyL(pool.StringF(HTTP::EHttpSocketConnection, RHTTPSession::GetTable()), THTTPHdrVal(connPtr));
 	
 	
-	SetProxyUsageIfNeeded(aSession);
+	SetProxyUsageIfNeededL(aSession);
 
 	
 	
@@ -359,7 +357,7 @@ EXPORT_C void CPodcastModel::SetIap(TInt aIap)
 	
 	}
 
-void CPodcastModel::SetProxyUsageIfNeeded(RHTTPSession& aSession)
+void CPodcastModel::SetProxyUsageIfNeededL(RHTTPSession& aSession)
 	{
 	TBool useProxy = EFalse;
 	HBufC* serverName = NULL;
@@ -433,31 +431,31 @@ TInt CPodcastModel::GetIapId()
 EXPORT_C void CPodcastModel::GetAllShows()
 	{
 	iActiveShowList.ResetAndDestroy();
-	iShowEngine->GetAllShows(iActiveShowList);
+	TRAP_IGNORE(iShowEngine->GetAllShowsL(iActiveShowList));
 	}
 
 EXPORT_C void CPodcastModel::GetNewShows()
 	{
 	iActiveShowList.ResetAndDestroy();
-	iShowEngine->GetNewShows(iActiveShowList);	
+	TRAP_IGNORE(iShowEngine->GetNewShowsL(iActiveShowList));	
 	}
 
 EXPORT_C void CPodcastModel::GetShowsDownloaded()
 	{
 	iActiveShowList.ResetAndDestroy();
-	iShowEngine->GetShowsDownloaded(iActiveShowList);
+	TRAP_IGNORE(iShowEngine->GetShowsDownloadedL(iActiveShowList));
 	}
 
 EXPORT_C void CPodcastModel::GetShowsDownloading()
 	{
 	iActiveShowList.ResetAndDestroy();
-	iShowEngine->GetShowsDownloading(iActiveShowList);
+	TRAP_IGNORE(iShowEngine->GetShowsDownloadingL(iActiveShowList));
 	}
 
 EXPORT_C void CPodcastModel::GetShowsByFeed(TUint aFeedUid)
 	{
 	iActiveShowList.ResetAndDestroy();
-	iShowEngine->GetShowsByFeed(iActiveShowList, aFeedUid);
+	TRAP_IGNORE(iShowEngine->GetShowsByFeedL(iActiveShowList, aFeedUid));
 	}
 
 EXPORT_C void CPodcastModel::MarkSelectionPlayed()

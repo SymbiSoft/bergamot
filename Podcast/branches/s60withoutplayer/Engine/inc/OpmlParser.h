@@ -53,7 +53,7 @@ private:
 
 	TBuf<KBufferLength> iBuffer;
 	TEncoding iEncoding;
-
+	RFs iFs;
 };
 
 #endif

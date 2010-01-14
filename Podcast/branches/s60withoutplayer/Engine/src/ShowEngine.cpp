@@ -65,7 +65,7 @@ void CShowEngine::ConstructL()
 	iMetaDataReader->ConstructL();
 	User::LeaveIfError(iApaSession.Connect());
 	CheckFilesL();
-	DownloadNextShow();
+	DownloadNextShowL();
 	}
 
 EXPORT_C void CShowEngine::StopDownloads()
@@ -78,14 +78,14 @@ EXPORT_C void CShowEngine::StopDownloads()
 		}
 	}
 
-EXPORT_C void CShowEngine::ResumeDownloads()
+EXPORT_C void CShowEngine::ResumeDownloadsL()
 	{
 	DP("ResumeDownloads");
 	if (iDownloadsSuspended)
 		{
 		iDownloadsSuspended = EFalse;
 		iDownloadErrors = 0;
-		DownloadNextShow();
+		DownloadNextShowL();
 		}
 	}
 
@@ -104,7 +104,7 @@ EXPORT_C void CShowEngine::RemoveAllDownloads()
 	DBRemoveAllDownloads();
 	}
 
-EXPORT_C TBool CShowEngine::RemoveDownload(TUint aUid)
+EXPORT_C TBool CShowEngine::RemoveDownloadL(TUint aUid)
 	{
 	DP("CShowEngine::RemoveDownload\t Trying to remove download");
 
@@ -118,7 +118,7 @@ EXPORT_C TBool CShowEngine::RemoveDownload(TUint aUid)
 		}
 	else
 		{
-		CShowInfo *info = DBGetShowByUid(aUid);
+		CShowInfo *info = DBGetShowByUidL(aUid);
 		if (info != NULL)
 			{
 			info->SetDownloadState(ENotDownloaded);
@@ -135,7 +135,7 @@ EXPORT_C TBool CShowEngine::RemoveDownload(TUint aUid)
 
 		NotifyShowDownloadUpdated(-1, -1, -1);
 		NotifyDownloadQueueUpdated();
-		DownloadNextShow();
+		DownloadNextShowL();
 		retVal = ETrue;
 		}
 	return retVal;
@@ -203,9 +203,9 @@ void CShowEngine::GetShowL(CShowInfo *info)
 	iShowClient->GetL(info->Url(), filePath);
 	}
 
-TBool CShowEngine::AddShow(CShowInfo *item)
+TBool CShowEngine::AddShowL(CShowInfo *item)
 	{
-	CShowInfo *showInfo = DBGetShowByUid(item->Uid());
+	CShowInfo *showInfo = DBGetShowByUidL(item->Uid());
 
 	if (showInfo == NULL)
 		{
@@ -277,7 +277,7 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TBool aSuccessful)
 				}
 			}
 		}
-	DownloadNextShow();
+	DownloadNextShowL();
 	}
 
 EXPORT_C CShowInfo* CShowEngine::ShowDownloading()
@@ -287,10 +287,10 @@ EXPORT_C CShowInfo* CShowEngine::ShowDownloading()
 
 EXPORT_C CShowInfo* CShowEngine::GetShowByUidL(TUint aShowUid)
 	{
-	return DBGetShowByUid(aShowUid);
+	return DBGetShowByUidL(aShowUid);
 	}
 
-CShowInfo* CShowEngine::DBGetShowByUid(TUint aUid)
+CShowInfo* CShowEngine::DBGetShowByUidL(TUint aUid)
 	{
 	DP("CShowEngine::DBGetShowByUid");
 	CShowInfo *showInfo = NULL;
@@ -310,7 +310,7 @@ CShowInfo* CShowEngine::DBGetShowByUid(TUint aUid)
 		if (rc == SQLITE_ROW)
 			{
 			TRAPD(err, showInfo = CShowInfo::NewL());
-			DBFillShowInfoFromStmt(st, showInfo);
+			DBFillShowInfoFromStmtL(st, showInfo);
 			}
 
 		sqlite3_finalize(st);
@@ -319,7 +319,7 @@ CShowInfo* CShowEngine::DBGetShowByUid(TUint aUid)
 	return showInfo;
 	}
 
-CShowInfo* CShowEngine::DBGetShowByFileName(TFileName aFileName)
+CShowInfo* CShowEngine::DBGetShowByFileNameL(TFileName aFileName)
 	{
 	DP("CShowEngine::DBGetShowByUid");
 	CShowInfo *showInfo = NULL;
@@ -337,7 +337,7 @@ CShowInfo* CShowEngine::DBGetShowByFileName(TFileName aFileName)
 		if (rc == SQLITE_ROW)
 			{
 			TRAPD(err, showInfo = CShowInfo::NewL());
-			DBFillShowInfoFromStmt(st, showInfo);
+			DBFillShowInfoFromStmtL(st, showInfo);
 			}
 
 		sqlite3_finalize(st);
@@ -346,7 +346,7 @@ CShowInfo* CShowEngine::DBGetShowByFileName(TFileName aFileName)
 	return showInfo;
 	}
 
-void CShowEngine::DBGetAllShows(RShowInfoArray& aShowArray)
+void CShowEngine::DBGetAllShowsL(RShowInfoArray& aShowArray)
 	{
 	DP("CShowEngine::DBGetAllShows");
 	CShowInfo *showInfo = NULL;
@@ -370,7 +370,7 @@ void CShowEngine::DBGetAllShows(RShowInfoArray& aShowArray)
 		if (rc == SQLITE_ROW)
 			{
 			TRAPD(err, showInfo = CShowInfo::NewL());
-			DBFillShowInfoFromStmt(st, showInfo);
+			DBFillShowInfoFromStmtL(st, showInfo);
 			aShowArray.Append(showInfo);
 			}
 
@@ -379,7 +379,7 @@ void CShowEngine::DBGetAllShows(RShowInfoArray& aShowArray)
 
 	}
 
-void CShowEngine::DBGetAllDownloads(RShowInfoArray& aShowArray)
+void CShowEngine::DBGetAllDownloadsL(RShowInfoArray& aShowArray)
 	{
 	DP("CShowEngine::DBGetAllDownloads");
 	CShowInfo *showInfo = NULL;
@@ -400,7 +400,7 @@ void CShowEngine::DBGetAllDownloads(RShowInfoArray& aShowArray)
 		while (rc == SQLITE_ROW)
 			{
 			TRAPD(err, showInfo = CShowInfo::NewL());
-			DBFillShowInfoFromStmt(st, showInfo);
+			DBFillShowInfoFromStmtL(st, showInfo);
 			aShowArray.Append(showInfo);
 			rc = sqlite3_step(st);
 			}
@@ -422,7 +422,7 @@ void CShowEngine::DBGetAllDownloads(RShowInfoArray& aShowArray)
 
 	}
 
-CShowInfo* CShowEngine::DBGetNextDownload()
+CShowInfo* CShowEngine::DBGetNextDownloadL()
 	{
 	DP("CShowEngine::DBGetNextDownload");
 	CShowInfo *showInfo = NULL;
@@ -446,7 +446,7 @@ CShowInfo* CShowEngine::DBGetNextDownload()
 		if (rc == SQLITE_ROW)
 			{
 			TRAPD(err, showInfo = CShowInfo::NewL());
-			DBFillShowInfoFromStmt(st, showInfo);
+			DBFillShowInfoFromStmtL(st, showInfo);
 			}
 
 		sqlite3_finalize(st);
@@ -455,7 +455,7 @@ CShowInfo* CShowEngine::DBGetNextDownload()
 	return showInfo;
 	}
 
-void CShowEngine::DBGetShowsByFeed(RShowInfoArray& aShowArray, TUint aFeedUid)
+void CShowEngine::DBGetShowsByFeedL(RShowInfoArray& aShowArray, TUint aFeedUid)
 	{
 	DP1("CShowEngine::DBGetShowsByFeed, feedUid=%u", aFeedUid);
 	CShowInfo *showInfo = NULL;
@@ -494,7 +494,7 @@ void CShowEngine::DBGetShowsByFeed(RShowInfoArray& aShowArray, TUint aFeedUid)
 		while (rc == SQLITE_ROW)
 			{
 			TRAPD(err, showInfo = CShowInfo::NewL());
-			DBFillShowInfoFromStmt(st, showInfo);
+			DBFillShowInfoFromStmtL(st, showInfo);
 			aShowArray.Append(showInfo);
 			rc = sqlite3_step(st);
 			}
@@ -531,7 +531,7 @@ TUint CShowEngine::DBGetDownloadsCount()
 	return count;
 	}
 
-void CShowEngine::DBGetDownloadedShows(RShowInfoArray& aShowArray)
+void CShowEngine::DBGetDownloadedShowsL(RShowInfoArray& aShowArray)
 	{
 	DP("CShowEngine::DBGetDownloadedShows");
 	CShowInfo *showInfo = NULL;
@@ -559,7 +559,7 @@ void CShowEngine::DBGetDownloadedShows(RShowInfoArray& aShowArray)
 		while (rc == SQLITE_ROW)
 			{
 			TRAPD(err, showInfo = CShowInfo::NewL());
-			DBFillShowInfoFromStmt(st, showInfo);
+			DBFillShowInfoFromStmtL(st, showInfo);
 			aShowArray.Append(showInfo);
 			rc = sqlite3_step(st);
 			}
@@ -569,7 +569,7 @@ void CShowEngine::DBGetDownloadedShows(RShowInfoArray& aShowArray)
 
 	}
 
-void CShowEngine::DBGetNewShows(RShowInfoArray& aShowArray)
+void CShowEngine::DBGetNewShowsL(RShowInfoArray& aShowArray)
 	{
 	DP("CShowEngine::DBGetNewShows");
 	CShowInfo *showInfo = NULL;
@@ -587,7 +587,7 @@ void CShowEngine::DBGetNewShows(RShowInfoArray& aShowArray)
 		if (rc == SQLITE_ROW)
 			{
 			TRAPD(err, showInfo = CShowInfo::NewL());
-			DBFillShowInfoFromStmt(st, showInfo);
+			DBFillShowInfoFromStmtL(st, showInfo);
 			aShowArray.Append(showInfo);
 			}
 
@@ -633,7 +633,7 @@ void CShowEngine::DeleteOldShowsByFeed(TUint aFeedUid)
 
 	}
 
-void CShowEngine::DBFillShowInfoFromStmt(sqlite3_stmt *st, CShowInfo* showInfo)
+void CShowEngine::DBFillShowInfoFromStmtL(sqlite3_stmt *st, CShowInfo* showInfo)
 	{
 	const void *urlz = sqlite3_column_text16(st, 0);
 	TPtrC16 url((const TUint16*) urlz);
@@ -906,7 +906,7 @@ CShowInfo* CShowEngine::GetNextShowByTrackL(CShowInfo* aShowInfo)
 	{
 	CShowInfo* nextShow = NULL;
 	RShowInfoArray array;
-	DBGetShowsByFeed(array, aShowInfo->FeedUid());
+	DBGetShowsByFeedL(array, aShowInfo->FeedUid());
 	TUint diff = KMaxTInt;
 	for (TInt loop = 0; loop < array.Count(); loop++)
 		{
@@ -1002,10 +1002,10 @@ EXPORT_C void CShowEngine::DeletePlayedShows(RShowInfoArray &aShowInfoArray)
 		}
 	}
 
-EXPORT_C void CShowEngine::DeleteAllShowsByFeed(TUint aFeedUid, TBool aDeleteFiles)
+EXPORT_C void CShowEngine::DeleteAllShowsByFeedL(TUint aFeedUid, TBool aDeleteFiles)
 	{
 	RShowInfoArray array;
-	DBGetShowsByFeed(array, aFeedUid);
+	DBGetShowsByFeedL(array, aFeedUid);
 
 	const TInt count = array.Count();
 
@@ -1023,10 +1023,10 @@ EXPORT_C void CShowEngine::DeleteAllShowsByFeed(TUint aFeedUid, TBool aDeleteFil
 	DBDeleteAllShowsByFeed(aFeedUid);
 	}
 
-EXPORT_C void CShowEngine::DeleteShow(TUint aShowUid, TBool aRemoveFile)
+EXPORT_C void CShowEngine::DeleteShowL(TUint aShowUid, TBool aRemoveFile)
 	{
 
-	CShowInfo *info = DBGetShowByUid(aShowUid);
+	CShowInfo *info = DBGetShowByUidL(aShowUid);
 
 	if (info != NULL)
 		{
@@ -1041,34 +1041,34 @@ EXPORT_C void CShowEngine::DeleteShow(TUint aShowUid, TBool aRemoveFile)
 		}
 	}
 
-void CShowEngine::GetShowsByFeed(RShowInfoArray& aShowArray, TUint aFeedUid)
+void CShowEngine::GetShowsByFeedL(RShowInfoArray& aShowArray, TUint aFeedUid)
 	{
 	DP("CShowEngine::GetShowsByFeed");
-	DBGetShowsByFeed(aShowArray, aFeedUid);
+	DBGetShowsByFeedL(aShowArray, aFeedUid);
 	}
 
-void CShowEngine::GetAllShows(RShowInfoArray &aArray)
+void CShowEngine::GetAllShowsL(RShowInfoArray &aArray)
 	{
 	DP("CShowEngine::GetAllShows");
-	DBGetAllShows(aArray);
+	DBGetAllShowsL(aArray);
 	}
 
-void CShowEngine::GetShowsDownloaded(RShowInfoArray &aArray)
+void CShowEngine::GetShowsDownloadedL(RShowInfoArray &aArray)
 	{
 	DP("CShowEngine::GetShowsDownloaded");
-	DBGetDownloadedShows(aArray);
+	DBGetDownloadedShowsL(aArray);
 	}
 
-void CShowEngine::GetNewShows(RShowInfoArray &aArray)
+void CShowEngine::GetNewShowsL(RShowInfoArray &aArray)
 	{
 	DP("CShowEngine::GetNewShows");
-	DBGetNewShows(aArray);
+	DBGetNewShowsL(aArray);
 	}
 
-void CShowEngine::GetShowsDownloading(RShowInfoArray &aArray)
+void CShowEngine::GetShowsDownloadingL(RShowInfoArray &aArray)
 	{
 	DP("CShowEngine::GetShowsDownloading");
-	DBGetAllDownloads(aArray);
+	DBGetAllDownloadsL(aArray);
 	}
 
 EXPORT_C TInt CShowEngine::GetNumDownloadingShowsL()
@@ -1076,15 +1076,15 @@ EXPORT_C TInt CShowEngine::GetNumDownloadingShowsL()
 	return (const TInt) DBGetDownloadsCount();
 	}
 
-EXPORT_C void CShowEngine::AddDownload(CShowInfo *info)
+EXPORT_C void CShowEngine::AddDownloadL(CShowInfo *info)
 	{
 	info->SetDownloadState(EQueued);
 	DBUpdateShow(info);
 	DBAddDownload(info->Uid());
-	DownloadNextShow();
+	DownloadNextShowL();
 	}
 
-void CShowEngine::DownloadNextShow()
+void CShowEngine::DownloadNextShowL()
 	{
 	// Check if we have anything in the download queue
 	const TInt count = DBGetDownloadsCount();
@@ -1109,7 +1109,7 @@ void CShowEngine::DownloadNextShow()
 			{
 
 			// Start the download
-			CShowInfo *info = DBGetNextDownload();
+			CShowInfo *info = DBGetNextDownloadL();
 			if (info != NULL)
 				{
 				DP1("CShowEngine::DownloadNextShow\tDownloading: %S", &(info->Title()));
@@ -1210,7 +1210,7 @@ void CShowEngine::ListDirL(TFileName &folder)
 				continue;
 				}
 
-			CShowInfo *exists = DBGetShowByFileName(pathName);
+			CShowInfo *exists = DBGetShowByFileNameL(pathName);
 
 			if (exists)
 				{
@@ -1247,7 +1247,7 @@ EXPORT_C void CShowEngine::CheckFilesL()
 	// check to see if any downloaded files were removed
 
 	RShowInfoArray array;
-	GetShowsDownloaded(array);
+	GetShowsDownloadedL(array);
 	for (TInt i = 0; i < array.Count(); i++)
 		{
 		if (!BaflUtils::FileExists(iFs, array[i]->FileName()))

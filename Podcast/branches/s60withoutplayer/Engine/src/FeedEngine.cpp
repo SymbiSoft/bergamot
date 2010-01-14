@@ -30,7 +30,7 @@ void CFeedEngine::ConstructL()
     if (DBGetFeedCount() > 0) {
 		DP("Loading feeds from DB");
 		
-		DBLoadFeeds();
+		DBLoadFeedsL();
 
     } else {
     	DP("No feeds in DB, loading default feeds");
@@ -198,14 +198,14 @@ EXPORT_C TBool CFeedEngine::UpdateFeedL(TUint aFeedUid)
 
 	}
 
-TBool CFeedEngine::NewShow(CShowInfo *item)
+TBool CFeedEngine::NewShowL(CShowInfo *item)
 	{
 	//DP4("\nTitle: %S\nURL: %S\nDescription length: %d\nFeed: %d", &(item->Title()), &(item->Url()), item->Description().Length(), item->FeedUid());
 	
 	HBufC* description = HBufC::NewLC(2048);
 	TPtr ptr(description->Des());
 	ptr.Copy(item->Description());
-	CleanHtml(ptr);
+	CleanHtmlL(ptr);
 	//DP1("New show has feed ID: %u") item->FeedUid());
 	TRAP_IGNORE(item->SetDescriptionL(*description));
 	CleanupStack::PopAndDestroy(description);
@@ -218,11 +218,11 @@ TBool CFeedEngine::NewShow(CShowInfo *item)
 		}
 	}
 	
-	TBool isShowAdded = iPodcastModel.ShowEngine().AddShow(item);
+	TBool isShowAdded = iPodcastModel.ShowEngine().AddShowL(item);
 
 	if (!iCatchupMode && isShowAdded && iPodcastModel.SettingsEngine().DownloadAutomatically()) 
 		{
-		iPodcastModel.ShowEngine().AddDownload(item);
+		iPodcastModel.ShowEngine().AddDownloadL(item);
 		}	
 	return isShowAdded;
 	}
@@ -311,7 +311,7 @@ void CFeedEngine::ReplaceString(TDes & aString, const TDesC& aStringToReplace,
 
 	}
 
-EXPORT_C TBool CFeedEngine::AddFeed(CFeedInfo *aItem) 
+EXPORT_C TBool CFeedEngine::AddFeedL(CFeedInfo *aItem) 
 	{
 	DP2("CFeedEngine::AddFeed, title=%S, URL=%S", &aItem->Title(), &aItem->Url());
 	for (TInt i=0;i<iSortedFeeds.Count();i++) 
@@ -329,16 +329,16 @@ EXPORT_C TBool CFeedEngine::AddFeed(CFeedInfo *aItem)
 	iSortedFeeds.InsertInOrder(aItem, sortOrder);
 
 	// Save the feeds into DB
-	DBAddFeed(aItem);
+	DBAddFeedL(aItem);
 	return ETrue;
 	}
 
-TBool CFeedEngine::DBAddFeed(CFeedInfo *aItem)
+TBool CFeedEngine::DBAddFeedL(CFeedInfo *aItem)
 	{
 	DP2("CFeedEngine::DBAddFeed, title=%S, URL=%S", &aItem->Title(), &aItem->Url());
 	
 	CFeedInfo *info;
-	if ((info = DBGetFeedInfoByUid(aItem->Uid())) != NULL) {
+	if ((info = DBGetFeedInfoByUidL(aItem->Uid())) != NULL) {
 		DP("Feed already exists!");
 		delete info;
 		return EFalse;
@@ -377,7 +377,7 @@ EXPORT_C void CFeedEngine::RemoveFeed(TUint aUid)
 		{
 		if (iSortedFeeds[i]->Uid() == aUid) 
 			{
-			iPodcastModel.ShowEngine().DeleteAllShowsByFeed(aUid);
+			iPodcastModel.ShowEngine().DeleteAllShowsByFeedL(aUid);
 					
 			CFeedInfo* feedToRemove = iSortedFeeds[i];
 			
@@ -470,11 +470,11 @@ TBool CFeedEngine::DBUpdateFeed(CFeedInfo *aItem)
 	
 	}
 
-void CFeedEngine::ParsingComplete(CFeedInfo *item)
+void CFeedEngine::ParsingCompleteL(CFeedInfo *item)
 	{
 	TBuf<1024> title;
 	title.Copy(item->Title());
-	CleanHtml(title);
+	TRAP_IGNORE(CleanHtmlL(title));
 	TRAP_IGNORE(item->SetTitleL(title));
 	DBUpdateFeed(item);
 	for (int i=0;i<iObservers.Count();i++) {
@@ -746,7 +746,7 @@ EXPORT_C void CFeedEngine::AddBookChaptersL(CFeedInfo& aFeedInfo, CDesCArrayFlat
 	TEntry fileInfo;
 	RShowInfoArray showArray;
 	CleanupClosePushL(showArray);
-	iPodcastModel.ShowEngine().GetShowsByFeed(showArray, aFeedInfo.Uid());
+	iPodcastModel.ShowEngine().GetShowsByFeedL(showArray, aFeedInfo.Uid());
 	TInt offset = showArray.Count();
 	CleanupStack::PopAndDestroy();// close showArray
 
@@ -771,7 +771,7 @@ EXPORT_C void CFeedEngine::AddBookChaptersL(CFeedInfo& aFeedInfo, CDesCArrayFlat
 		}
 		
 		showInfo->SetPlayState(ENeverPlayed);
-		iPodcastModel.ShowEngine().AddShow(showInfo);			
+		iPodcastModel.ShowEngine().AddShowL(showInfo);			
 		iPodcastModel.ShowEngine().MetaDataReader().SubmitShowL(showInfo);
 		
 		CleanupStack::Pop(showInfo);
@@ -830,7 +830,7 @@ EXPORT_C void CFeedEngine::RemoveBookL(TUint aUid)
 		{
 		if (iSortedBooks[i]->Uid() == aUid) 
 			{
-			iPodcastModel.ShowEngine().DeleteAllShowsByFeed(aUid, EFalse);
+			iPodcastModel.ShowEngine().DeleteAllShowsByFeedL(aUid, EFalse);
 					
 			CFeedInfo* feedToRemove = iSortedBooks[i];					
 				
@@ -859,7 +859,7 @@ EXPORT_C const RFeedInfoArray& CFeedEngine::GetSortedBooks()
 	return iSortedBooks;
 }
 
-void CFeedEngine::CleanHtml(TDes &str)
+void CFeedEngine::CleanHtmlL(TDes &str)
 {
 	ReplaceString(str, _L("\n"), _L(""));
 
@@ -1018,7 +1018,7 @@ TUint CFeedEngine::DBGetFeedCount()
 	  return size;
 }
 
-void CFeedEngine::DBLoadFeeds()
+void CFeedEngine::DBLoadFeedsL()
 	{
 	DP("DBLoadFeeds BEGIN");
 	iSortedFeeds.Reset();
@@ -1099,7 +1099,7 @@ void CFeedEngine::DBLoadFeeds()
 	DP("DBLoadFeeds END");
 	}
 
-CFeedInfo* CFeedEngine::DBGetFeedInfoByUid(TUint aFeedUid)
+CFeedInfo* CFeedEngine::DBGetFeedInfoByUidL(TUint aFeedUid)
 	{
 	DP("CFeedEngine::DBGetFeedInfoByUid");
 	CFeedInfo *feedInfo = NULL;

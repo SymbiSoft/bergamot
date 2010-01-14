@@ -40,7 +40,7 @@ void CSettingsEngine::ConstructL()
 	iIap = 0;
 	iSeekStepTime = KDefaultSeekTime;
 	// Connect to file system		
-	iFs.Connect();
+	User::LeaveIfError( iFs.Connect() );
 	
 	// Check that our basedir exist. Create it otherwise;
 	GetDefaultBaseDirL(iBaseDir);

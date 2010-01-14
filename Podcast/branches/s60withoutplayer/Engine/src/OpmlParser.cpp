@@ -11,18 +11,17 @@ using namespace Xml;
 
 COpmlParser::COpmlParser(CFeedEngine& aFeedEngine) : iFeedEngine(aFeedEngine)
 {
+	TInt err = iFs.Connect();
 }
 
 COpmlParser::~COpmlParser()
 {
+	iFs.Close();
 }
 
 void COpmlParser::ParseOpmlL(const TFileName &feedFileName)
 	{
 	DP1("ParseOpmlL BEGIN: %S", &feedFileName);
-	RFs rfs;
-	rfs.Connect();
-	CleanupClosePushL(rfs);
 	
 	_LIT8(KXmlMimeType, "text/xml");
 	// Contruct the parser object
@@ -30,10 +29,9 @@ void COpmlParser::ParseOpmlL(const TFileName &feedFileName)
 	iOpmlState = EStateOpmlRoot;
 	iEncoding = EUtf8;
 
-	ParseL(*parser, rfs, feedFileName);
+	ParseL(*parser, iFs, feedFileName);
 
-	CleanupStack::PopAndDestroy(parser);
-	CleanupStack::PopAndDestroy(&rfs); // this makes sure the file was closed
+	CleanupStack::PopAndDestroy(parser);	
 	//DP("ParseFeedL END");
 	}
 
@@ -108,7 +106,7 @@ void COpmlParser::OnStartElementL(const RTagInfo& aElement, const RAttributeArra
 				newFeed->SetTitleL(newFeed->Url());
 			}
 			
-			iFeedEngine.AddFeed(newFeed);
+			iFeedEngine.AddFeedL(newFeed);
 		}
 		break;
 	default:

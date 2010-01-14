@@ -753,7 +753,7 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 			}
 			break;
 		case EPodcastUpdateLibrary:
-			HBufC* str = CEikonEnv::Static()->AllocReadResourceLC(R_PODCAST_FEEDS_UPDATE_MESSAGE);
+			HBufC* str = iEikonEnv->AllocReadResourceLC(R_PODCAST_FEEDS_UPDATE_MESSAGE);
 			User::InfoPrint(*str);
 			CleanupStack::PopAndDestroy(str);
 			iPodcastModel.ShowEngine().CheckFilesL();
@@ -794,7 +794,7 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 
 			if (iPodcastModel.ActiveFeedInfo()->Url().Length()>0)
 				{
-				HBufC* str = CEikonEnv::Static()->AllocReadResourceLC(R_PODCAST_FEEDS_UPDATE_MESSAGE);
+				HBufC* str = iEikonEnv->AllocReadResourceLC(R_PODCAST_FEEDS_UPDATE_MESSAGE);
 				User::InfoPrint(*str);
 				CleanupStack::PopAndDestroy(str);
 				TRAPD(error, iPodcastModel.FeedEngine().UpdateFeedL(iPodcastModel.ActiveFeedInfo()->Uid()))
@@ -804,7 +804,7 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 					{
 					HBufC
 							* str =
-									CEikonEnv::Static()->AllocReadResourceLC(R_PODCAST_FEEDS_UPDATE_ERROR);
+							iEikonEnv->AllocReadResourceLC(R_PODCAST_FEEDS_UPDATE_ERROR);
 					User::InfoPrint(*str);
 					CleanupStack::PopAndDestroy(str);
 					}

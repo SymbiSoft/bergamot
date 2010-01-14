@@ -261,13 +261,13 @@ void CPodcastClientShowsView::HandleCommandL(CQikCommand& aCommand)
 			iDisableCatchupMode = EFalse;
 				
 			if (iPodcastModel.ActiveFeedInfo()->Url().Length()>0) {
-					HBufC* str = CEikonEnv::Static()->AllocReadResourceLC(R_PODCAST_FEEDS_UPDATE_MESSAGE);
+					HBufC* str = iEikonEnv->AllocReadResourceLC(R_PODCAST_FEEDS_UPDATE_MESSAGE);
 					User::InfoPrint(*str);
 					CleanupStack::PopAndDestroy(str);
 					TRAPD(error, iPodcastModel.FeedEngine().UpdateFeedL(iPodcastModel.ActiveFeedInfo()->Uid()));
 					
 					if (error != KErrNone) {
-						HBufC* str = CEikonEnv::Static()->AllocReadResourceLC(R_PODCAST_FEEDS_UPDATE_ERROR);
+						HBufC* str = iEikonEnv->AllocReadResourceLC(R_PODCAST_FEEDS_UPDATE_ERROR);
 						User::InfoPrint(*str);
 						CleanupStack::PopAndDestroy(str);
 					}

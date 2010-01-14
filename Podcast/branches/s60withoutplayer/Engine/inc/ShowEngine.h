@@ -17,12 +17,12 @@ public:
 	virtual ~CShowEngine();
 	
 public:
-	IMPORT_C void AddDownload(CShowInfo *info);
-	IMPORT_C TBool RemoveDownload(TUint aUid);
+	IMPORT_C void AddDownloadL(CShowInfo *info);
+	IMPORT_C TBool RemoveDownloadL(TUint aUid);
 	IMPORT_C void RemoveAllDownloads();
 
 	IMPORT_C void StopDownloads();
-	IMPORT_C void ResumeDownloads();
+	IMPORT_C void ResumeDownloadsL();
 	IMPORT_C TBool DownloadsStopped();
 
 	IMPORT_C TInt GetNumDownloadingShowsL();
@@ -31,18 +31,18 @@ public:
 	CShowInfo* GetNextShowByTrackL(CShowInfo* aShowInfo);
 	
 	// show access methods
-	void GetAllShows(RShowInfoArray &aArray);
-	void GetShowsByFeed(RShowInfoArray &aArray, TUint aFeedUid);
-	void GetShowsDownloaded(RShowInfoArray &aArray);
-	void GetNewShows(RShowInfoArray &aArray);
-	void GetShowsDownloading(RShowInfoArray &aArray);
-	CShowInfo* DBGetShowByFileName(TFileName aFileName);
+	void GetAllShowsL(RShowInfoArray &aArray);
+	void GetShowsByFeedL(RShowInfoArray &aArray, TUint aFeedUid);
+	void GetShowsDownloadedL(RShowInfoArray &aArray);
+	void GetNewShowsL(RShowInfoArray &aArray);
+	void GetShowsDownloadingL(RShowInfoArray &aArray);
+	CShowInfo* DBGetShowByFileNameL(TFileName aFileName);
 	
 	void CompleteL(CHttpClient* aClient, TBool aSuccessful);
-	TBool AddShow(CShowInfo *item);
+	TBool AddShowL(CShowInfo *item);
 	IMPORT_C void DeletePlayedShows(RShowInfoArray &aShowInfoArray);
-	IMPORT_C void DeleteAllShowsByFeed(TUint aFeedUid,TBool aDeleteFiles=ETrue);
-	IMPORT_C void DeleteShow(TUint aShowUid, TBool aRemoveFile=ETrue);
+	IMPORT_C void DeleteAllShowsByFeedL(TUint aFeedUid,TBool aDeleteFiles=ETrue);
+	IMPORT_C void DeleteShowL(TUint aShowUid, TBool aRemoveFile=ETrue);
 	void DeleteOldShowsByFeed(TUint aFeedUid);
 	
 	IMPORT_C void CheckFilesL();
@@ -74,7 +74,7 @@ private:
 	void NotifyDownloadQueueUpdated();
 	void NotifyShowDownloadUpdated(TInt aPercentOfCurrentDownload, TInt aBytesOfCurrentDownload, TInt aBytesTotal);
 
-	void DownloadNextShow();
+	void DownloadNextShowL();
 	void ListDirL(TFileName &folder);
 
 	static TInt CompareShowsByDate(const CShowInfo &a, const CShowInfo &b);
@@ -84,22 +84,22 @@ private:
 	
 private:
 	// DB methods
-	CShowInfo* DBGetShowByUid(TUint aUid);
-	void DBFillShowInfoFromStmt(sqlite3_stmt *st, CShowInfo* showInfo);
+	CShowInfo* DBGetShowByUidL(TUint aUid);
+	void DBFillShowInfoFromStmtL(sqlite3_stmt *st, CShowInfo* showInfo);
 	TBool DBAddShow(CShowInfo *aItem);
 	TBool DBUpdateShow(CShowInfo *aItem);
-	void DBGetShowsByFeed(RShowInfoArray& aShowArray, TUint aFeedUid);
-	void DBGetAllShows(RShowInfoArray& aShowArray);
-	void DBGetNewShows(RShowInfoArray& aShowArray);
-	void DBGetDownloadedShows(RShowInfoArray& aShowArray);
+	void DBGetShowsByFeedL(RShowInfoArray& aShowArray, TUint aFeedUid);
+	void DBGetAllShowsL(RShowInfoArray& aShowArray);
+	void DBGetNewShowsL(RShowInfoArray& aShowArray);
+	void DBGetDownloadedShowsL(RShowInfoArray& aShowArray);
 	TBool DBDeleteAllShowsByFeed(TUint aFeedUid);
 	TBool DBDeleteShow(TUint aUid);
 	void DBRemoveAllDownloads();
 	void DBRemoveDownload(TUint aUid);
-	void DBGetAllDownloads(RShowInfoArray& aShowArray);
+	void DBGetAllDownloadsL(RShowInfoArray& aShowArray);
 	TUint DBGetDownloadsCount();
 	void DBAddDownload(TUint aUid);
-	CShowInfo* DBGetNextDownload();
+	CShowInfo* DBGetNextDownloadL();
 	
 private:
 	CHttpClient* iShowClient;

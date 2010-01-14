@@ -18,24 +18,24 @@ EXPORTS
 	_ZN11CFeedEngine16GetFeedInfoByUidEj @ 17 NONAME
 	_ZN11CFeedEngine18GetDownloadedStatsERjS0_ @ 18 NONAME
 	_ZN11CFeedEngine21CancelUpdateAllFeedsLEv @ 19 NONAME
-	_ZN11CFeedEngine7AddFeedEP9CFeedInfo @ 20 NONAME
-	_ZN11CFeedEngine8AddBookLERK7TDesC16P16CDesC16ArrayFlat @ 21 NONAME
-	_ZN11CShowEngine10DeleteShowEji @ 22 NONAME
-	_ZN11CShowEngine10UpdateShowEP9CShowInfo @ 23 NONAME
-	_ZN11CShowEngine11AddDownloadEP9CShowInfo @ 24 NONAME
-	_ZN11CShowEngine11AddObserverEP19MShowEngineObserver @ 25 NONAME
-	_ZN11CShowEngine11CheckFilesLEv @ 26 NONAME
-	_ZN11CShowEngine11GetMimeTypeERK7TDesC16R6TDes16 @ 27 NONAME
+	_ZN11CFeedEngine8AddBookLERK7TDesC16P16CDesC16ArrayFlat @ 20 NONAME
+	_ZN11CFeedEngine8AddFeedLEP9CFeedInfo @ 21 NONAME
+	_ZN11CShowEngine10UpdateShowEP9CShowInfo @ 22 NONAME
+	_ZN11CShowEngine11AddObserverEP19MShowEngineObserver @ 23 NONAME
+	_ZN11CShowEngine11CheckFilesLEv @ 24 NONAME
+	_ZN11CShowEngine11DeleteShowLEji @ 25 NONAME
+	_ZN11CShowEngine11GetMimeTypeERK7TDesC16R6TDes16 @ 26 NONAME
+	_ZN11CShowEngine12AddDownloadLEP9CShowInfo @ 27 NONAME
 	_ZN11CShowEngine13GetShowByUidLEj @ 28 NONAME
 	_ZN11CShowEngine13StopDownloadsEv @ 29 NONAME
-	_ZN11CShowEngine14RemoveDownloadEj @ 30 NONAME
-	_ZN11CShowEngine14RemoveObserverEP19MShowEngineObserver @ 31 NONAME
-	_ZN11CShowEngine15ResumeDownloadsEv @ 32 NONAME
-	_ZN11CShowEngine15ShowDownloadingEv @ 33 NONAME
-	_ZN11CShowEngine16DownloadsStoppedEv @ 34 NONAME
+	_ZN11CShowEngine14RemoveObserverEP19MShowEngineObserver @ 30 NONAME
+	_ZN11CShowEngine15RemoveDownloadLEj @ 31 NONAME
+	_ZN11CShowEngine15ShowDownloadingEv @ 32 NONAME
+	_ZN11CShowEngine16DownloadsStoppedEv @ 33 NONAME
+	_ZN11CShowEngine16ResumeDownloadsLEv @ 34 NONAME
 	_ZN11CShowEngine17DeletePlayedShowsER13RPointerArrayI9CShowInfoE @ 35 NONAME
 	_ZN11CShowEngine18RemoveAllDownloadsEv @ 36 NONAME
-	_ZN11CShowEngine20DeleteAllShowsByFeedEji @ 37 NONAME
+	_ZN11CShowEngine21DeleteAllShowsByFeedLEji @ 37 NONAME
 	_ZN11CShowEngine23GetNumDownloadingShowsLEv @ 38 NONAME
 	_ZN12CSoundEngine10VolumeDownEv @ 39 NONAME
 	_ZN12CSoundEngine11AddObserverEP20MSoundEngineObserver @ 40 NONAME
