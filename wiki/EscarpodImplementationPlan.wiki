@@ -22,7 +22,7 @@ All the below issues are also [http://code.google.com/p/bergamot/issues/list?q=l
     * Integrate with Music player
   * Fix UI issues
     * Single/multi tap inconsistencies
-      * But consider that S^3 has changed behavior here
+      * But consider that S^3 has changed behavior here (See [http://developer.symbian.org/wiki/index.php/Prop/Improve_Single_Tap_Support the PDFs here])
     * Screen rotation in all views
     * Common icons with S60
     * Rearrange menu items
