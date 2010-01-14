@@ -371,7 +371,7 @@ TBool CFeedEngine::DBAddFeedL(CFeedInfo *aItem)
 	return EFalse;
 	}
 
-EXPORT_C void CFeedEngine::RemoveFeed(TUint aUid) 
+EXPORT_C void CFeedEngine::RemoveFeedL(TUint aUid) 
 	{
 	for (int i=0;i<iSortedFeeds.Count();i++) 
 		{

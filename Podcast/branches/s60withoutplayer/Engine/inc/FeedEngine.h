@@ -35,7 +35,7 @@ public:
 	IMPORT_C TBool AddFeedL(CFeedInfo *item);
 	IMPORT_C void ImportFeedsL(const TDesC& aFile);
 	IMPORT_C TBool ExportFeedsL(TFileName& aFile);
-	IMPORT_C void RemoveFeed(TUint aUid);
+	IMPORT_C void RemoveFeedL(TUint aUid);
 	IMPORT_C TBool UpdateFeedL(TUint aFeedUid);
 	IMPORT_C void UpdateAllFeedsL();
 	IMPORT_C void CancelUpdateAllFeedsL();
