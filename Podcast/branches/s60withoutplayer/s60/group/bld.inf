@@ -1,0 +1,9 @@
+#include "..\..\engine\group\bld.inf"
+
+PRJ_PLATFORMS
+GCCE
+WINSCW
+
+PRJ_MMPFILES
+gnumakefile icons.mk
+Podcast.mmp
