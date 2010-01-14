@@ -1009,7 +1009,7 @@ void CPodcastFeedView::HandleAddNewAudioBookL()
 			delete dirPtr;
 			CleanupStack::PopAndDestroy(dirScan);
 			
-			TBuf<256> title;
+			TBuf<KMaxMessageLength> title;
 			CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(title);
 		
 			HBufC* inputprompt= iEikonEnv->AllocReadResourceLC(R_PODCAST_ADDBOOK_PROMPT);			
