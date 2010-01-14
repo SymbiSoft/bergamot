@@ -31,7 +31,7 @@ All the below issues are also [http://code.google.com/p/bergamot/issues/list?q=l
   * Update settings
     * Make it simpler for users?
   * Rename to Podcasting
-  * Change license to EPL
+  * [EscarpodLicenseText Change license to EPL]
   * Move to Symbian Mercurial repositories
   * Implement podcast browsing and search
   * Create daemon that starts with your phone?
