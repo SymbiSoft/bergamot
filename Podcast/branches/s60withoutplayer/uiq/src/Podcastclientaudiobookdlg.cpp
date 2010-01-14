@@ -23,7 +23,7 @@ TDataType CPodcastClientAudioBookDlg::GetMimeTypeL(const TDesC& fileName)
 {
 	TDataType type;
 	RFile File;
-	User::LeaveIfError(File.Open(CEikonEnv::Static()->FsSession(), fileName, EFileShareExclusive|EFileRead));
+	User::LeaveIfError(File.Open(iEikonEnv->FsSession(), fileName, EFileShareExclusive|EFileRead));
 
 	TBuf8<512> fileBuf;
 	File.Read(0, fileBuf);

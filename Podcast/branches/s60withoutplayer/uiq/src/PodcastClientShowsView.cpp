@@ -221,7 +221,7 @@ void CPodcastClientShowsView::HandleCommandL(CQikCommand& aCommand)
 					}
 			}break;
 		case EPodcastUpdateLibrary:
-			HBufC* str = CEikonEnv::Static()->AllocReadResourceLC(R_PODCAST_FEEDS_UPDATE_MESSAGE);
+			HBufC* str = iEikonEnv->AllocReadResourceLC(R_PODCAST_FEEDS_UPDATE_MESSAGE);
 			User::InfoPrint(*str);
 			CleanupStack::PopAndDestroy(str);
 			iPodcastModel.ShowEngine().CheckFilesL();

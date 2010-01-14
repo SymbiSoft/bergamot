@@ -647,7 +647,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 						TFileName temp;
 						iPodcastModel.FeedEngine().ExportFeedsL(temp);						
 						BaflUtils::CopyFile(iEikonEnv->FsSession(), temp, pathName);
-						BaflUtils::DeleteFile(iFs,temp);						
+						BaflUtils::DeleteFile(iEikonEnv->FsSession(),temp);						
 						}
 					CleanupStack::PopAndDestroy(fileDlg);
 					}
@@ -694,7 +694,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 								iPodcastModel.FeedEngine().RemoveFeed(temp->Uid());	
 								
 								// user has accepted that shows will be deleted
-								iPodcastModel.ShowEngine().DeleteAllShowsByFeed(info->Uid());
+								iPodcastModel.ShowEngine().DeleteAllShowsByFeedL(info->Uid());
 
 								// update URL
 								info->SetUrlL(url);	
@@ -979,7 +979,7 @@ void CPodcastFeedView::HandleAddNewAudioBookL()
 
 		if(dlg->ExecuteL(importName))
 			{			
-			CDirScan *dirScan = CDirScan::NewLC(fs);
+			CDirScan *dirScan = CDirScan::NewLC(iEikonEnv->FsSession());
 			//DP1("Listing dir: %S", &folder);
 			dirScan ->SetScanDataL(importName, KEntryAttDir, ESortByName);
 

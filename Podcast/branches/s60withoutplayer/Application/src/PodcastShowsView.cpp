@@ -740,11 +740,11 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 					{
 					if (isBook)
 						{
-						iPodcastModel.ShowEngine().DeleteShow(iPodcastModel.ActiveShowList()[index]->Uid(), EFalse);
+						iPodcastModel.ShowEngine().DeleteShowL(iPodcastModel.ActiveShowList()[index]->Uid(), EFalse);
 						}
 					else
 						{
-						iPodcastModel.ShowEngine().DeleteShow(iPodcastModel.ActiveShowList()[index]->Uid());
+						iPodcastModel.ShowEngine().DeleteShowL(iPodcastModel.ActiveShowList()[index]->Uid());
 						}
 					
 					UpdateListboxItemsL();
@@ -775,7 +775,7 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 			TInt index = iListContainer->Listbox()->CurrentItemIndex();
 			if (index >= 0 && index < iPodcastModel.ActiveShowList().Count())
 				{
-				iPodcastModel.ShowEngine().AddDownload(iPodcastModel.ActiveShowList()[index]);
+				iPodcastModel.ShowEngine().AddDownloadL(iPodcastModel.ActiveShowList()[index]);
 				UpdateShowItemL(iPodcastModel.ActiveShowList()[index]->Uid(),-1);
 				}
 			}
@@ -826,7 +826,7 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 			TInt index = iListContainer->Listbox()->CurrentItemIndex();
 			if (index >= 0 && index < iPodcastModel.ActiveShowList().Count())
 				{
-				if (iPodcastModel.ShowEngine().RemoveDownload(iPodcastModel.ActiveShowList()[index]->Uid()))
+				if (iPodcastModel.ShowEngine().RemoveDownloadL(iPodcastModel.ActiveShowList()[index]->Uid()))
 					{
 						iItemArray->Delete(index);
 						iItemIdArray.Remove(index);						
@@ -849,7 +849,7 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 			break;
 		case EPodcastResumeDownloads:
 			{
-			iPodcastModel.ShowEngine().ResumeDownloads();
+			iPodcastModel.ShowEngine().ResumeDownloadsL();
 			UpdateListboxItemsL();
 			}
 			break;
