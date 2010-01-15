@@ -62,7 +62,6 @@ START BITMAP Podcast.mbm
 END
 
 SYSTEMINCLUDE   \epoc32\include
-SYSTEMINCLUDE   \epoc32\include\libc
 SYSTEMINCLUDE \epoc32\include\mmf\common 
 SYSTEMINCLUDE \epoc32\include\domain\middleware
 
@@ -112,23 +111,11 @@ LIBRARY eikcdlg.lib
 LIBRARY	efsrv.lib
 LIBRARY	aknicon.lib
 LIBRARY	gdi.lib
-LIBRARY	etel3rdparty.lib
-LIBRARY	mediaclientaudio.lib
-LIBRARY	http.lib 
 LIBRARY eikctl.lib 
-LIBRARY	inetprotutil.lib
 LIBRARY	charconv.lib
-LIBRARY	xmlframework.lib
-LIBRARY remconcoreapi.lib
-LIBRARY remconinterfacebase.lib
 LIBRARY	flogger.lib
 LIBRARY	apmime.lib 
-LIBRARY estlib.lib
-LIBRARY	ezlib.lib
 LIBRARY	estor.lib 
-LIBRARY	commdb.lib
-LIBRARY esock.lib
-LIBRARY mmfcontrollerframework.lib 
 LIBRARY apgrfx.lib
 LIBRARY CommonDialogs.lib
 LIBRARY aknskins.lib 

@@ -34,7 +34,7 @@
 */
 #ifndef _SQLITE3_H_
 #define _SQLITE3_H_
-#include <stdarg.h>     /* Needed for the definition of va_list */
+
 /*
 ** Make sure we can call this stuff from C++.
 */
@@ -1172,7 +1172,6 @@ struct sqlite3_vfs {
 ** the result, [sqlite3_free()] is called on the input string. {END}
 */
 /*IMPORT_C*/ char *sqlite3_mprintf(const char*,...);
-/*IMPORT_C*/ char *sqlite3_vmprintf(const char*, va_list);
 /*IMPORT_C*/ char *sqlite3_snprintf(int,char*,const char*, ...);
 
 /*
