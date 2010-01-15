@@ -19,8 +19,8 @@ class CHttpEventHandler : public CBase,
   {
   public:
 	virtual ~CHttpEventHandler();
-	static CHttpEventHandler* NewLC(CHttpClient* aClient, MHttpClientObserver &aCallbacks);
-	static CHttpEventHandler* NewL(CHttpClient* aClient, MHttpClientObserver &aCallbacks);
+	static CHttpEventHandler* NewLC(CHttpClient* aClient, MHttpClientObserver &aCallbacks, RFs& aFs);
+	static CHttpEventHandler* NewL(CHttpClient* aClient, MHttpClientObserver &aCallbacks, RFs& aFs);
 	void SetSaveFileName(const TDesC &fName,TBool aContinue=EFalse);
 	void CloseSaveFile();	
 	// from MHTTPTransactionCallback
@@ -30,7 +30,7 @@ class CHttpEventHandler : public CBase,
 
 	
 protected:
-	CHttpEventHandler(CHttpClient* aClient, MHttpClientObserver &aCallbacks);
+	CHttpEventHandler(CHttpClient* aClient, MHttpClientObserver &aCallbacks, RFs& aFs);
 	void ConstructL();
 	
 private:
@@ -41,7 +41,7 @@ private:
 private:
 	TBool iVerbose;
 	TBool iSavingResponseBody;
-	RFs iFileServ;
+	RFs& iFileServ;
 	RFile iRespBodyFile;
 	TFileName iFileName;
 	TParse iParsedFileName;

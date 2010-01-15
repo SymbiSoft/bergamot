@@ -97,7 +97,7 @@ TBool CHttpClient::GetL(const TDesC& url, const TDesC& fileName,  TBool aSilent)
 		iHandler = NULL;
 		}
 		
-	iHandler = CHttpEventHandler::NewL(this, iObserver);
+	iHandler = CHttpEventHandler::NewL(this, iObserver, iPodcastModel.FsSession());
 	iHandler->SetSilent(aSilent);
 
 	TEntry entry;

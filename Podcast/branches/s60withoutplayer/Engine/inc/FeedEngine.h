@@ -111,9 +111,7 @@ private:
 	TClientState iClientState;
 	CFeedTimer iFeedTimer;
 
-	CPodcastModel& iPodcastModel;
-	
-	RFs iFs;
+	CPodcastModel& iPodcastModel;	
 	
 	// RSS parser
 	CFeedParser* iParser;

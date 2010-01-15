@@ -10,14 +10,12 @@
 using namespace Xml;
 const TInt KMaxParseBuffer = 1024;
 const TInt KMaxStringBuffer = 100;
-COpmlParser::COpmlParser(CFeedEngine& aFeedEngine) : iFeedEngine(aFeedEngine)
-{
-	TInt err = iFs.Connect();
+COpmlParser::COpmlParser(CFeedEngine& aFeedEngine, RFs& aFs) : iFeedEngine(aFeedEngine),iFs(aFs)
+{	
 }
 
 COpmlParser::~COpmlParser()
-{
-	iFs.Close();
+{	
 }
 
 void COpmlParser::ParseOpmlL(const TFileName &feedFileName)

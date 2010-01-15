@@ -8,34 +8,32 @@
 
 void CHttpEventHandler::ConstructL()
 	{
-	//iVerbose = ETrue;
-	User::LeaveIfError(iFileServ.Connect());
+	//iVerbose = ETrue;	
 	}
 
 
-CHttpEventHandler::CHttpEventHandler(CHttpClient* aClient, MHttpClientObserver &aCallbacks): iHttpClient(aClient), iCallbacks(aCallbacks) 
+CHttpEventHandler::CHttpEventHandler(CHttpClient* aClient, MHttpClientObserver &aCallbacks, RFs& aFs): iHttpClient(aClient), iCallbacks(aCallbacks), iFileServ(aFs) 
 	{
 	}
 
 
 CHttpEventHandler::~CHttpEventHandler()
-	{
-	iFileServ.Close();
+	{	
 	}
 
 
-CHttpEventHandler* CHttpEventHandler::NewLC(CHttpClient* aClient, MHttpClientObserver &aCallbacks)
+CHttpEventHandler* CHttpEventHandler::NewLC(CHttpClient* aClient, MHttpClientObserver &aCallbacks, RFs& aFs)
 	{
-	CHttpEventHandler* me = new(ELeave)CHttpEventHandler(aClient, aCallbacks);
+	CHttpEventHandler* me = new(ELeave)CHttpEventHandler(aClient, aCallbacks, aFs);
 	CleanupStack::PushL(me);
 	me->ConstructL();
 	return me;
 	}
 
 
-CHttpEventHandler* CHttpEventHandler::NewL(CHttpClient* aClient, MHttpClientObserver &aCallbacks)
+CHttpEventHandler* CHttpEventHandler::NewL(CHttpClient* aClient, MHttpClientObserver &aCallbacks, RFs& aFs)
 	{
-	CHttpEventHandler* me = NewLC(aClient, aCallbacks);
+	CHttpEventHandler* me = NewLC(aClient, aCallbacks, aFs);
 	CleanupStack::Pop(me);
 	return me;
 	}

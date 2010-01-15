@@ -24,8 +24,8 @@ CFeedEngine* CFeedEngine::NewL(CPodcastModel& aPodcastModel)
 
 void CFeedEngine::ConstructL()
 	{
-	iParser = new (ELeave) CFeedParser(*this);
-	User::LeaveIfError(iFs.Connect());
+	iParser = new (ELeave) CFeedParser(*this, iPodcastModel.FsSession());
+	
 	iFeedClient = CHttpClient::NewL(iPodcastModel, *this);
 	iFeedTimer.ConstructL();
 	
@@ -40,14 +40,14 @@ void CFeedEngine::ConstructL()
     } else {
     	DP("No feeds in DB, loading default feeds");
     	TFileName defaultFile = iPodcastModel.SettingsEngine().DefaultFeedsFileName();
-	    if (BaflUtils::FileExists(iFs, defaultFile)) {
+	    if (BaflUtils::FileExists(iPodcastModel.FsSession(), defaultFile)) {
 	    	DP("Loading default feeds");
 	    	ImportFeedsL(defaultFile);
 	    }
     }
     
     TFileName importFile = iPodcastModel.SettingsEngine().ImportFeedsFileName();
-    if (BaflUtils::FileExists(iFs, importFile)) {
+    if (BaflUtils::FileExists(iPodcastModel.FsSession(), importFile)) {
     	DP("Importing feeds");
     	ImportFeedsL(importFile);
     }
@@ -68,8 +68,7 @@ CFeedEngine::~CFeedEngine()
 	iSortedFeeds.ResetAndDestroy();
 	iSortedFeeds.Close();
 	iSortedBooks.ResetAndDestroy();
-	iSortedBooks.Close();
-	iFs.Close();
+	iSortedBooks.Close();	
 	delete iParser;
 	delete iFeedClient;
 	}
@@ -387,9 +386,9 @@ EXPORT_C void CFeedEngine::RemoveFeedL(TUint aUid)
 			CFeedInfo* feedToRemove = iSortedFeeds[i];
 			
 			//delete the image file if it exists
-			if ( (feedToRemove->ImageFileName().Length() >0) && BaflUtils::FileExists(iFs, feedToRemove->ImageFileName() ))
+			if ( (feedToRemove->ImageFileName().Length() >0) && BaflUtils::FileExists(iPodcastModel.FsSession(), feedToRemove->ImageFileName() ))
 				{
-				iFs.Delete(feedToRemove->ImageFileName());
+				iPodcastModel.FsSession().Delete(feedToRemove->ImageFileName());
 				}
 				
 			//delete the folder. It has the same name as the title.
@@ -397,7 +396,7 @@ EXPORT_C void CFeedEngine::RemoveFeedL(TUint aUid)
 			filePath.Copy(iPodcastModel.SettingsEngine().BaseDir());
 			filePath.Append(feedToRemove->Title());
 			filePath.Append(_L("\\"));
-			iFs.RmDir(filePath);
+			iPodcastModel.FsSession().RmDir(filePath);
 
 			iSortedFeeds.Remove(i);
 			delete feedToRemove;
@@ -546,7 +545,7 @@ void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TBool aSuccessful)
 			}
 			
 		// delete the downloaded XML file as it is no longer needed
-		BaflUtils::DeleteFile(iFs,iUpdatingFeedFileName);
+		BaflUtils::DeleteFile(iPodcastModel.FsSession(),iUpdatingFeedFileName);
 
 		// change client state
 		iClientState = ENotUpdating;
@@ -560,7 +559,7 @@ void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TBool aSuccessful)
 		//iPodcastModel.ShowEngine().SaveShowsL();
 
 		// if the feed has specified a image url. download it if we dont already have it
-		if ( iActiveFeed->ImageUrl().Length() > 0 && ((iActiveFeed->ImageFileName().Length() == 0) || (!BaflUtils::FileExists(iFs,iActiveFeed->ImageFileName()) )))
+		if ( iActiveFeed->ImageUrl().Length() > 0 && ((iActiveFeed->ImageFileName().Length() == 0) || (!BaflUtils::FileExists(iPodcastModel.FsSession(),iActiveFeed->ImageFileName()) )))
  			{
 			TRAPD(error, GetFeedImageL(iActiveFeed));
 			if (error)
@@ -616,7 +615,7 @@ EXPORT_C void CFeedEngine::ImportFeedsL(const TDesC& aFile)
 	{
 	TFileName opmlPath;
 	opmlPath.Copy(aFile);
-	COpmlParser opmlParser(*this);
+	COpmlParser opmlParser(*this, iPodcastModel.FsSession());
 	
 	opmlParser.ParseOpmlL(opmlPath);
 	}
@@ -627,7 +626,7 @@ EXPORT_C void CFeedEngine::ImportBookL(const TDesC& aTitle, const TDesC& aFile)
 	CleanupStack::PushL(files);
 	
 	RFile rfile;
-	TInt error = rfile.Open(iFs, aFile,  EFileRead | EFileStreamText);
+	TInt error = rfile.Open(iPodcastModel.FsSession(), aFile,  EFileRead | EFileStreamText);
 	if (error != KErrNone) 
 		{
 		rfile.Close();
@@ -679,8 +678,8 @@ EXPORT_C TBool CFeedEngine::ExportFeedsL(TFileName& aFile)
 	{
 	RFile rfile;
 	TFileName privatePath;
-	iFs.PrivatePath(privatePath);
-	TInt error = rfile.Temp(iFs, privatePath, aFile, EFileWrite);
+	iPodcastModel.FsSession().PrivatePath(privatePath);
+	TInt error = rfile.Temp(iPodcastModel.FsSession(), privatePath, aFile, EFileWrite);
 	if (error != KErrNone) 
 		{
 		DP("CFeedEngine::ExportFeedsL()\tFailed to open file");
@@ -773,7 +772,7 @@ EXPORT_C void CFeedEngine::AddBookChaptersL(CFeedInfo& aFeedInfo, CDesCArrayFlat
 		
 		showInfo->SetFileNameL(aFileNameArray->MdcaPoint(loop));
 		
-		if(iFs.Entry(aFileNameArray->MdcaPoint(loop), fileInfo) == KErrNone)
+		if(iPodcastModel.FsSession().Entry(aFileNameArray->MdcaPoint(loop), fileInfo) == KErrNone)
 		{
 			showInfo->SetShowSize(fileInfo.iSize);
 		}

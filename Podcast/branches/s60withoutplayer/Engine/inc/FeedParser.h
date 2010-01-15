@@ -46,7 +46,7 @@ const int KBufferLength = 1024;
 class CFeedParser : public CBase, public Xml::MContentHandler 
 {
 public:
-	CFeedParser(MFeedParserObserver& aCallbacks);
+	CFeedParser(MFeedParserObserver& aCallbacks, RFs& aFs);
 	virtual ~CFeedParser();
 	
 public:
@@ -79,7 +79,7 @@ private:
 	TUint iItemsParsed;
 	TBool iStoppedParsing;
 	TEncoding iEncoding;
-	RFs iRfs;
+	RFs& iRfs;
 };
 
 #endif

@@ -102,10 +102,7 @@ private:
 	CShowInfo* DBGetNextDownloadL();
 	
 private:
-	CHttpClient* iShowClient;
-		
-	// the file session used to read and write settings
-	RFs iFs;
+	CHttpClient* iShowClient;			
 		
 	CPodcastModel& iPodcastModel;
 

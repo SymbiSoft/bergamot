@@ -28,7 +28,7 @@ const int KBufferLength = 1024;
 class COpmlParser : public CBase, public Xml::MContentHandler 
 {
 public:
-	COpmlParser(CFeedEngine& aFeedEngine);
+	COpmlParser(CFeedEngine& aFeedEngine, RFs& aFs);
 	virtual ~COpmlParser();
 	
 public:
@@ -53,7 +53,7 @@ private:
 
 	TBuf<KBufferLength> iBuffer;
 	TEncoding iEncoding;
-	RFs iFs;
+	RFs& iFs;
 };
 
 #endif

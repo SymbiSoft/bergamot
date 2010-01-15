@@ -98,8 +98,7 @@ class CSettingsEngine : public CBase
 		TTime iUpdateFeedTime;
 		TInt iSeekStepTime;
 
-		// Other member variables
-		RFs iFs;						// File system
+		// Other member variables		
 		CPodcastModel &iPodcastModel; 	// reference to the model
 
 	    TBool iSelectOnlyUnplayed;

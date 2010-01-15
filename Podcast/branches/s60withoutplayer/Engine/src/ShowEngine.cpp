@@ -19,8 +19,7 @@ CShowEngine::CShowEngine(CPodcastModel& aPodcastModel) :
 	}
 
 CShowEngine::~CShowEngine()
-	{
-	iFs.Close();
+	{	
 	delete iShowClient;
 	iObservers.Close();
 	delete iMetaDataReader;
@@ -40,7 +39,7 @@ EXPORT_C void CShowEngine::GetMimeType(const TDesC& aFileName, TDes& aMimeType)
 	{
 	aMimeType.Zero();
 	RFile file;
-	if (file.Open(iFs, aFileName, 0) == KErrNone)
+	if (file.Open(iPodcastModel.FsSession(), aFileName, 0) == KErrNone)
 		{
 		if (file.Read(iRecogBuffer) == KErrNone)
 			{
@@ -58,8 +57,7 @@ EXPORT_C void CShowEngine::GetMimeType(const TDesC& aFileName, TDes& aMimeType)
 	}
 
 void CShowEngine::ConstructL()
-	{
-	User::LeaveIfError(iFs.Connect());
+	{	
 	iShowClient = CHttpClient::NewL(iPodcastModel, *this);
 	iShowClient->SetResumeEnabled(ETrue);
 	iMetaDataReader = new (ELeave) CMetaDataReader(*this, iPodcastModel.FsSession());
@@ -131,7 +129,7 @@ EXPORT_C TBool CShowEngine::RemoveDownloadL(TUint aUid)
 		// partial downloads should be removed
 		if (iShowDownloading)
 			{
-			BaflUtils::DeleteFile(iFs, iShowDownloading->FileName());
+			BaflUtils::DeleteFile(iPodcastModel.FsSession(), iShowDownloading->FileName());
 			}
 
 		NotifyShowDownloadUpdated(-1, -1, -1);
@@ -996,7 +994,7 @@ EXPORT_C void CShowEngine::DeletePlayedShows(RShowInfoArray &aShowInfoArray)
 				{
 				iPodcastModel.SoundEngine().Stop();
 				}
-			BaflUtils::DeleteFile(iFs, aShowInfoArray[i]->FileName());
+			BaflUtils::DeleteFile(iPodcastModel.FsSession(), aShowInfoArray[i]->FileName());
 			aShowInfoArray[i]->SetDownloadState(ENotDownloaded);
 			DBUpdateShow(aShowInfoArray[i]);
 			}
@@ -1016,7 +1014,7 @@ EXPORT_C void CShowEngine::DeleteAllShowsByFeedL(TUint aFeedUid, TBool aDeleteFi
 			{
 			if (aDeleteFiles)
 				{
-				BaflUtils::DeleteFile(iFs, array[i]->FileName());
+				BaflUtils::DeleteFile(iPodcastModel.FsSession(), array[i]->FileName());
 				}
 			}
 		}
@@ -1033,7 +1031,7 @@ EXPORT_C void CShowEngine::DeleteShowL(TUint aShowUid, TBool aRemoveFile)
 		{
 		if (info->FileName().Length() > 0 && aRemoveFile)
 			{
-			BaflUtils::DeleteFile(iFs, info->FileName());
+			BaflUtils::DeleteFile(iPodcastModel.FsSession(), info->FileName());
 			}
 		
 		info->SetDownloadState(ENotDownloaded);
@@ -1160,9 +1158,9 @@ void CShowEngine::NotifyShowListUpdated()
 
 void CShowEngine::ListDirL(TFileName &folder)
 	{
-	CDirScan *dirScan = CDirScan::NewLC(iFs);
+	CDirScan *dirScan = CDirScan::NewLC(iPodcastModel.FsSession());
 	//DP1("Listing dir: %S", &folder);
-	BaflUtils::EnsurePathExistsL(iFs, folder);
+	BaflUtils::EnsurePathExistsL(iPodcastModel.FsSession(), folder);
 	dirScan ->SetScanDataL(folder, KEntryAttDir, ESortByName);
 
 	CDir *dirPtr;
@@ -1229,7 +1227,7 @@ void CShowEngine::ListDirL(TFileName &folder)
 			info->SetShowType(showType);
 			info->SetFeedUid(0);
 			TEntry entry;
-			iFs.Entry(pathName, entry);
+			iPodcastModel.FsSession().Entry(pathName, entry);
 			info->SetShowSize(entry.iSize);
 			info->SetPubDate(entry.iModified);
 
@@ -1251,7 +1249,7 @@ EXPORT_C void CShowEngine::CheckFilesL()
 	GetShowsDownloadedL(array);
 	for (TInt i = 0; i < array.Count(); i++)
 		{
-		if (!BaflUtils::FileExists(iFs, array[i]->FileName()))
+		if (!BaflUtils::FileExists(iPodcastModel.FsSession(), array[i]->FileName()))
 			{
 			DP1("%S was removed, delisting", &array[i]->FileName());
 			if (array[i]->FeedUid() == 0)

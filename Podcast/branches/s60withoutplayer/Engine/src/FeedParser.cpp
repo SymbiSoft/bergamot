@@ -12,14 +12,12 @@ using namespace Xml;
 const TInt KMaxParseBuffer = 1024;
 const TInt KMaxStringBuffer = 100;
 
-CFeedParser::CFeedParser(MFeedParserObserver& aCallbacks) : 	iCallbacks(aCallbacks)
+CFeedParser::CFeedParser(MFeedParserObserver& aCallbacks, RFs& aFs) : 	iCallbacks(aCallbacks), iRfs(aFs)
 {
-	TInt err = iRfs.Connect();
 }
 
 CFeedParser::~CFeedParser()
-{
-	iRfs.Close();
+{	
 }
 
 void CFeedParser::ParseFeedL(const TFileName &feedFileName, CFeedInfo *info, TUint aMaxItems)

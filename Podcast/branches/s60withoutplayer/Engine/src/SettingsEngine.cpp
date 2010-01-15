@@ -17,8 +17,7 @@ CSettingsEngine::CSettingsEngine(CPodcastModel& aPodcastModel) : iPodcastModel(a
 
 CSettingsEngine::~CSettingsEngine()
 	{
-	TRAP_IGNORE(SaveSettingsL());
-	iFs.Close();
+	TRAP_IGNORE(SaveSettingsL());	
 	}
 
 CSettingsEngine* CSettingsEngine::NewL(CPodcastModel& aPodcastModel)
@@ -41,8 +40,7 @@ void CSettingsEngine::ConstructL()
 	iMaxListItems = KDefaultMaxListItems;
 	iIap = 0;
 	iSeekStepTime = KDefaultSeekTime;
-	// Connect to file system		
-	User::LeaveIfError( iFs.Connect() );
+	// Connect to file system			
 	
 	// Check that our basedir exist. Create it otherwise;
 	GetDefaultBaseDirL(iBaseDir);
@@ -69,7 +67,7 @@ void CSettingsEngine::GetDefaultBaseDirL(TDes & /*aBaseDir*/)
 	CDesCArray* disks = new(ELeave) CDesCArrayFlat(10);
 	CleanupStack::PushL(disks);
 
-	BaflUtils::GetDiskListL(iFs, *disks);
+	BaflUtils::GetDiskListL(iPodcastModel.FsSession(), *disks);
 	
 	#ifdef __WINS__
 		iBaseDir.Copy(KPodcastDir3);
@@ -93,20 +91,20 @@ void CSettingsEngine::GetDefaultBaseDirL(TDes & /*aBaseDir*/)
 		iBaseDir.Copy(KPodcastDir1);
 		DP1("Trying podcast dir '%S'", &iBaseDir);
 				
-		TRAPD(err, BaflUtils::EnsurePathExistsL(iFs, iBaseDir));
+		TRAPD(err, BaflUtils::EnsurePathExistsL(iPodcastModel.FsSession(), iBaseDir));
 		
 		if (err != KErrNone)
 			{
 			DP("Leave in EnsurePathExistsL");
 			iBaseDir.Copy(KPodcastDir2);
 			DP1("Trying podcast dir '%S'", &iBaseDir);
-			TRAPD(err, BaflUtils::EnsurePathExistsL(iFs, iBaseDir));
+			TRAPD(err, BaflUtils::EnsurePathExistsL(iPodcastModel.FsSession(), iBaseDir));
 			if (err != KErrNone) 
 				{
 				DP("Leave in EnsurePathExistsL");
 				iBaseDir.Copy(KPodcastDir3);
 				DP1("Trying podcast dir '%S'", &iBaseDir);
-				TRAPD(err, BaflUtils::EnsurePathExistsL(iFs, iBaseDir));
+				TRAPD(err, BaflUtils::EnsurePathExistsL(iPodcastModel.FsSession(), iBaseDir));
 				if (err != KErrNone)
 					{
 					DP("Leave in EnsurePathExistsL");
@@ -128,7 +126,7 @@ void CSettingsEngine::LoadSettingsL()
 
 	DP1("Checking settings file: %S", &configPath);
 	
-	CDictionaryFileStore* store = CDictionaryFileStore::OpenLC(iFs, configPath, KMainSettingsStoreUid);
+	CDictionaryFileStore* store = CDictionaryFileStore::OpenLC(iPodcastModel.FsSession(), configPath, KMainSettingsStoreUid);
 
 	if( store->IsPresentL(KMainSettingsUid) )
 	{
@@ -166,7 +164,7 @@ EXPORT_C void CSettingsEngine::SaveSettingsL()
 	configPath.Copy(PrivatePath());
 	configPath.Append(KConfigFile);
 
-	CDictionaryFileStore* store = CDictionaryFileStore::OpenLC(iFs, configPath, KMainSettingsStoreUid);
+	CDictionaryFileStore* store = CDictionaryFileStore::OpenLC(iPodcastModel.FsSession(), configPath, KMainSettingsStoreUid);
 
 	RDictionaryWriteStream stream;
 	stream.AssignLC(*store, KMainSettingsUid);
@@ -200,7 +198,7 @@ void CSettingsEngine::ImportSettings()
 	DP1("Importing settings from %S", &configPath);
 	
 	RFile rfile;
-	TInt error = rfile.Open(iFs, configPath,  EFileRead);
+	TInt error = rfile.Open(iPodcastModel.FsSession(), configPath,  EFileRead);
 	if (error != KErrNone) 
 		{
 		DP("CSettingsEngine::ImportSettings()\tFailed to read settings");
@@ -284,8 +282,8 @@ TFileName CSettingsEngine::ImportFeedsFileName()
 TFileName CSettingsEngine::PrivatePath()
 	{
 	TFileName privatePath;
-	iFs.PrivatePath(privatePath);
-	TRAP_IGNORE(BaflUtils::EnsurePathExistsL(iFs, privatePath));
+	iPodcastModel.FsSession().PrivatePath(privatePath);
+	TRAP_IGNORE(BaflUtils::EnsurePathExistsL(iPodcastModel.FsSession(), privatePath));
 	return privatePath;
 	}
 
