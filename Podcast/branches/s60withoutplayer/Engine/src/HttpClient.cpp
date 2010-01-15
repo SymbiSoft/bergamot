@@ -103,14 +103,14 @@ TBool CHttpClient::GetL(const TDesC& url, const TDesC& fileName,  TBool aSilent)
 	TEntry entry;
 	TBuf8<KTempBufferSize> rangeText;
 
-	if (iResumeEnabled && iPodcastModel.EikonEnv()->FsSession().Entry(fileName, entry) == KErrNone) {
+	if (iResumeEnabled && iPodcastModel.FsSession().Entry(fileName, entry) == KErrNone) {
 		DP1("Found file, with size=%d", entry.iSize);
 		// file exists, so we should probably resume
 		rangeText.Format(_L8("bytes=%d-"), entry.iSize-KByteOverlap);
 		iHandler->SetSaveFileName(fileName, ETrue);
 	} else {
 		// otherwise just make sure the directory exists
-		BaflUtils::EnsurePathExistsL(iPodcastModel.EikonEnv()->FsSession(),fileName);
+		BaflUtils::EnsurePathExistsL(iPodcastModel.FsSession(),fileName);
 		iHandler->SetSaveFileName(fileName);
 	}
 	

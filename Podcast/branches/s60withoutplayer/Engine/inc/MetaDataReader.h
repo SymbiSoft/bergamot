@@ -11,7 +11,7 @@ class CCnvCharacterSetConverter;
 class CMetaDataReader : public CBase, public MMdaAudioPlayerCallback
 {
 public:
-	CMetaDataReader(MMetaDataReaderObserver &aObserver);
+	CMetaDataReader(MMetaDataReaderObserver &aObserver, RFs& aFs);
 	void SubmitShowL(CShowInfo *aShowInfo);
 	virtual ~CMetaDataReader();
 	void ConstructL();

@@ -7,7 +7,7 @@
 
 const TInt KMaxParseBuffer = 1024;
 
-CMetaDataReader::CMetaDataReader(MMetaDataReaderObserver& aObserver) : iObserver(aObserver), iFs(CEikonEnv::Static()->FsSession())
+CMetaDataReader::CMetaDataReader(MMetaDataReaderObserver& aObserver, RFs& aFs) : iObserver(aObserver), iFs(aFs)
 {
 	iShow = NULL;
 }

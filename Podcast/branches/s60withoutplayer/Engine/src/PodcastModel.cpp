@@ -10,13 +10,6 @@ const TInt KDefaultGranu = 5;
 _LIT(KDBFileName, "escarpod.sqlite");
 _LIT(KDBTemplateFileName, "escarpod.sqlite.template");
 
-#define EQikCmdZoomLevel1							0x0800
-/** @publishedAll @released */
-#define EQikCmdZoomLevel2							0x0801
-/** @publishedAll @released */
-#define EQikCmdZoomLevel3							0x0802
-/** @publishedAll @released */
-
 EXPORT_C CPodcastModel* CPodcastModel::NewL()
 {
 	CPodcastModel* self = new (ELeave) CPodcastModel;
@@ -41,16 +34,16 @@ CPodcastModel::~CPodcastModel()
 	iConnection.Close();
 	iSocketServ.Close();	
 	sqlite3_close(iDB);
+	iFsSession.Close();
 }
 
 CPodcastModel::CPodcastModel()
-{
-	 iZoomState =  EQikCmdZoomLevel2;
+{	
 }
 
 void CPodcastModel::ConstructL()
 {
-	iEnv = CEikonEnv::Static();
+	User::LeaveIfError(iFsSession.Connect());
 	
 	iCommDB = CCommsDatabase::NewL (EDatabaseTypeUnspecified);
 	//iCommDB ->ShowHiddenRecords(); // magic
@@ -107,11 +100,10 @@ EXPORT_C RArray<TPodcastIAPItem>& CPodcastModel::IAPIds()
 }
 
 
-
-CEikonEnv* CPodcastModel::EikonEnv()
-{
-	return iEnv;
-}
+RFs& CPodcastModel::FsSession()
+	{
+	return iFsSession;
+	}
 
 EXPORT_C void CPodcastModel::SetPlayingPodcast(CShowInfo* aPodcast)
 {
@@ -147,7 +139,7 @@ EXPORT_C void CPodcastModel::PlayPausePodcastL(CShowInfo* aPodcast, TBool aPlayO
 	{
 	
 	// special treatment if this podcast is already active
-	if (iPlayingPodcast == aPodcast && SoundEngine().State() > ESoundEngineOpening ) {
+	if (iPlayingPodcast->Uid() == aPodcast->Uid() && SoundEngine().State() > ESoundEngineOpening ) {
 		if (aPodcast->PlayState() == EPlaying) {
 			SoundEngine().Pause();
 			aPodcast->SetPosition(iSoundEngine->Position());
@@ -206,23 +198,6 @@ void CPodcastModel::SetActiveShowList(RShowInfoArray& aShowArray)
 	}
 }
 
-
-TBool CPodcastModel::SetZoomState(TInt aZoomState)
-{
-	if(iZoomState != aZoomState)
-	{
-		iZoomState = aZoomState;
-		return ETrue;
-	}
-
-	return EFalse;
-}
-
-TInt CPodcastModel::ZoomState()
-{
-	return iZoomState;
-}
-
 RConnection& CPodcastModel::Connection()
 {
 	return iConnection;
@@ -238,15 +213,15 @@ sqlite3* CPodcastModel::DB()
 	if (iDB == NULL) {		
 
 		TFileName dbFileName;
-		iEnv->FsSession().PrivatePath(dbFileName);
+		iFsSession.PrivatePath(dbFileName);
 		dbFileName.Append(KDBFileName);
 		DP1("DB is at %S", &dbFileName);
-		if (!BaflUtils::FileExists(iEnv->FsSession(), dbFileName)) {
+		if (!BaflUtils::FileExists(iFsSession, dbFileName)) {
 			TFileName dbTemplate;
-			iEnv->FsSession().PrivatePath(dbTemplate);
+			iFsSession.PrivatePath(dbTemplate);
 			dbTemplate.Append(KDBTemplateFileName);
 			DP1("No DB found, copying template from %S", &dbTemplate);
-			BaflUtils::CopyFile(iEnv->FsSession(), dbTemplate,dbFileName);
+			BaflUtils::CopyFile(iFsSession, dbTemplate,dbFileName);
 		}
 		
 		TBuf8<KMaxFileName> filename8;

@@ -46,15 +46,12 @@ public:
 	IMPORT_C CFeedInfo* ActiveFeedInfo();
 	IMPORT_C void SetActiveFeedInfo(CFeedInfo* aFeedInfo);
 	
-	CEikonEnv* EikonEnv();
+	RFs& FsSession();
 	
 	IMPORT_C RShowInfoArray& ActiveShowList();
 	
 	void SetActiveShowList(RShowInfoArray& aShowArray);
-
-	TBool SetZoomState(TInt aZoomState);
-	TInt ZoomState();
-
+	
 	void UpdateIAPListL();
 	IMPORT_C CDesCArrayFlat* IAPNames();
 	IMPORT_C RArray<TPodcastIAPItem>& IAPIds();
@@ -91,10 +88,9 @@ private:
    CSettingsEngine *iSettingsEngine;
    
    RShowInfoArray iActiveShowList;
-   CFeedInfo *iActiveFeed;
-   TInt iZoomState;
+   CFeedInfo *iActiveFeed;   
    
-   CEikonEnv* iEnv;
+   RFs iFsSession;
    RArray<TPodcastIAPItem> iIapIdArray;
    CDesCArrayFlat* iIapNameArray;
    CCommsDatabase* iCommDB;

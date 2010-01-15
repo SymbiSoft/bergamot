@@ -62,7 +62,7 @@ void CShowEngine::ConstructL()
 	User::LeaveIfError(iFs.Connect());
 	iShowClient = CHttpClient::NewL(iPodcastModel, *this);
 	iShowClient->SetResumeEnabled(ETrue);
-	iMetaDataReader = new (ELeave) CMetaDataReader(*this);
+	iMetaDataReader = new (ELeave) CMetaDataReader(*this, iPodcastModel.FsSession());
 	iMetaDataReader->ConstructL();
 	User::LeaveIfError(iApaSession.Connect());
 	CheckFilesL();
