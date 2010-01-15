@@ -81,8 +81,9 @@ void CMetaDataReader::MapcInitComplete(TInt aError, const TTimeIntervalMicroSeco
 
 	if(aError == KErrNone)
 	{
+		HBufC* buf = HBufC::New(KMaxParseBuffer);
 		TInt numEntries = 0;
-		if (iPlayer->GetNumberOfMetaDataEntries(numEntries) == KErrNone) {
+		if (buf != NULL && iPlayer->GetNumberOfMetaDataEntries(numEntries) == KErrNone) {
 			DP1("%d meta data entries", numEntries);
 			iShow->SetPlayTime((aDuration.Int64()/1000000));
 			
@@ -93,8 +94,7 @@ void CMetaDataReader::MapcInitComplete(TInt aError, const TTimeIntervalMicroSeco
 				if (error != KErrNone) {
 					continue;
 				}
-				HBufC* buf = HBufC::NewLC(KMaxParseBuffer);
-				
+											
 				if (entry->Name() == KMMFMetaEntrySongTitle) {
 					buf->Des().Copy(entry->Value());
 					TRAP_IGNORE(iShow->SetTitleL(*buf));
@@ -123,9 +123,11 @@ void CMetaDataReader::MapcInitComplete(TInt aError, const TTimeIntervalMicroSeco
 						iShow->SetTrackNo(value);
 					}
 				}
-				CleanupStack::PopAndDestroy(buf);
+				
 			}
 		}
+		delete buf;
+		buf = NULL;
 	}
 
 	iObserver.ReadMetaData(iShow);

@@ -53,7 +53,7 @@ void CSettingsEngine::ConstructL()
 		DP1("CSettingsEngine::ConstructL\tLoadSettingsL returned error=%d", loadErr);
 		DP("CSettingsEngine::ConstructL\tImporting default settings instead");
 	
-		ImportSettings();
+		ImportSettingsL();
 		TRAPD(error,SaveSettingsL());
 		if (error != KErrNone) 
 			{
@@ -187,7 +187,7 @@ EXPORT_C void CSettingsEngine::SaveSettingsL()
 	CleanupStack::PopAndDestroy(2); // stream and store
 	}
 
-void CSettingsEngine::ImportSettings()
+void CSettingsEngine::ImportSettingsL()
 	{
 	DP("CSettingsEngine::ImportSettings");
 
