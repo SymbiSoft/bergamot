@@ -16,13 +16,6 @@
 *
 */
 
-/**
- * This file is a part of Escarpod Podcast project
- * (c) 2008 The Bergamot Project
- * (c) 2008 Teknolog (Sebastian Brännström)
- * (c) 2008 Anotherguest (Lars Persson)
- */
-
 #include "PodcastFeedView.h"
 #include "PodcastAppUi.h"
 #include "FeedEngine.h"
@@ -81,7 +74,7 @@ void CPodcastFeedContainer::ConstructL( const TRect& aRect )
     SetRect( aRect );    
     
     // Activate the window, which makes it ready to be drawn
-    ActivateL();   
+    ActivateL();
 }
 
 CPodcastFeedContainer::~CPodcastFeedContainer()
@@ -154,6 +147,12 @@ void CPodcastFeedView::ConstructL()
 
 	iListContainer->Listbox()->SetListBoxObserver(this);
 	iListContainer->SetKeyEventListener(this);
+	
+    CAknToolbar *toolbar = Toolbar();
+	if (toolbar)
+		{
+		toolbar->SetToolbarObserver(this);
+		}
 }
     
 CPodcastFeedView::~CPodcastFeedView()
@@ -220,7 +219,7 @@ void CPodcastFeedView::HandleListBoxEventL(CEikListBox* /* aListBox */, TListBox
 	switch(aEventType)
 	{
 	case EEventEnterKeyPressed:
-	case EEventItemClicked:
+	case EEventItemDoubleClicked:
 	case EEventItemActioned:
 		{
 			const RFeedInfoArray* sortedItems = NULL;
@@ -285,6 +284,7 @@ void CPodcastFeedView::FeedUpdateCompleteL(TUint aFeedUid)
 void CPodcastFeedView::FeedUpdateAllCompleteL()
 {
 	iUpdatingAllRunning = EFalse;
+	UpdateToolbar();
 }
 
 void CPodcastFeedView::FeedDownloadUpdatedL(TUint aFeedUid, TInt aPercentOfCurrentDownload)
@@ -332,6 +332,7 @@ void CPodcastFeedView::UpdateFeedInfoStatusL(TUint aFeedUid, TBool aIsUpdating)
 			}
 			}
 		}
+		UpdateToolbar();
 	}
 
 void CPodcastFeedView::UpdateFeedInfoDataL(CFeedInfo* aFeedInfo, TInt aIndex, TBool aIsUpdating )
@@ -778,9 +779,6 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			{
 			iUpdatingAllRunning = ETrue;			
 			iPodcastModel.FeedEngine().UpdateAllFeedsL();
-			HBufC* str = iEikonEnv->AllocReadResourceLC(R_PODCAST_FEEDS_UPDATE_MESSAGE);
-			User::InfoPrint(*str);
-			CleanupStack::PopAndDestroy(str);
 			}
 			break;
 
@@ -916,6 +914,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			CPodcastListView::HandleCommandL(aCommand);
 			break;
 		}
+		UpdateToolbar();
 	}
 
 void CPodcastFeedView::DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane)
@@ -1064,3 +1063,23 @@ TKeyResponse CPodcastFeedView::OfferKeyEventL(const TKeyEvent& aKeyEvent, TEvent
 		}
 	return EKeyWasNotConsumed;
 	}
+
+void CPodcastFeedView::OfferToolbarEventL(TInt aCommand)
+	{
+	HandleCommandL(aCommand);
+	}
+
+void CPodcastFeedView::DynInitToolbarL (TInt /*aResourceId*/, CAknToolbar * /*aToolbar*/)
+	{
+
+	}
+
+void CPodcastFeedView::UpdateToolbar()
+{
+	CAknToolbar* toolbar = Toolbar();
+	
+	if (toolbar)
+		{
+		toolbar->SetItemDimmed(EPodcastUpdateAllFeeds, iUpdatingAllRunning, ETrue);
+		}
+}

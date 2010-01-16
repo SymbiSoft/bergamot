@@ -16,27 +16,21 @@
 *
 */
 
-/**
- * This file is a part of Escarpod Podcast project
- * (c) 2008 The Bergamot Project
- * (c) 2008 Teknolog (Sebastian Brännström)
- * (c) 2008 Anotherguest (Lars Persson)
- */
-
-
 #ifndef PODCASTSHOWSVIEWH
 #define PODCASTSHOWSVIEWH 
 
 #include <aknview.h>
 #include <aknlists.h> 
 #include <eiklbo.h>
+#include <AknToolbarObserver.h>
+#include <AknToolbar.h>
 #include "ShowEngine.h"
 #include "FeedEngine.h"
 #include "PodcastModel.h"
 #include "Podcast.hrh"
 #include "PodcastListView.h"
 
-class CPodcastShowsView : public CPodcastListView, public MEikListBoxObserver, public MFeedEngineObserver, public MShowEngineObserver, public MKeyEventListener
+class CPodcastShowsView : public CPodcastListView, public MEikListBoxObserver, public MFeedEngineObserver, public MShowEngineObserver, public MKeyEventListener, public MAknToolbarObserver
 	{
 public: 
 	static CPodcastShowsView* NewL(CPodcastModel& aPodcastModel);
@@ -97,11 +91,13 @@ protected:
 	void DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane);
 
 	TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType);
+	void OfferToolbarEventL(TInt aCommand);
+	void DynInitToolbarL (TInt aResourceId, CAknToolbar *aToolbar);
 
 private:
 	void GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex);
 	void UpdateNaviPaneL();
-
+	void UpdateToolbar();
 private:
 	
 	TPodcastClientShowCategory iCurrentCategory;

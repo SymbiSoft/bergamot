@@ -16,13 +16,6 @@
 *
 */
 
-/**
- * This file is a part of Escarpod Podcast project
- * (c) 2008 The Bergamot Project
- * (c) 2008 Teknolog (Sebastian Brännström)
- * (c) 2008 Anotherguest (Lars Persson)
- */
-
 #include "PodcastShowsView.h"
 #include "PodcastAppUi.h"
 #include "ShowEngine.h"
@@ -107,6 +100,13 @@ void CPodcastShowsView::ConstructL()
 	iListContainer->SetKeyEventListener(this);
 	iPodcastModel.FeedEngine().AddObserver(this);
 	iPodcastModel.ShowEngine().AddObserver(this);
+	
+    CAknToolbar *toolbar = Toolbar();
+	if (toolbar)
+		{
+		toolbar->SetToolbarObserver(this);
+		}
+
 	}
 
 TKeyResponse CPodcastShowsView::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType)
@@ -148,6 +148,7 @@ TKeyResponse CPodcastShowsView::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEvent
 				}
 				break;
 			}
+			UpdateToolbar();
 		}
 	}
 		return EKeyWasNotConsumed;
@@ -167,6 +168,9 @@ TUid CPodcastShowsView::Id() const
 void CPodcastShowsView::DoActivateL(const TVwsViewId& aPrevViewId,
 		TUid aCustomMessageId, const TDesC8& aCustomMessage)
 	{
+	
+	CAknToolbar* toolbar = Toolbar();
+	
 	switch (aCustomMessageId.iUid)
 		{
 		case EShowNewShows:
@@ -175,9 +179,11 @@ void CPodcastShowsView::DoActivateL(const TVwsViewId& aPrevViewId,
 		case EShowPendingShows:
 			iCurrentCategory
 					= (TPodcastClientShowCategory) aCustomMessageId.iUid;
+			toolbar->SetToolbarVisibility(EFalse);
 			break;
 		case EShowFeedShows:
 			iCurrentCategory = EShowFeedShows;
+			toolbar->SetToolbarVisibility(ETrue);
 			break;
 		}
 
@@ -258,6 +264,7 @@ void CPodcastShowsView::FeedUpdateCompleteL(TUint aFeedUid)
 
 void CPodcastShowsView::FeedUpdateAllCompleteL()
 	{
+	
 	}
 
 void CPodcastShowsView::FeedDownloadUpdatedL(TUint aFeedUid, TInt /*aPercentOfCurrentDownload*/)
@@ -274,7 +281,7 @@ void CPodcastShowsView::HandleListBoxEventL(CEikListBox* /*aListBox*/,
 	switch (aEventType)
 		{
 		case EEventEnterKeyPressed:
-		case EEventItemClicked:
+		case EEventItemDoubleClicked:
 		case EEventItemActioned:
 			{
 			RShowInfoArray &fItems = iPodcastModel.ActiveShowList();
@@ -295,6 +302,7 @@ void CPodcastShowsView::HandleListBoxEventL(CEikListBox* /*aListBox*/,
 		default:
 			break;
 		}
+		UpdateToolbar();
 	}
 
 void CPodcastShowsView::GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex)
@@ -353,6 +361,8 @@ void CPodcastShowsView::UpdateFeedUpdateStateL()
 		{
 		iListContainer->Listbox()->SetDimmed(listboxDimmed);
 		}
+	
+	UpdateToolbar();
 	}
 
 void CPodcastShowsView::UpdateShowItemDataL(CShowInfo* aShowInfo,TInt aIndex, TInt aSizeDownloaded)
@@ -771,9 +781,6 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 			}
 			break;
 		case EPodcastUpdateLibrary:
-			HBufC* str = iEikonEnv->AllocReadResourceLC(R_PODCAST_FEEDS_UPDATE_MESSAGE);
-			User::InfoPrint(*str);
-			CleanupStack::PopAndDestroy(str);
 			iPodcastModel.ShowEngine().CheckFilesL();
 			break;
 		case EPodcastShowUnplayedOnlyOn:
@@ -812,11 +819,7 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 
 			if (iPodcastModel.ActiveFeedInfo()->Url().Length()>0)
 				{
-				HBufC* str = iEikonEnv->AllocReadResourceLC(R_PODCAST_FEEDS_UPDATE_MESSAGE);
-				User::InfoPrint(*str);
-				CleanupStack::PopAndDestroy(str);
-				TRAPD(error, iPodcastModel.FeedEngine().UpdateFeedL(iPodcastModel.ActiveFeedInfo()->Uid()))
-				;
+				TRAPD(error, iPodcastModel.FeedEngine().UpdateFeedL(iPodcastModel.ActiveFeedInfo()->Uid()));
 
 				if (error != KErrNone)
 					{
@@ -875,6 +878,7 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 			CPodcastListView::HandleCommandL(aCommand);
 			break;
 		}
+	UpdateToolbar();
 	}
 	
 	void CPodcastShowsView::DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane)
@@ -997,4 +1001,51 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 		}
 
 	}
+}
+
+void CPodcastShowsView::OfferToolbarEventL(TInt aCommand)
+	{
+	HandleCommandL(aCommand);
+	}
+
+void CPodcastShowsView::DynInitToolbarL (TInt /*aResourceId*/, CAknToolbar * /*aToolbar*/)
+	{
+	DP("CPodcastShowsView::DynInitToolbarL");
+	UpdateToolbar();
+	}
+
+void CPodcastShowsView::UpdateToolbar()
+{
+	CAknToolbar* toolbar = Toolbar();
+	
+	RShowInfoArray &fItems = iPodcastModel.ActiveShowList();
+	TInt itemCnt = fItems.Count();
+
+	TBool removeDownloadShowCmd = ETrue;
+	TBool removeSetPlayed = EFalse;
+	TBool updatingState = (iCurrentCategory != EShowDownloadedShows && iPodcastModel.FeedEngine().ClientState() != ENotUpdating && iPodcastModel.FeedEngine().ActiveClientUid() == iPodcastModel.ActiveFeedInfo()->Uid());
+	
+	if(iListContainer->Listbox() != NULL)
+	{
+		TInt index = iListContainer->Listbox()->CurrentItemIndex();
+		
+		if(index>= 0 && index < itemCnt)
+		{							
+			if(fItems[index]->DownloadState() == ENotDownloaded)
+				{
+					removeDownloadShowCmd = EFalse;
+				}
+				
+			if(fItems[index]->PlayState() == EPlayed) {
+				removeSetPlayed = ETrue;
+			}
+		}
+	}
+				
+	if (toolbar)
+		{
+		toolbar->SetItemDimmed(EPodcastUpdateFeed, updatingState, ETrue);
+		toolbar->SetItemDimmed(EPodcastDownloadShow, removeDownloadShowCmd, ETrue);
+		toolbar->SetItemDimmed(EPodcastMarkAsPlayed, removeSetPlayed, ETrue);
+		}
 }

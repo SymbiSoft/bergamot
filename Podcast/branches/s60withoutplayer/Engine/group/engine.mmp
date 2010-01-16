@@ -43,3 +43,6 @@ LIBRARY apgrfx.lib
 //LIBRARY estlib.lib
 LIBRARY cone.lib
 LIBRARY apmime.lib 
+
+//LIBRARY mpxcommon.lib
+//LIBRARY mpxcollectionhelper.lib

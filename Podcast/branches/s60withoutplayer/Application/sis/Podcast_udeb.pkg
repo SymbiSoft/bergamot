@@ -32,12 +32,12 @@
 "\epoc32\data\z\private\10003a3f\import\apps\Podcast_reg.rsc"-"c:\private\10003a3f\import\apps\Podcast_reg.rsc"
 
 ; configuration and DB
-"../../common/config/config.cfg"-"c:\private\A0009D00\config.cfg"
-"../../common/config/defaultfeeds.xml"-"c:\private\A0009D00\defaultfeeds.xml"
-"../../common/config/escarpod.sqlite"-"c:\private\A0009D00\escarpod.sqlite.template"
+"../../engine/config/config.cfg"-"c:\private\A0009D00\config.cfg"
+"../../engine/config/defaultfeeds.xml"-"c:\private\A0009D00\defaultfeeds.xml"
+"../../engine/config/escarpod.sqlite"-"c:\private\A0009D00\escarpod.sqlite.template"
 
 ; backup
-"../../common/resources/backup_registration.xml" - "c:\private\A0009D00\backup_registration.xml"
+"../../application/data/backup_registration.xml" - "c:\private\A0009D00\backup_registration.xml"
 
 ; application UI - note that FR,RI does not work when SIS is self signed
 "\epoc32\release\gcce\udeb\Podcast.exe"-"c:\sys\bin\Podcast.exe",FR,RI

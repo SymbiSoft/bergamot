@@ -16,23 +16,19 @@
 *
 */
 
-/**
- * This file is a part of Escarpod Podcast project
- * (c) 2008 The Bergamot Project
- * (c) 2008 Teknolog (Sebastian Brännström)
- * (c) 2008 Anotherguest (Lars Persson)
- */
-
 #ifndef PODCASTFEEDVIEWH
 #define PODCASTFEEDVIEWH 
 
 #include <aknview.h>
+#include <AknToolbarObserver.h>
+#include <AknToolbar.h>
 #include "FeedEngine.h"
 #include "PodcastModel.h"
 #include "PodcastListView.h"
 #include "Podcast.hrh"
 
-class CPodcastFeedView : public CPodcastListView, MEikListBoxObserver, public MFeedEngineObserver, public MKeyEventListener
+class CPodcastFeedView : public CPodcastListView, MEikListBoxObserver, 
+	public MFeedEngineObserver, public MKeyEventListener, public MAknToolbarObserver
     {
     public: 
         static CPodcastFeedView* NewL(CPodcastModel& aPodcastModel);
@@ -92,6 +88,10 @@ class CPodcastFeedView : public CPodcastListView, MEikListBoxObserver, public MF
 		void HandleAddNewAudioBookL();
 		TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType);
 
+		void OfferToolbarEventL(TInt aCommand);
+		void DynInitToolbarL (TInt aResourceId, CAknToolbar *aToolbar);
+		void UpdateToolbar();
+		
 	private:
 		CPodcastModel& iPodcastModel;		
 		TBool iUpdatingAllRunning;

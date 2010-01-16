@@ -25,6 +25,8 @@
 #include <e32hashtab.h>
 #include "SoundEngine.h"
 #include "debug.h"
+#include <mpxmedia.h>
+#include <mpxattribute.h>
 
 const TUint KMaxDownloadErrors = 3;
 const TInt KMimeBufLength = 100;
@@ -32,7 +34,7 @@ const TInt KMimeBufLength = 100;
 CShowEngine::CShowEngine(CPodcastModel& aPodcastModel) :
 	iPodcastModel(aPodcastModel)
 	{
-	iDownloadsSuspended = ETrue;
+	iDownloadsSuspended = EFalse;
 	iDB = aPodcastModel.DB();
 	}
 
@@ -252,6 +254,12 @@ EXPORT_C void CShowEngine::RemoveObserver(MShowEngineObserver *observer)
 		}
 	}
 
+void CShowEngine::AddShowToMpxCollection(CShowInfo &aShowInfo)
+	{
+	//CMPXMedia *media = CMPXMedia::NewL();
+	
+	}
+
 void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TBool aSuccessful)
 	{
 	if (iShowDownloading != NULL)
@@ -276,7 +284,7 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TBool aSuccessful)
 			iShowDownloading->SetDownloadState(EDownloaded);
 			DBUpdateShow(iShowDownloading);
 			DBRemoveDownload(iShowDownloading->Uid());
-
+			AddShowToMpxCollection(*iShowDownloading);
 			NotifyShowDownloadUpdated(100, 0, 1);
 
 			delete iShowDownloading;

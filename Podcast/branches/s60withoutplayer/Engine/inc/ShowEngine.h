@@ -100,6 +100,8 @@ private:
 	static TInt CompareShowsByTitle(const CShowInfo &a, const CShowInfo &b);
 	static TInt CompareShowsByTrackNo(const CShowInfo &a, const CShowInfo &b);
 	
+	void AddShowToMpxCollection(CShowInfo &aShowInfo);
+
 private:
 	// DB methods
 	CShowInfo* DBGetShowByUidL(TUint aUid);

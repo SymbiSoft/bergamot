@@ -143,7 +143,7 @@ void CPodcastMainView::UpdateListboxItemsL()
 		TInt cnt = iMainMenuItems->Count();
 		for(TInt loop = 0;loop<cnt; loop++)
 		{
-			switch(loop)
+			switch(loop+1) // Added +1 since we removed player
 			{
 			case 0:
 				iListboxFormatbuffer.Format(iMainMenuItems->MdcaPoint(loop), &descriptionText);
@@ -254,13 +254,13 @@ void CPodcastMainView::HandleListBoxEventL(CEikListBox* /*aListBox*/, TListBoxEv
 	switch(aEventType)
 	{
 	case EEventEnterKeyPressed:
-	case EEventItemClicked:
+	case EEventItemDoubleClicked:
 	case EEventItemActioned:
 		{
 			TUid newview = TUid::Uid(0);
 			TUid messageUid = TUid::Uid(0);
 
-			switch(iListContainer->Listbox()->CurrentItemIndex())
+			switch(iListContainer->Listbox()->CurrentItemIndex()+1) // Adding 1 since we removed the player
 			{
 			case 0:
 				if(iPodcastModel.PlayingPodcast() != NULL && (iPodcastModel.SoundEngine().State() == ESoundEnginePlaying || iPodcastModel.SoundEngine().State() == ESoundEnginePaused))

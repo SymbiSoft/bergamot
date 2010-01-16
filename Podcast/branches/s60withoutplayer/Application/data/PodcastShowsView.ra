@@ -52,17 +52,17 @@ RESOURCE MENU_PANE r_podcast_showsview_menu
 		MENU_ITEM
 			{
 			command = EPodcastDownloadShow;
-			txt = STRING_r_view_download_show_cmd " (#)";
+			txt = STRING_r_view_download_show_cmd;
 			},
 		MENU_ITEM
 			{
 			command = EPodcastMarkAsPlayed;
-			txt = STRING_r_view_mark_as_played_cmd " (*)";
+			txt = STRING_r_view_mark_as_played_cmd;
 			},
 		MENU_ITEM
 			{
 			command = EPodcastMarkAsUnplayed;
-			txt = STRING_r_view_mark_as_unplayed_cmd " (*)";
+			txt = STRING_r_view_mark_as_unplayed_cmd;
 			},
 		MENU_ITEM
 			{
@@ -147,8 +147,72 @@ RESOURCE AVKON_VIEW r_podcast_showsview
 {
 	hotkeys = r_podcast_showsview_hotkeys;
 	menubar = r_podcast_showsview_menubar;
-	cba = R_AVKON_SOFTKEYS_OPTIONS_BACK;    
+	cba = R_AVKON_SOFTKEYS_OPTIONS_BACK;
+	toolbar = r_showsview_toolbar;
 }
+
+
+RESOURCE AVKON_TOOLBAR r_showsview_toolbar
+    {
+    flags = KAknToolbarFixed;
+    items =
+        {
+        TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EPodcastUpdateFeed;
+            control = AVKON_BUTTON
+                {
+                states =
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        //bmpfile = AVKON_BITMAP_FILE;
+                        //bmpid = EMbmAvkonQgn_indi_find_goto;
+                        txt = STRING_r_update_feed_short_cmd;
+                        helptxt = STRING_r_update_feed_cmd;
+                        }  
+                    };
+                };
+            },
+		TBAR_CTRL
+			{
+			type = EAknCtButton;
+			id = EPodcastDownloadShow;
+			control = AVKON_BUTTON
+				{
+				states =
+					{
+					AVKON_BUTTON_STATE
+						{
+						//bmpfile = AVKON_BITMAP_FILE;
+						//bmpid = EMbmAvkonQgn_indi_find_goto;
+						txt = STRING_r_view_download_show_cmd;
+						helptxt = STRING_r_view_download_show_cmd;
+						}  
+					};
+				};
+			},
+		TBAR_CTRL
+			{
+			type = EAknCtButton;
+			id = EPodcastMarkAsPlayed;
+			control = AVKON_BUTTON
+				{
+				states =
+					{
+					AVKON_BUTTON_STATE
+						{
+						//bmpfile = AVKON_BITMAP_FILE;
+						//bmpid = EMbmAvkonQgn_indi_find_goto;
+						txt = STRING_r_view_mark_as_played_cmd_short;
+						helptxt = STRING_r_view_mark_as_played_cmd;
+						}  
+					};
+				};
+			}
+        };
+    }
 
 RESOURCE TBUF r_podcast_shows_no_items {buf = STRING_r_podcast_shows_no_items;}
 
