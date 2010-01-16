@@ -30,6 +30,8 @@ START BITMAP Podcast.mbm
 	SOURCE 8 feeds_40x40m.bmp
 	SOURCE c16 feed_40x40.bmp
 	SOURCE 8 feed_40x40m.bmp
+	SOURCE c16 feed_new_40x40.bmp
+	SOURCE 8 feed_new_40x40m.bmp
 	SOURCE c16 play_40x40.bmp
 	SOURCE 8 play_40x40m.bmp
 	SOURCE c16 downloaded_view_40x40.bmp
@@ -46,6 +48,8 @@ START BITMAP Podcast.mbm
 	SOURCE 8 audiobooks_40x40m.bmp
 	SOURCE c16 new_40x40.bmp
 	SOURCE 8 new_40x40m.bmp
+	SOURCE c16 old_40x40.bmp
+	SOURCE 8 old_40x40m.bmp
 	SOURCE c16 queued_40x40.bmp
 	SOURCE 8 queued_40x40m.bmp
 	SOURCE c16 suspended_40x40.bmp

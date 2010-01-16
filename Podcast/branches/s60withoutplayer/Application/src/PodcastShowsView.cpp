@@ -48,8 +48,8 @@ const TUint KIconArrayIds[] =
 			EMbmPodcastSuspended_40x40m,
 			EMbmPodcastQueued_40x40,
 			EMbmPodcastQueued_40x40m,
-			EMbmPodcastAudiobookchapter_40x40,
-			EMbmPodcastAudiobookchapter_40x40m,
+			EMbmPodcastOld_40x40,
+			EMbmPodcastOld_40x40m,
 			0,
 			0
 	};
@@ -314,11 +314,7 @@ void CPodcastShowsView::GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex)
 							iPodcastModel.SoundEngine().State() == ESoundEnginePaused;*/
 #pragma message("LAPER Need to rework playing api if it should still exist")
 	
-	if (aShowInfo->ShowType() == EAudioBook)
-		{
-		aIconIndex = EAudiobookChapterIcon;
-		}
-	else if (showDownloadingUid == aShowInfo->Uid())
+	if (showDownloadingUid == aShowInfo->Uid())
 		{
 		aIconIndex = dlStop ? ESuspendedShowIcon : EDownloadingShowIcon;		
 		}
@@ -334,7 +330,11 @@ void CPodcastShowsView::GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex)
 				aIconIndex = EShowIcon;
 				break;
 			case ENotDownloaded:
-				aIconIndex = ENewShowIcon;
+				if (aShowInfo->PlayState() == ENeverPlayed) {
+					aIconIndex = ENewShowIcon;
+				} else {
+					aIconIndex = EOldShowIcon;
+				}
 				break;
 			case EQueued:
 				aIconIndex = dlStop ? ESuspendedShowIcon : EQuedShowIcon;
@@ -428,9 +428,6 @@ void CPodcastShowsView::UpdateShowItemDataL(CShowInfo* aShowInfo,TInt aIndex, TI
 		{
 		iItemArray->InsertL(aIndex, iListboxFormatbuffer);
 		}
-	TListItemProperties itemProps;	
-	itemProps.SetUnderlined(aShowInfo->PlayState() == ENeverPlayed);
-	iListContainer->Listbox()->ItemDrawer()->SetPropertiesL(aIndex, itemProps);						
 }
 
 void CPodcastShowsView::UpdateShowItemL(TUint aUid, TInt aSizeDownloaded)
@@ -570,9 +567,6 @@ void CPodcastShowsView::UpdateListboxItemsL()
 						GetShowIcons(si, iconIndex);
 						iListboxFormatbuffer.Format(KShowFormat(), iconIndex, &si->Title(), &showDate, &showSize);
 						iItemArray->AppendL(iListboxFormatbuffer);
-
-						itemProps.SetUnderlined(si->PlayState() == ENeverPlayed);
-						iListContainer->Listbox()->ItemDrawer()->SetPropertiesL(i, itemProps);																	
 						}
 					}
 				else

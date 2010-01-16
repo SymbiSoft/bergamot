@@ -133,10 +133,10 @@ void CPodcastFeedView::ConstructL()
 	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );
 	CleanupStack::Pop(2); // bitmap, mask
 
-	bitmap = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastAudiobookindividual_40x40);
+	bitmap = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastFeed_new_40x40);
 	CleanupStack::PushL( bitmap );		
 	// Load the mask for audiobook icon	
-	mask = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastAudiobookindividual_40x40m );	
+	mask = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastFeed_new_40x40m );	
 	CleanupStack::PushL( mask );
 	// Append the feed icon to icon array
 	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );
@@ -354,16 +354,14 @@ void CPodcastFeedView::UpdateFeedInfoDataL(CFeedInfo* aFeedInfo, TInt aIndex, TB
 	{
 		iPodcastModel.FeedEngine().GetStatsByFeed(aFeedInfo->Uid(), showCount, unplayedCount, aFeedInfo->IsBookFeed());
 		
-		if (aFeedInfo->IsBookFeed()) {
+		if (unplayedCount > 0) {
 		    iconIndex = 2;
-			unplayedShows.Format(*iBooksFormat, unplayedCount, showCount);
 		} else {
 			iconIndex = 1;
-			unplayedShows.Format(*iFeedsFormat, unplayedCount, showCount);
 		}			
-	
-		itemProps.SetUnderlined(unplayedCount > 0);
-											
+
+		unplayedShows.Format(*iFeedsFormat, unplayedCount, showCount);
+		
 		if (aFeedInfo->LastUpdated().Int64() == 0) 
 		{
 			updatedDate.Copy(*iNeverUpdated);					
@@ -487,7 +485,7 @@ void CPodcastFeedView::UpdateListboxItemsL()
 							}
 						}
 					
-					if (fi->IsBookFeed())
+					if (unplayedCount > 0)
 						{
 						iconIndex = 2;						
 						}
@@ -497,7 +495,7 @@ void CPodcastFeedView::UpdateListboxItemsL()
 						}
 					iListboxFormatbuffer.Format(KFeedFormat(), iconIndex, &fi->Title(), &updatedDate, &unplayedShows);
 					iItemArray->AppendL(iListboxFormatbuffer);
-					itemProps.SetUnderlined(unplayedCount > 0);
+					
 					iListContainer->Listbox()->ItemDrawer()->SetPropertiesL(i, itemProps);
 					}
 				} 

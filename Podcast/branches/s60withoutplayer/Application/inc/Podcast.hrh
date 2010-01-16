@@ -120,7 +120,7 @@ enum TShowsIconIndex
 	EDownloadingShowIcon,
 	ESuspendedShowIcon,
 	EQuedShowIcon,
-	EAudiobookChapterIcon	
+	EOldShowIcon	
 	};
 
 #endif
