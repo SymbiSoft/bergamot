@@ -34,7 +34,7 @@ const TInt KMimeBufLength = 100;
 CShowEngine::CShowEngine(CPodcastModel& aPodcastModel) :
 	iPodcastModel(aPodcastModel)
 	{
-	iDownloadsSuspended = EFalse;
+	iDownloadsSuspended = ETrue;
 	iDB = aPodcastModel.DB();
 	}
 
