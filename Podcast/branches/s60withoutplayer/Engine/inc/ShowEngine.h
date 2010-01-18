@@ -56,7 +56,7 @@ public:
 	void GetShowsDownloadingL(RShowInfoArray &aArray);
 	CShowInfo* DBGetShowByFileNameL(TFileName aFileName);
 	
-	void CompleteL(CHttpClient* aClient, TBool aSuccessful);
+	void CompleteL(CHttpClient* aClient, TInt aError);
 	TBool AddShowL(CShowInfo *item);
 	IMPORT_C void DeletePlayedShows(RShowInfoArray &aShowInfoArray);
 	IMPORT_C void DeleteAllShowsByFeedL(TUint aFeedUid,TBool aDeleteFiles=ETrue);

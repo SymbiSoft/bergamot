@@ -70,6 +70,7 @@ private:
 	MHttpClientObserver& iCallbacks;
 	TBool iSilent;
 	TBool iContinue;
+	TInt iLastStatusCode;
 };
 
 #endif

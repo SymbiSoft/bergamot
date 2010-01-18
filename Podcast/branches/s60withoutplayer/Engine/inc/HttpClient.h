@@ -36,7 +36,7 @@ public:
 	TBool GetL(const TDesC& url, const TDesC& fileName, TBool aSilent = EFalse);
 	void Stop();
   	TBool IsActive();
-	void ClientRequestCompleteL(TBool aSuccessful);
+	void ClientRequestCompleteL(TInt aErrorCode);
 	void SetResumeEnabled(TBool aEnabled);
 
 private:

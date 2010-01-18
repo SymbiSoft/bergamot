@@ -23,6 +23,7 @@
 #include <s32file.h>
 #include "SettingsEngine.h"
 #include <e32hashtab.h>
+#include <httperr.h>
 #include "SoundEngine.h"
 #include "debug.h"
 #include <mpxmedia.h>
@@ -260,7 +261,7 @@ void CShowEngine::AddShowToMpxCollection(CShowInfo &aShowInfo)
 	
 	}
 
-void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TBool aSuccessful)
+void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TInt aError)
 	{
 	if (iShowDownloading != NULL)
 		{
@@ -279,7 +280,7 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TBool aSuccessful)
 			iShowDownloading->SetShowType(EVideoPodcast);
 			}
 
-		if (aSuccessful)
+		if (aError == KErrNone || aError == HTTPStatus::EOk || aError == HTTPStatus::EAccepted)
 			{
 			iShowDownloading->SetDownloadState(EDownloaded);
 			DBUpdateShow(iShowDownloading);
@@ -288,11 +289,26 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TBool aSuccessful)
 			NotifyShowDownloadUpdated(100, 0, 1);
 
 			delete iShowDownloading;
+			iShowDownloading = NULL;
 			}
 		else
 			{
-			iShowDownloading->SetDownloadState(EQueued);
-			DBUpdateShow(iShowDownloading);
+			// 400 and 500 series errors are serious errors on which probably another download will fail
+			if(aError >= HTTPStatus::EBadRequest && aError <= HTTPStatus::EBadRequest+200)
+				{
+				iShowDownloading->SetDownloadState(ENotDownloaded);
+				DBUpdateShow(iShowDownloading);
+				DBRemoveDownload(iShowDownloading->Uid());
+				NotifyShowDownloadUpdated(100, 0, 1);	
+				delete iShowDownloading;
+				iShowDownloading = NULL;
+				}
+			else // other kind of error, missing network etc, reque this show
+				{
+				iShowDownloading->SetDownloadState(EQueued);
+				DBUpdateShow(iShowDownloading);
+				}
+			
 			iDownloadErrors++;
 			if (iDownloadErrors > KMaxDownloadErrors)
 				{

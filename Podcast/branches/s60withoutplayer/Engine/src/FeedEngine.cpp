@@ -548,9 +548,9 @@ void CFeedEngine::Progress(CHttpClient* /*aHttpClient*/, TInt aBytes, TInt aTota
 	}*/
 }
 
-void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TBool aSuccessful)
+void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TInt aError)
 	{
-	DP1("Complete, aSuccessful=%d", aSuccessful);
+	DP1("Complete, aSuccessful=%d", aError);
 	if (iClientState == EUpdatingFeed) 
 		{
 		// Parse the feed. We need to trap this call since it could leave and then

@@ -64,11 +64,11 @@ void CHttpEventHandler::MHFRunL(RHTTPTransaction aTransaction, const THTTPEvent&
 			// HTTP response headers have been received. We can determine now if there is
 			// going to be a response body to save.
 			RHTTPResponse resp = aTransaction.Response();
-			TInt status = resp.StatusCode();
+			iLastStatusCode = resp.StatusCode();
 			RStringF statusStr = resp.StatusText();
 			TBuf<32> statusStr16;
 			statusStr16.Copy(statusStr.DesC());
-			DP2("Status: %d (%S)", status, &statusStr16);
+			DP2("Status: %d (%S)", iLastStatusCode, &statusStr16);
 
 			// Dump the headers if we're being verbose
 			//DumpRespHeadersL(aTransaction);
@@ -76,7 +76,7 @@ void CHttpEventHandler::MHFRunL(RHTTPTransaction aTransaction, const THTTPEvent&
 			// Determine if the body will be saved to disk
 			iSavingResponseBody = ETrue;
 			TBool cancelling = EFalse;
-			if (resp.HasBody() && (status >= 200) && (status < 300) && (status != 204))
+			if (resp.HasBody() && (iLastStatusCode >= 200) && (iLastStatusCode < 300) && (iLastStatusCode != 204))
 				{
 				//iBytesDownloaded = 0;
 				TInt dataSize = resp.Body()->OverallDataSize();
@@ -97,7 +97,7 @@ void CHttpEventHandler::MHFRunL(RHTTPTransaction aTransaction, const THTTPEvent&
 				{
 				DP("Transaction Cancelled");
 				aTransaction.Close();
-				iHttpClient->ClientRequestCompleteL(EFalse);
+				iHttpClient->ClientRequestCompleteL(KErrCancel);
 				}
 			else if (iSavingResponseBody) // If we're saving, then open a file handle for the new file
 				{
@@ -163,7 +163,7 @@ void CHttpEventHandler::MHFRunL(RHTTPTransaction aTransaction, const THTTPEvent&
 				if (error != KErrNone) {
 					//aTransaction.Close();
 					iCallbacks.FileError(error);
-					iHttpClient->ClientRequestCompleteL(EFalse);
+					iHttpClient->ClientRequestCompleteL(error);
 					return;
 				}
 
@@ -187,13 +187,13 @@ void CHttpEventHandler::MHFRunL(RHTTPTransaction aTransaction, const THTTPEvent&
 			{
 			DP("Transaction Successful");
 			aTransaction.Close();
-			iHttpClient->ClientRequestCompleteL(ETrue);
+			iHttpClient->ClientRequestCompleteL(KErrNone);
 			} break;
 		case THTTPEvent::EFailed:
 			{
 			DP("Transaction Failed");
 			aTransaction.Close();
-			iHttpClient->ClientRequestCompleteL(EFalse);
+			iHttpClient->ClientRequestCompleteL(iLastStatusCode);
 			} break;
 		case THTTPEvent::ERedirectedPermanently:
 			{
@@ -210,7 +210,7 @@ void CHttpEventHandler::MHFRunL(RHTTPTransaction aTransaction, const THTTPEvent&
 			if (aEvent.iStatus < 0)
 				{
 				aTransaction.Close();
-				iHttpClient->ClientRequestCompleteL(EFalse);
+				iHttpClient->ClientRequestCompleteL(aEvent.iStatus);
 				}
 			} break;
 		}

@@ -159,13 +159,13 @@ void CHttpClient::Stop()
 		iSession.Close();
 		}
 
-	TRAP_IGNORE(iObserver.CompleteL(this, EFalse));
+	TRAP_IGNORE(iObserver.CompleteL(this, KErrDisconnected));
 
 	}
 
-void CHttpClient::ClientRequestCompleteL(TBool aSuccessful) {
+void CHttpClient::ClientRequestCompleteL(TInt aErrorCode) {
 	iIsActive = EFalse;
-	iObserver.CompleteL(this, aSuccessful);
+	iObserver.CompleteL(this, aErrorCode);
 	DP("CHttpClient::ClientRequestCompleteL");
 	iTransactionCount--;
 	

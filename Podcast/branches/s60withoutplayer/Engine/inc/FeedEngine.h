@@ -101,7 +101,7 @@ private:
 	void Disconnected(CHttpClient* aClient);
 	void Progress(CHttpClient* aHttpClient, TInt aBytes, TInt aTotalBytes);
 	void DownloadInfo(CHttpClient* aClient, TInt aSize);
-	void CompleteL(CHttpClient* aClient, TBool aSuccessful);
+	void CompleteL(CHttpClient* aClient, TInt aError);
 	void FileError(TUint /*aError*/) { }
 	// from FeedParser
 	TBool NewShowL(CShowInfo *item);
