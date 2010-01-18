@@ -404,3 +404,9 @@ RESOURCE TBUF r_podcast_addfeed_prompt {buf = STRING_r_add_feed_prompt;}
 RESOURCE TBUF r_podcast_addfeed_title_prompt {buf = STRING_r_add_feed_title_prompt;}
 RESOURCE TBUF r_podcast_addbook_prompt {buf = STRING_r_podcast_new_audiobook_prompt;}
 RESOURCE TBUF r_podcast_addbook_promptformat {buf = STRING_r_podcast_new_audiobook_label;}
+
+RESOURCE TBUF r_tabgroup_feeds {buf = STRING_r_tabgroup_feeds;}
+RESOURCE TBUF r_tabgroup_queue {buf = STRING_r_tabgroup_queue;}
+RESOURCE TBUF r_tabgroup_downloaded {buf = STRING_r_tabgroup_downloaded;}
+
+

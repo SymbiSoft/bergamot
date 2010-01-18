@@ -16,13 +16,6 @@
 *
 */
 
-/**
- * This file is a part of Escarpod Podcast project
- * (c) 2008 The Bergamot Project
- * (c) 2008 Teknolog (Sebastian Brännström)
- * (c) 2008 Anotherguest (Lars Persson)
- */
-
 #include "PodcastListView.h"
 #include "Podcast.hrh"
 #include "PodcastAppUi.h"
@@ -32,6 +25,7 @@
 #include <aknviewappui.h>
 #include <aknnotedialog.h>
 #include <aknsbasicbackgroundcontrolcontext.h>
+#include <akntabgrp.h>
 
 const TInt KDefaultGran = 5;
 CPodcastListContainer::CPodcastListContainer()
@@ -211,10 +205,11 @@ void CPodcastListView::DoActivateL(const TVwsViewId& /*aPrevViewId */,
 		iListContainer->DrawNow();
 	}
 	
-	if(iNaviDecorator && iNaviPane)
+	NaviShowTabGroupL();
+	/*if(iNaviDecorator && iNaviPane)
 		{
 		iNaviPane->PushL(*iNaviDecorator);
-		}
+		}*/
 }
 
 void CPodcastListView::DoDeactivate()
@@ -289,4 +284,59 @@ void CPodcastListView::SetNaviTextL(TDesC &aText)
 
 	iNaviDecorator	= iNaviPane->CreateNavigationLabelL(aText);
 	iNaviPane->PushL(*iNaviDecorator);
+	}
+
+void CPodcastListView::NaviShowTabGroupL()
+	{
+	if (iNaviDecorator == NULL) {
+		iNaviDecorator = iNaviPane->CreateTabGroupL();
+		iTabGroup = STATIC_CAST(CAknTabGroup*, iNaviDecorator->DecoratedControl());
+		iTabGroup->SetTabFixedWidthL(KTabWidthWithTwoTabs);
+
+		HBufC *label1 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_FEEDS);
+		HBufC *label2 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_QUEUE);
+		HBufC *label3 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_DOWNLOADED);
+				
+				
+		iTabGroup->AddTabL(0,*label1);
+		iTabGroup->AddTabL(1,*label2);
+		iTabGroup->AddTabL(1,*label3);
+		
+		CleanupStack::PopAndDestroy(label3);
+		CleanupStack::PopAndDestroy(label2);
+		CleanupStack::PopAndDestroy(label1);
+		
+		iTabGroup->SetActiveTabByIndex(0);
+		iTabGroup->SetObserver(this);
+	}
+
+	iNaviPane->Pop();
+	iNaviPane->PushL(*iNaviDecorator);
+	}
+
+void CPodcastListView::TabChangedL (TInt aIndex)
+	{
+	DP("CPodcastListView::TabChangedL ");
+	TInt index = iTabGroup->ActiveTabIndex();
+	
+	TUid newview = TUid::Uid(0);
+	TUid messageUid = TUid::Uid(0);
+	
+	if (index == 0) {
+		newview = KUidPodcastFeedViewID;
+		messageUid = TUid::Uid(EFeedsNormalMode);
+	} else if (index == 1) {
+		newview = KUidPodcastShowsViewID;
+		messageUid = TUid::Uid(EShowPendingShows);
+	} else if (index == 2) {
+		newview = KUidPodcastShowsViewID;
+		messageUid = TUid::Uid(EShowDownloadedShows);	
+	} else {
+		User::Leave(KErrTooBig);
+	}
+	
+	if(newview.iUid != 0)
+		{			
+			AppUi()->ActivateLocalViewL(newview,  messageUid, KNullDesC8());
+		}
 	}

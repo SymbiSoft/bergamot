@@ -16,13 +16,6 @@
 *
 */
 
-/**
- * This file is a part of Escarpod Podcast project
- * (c) 2008 The Bergamot Project
- * (c) 2008 Teknolog (Sebastian Brännström)
- * (c) 2008 Anotherguest (Lars Persson)
- */
-
 #ifndef PODCASTLISTVIEWH
 #define PODCASTLISTVIEWH 
 
@@ -31,11 +24,13 @@
 #include <eiklbo.h>
 #include <aknsbasicbackgroundcontrolcontext.h>
 #include "PodcastModel.h"
+#include <akntabobserver.h>
 
 class CAknDoubleLargeStyleListBox;
 class CEikFormattedCellListBox;
 class CAknNavigationDecorator;
 class CAknNavigationControlContainer;
+class CAknTabGroup;
 
 class MKeyEventListener {
 public:
@@ -69,11 +64,12 @@ class CPodcastListContainer : public CCoeControl
 	};
 
 
-class CPodcastListView : public CAknView
+class CPodcastListView : public CAknView, public MAknTabObserver 
     {
     public: 
         ~CPodcastListView();
         void SetNaviTextL(TDesC &aText);
+        void NaviShowTabGroupL();
 	protected:
 	    void ConstructL();
 		CPodcastListView();	
@@ -115,10 +111,12 @@ class CPodcastListView : public CAknView
 		virtual void UpdateListboxItemsL() = 0;
 		
         void RunAboutDialogL();
+        void TabChangedL (TInt aIndex);
 
 	protected:
 		 CAknNavigationDecorator* iNaviDecorator;
 		 CAknNavigationControlContainer* iNaviPane;
+		 CAknTabGroup* iTabGroup;
 		 CPodcastListContainer* iListContainer;
 		 /** Previous activated view */
 		 TVwsViewId iPreviousView;

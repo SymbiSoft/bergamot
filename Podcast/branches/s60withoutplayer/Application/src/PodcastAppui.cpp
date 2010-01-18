@@ -109,5 +109,5 @@ void CPodcastAppUi::UpdateAppStatus()
 		buf.Copy(_L("Idle"));
 	}
 	
-	iFeedView->SetNaviTextL(buf);
+	//iFeedView->SetNaviTextL(buf); // now we show tabs here...
 }
