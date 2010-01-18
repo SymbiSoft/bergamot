@@ -73,6 +73,7 @@ class CPodcastListView : public CAknView
     {
     public: 
         ~CPodcastListView();
+        void SetNaviTextL(TDesC &aText);
 	protected:
 	    void ConstructL();
 		CPodcastListView();	
@@ -114,7 +115,7 @@ class CPodcastListView : public CAknView
 		virtual void UpdateListboxItemsL() = 0;
 		
         void RunAboutDialogL();
-		void SetNaviTextL(TDesC &aText);
+
 	protected:
 		 CAknNavigationDecorator* iNaviDecorator;
 		 CAknNavigationControlContainer* iNaviPane;

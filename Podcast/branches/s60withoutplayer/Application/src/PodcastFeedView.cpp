@@ -522,35 +522,35 @@ void CPodcastFeedView::UpdateListboxItemsL()
 			}
 		
 		// Update the contextbar so information matches the listbox content
-		HBufC* templateStr = NULL;
-		switch(iCurrentViewMode)
-			{
-		case EFeedsAudioBooksMode:
-			{
-			templateStr = iEikonEnv->AllocReadResourceLC(R_PODCAST_BOOKS_TITLE_FORMAT);
-			}break;
-		default:
-			{
-			templateStr = iEikonEnv->AllocReadResourceLC(R_PODCAST_FEEDS_TITLE_FORMAT);
-			}
-			break;
-			}
-		HBufC* titleBuffer = HBufC::NewLC(templateStr->Length()+8);
-		titleBuffer->Des().Format(*templateStr, len);
-		if(iNaviPane != NULL)
-				{
-				iNaviPane->Pop(iNaviDecorator);
-				delete iNaviDecorator;
-				iNaviDecorator = NULL;
-				iNaviDecorator  = iNaviPane->CreateNavigationLabelL(*titleBuffer);
-				iNaviPane->PushL(*iNaviDecorator);
-				}		
-		CleanupStack::PopAndDestroy(titleBuffer);
-		CleanupStack::PopAndDestroy(templateStr);
+//		HBufC* templateStr = NULL;
+//		switch(iCurrentViewMode)
+//			{
+//		case EFeedsAudioBooksMode:
+//			{
+//			templateStr = iEikonEnv->AllocReadResourceLC(R_PODCAST_BOOKS_TITLE_FORMAT);
+//			}break;
+//		default:
+//			{
+//			templateStr = iEikonEnv->AllocReadResourceLC(R_PODCAST_FEEDS_TITLE_FORMAT);
+//			}
+//			break;
+//			}
+//		HBufC* titleBuffer = HBufC::NewLC(templateStr->Length()+8);
+//		titleBuffer->Des().Format(*templateStr, len);
+//		if(iNaviPane != NULL)
+//				{
+//				iNaviPane->Pop(iNaviDecorator);
+//				delete iNaviDecorator;
+//				iNaviDecorator = NULL;
+//				iNaviDecorator  = iNaviPane->CreateNavigationLabelL(*titleBuffer);
+//				iNaviPane->PushL(*iNaviDecorator);
+//				}		
+//		CleanupStack::PopAndDestroy(titleBuffer);
+//		CleanupStack::PopAndDestroy(templateStr);
 
 		}
 	
-		iListContainer->ScrollToVisible();
+		//iListContainer->ScrollToVisible();
 	}
 
 /** 
@@ -562,6 +562,9 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 	{
 	switch(aCommand)
 		{
+        case EPodcastHide:
+			AppUi()->HandleCommandL(EEikCmdExit);
+			break;
 		case EPodcastAddFeed:
 			{
 			TBuf<KFeedUrlLength> url;
@@ -913,6 +916,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			break;
 		}
 		UpdateToolbar();
+		((CPodcastAppUi*)AppUi())->UpdateAppStatus();
 	}
 
 void CPodcastFeedView::DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane)

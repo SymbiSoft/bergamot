@@ -39,7 +39,9 @@ class CPodcastAppUi : public CAknViewAppUi
     	CPodcastAppUi(CPodcastModel* aPodcastModel);
         void ConstructL();
        ~CPodcastAppUi();
-       
+
+       void UpdateAppStatus();
+
     private:
         // From MEikMenuObserver
         void DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane);

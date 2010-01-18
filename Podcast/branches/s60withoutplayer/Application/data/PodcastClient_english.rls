@@ -216,3 +216,6 @@ rls_string STRING_r_view_export_feeds_softkey "Select"
 
 rls_string STRING_r_playview_tab_info "Info"
 rls_string STRING_r_playview_tab_play "Play"
+rls_string STRING_r_exit_cmd "Exit"
+rls_string STRING_r_cba_options "Options"
+rls_string STRING_r_cba_hide "Hide"

@@ -25,7 +25,7 @@
 #include "PodcastSettingsView.h"
 #include "ShowEngine.h"
 #include "PodcastModel.h"
-
+#include "debug.h"
 #include <avkon.hrh>
 
 CPodcastAppUi::CPodcastAppUi(CPodcastModel* aPodcastModel):iPodcastModel(aPodcastModel)
@@ -34,11 +34,11 @@ CPodcastAppUi::CPodcastAppUi(CPodcastModel* aPodcastModel):iPodcastModel(aPodcas
 	}
 void CPodcastAppUi::ConstructL()
     {
-
+    DP("CPodcastAppUi::ConstructL() BEGIN");
     BaseConstructL(CAknAppUi::EAknEnableSkin); 
     
-    iMainView = CPodcastMainView::NewL(*iPodcastModel);
-	this->AddViewL(iMainView);
+//    iMainView = CPodcastMainView::NewL(*iPodcastModel);
+//	this->AddViewL(iMainView);
 
 	iFeedView = CPodcastFeedView::NewL(*iPodcastModel);
 	this->AddViewL(iFeedView);
@@ -48,6 +48,9 @@ void CPodcastAppUi::ConstructL()
 
 	iSettingsView = CPodcastSettingsView::NewL(*iPodcastModel);
 	this->AddViewL(iSettingsView);
+	
+	UpdateAppStatus();
+    DP("CPodcastAppUi::ConstructL() END");
     }
 
 CPodcastAppUi::~CPodcastAppUi()
@@ -78,13 +81,33 @@ void CPodcastAppUi::HandleCommandL( TInt aCommand )
     switch ( aCommand )
         {
         case EAknSoftkeyExit:
-        case EEikCmdExit:
             {
             Exit();
             break;
             }
-	
+        case EEikCmdExit:
+        	{
+			TApaTask task(CEikonEnv::Static()->WsSession());
+			task.SetWgId(CEikonEnv::Static()->RootWin().Identifier());
+			task.SendToBackground(); 
+			break;
+        	}
         default:
             break;      
         }
     }
+
+
+void CPodcastAppUi::UpdateAppStatus()
+{
+	TBuf<40> buf;
+	if(iPodcastModel->ShowEngine().GetNumDownloadingShowsL() > 0) {
+		buf.Copy(_L("Downloading"));
+	} else if (iPodcastModel->FeedEngine().ClientState() != ENotUpdating) {
+		buf.Copy(_L("Updating"));
+	} else {
+		buf.Copy(_L("Idle"));
+	}
+	
+	iFeedView->SetNaviTextL(buf);
+}
