@@ -129,4 +129,6 @@ LIBRARY fbscli.lib
 LIBRARY etext.lib  
 LIBRARY PlatformEnv.lib // for PathInfo
 LIBRARY form.lib 
+LIBRARY ws32.lib 
+
 
