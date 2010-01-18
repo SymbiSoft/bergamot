@@ -20,7 +20,7 @@ SOURCE			SettingsEngine.cpp
 SOURCE			MetaDataReader.cpp 
 SOURCE			OpmlParser.cpp 
 SOURCE			PodcastUtils.cpp
-SOURCE			PodCastModel.cpp 
+SOURCE			PodCastModel.cpp ConnectionEngine.cpp 
 
 CAPABILITY NetworkServices UserEnvironment
 LIBRARY	sqlite3.lib
