@@ -19,7 +19,6 @@
 #include "PodcastAppui.h"
 #include <Podcast.rsg>
 #include "Podcast.hrh"
-#include "PodcastMainView.h"
 #include "PodcastFeedView.h"
 #include "PodcastShowsView.h"
 #include "PodcastSettingsView.h"
@@ -49,7 +48,8 @@ void CPodcastAppUi::ConstructL()
 	iSettingsView = CPodcastSettingsView::NewL(*iPodcastModel);
 	this->AddViewL(iSettingsView);
 	
-	UpdateAppStatus();
+	iNaviPane =( CAknNavigationControlContainer * ) StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidNavi ) );
+	NaviShowTabGroupL();
     DP("CPodcastAppUi::ConstructL() END");
     }
 
@@ -111,3 +111,59 @@ void CPodcastAppUi::UpdateAppStatus()
 	
 	//iFeedView->SetNaviTextL(buf); // now we show tabs here...
 }
+
+void CPodcastAppUi::NaviShowTabGroupL()
+	{
+	iNaviDecorator = iNaviPane->CreateTabGroupL();
+	
+	iTabGroup = STATIC_CAST(CAknTabGroup*, iNaviDecorator->DecoratedControl());
+	iTabGroup->SetTabFixedWidthL(EAknTabWidthWithThreeTabs);
+
+	HBufC *label1 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_FEEDS);
+	HBufC *label2 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_QUEUE);
+	//HBufC *label3 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_DOWNLOADED);			
+			
+	iTabGroup->AddTabL(0,*label1);
+	iTabGroup->AddTabL(1,*label2);
+	//iTabGroup->AddTabL(2,*label3);
+	
+	//CleanupStack::PopAndDestroy(label3);
+	CleanupStack::PopAndDestroy(label2);
+	CleanupStack::PopAndDestroy(label1);
+	
+	iTabGroup->SetActiveTabByIndex(0);
+	iTabGroup->SetObserver(this);
+
+	iNaviPane->Pop();
+	iNaviPane->PushL(*iNaviDecorator);
+
+	}
+
+void CPodcastAppUi::TabChangedL (TInt aIndex)
+	{
+	DP("CPodcastListView::TabChangedL ");
+	TInt index = iTabGroup->ActiveTabIndex();
+	
+	TUid newview = TUid::Uid(0);
+	TUid messageUid = TUid::Uid(0);
+	
+	if (index == 0) {
+		newview = KUidPodcastFeedViewID;
+		messageUid = TUid::Uid(EFeedsNormalMode);
+	} else if (index == 1) {
+		newview = KUidPodcastShowsViewID;
+		messageUid = TUid::Uid(EShowPendingShows);
+	} else if (index == 2) {
+		newview = KUidPodcastShowsViewID;
+		messageUid = TUid::Uid(EShowDownloadedShows);	
+	} else {
+		User::Leave(KErrTooBig);
+	}
+	
+	if(newview.iUid != 0)
+		{			
+			ActivateLocalViewL(newview,  messageUid, KNullDesC8());
+		}
+	
+	//iTabGroup->SetActiveTabByIndex(index);
+	}

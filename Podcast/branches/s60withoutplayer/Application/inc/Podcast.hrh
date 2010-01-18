@@ -43,6 +43,7 @@ enum TPodcastCommandIds
 	EPodcastUpdateFeed,
 	EPodcastUpdateAllFeeds,
 	EPodcastCancelUpdateAllFeeds,
+	EPodcastImportExportFeeds,
 	EPodcastImportFeeds,
 	EPodcastExportFeeds,
 	// Show commands

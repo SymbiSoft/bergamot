@@ -24,13 +24,10 @@
 #include <eiklbo.h>
 #include <aknsbasicbackgroundcontrolcontext.h>
 #include "PodcastModel.h"
-#include <akntabobserver.h>
 
 class CAknDoubleLargeStyleListBox;
 class CEikFormattedCellListBox;
-class CAknNavigationDecorator;
-class CAknNavigationControlContainer;
-class CAknTabGroup;
+
 
 class MKeyEventListener {
 public:
@@ -64,12 +61,10 @@ class CPodcastListContainer : public CCoeControl
 	};
 
 
-class CPodcastListView : public CAknView, public MAknTabObserver 
+class CPodcastListView : public CAknView 
     {
     public: 
         ~CPodcastListView();
-        void SetNaviTextL(TDesC &aText);
-        void NaviShowTabGroupL();
 	protected:
 	    void ConstructL();
 		CPodcastListView();	
@@ -111,12 +106,8 @@ class CPodcastListView : public CAknView, public MAknTabObserver
 		virtual void UpdateListboxItemsL() = 0;
 		
         void RunAboutDialogL();
-        void TabChangedL (TInt aIndex);
 
 	protected:
-		 CAknNavigationDecorator* iNaviDecorator;
-		 CAknNavigationControlContainer* iNaviPane;
-		 CAknTabGroup* iTabGroup;
 		 CPodcastListContainer* iListContainer;
 		 /** Previous activated view */
 		 TVwsViewId iPreviousView;
@@ -126,7 +117,8 @@ class CPodcastListView : public CAknView, public MAknTabObserver
 		 
 		 CDesCArray* iItemArray;
 		 RArray<TUint> iItemIdArray;
-		TBuf<256> iListboxFormatbuffer;
+		 
+		 TBuf<256> iListboxFormatbuffer;
     };
 #endif // PODCASTBASEVIEWH
 

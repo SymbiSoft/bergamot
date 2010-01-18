@@ -22,16 +22,17 @@
 #include "SettingsEngine.h"
 #include "PodcastApp.h"
 #include "Constants.h"
-#include <aknnavide.h> 
 #include <podcast.rsg>
 #include <podcast.mbg>
 #include <gulicon.h>
+
 const TInt KSizeBufLen = 64;
 const TInt KDefaultGran = 5;
 _LIT(KSizeDownloadingOf, "(%.1f/%.1f MB)");
 _LIT(KShowsSizeFormatS60, "(%.1f MB)");
 _LIT(KChapterFormatting, "%03d");
 _LIT(KShowFormat, "%d\t%S\t%S %S");
+
 const TUint KIconArrayIds[] =
 	{
 			EMbmPodcastEmptyimage,
@@ -168,9 +169,6 @@ TUid CPodcastShowsView::Id() const
 void CPodcastShowsView::DoActivateL(const TVwsViewId& aPrevViewId,
 		TUid aCustomMessageId, const TDesC8& aCustomMessage)
 	{
-	
-	CAknToolbar* toolbar = Toolbar();
-	
 	switch (aCustomMessageId.iUid)
 		{
 		case EShowNewShows:
@@ -179,11 +177,9 @@ void CPodcastShowsView::DoActivateL(const TVwsViewId& aPrevViewId,
 		case EShowPendingShows:
 			iCurrentCategory
 					= (TPodcastClientShowCategory) aCustomMessageId.iUid;
-			toolbar->SetToolbarVisibility(EFalse);
 			break;
 		case EShowFeedShows:
 			iCurrentCategory = EShowFeedShows;
-			toolbar->SetToolbarVisibility(ETrue);
 			break;
 		}
 
@@ -207,6 +203,7 @@ void CPodcastShowsView::DoActivateL(const TVwsViewId& aPrevViewId,
 		}
 	
 	UpdateFeedUpdateStateL();
+	UpdateToolbar();
 	}
 
 void CPodcastShowsView::DoDeactivate()
@@ -583,76 +580,7 @@ void CPodcastShowsView::UpdateListboxItemsL()
 				}				
 			}
 		}
-	UpdateNaviPaneL();
 	iListContainer->ScrollToVisible();
-	}
-
-	void CPodcastShowsView::UpdateNaviPaneL()
-		{
-		((CPodcastAppUi*)AppUi())->UpdateAppStatus();
-//		
-//		if (iCurrentCategory == EShowPendingShows)
-//			{
-//			HBufC* titleBuffer= NULL;
-//
-//			RShowInfoArray &fItems = iPodcastModel.ActiveShowList();
-//			TUint len = fItems.Count();
-//			if (iPodcastModel.ShowEngine().DownloadsStopped())
-//				{
-//				HBufC* titleFormat=  iEikonEnv->AllocReadResourceLC(R_PODCAST_SHOWS_DOWNLOADS_SUSPENDED);
-//				titleBuffer = HBufC::NewL(titleFormat->Length()+8);
-//				titleBuffer->Des().Format(*titleFormat, len);
-//				CleanupStack::PopAndDestroy(titleFormat);
-//				CleanupStack::PushL(titleBuffer);
-//				}
-//			else
-//				{
-//				HBufC* titleFormat=  iEikonEnv->AllocReadResourceLC(R_PODCAST_SHOWS_TITLE_DOWNLOAD);
-//				titleBuffer = HBufC::NewL(titleFormat->Length()+8);
-//				titleBuffer->Des().Format(*titleFormat, len);
-//				CleanupStack::PopAndDestroy(titleFormat);
-//				CleanupStack::PushL(titleBuffer);
-//				}
-//
-//			if (iNaviPane != NULL)
-//				{
-//				iNaviPane->Pop(iNaviDecorator);
-//				delete iNaviDecorator;
-//				iNaviDecorator = NULL;
-//				}
-//
-//			iNaviDecorator	= iNaviPane->CreateNavigationLabelL(*titleBuffer);
-//			iNaviPane->PushL(*iNaviDecorator);
-//			CleanupStack::PopAndDestroy(titleBuffer);
-//			}
-//		else
-//			{
-//			TUint numUnplayed = 0;
-//			TUint numShows = 0;
-//	
-//			HBufC* titleFormat=  iEikonEnv->AllocReadResourceLC(R_PODCAST_SHOWS_TITLE_FORMAT);
-//			HBufC* titleBuffer = HBufC::NewL(titleFormat->Length()+8);
-//			if (iCurrentCategory == EShowDownloadedShows) {
-//				iPodcastModel.FeedEngine().GetDownloadedStats(numShows, numUnplayed);
-//			} else if (iPodcastModel.ActiveFeedInfo()){
-//				iPodcastModel.FeedEngine().GetStatsByFeed(iPodcastModel.ActiveFeedInfo()->Uid(), numShows, numUnplayed, EFalse);
-//			} 
-//			
-//			titleBuffer->Des().Format(*titleFormat, numUnplayed, numShows);
-//			CleanupStack::PopAndDestroy(titleFormat);
-//			CleanupStack::PushL(titleBuffer);
-//
-//			if (iNaviPane != NULL)
-//				{
-//				iNaviPane->Pop(iNaviDecorator);
-//				delete iNaviDecorator;
-//				iNaviDecorator = NULL;
-//				}
-//			
-//			iNaviDecorator = iNaviPane->CreateNavigationLabelL(*titleBuffer);
-//			iNaviPane->PushL(*iNaviDecorator);
-//			CleanupStack::PopAndDestroy(titleBuffer);
-//		}
 	}
 
 /** 
@@ -682,13 +610,11 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 					iListContainer->Listbox()->HandleItemRemovalL();
 					iListContainer->Listbox()->SetCurrentItemIndex(index - 1 > 0 ? index - 1 : 0);
 					iListContainer->Listbox()->DrawNow();
-					UpdateNaviPaneL();
 					}
 				else {
 					UpdateShowItemDataL(iPodcastModel.ActiveShowList()[index], index, 0);
 					iListContainer->Listbox()->DrawItem(index);					
 				}
-				UpdateNaviPaneL();
 				}
 			}
 			break;
@@ -703,7 +629,6 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 
 				UpdateShowItemDataL(iPodcastModel.ActiveShowList()[index], index, 0);
 				iListContainer->Listbox()->DrawItem(index);					
-				UpdateNaviPaneL();
 				}
 			}
 			break;
@@ -861,7 +786,6 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 						
 						delete iPodcastModel.ActiveShowList()[index];
 						iPodcastModel.ActiveShowList().Remove(index);
-						UpdateNaviPaneL();
 					}
 				}
 			}
@@ -1021,6 +945,36 @@ void CPodcastShowsView::DynInitToolbarL (TInt /*aResourceId*/, CAknToolbar * /*a
 void CPodcastShowsView::UpdateToolbar()
 {
 	CAknToolbar* toolbar = Toolbar();
+	
+	switch(iCurrentCategory) {
+	case EShowAllShows:
+	case EShowNewShows:
+	case EShowFeedShows:
+	case EShowDownloadedShows:
+		toolbar->HideItem(EPodcastUpdateFeed, EFalse, ETrue ); 
+		toolbar->HideItem(EPodcastDownloadShow, EFalse, ETrue );
+		toolbar->HideItem( EPodcastMarkAsPlayed, EFalse, ETrue );
+		toolbar->HideItem( EPodcastMarkAsUnplayed, ETrue, ETrue );
+		
+		toolbar->HideItem(EPodcastRemoveDownload, ETrue, ETrue);
+		toolbar->HideItem(EPodcastRemoveAllDownloads, ETrue, ETrue);
+		toolbar->HideItem(EPodcastStopDownloads,ETrue, ETrue);
+		toolbar->HideItem(EPodcastResumeDownloads,ETrue, ETrue);
+
+		break;
+	case EShowPendingShows:
+		toolbar->HideItem(EPodcastUpdateFeed, ETrue, ETrue ); 
+		toolbar->HideItem(EPodcastDownloadShow, ETrue, ETrue );
+		toolbar->HideItem(EPodcastMarkAsPlayed, ETrue, ETrue );
+		toolbar->HideItem(EPodcastMarkAsUnplayed, ETrue, ETrue );
+		
+		toolbar->HideItem(EPodcastRemoveDownload, EFalse, ETrue);
+		toolbar->HideItem(EPodcastRemoveAllDownloads, EFalse, ETrue);
+		toolbar->HideItem(EPodcastStopDownloads,iPodcastModel.ShowEngine().DownloadsStopped(), ETrue);
+		toolbar->HideItem(EPodcastResumeDownloads,!iPodcastModel.ShowEngine().DownloadsStopped(), ETrue);
+		break;
+	}
+
 	
 	RShowInfoArray &fItems = iPodcastModel.ActiveShowList();
 	TInt itemCnt = fItems.Count();

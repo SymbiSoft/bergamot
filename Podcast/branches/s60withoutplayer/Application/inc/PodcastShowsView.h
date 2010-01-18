@@ -96,7 +96,6 @@ protected:
 
 private:
 	void GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex);
-	void UpdateNaviPaneL();
 	void UpdateToolbar();
 private:
 	

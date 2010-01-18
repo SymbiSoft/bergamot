@@ -23,8 +23,7 @@
 #include "SettingsEngine.h"
 #include "PodcastApp.h"
 #include "PodcastUtils.h"
-#include <caknfileselectiondialog.h>
-#include <aknnavide.h> 
+#include <caknfileselectiondialog.h> 
 #include <podcast.rsg>
 #include <podcast.mbg>
 #include <gulicon.h>
@@ -57,9 +56,6 @@ class CPodcastFeedContainer : public CCoeControl
 		CPodcastFeedContainer();
 		~CPodcastFeedContainer();
 		void ConstructL( const TRect& aRect );
-	protected:
-		CAknNavigationDecorator* iNaviDecorator;
-        CAknNavigationControlContainer* iNaviPane;
 	};
 
 CPodcastFeedContainer::CPodcastFeedContainer()
@@ -79,7 +75,6 @@ void CPodcastFeedContainer::ConstructL( const TRect& aRect )
 
 CPodcastFeedContainer::~CPodcastFeedContainer()
 {
-	delete iNaviDecorator;
 }
 
 
@@ -520,34 +515,6 @@ void CPodcastFeedView::UpdateListboxItemsL()
 				}
 			iListContainer->Listbox()->HandleItemAdditionL();		
 			}
-		
-		// Update the contextbar so information matches the listbox content
-//		HBufC* templateStr = NULL;
-//		switch(iCurrentViewMode)
-//			{
-//		case EFeedsAudioBooksMode:
-//			{
-//			templateStr = iEikonEnv->AllocReadResourceLC(R_PODCAST_BOOKS_TITLE_FORMAT);
-//			}break;
-//		default:
-//			{
-//			templateStr = iEikonEnv->AllocReadResourceLC(R_PODCAST_FEEDS_TITLE_FORMAT);
-//			}
-//			break;
-//			}
-//		HBufC* titleBuffer = HBufC::NewLC(templateStr->Length()+8);
-//		titleBuffer->Des().Format(*templateStr, len);
-//		if(iNaviPane != NULL)
-//				{
-//				iNaviPane->Pop(iNaviDecorator);
-//				delete iNaviDecorator;
-//				iNaviDecorator = NULL;
-//				iNaviDecorator  = iNaviPane->CreateNavigationLabelL(*titleBuffer);
-//				iNaviPane->PushL(*iNaviDecorator);
-//				}		
-//		CleanupStack::PopAndDestroy(titleBuffer);
-//		CleanupStack::PopAndDestroy(templateStr);
-
 		}
 	
 		//iListContainer->ScrollToVisible();
@@ -921,51 +888,51 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 
 void CPodcastFeedView::DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane)
 {
-	if(aResourceId == R_PODCAST_FEEDVIEW_MENU)
-	{
-		if (iListContainer->Listbox() == NULL)
-			return;
-		TInt index = iListContainer->Listbox()->CurrentItemIndex();
-		TBool isBookMode = (iCurrentViewMode == EFeedsAudioBooksMode);
-		const RFeedInfoArray* sortedItems = NULL;
-		if(isBookMode)
-		{
-			sortedItems = &iPodcastModel.FeedEngine().GetSortedBooks();
-		}
-		else
-		{
-			sortedItems = &iPodcastModel.FeedEngine().GetSortedFeeds();
-		}
-
-		TUint cnt = sortedItems->Count();
-
-		if (cnt == 0)
-		{		
-			aMenuPane->SetItemDimmed(EPodcastDeleteFeed, ETrue);
-			aMenuPane->SetItemDimmed(EPodcastUpdateAllFeeds, ETrue);
-			aMenuPane->SetItemDimmed(EPodcastEditFeed, ETrue);
-			aMenuPane->SetItemDimmed(EPodcastRemoveAudioBook, ETrue);
-		}
-		else
-		{			
-			aMenuPane->SetItemDimmed(EPodcastDeleteFeed, (isBookMode||iUpdatingAllRunning));
-			aMenuPane->SetItemDimmed(EPodcastUpdateAllFeeds, (isBookMode || iUpdatingAllRunning));
-			aMenuPane->SetItemDimmed(EPodcastEditFeed, (isBookMode||iUpdatingAllRunning));	
-			aMenuPane->SetItemDimmed(EPodcastRemoveAudioBook, !isBookMode);
-		}
-		
-		aMenuPane->SetItemDimmed(EPodcastAddNewAudioBook, !isBookMode);
-		aMenuPane->SetItemDimmed(EPodcastImportAudioBook, !isBookMode);
-		aMenuPane->SetItemDimmed(EPodcastAddFeed, (isBookMode||iUpdatingAllRunning));
-		aMenuPane->SetItemDimmed(EPodcastImportFeeds, (isBookMode||iUpdatingAllRunning));
-		aMenuPane->SetItemDimmed(EPodcastExportFeeds, (isBookMode||iUpdatingAllRunning));
-#pragma message("LAPER Handle MPX activate here. Or in themodel perhaps??")
-		TBool playingThisBook = EFalse;//(iPodcastModel.PlayingPodcast() != NULL) && (sortedItems != NULL && sortedItems->Count() > 0) && (iPodcastModel.PlayingPodcast()->FeedUid() == (*sortedItems)[index]->Uid()) && iPodcastModel.SoundEngine().State() == ESoundEnginePlaying;
-		aMenuPane->SetItemDimmed(EPodcastPlayAudioBook, !(isBookMode && cnt && !playingThisBook));
-		aMenuPane->SetItemDimmed(EPodcastPauseAudioBook, !(isBookMode && cnt && playingThisBook));
-		
-		aMenuPane->SetItemDimmed(EPodcastCancelUpdateAllFeeds, (isBookMode||!iUpdatingAllRunning));	
-	}
+//	if(aResourceId == R_PODCAST_FEEDVIEW_MENU)
+//	{
+//		if (iListContainer->Listbox() == NULL)
+//			return;
+//		TInt index = iListContainer->Listbox()->CurrentItemIndex();
+//		TBool isBookMode = (iCurrentViewMode == EFeedsAudioBooksMode);
+//		const RFeedInfoArray* sortedItems = NULL;
+//		if(isBookMode)
+//		{
+//			sortedItems = &iPodcastModel.FeedEngine().GetSortedBooks();
+//		}
+//		else
+//		{
+//			sortedItems = &iPodcastModel.FeedEngine().GetSortedFeeds();
+//		}
+//
+//		TUint cnt = sortedItems->Count();
+//
+//		if (cnt == 0)
+//		{		
+//			aMenuPane->SetItemDimmed(EPodcastDeleteFeed, ETrue);
+//			aMenuPane->SetItemDimmed(EPodcastUpdateAllFeeds, ETrue);
+//			aMenuPane->SetItemDimmed(EPodcastEditFeed, ETrue);
+//			aMenuPane->SetItemDimmed(EPodcastRemoveAudioBook, ETrue);
+//		}
+//		else
+//		{			
+//			aMenuPane->SetItemDimmed(EPodcastDeleteFeed, (isBookMode||iUpdatingAllRunning));
+//			aMenuPane->SetItemDimmed(EPodcastUpdateAllFeeds, (isBookMode || iUpdatingAllRunning));
+//			aMenuPane->SetItemDimmed(EPodcastEditFeed, (isBookMode||iUpdatingAllRunning));	
+//			aMenuPane->SetItemDimmed(EPodcastRemoveAudioBook, !isBookMode);
+//		}
+//		
+//		aMenuPane->SetItemDimmed(EPodcastAddNewAudioBook, !isBookMode);
+//		aMenuPane->SetItemDimmed(EPodcastImportAudioBook, !isBookMode);
+//		aMenuPane->SetItemDimmed(EPodcastAddFeed, (isBookMode||iUpdatingAllRunning));
+//		aMenuPane->SetItemDimmed(EPodcastImportFeeds, (isBookMode||iUpdatingAllRunning));
+//		aMenuPane->SetItemDimmed(EPodcastExportFeeds, (isBookMode||iUpdatingAllRunning));
+//#pragma message("LAPER Handle MPX activate here. Or in themodel perhaps??")
+//		TBool playingThisBook = EFalse;//(iPodcastModel.PlayingPodcast() != NULL) && (sortedItems != NULL && sortedItems->Count() > 0) && (iPodcastModel.PlayingPodcast()->FeedUid() == (*sortedItems)[index]->Uid()) && iPodcastModel.SoundEngine().State() == ESoundEnginePlaying;
+//		aMenuPane->SetItemDimmed(EPodcastPlayAudioBook, !(isBookMode && cnt && !playingThisBook));
+//		aMenuPane->SetItemDimmed(EPodcastPauseAudioBook, !(isBookMode && cnt && playingThisBook));
+//		
+//		aMenuPane->SetItemDimmed(EPodcastCancelUpdateAllFeeds, (isBookMode||!iUpdatingAllRunning));	
+//	}
 }
 
 void CPodcastFeedView::HandleAddNewAudioBookL()

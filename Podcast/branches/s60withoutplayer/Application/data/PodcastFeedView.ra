@@ -1,9 +1,20 @@
-/**
- * This file is a part of Escarpod Podcast project
- * (c) 2008 The Bergamot Project
- * (c) 2008 Teknolog (Sebastian Brännström)
- * (c) 2008 Anotherguest (Lars Persson)
- */
+/*
+* Copyright (c) 2007-2010 Sebastian Brannstrom, Lars Persson, EmbedDev AB
+*
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* EmbedDev AB - initial contribution.
+*
+* Contributors:
+*
+* Description:
+*
+*/
 
 RESOURCE HOTKEYS r_podcast_feedview_hotkeys
     {
@@ -26,7 +37,7 @@ RESOURCE MENU_PANE r_podcast_feedview_menu
     items =
         {        
         // Feed handling        	
-		MENU_ITEM
+		/*MENU_ITEM
 			{
 			command = EPodcastAddFeed;
 			txt = STRING_r_view_add_feed_cmd;
@@ -40,13 +51,13 @@ RESOURCE MENU_PANE r_podcast_feedview_menu
 			{
 			command = EPodcastImportAudioBook;
 			txt = STRING_r_view_import_audiobook_cmd;
-			},
+			},*/
 		MENU_ITEM
 			{
 			command = EPodcastEditFeed;
 			txt = STRING_r_view_edit_feed_cmd;
 			},
-		MENU_ITEM
+		/*MENU_ITEM
 			{
 			command = EPodcastDeleteFeed;
 			txt = STRING_r_view_delete_feed_cmd;
@@ -55,18 +66,14 @@ RESOURCE MENU_PANE r_podcast_feedview_menu
 			{
 			command = EPodcastRemoveAudioBook;
 			txt = STRING_r_view_remove_audiobook_cmd;
-			},
+			},*/
 		MENU_ITEM
 			{
-			command = EPodcastImportFeeds;
-			txt = STRING_r_view_import_feeds_cmd;
+			command = EPodcastImportExportFeeds;
+			txt = STRING_r_view_import_export_feeds_cmd;
+			cascade = r_importexport_menu;
 			},
-		MENU_ITEM
-			{
-			command = EPodcastExportFeeds;
-			txt = STRING_r_view_export_feeds_cmd;
-			},
-		MENU_ITEM
+		/*MENU_ITEM
 			{
 			command = EPodcastUpdateAllFeeds;
 			txt = STRING_r_update_all_feeds_cmd;
@@ -85,17 +92,17 @@ RESOURCE MENU_PANE r_podcast_feedview_menu
 			{
 			command = EPodcastCancelUpdateAllFeeds;
 			txt = STRING_r_cancel_update_all_feeds_cmd;
-			},
+			},*/
 		MENU_ITEM
 			{
 			command = EPodcastSettings;
 			txt = STRING_r_settings_cmd;
 			},
-		MENU_ITEM
+		/*MENU_ITEM
 			{
 			command = EPodcastAbout;
 			txt = STRING_r_view_about_cmd;
-			},    
+			},*/    
 		MENU_ITEM
 			{
 			command = EAknSoftkeyExit;
@@ -112,6 +119,22 @@ RESOURCE MENU_PANE r_podcast_feedview_menu
         };
     }
 
+RESOURCE MENU_PANE r_importexport_menu
+	{
+	items =	{
+		MENU_ITEM
+			{
+			command = EPodcastImportFeeds;
+			txt = STRING_r_view_import_feeds_cmd;
+			},
+		MENU_ITEM
+			{
+			command = EPodcastExportFeeds;
+			txt = STRING_r_view_export_feeds_cmd;
+			}
+	};
+			
+	}
 
 RESOURCE CBA r_podcast_cba
 	{

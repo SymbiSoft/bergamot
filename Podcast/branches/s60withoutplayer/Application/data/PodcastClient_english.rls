@@ -48,7 +48,9 @@ rls_string STRING_r_view_cmd "View"
 rls_string STRING_r_view_play_cmd "Play"
 rls_string STRING_r_view_mark_as_played_cmd "Mark as Played"
 rls_string STRING_r_view_mark_as_unplayed_cmd "Mark as Unplayed"
-rls_string STRING_r_view_mark_as_played_cmd_short "Mark"
+rls_string STRING_r_view_mark_as_played_cmd_short "Mark old"
+rls_string STRING_r_view_mark_as_unplayed_cmd_short "Mark new"
+
 // Actions for feeds
 rls_string STRING_r_view_add_feed_cmd "Add Feed"
 rls_string STRING_r_view_add_feed_cmd_short "Add"
@@ -160,6 +162,8 @@ rls_string STRING_r_podcast_new_audiobook_select_files "Choose Files" // Max 80 
 // Latest strings here
 rls_string STRING_r_view_books_no_books "No Books" // No Books
 
+rls_string STRING_r_view_import_export_feeds_cmd "Import/export feeds" // Import feeds cmd in feedview
+
 rls_string STRING_r_view_import_feeds_cmd "Import Feeds" // Import feeds cmd in feedview
 rls_string STRING_r_view_import_feeds_title "Select OPML File"
 
@@ -182,6 +186,7 @@ rls_string STRING_r_view_books_setorder_dlg_label "Select Chapter to Swap With"
 rls_string STRING_r_view_books_setorder_dlg_selectlabel "Select Chapter to Swap"
 
 rls_string STRING_r_view_remove_all_downloads_cmd "Remove All"
+rls_string STRING_r_view_remove_all_downloads_cmd_short "Clear"
 
 rls_string STRING_r_podcast_subtitle ""
 

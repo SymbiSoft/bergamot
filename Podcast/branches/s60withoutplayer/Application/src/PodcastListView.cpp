@@ -19,7 +19,6 @@
 #include "PodcastListView.h"
 #include "Podcast.hrh"
 #include "PodcastAppUi.h"
-#include <aknnavide.h> 
 #include <podcast.rsg>
 #include <aknlists.h> 
 #include <aknviewappui.h>
@@ -67,6 +66,7 @@ void CPodcastListContainer::ConstructL( const TRect& aRect, TInt aListboxFlags )
 	iListbox->SetSize(aRect.Size());
 	iListbox->MakeVisible(ETrue);
     MakeVisible(EFalse);
+    
 	// Activate the window, which makes it ready to be drawn
     ActivateL();   
 }
@@ -156,7 +156,6 @@ void CPodcastListView::ConstructL()
 	iItemArray = new (ELeave)CDesCArrayFlat(KDefaultGran);
 	iListContainer->Listbox()->Model()->SetItemTextArray(iItemArray);
 	iListContainer->Listbox()->Model()->SetOwnershipType(ELbmDoesNotOwnItemArray);
-	iNaviPane =( CAknNavigationControlContainer * ) StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidNavi ) );
 }
 
 void CPodcastListView::HandleViewRectChange()
@@ -182,7 +181,6 @@ void CPodcastListView::HandleStatusPaneSizeChange()
 CPodcastListView::~CPodcastListView()
     {
     delete iListContainer;  
-    delete iNaviDecorator;
     delete iItemArray;
     iItemIdArray.Close();
     }
@@ -204,12 +202,6 @@ void CPodcastListView::DoActivateL(const TVwsViewId& /*aPrevViewId */,
 		UpdateListboxItemsL();		
 		iListContainer->DrawNow();
 	}
-	
-	NaviShowTabGroupL();
-	/*if(iNaviDecorator && iNaviPane)
-		{
-		iNaviPane->PushL(*iNaviDecorator);
-		}*/
 }
 
 void CPodcastListView::DoDeactivate()
@@ -219,10 +211,6 @@ void CPodcastListView::DoDeactivate()
 	{
 		AppUi()->RemoveFromViewStack( *this, iListContainer);
 		iListContainer->MakeVisible(EFalse);
-		if(iNaviDecorator && iNaviPane)
-		{
-		iNaviPane->Pop(iNaviDecorator);
-		}
 	}
 }
 
@@ -272,71 +260,3 @@ void CPodcastListView::RunAboutDialogL()
 	CleanupStack::Pop(dlg);
 	dlg->ExecuteLD(R_DLG_ABOUT);
 }
-
-void CPodcastListView::SetNaviTextL(TDesC &aText)
-	{
-	if (iNaviPane != NULL)
-		{
-		iNaviPane->Pop(iNaviDecorator);
-		delete iNaviDecorator;
-		iNaviDecorator = NULL;
-		}
-
-	iNaviDecorator	= iNaviPane->CreateNavigationLabelL(aText);
-	iNaviPane->PushL(*iNaviDecorator);
-	}
-
-void CPodcastListView::NaviShowTabGroupL()
-	{
-	if (iNaviDecorator == NULL) {
-		iNaviDecorator = iNaviPane->CreateTabGroupL();
-		iTabGroup = STATIC_CAST(CAknTabGroup*, iNaviDecorator->DecoratedControl());
-		iTabGroup->SetTabFixedWidthL(KTabWidthWithTwoTabs);
-
-		HBufC *label1 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_FEEDS);
-		HBufC *label2 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_QUEUE);
-		HBufC *label3 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_DOWNLOADED);
-				
-				
-		iTabGroup->AddTabL(0,*label1);
-		iTabGroup->AddTabL(1,*label2);
-		iTabGroup->AddTabL(1,*label3);
-		
-		CleanupStack::PopAndDestroy(label3);
-		CleanupStack::PopAndDestroy(label2);
-		CleanupStack::PopAndDestroy(label1);
-		
-		iTabGroup->SetActiveTabByIndex(0);
-		iTabGroup->SetObserver(this);
-	}
-
-	iNaviPane->Pop();
-	iNaviPane->PushL(*iNaviDecorator);
-	}
-
-void CPodcastListView::TabChangedL (TInt aIndex)
-	{
-	DP("CPodcastListView::TabChangedL ");
-	TInt index = iTabGroup->ActiveTabIndex();
-	
-	TUid newview = TUid::Uid(0);
-	TUid messageUid = TUid::Uid(0);
-	
-	if (index == 0) {
-		newview = KUidPodcastFeedViewID;
-		messageUid = TUid::Uid(EFeedsNormalMode);
-	} else if (index == 1) {
-		newview = KUidPodcastShowsViewID;
-		messageUid = TUid::Uid(EShowPendingShows);
-	} else if (index == 2) {
-		newview = KUidPodcastShowsViewID;
-		messageUid = TUid::Uid(EShowDownloadedShows);	
-	} else {
-		User::Leave(KErrTooBig);
-	}
-	
-	if(newview.iUid != 0)
-		{			
-			AppUi()->ActivateLocalViewL(newview,  messageUid, KNullDesC8());
-		}
-	}

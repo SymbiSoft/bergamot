@@ -20,6 +20,9 @@
 #define PODCASTAPPUI_H
 
 #include <aknviewappui.h>
+#include <akntabobserver.h>
+#include <akntabgrp.h>
+#include <aknnavide.h> 
 
 class CPodcastMainView;
 class CPodcastFeedView;
@@ -33,7 +36,7 @@ const TUid KUidPodcastFeedViewID = {0x00000002};
 const TUid KUidPodcastShowsViewID = {0x00000003};
 const TUid KUidPodcastSettingsViewID = {0x00000005};
 
-class CPodcastAppUi : public CAknViewAppUi
+class CPodcastAppUi : public CAknViewAppUi, public MAknTabObserver
     {
     public: 
     	CPodcastAppUi(CPodcastModel* aPodcastModel);
@@ -45,16 +48,21 @@ class CPodcastAppUi : public CAknViewAppUi
     private:
         // From MEikMenuObserver
         void DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane);
+        void TabChangedL (TInt aIndex);
 
     private:
         void HandleCommandL(TInt aCommand);
-
+        void NaviShowTabGroupL();
     private:
     	CPodcastMainView *iMainView;
 		CPodcastFeedView* iFeedView;
 		CPodcastShowsView* iShowsView;		
 		CPodcastSettingsView* iSettingsView;
 		CPodcastModel* iPodcastModel;
+
+		CAknNavigationDecorator* iNaviDecorator;
+		CAknTabGroup* iTabGroup;
+		CAknNavigationControlContainer* iNaviPane;
     };
 
 #endif
