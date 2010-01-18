@@ -40,4 +40,5 @@
 "../../application/data/backup_registration.xml" - "c:\private\A0009D00\backup_registration.xml"
 
 ; application UI - note that FR,RI does not work when SIS is self signed
+;"\epoc32\release\gcce\udeb\Podcastengine.dll"-"c:\sys\bin\Podcastengine.dll"
 "\epoc32\release\gcce\udeb\Podcast.exe"-"c:\sys\bin\Podcast.exe",FR,RI

@@ -233,6 +233,9 @@ void CPodcastListView::HandleCommandL(TInt aCommand)
 	case EAknSoftkeyBack:
 		{
 		AppUi()->ActivateViewL(iPreviousView);
+		if (iPreviousView.iViewUid == KUidPodcastFeedViewID) {
+			((CPodcastAppUi*)AppUi())->SetActiveTab(0);
+		}
 		}break;
 	case EPodcastSettings:
 		AppUi()->ActivateLocalViewL(KUidPodcastSettingsViewID);

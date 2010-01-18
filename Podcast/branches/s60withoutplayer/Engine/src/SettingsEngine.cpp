@@ -30,7 +30,7 @@ const TInt KMaxParseBuffer = 1024;
 
 CSettingsEngine::CSettingsEngine(CPodcastModel& aPodcastModel) : iPodcastModel(aPodcastModel)
 	{
-		iSelectOnlyUnplayed = ETrue;
+		iSelectOnlyUnplayed = EFalse;
 	}
 
 CSettingsEngine::~CSettingsEngine()

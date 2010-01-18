@@ -34,6 +34,6 @@ RESOURCE LOCALISABLE_APP_INFO r_podcast_localisable_app_info
 
 #include "PodcastMainView.ra"
 #include "PodcastPlayView.ra"
-#include "PodcastShowsView.ra"
 #include "PodcastFeedView.ra"
+#include "PodcastShowsView.ra"
 #include "PodcastSettingsView.ra"

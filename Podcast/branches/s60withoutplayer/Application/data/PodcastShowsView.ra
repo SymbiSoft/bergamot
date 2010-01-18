@@ -150,7 +150,7 @@ RESOURCE MENU_BAR r_podcast_showsview_menubar
 RESOURCE AVKON_VIEW r_podcast_showsview
 {
 	hotkeys = r_podcast_showsview_hotkeys;
-	menubar = r_podcast_showsview_menubar;
+	menubar = r_podcast_feedview_menubar;
 	cba = R_AVKON_SOFTKEYS_OPTIONS_BACK;
 	toolbar = r_showsview_toolbar;
 }
@@ -193,6 +193,24 @@ RESOURCE AVKON_TOOLBAR r_showsview_toolbar
 						//bmpid = EMbmAvkonQgn_indi_find_goto;
 						txt = STRING_r_view_download_show_cmd;
 						helptxt = STRING_r_view_download_show_cmd;
+						}  
+					};
+				};
+			},
+		TBAR_CTRL
+			{
+			type = EAknCtButton;
+			id =EPodcastDeleteShow;
+			control = AVKON_BUTTON
+				{
+				states =
+					{
+					AVKON_BUTTON_STATE
+						{
+						//bmpfile = AVKON_BITMAP_FILE;
+						//bmpid = EMbmAvkonQgn_indi_find_goto;
+						txt = STRING_r_view_delete_show_cmd;
+						helptxt = STRING_r_view_delete_show_cmd;
 						}  
 					};
 				};

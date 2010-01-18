@@ -32,6 +32,8 @@ START BITMAP Podcast.mbm
 	SOURCE 8 feed_40x40m.bmp
 	SOURCE c16 feed_new_40x40.bmp
 	SOURCE 8 feed_new_40x40m.bmp
+	SOURCE c16 downloaded_new_40x40.bmp
+	SOURCE 8 downloaded_new_40x40m.bmp
 	SOURCE c16 play_40x40.bmp
 	SOURCE 8 play_40x40m.bmp
 	SOURCE c16 downloaded_view_40x40.bmp
