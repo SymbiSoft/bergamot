@@ -38,9 +38,10 @@ void CPodcastListContainer::SetKeyEventListener(MKeyEventListener *aKeyEventList
 
 TKeyResponse CPodcastListContainer::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType)
 {
+	TKeyResponse response = iListbox->OfferKeyEventL(aKeyEvent, aType);
 	if (iKeyEventListener)
 		iKeyEventListener->OfferKeyEventL(aKeyEvent, aType);
-	return iListbox->OfferKeyEventL(aKeyEvent, aType);
+	return response;
 }
 
 void CPodcastListContainer::ConstructL( const TRect& aRect, TInt aListboxFlags )
