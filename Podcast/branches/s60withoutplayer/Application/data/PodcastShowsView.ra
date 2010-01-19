@@ -333,7 +333,7 @@ RESOURCE TBUF r_podcast_new_audiobook_select_files { buf = STRING_r_podcast_new_
 RESOURCE TBUF r_podcast_shows_title_format { buf =  STRING_r_podcast_shows_title_format;}
 RESOURCE TBUF r_podcast_shows_title_download {buf = STRING_r_podcast_shows_title_download;}
 RESOURCE TBUF r_podcast_shows_downloads_suspended { buf = STRING_r_podcast_shows_downloads_suspended;}
-
+RESOURCE TBUF r_podcast_empty_queue { buf = STRING_r_podcast_empty_queue; }
 RESOURCE ARRAY r_podcast_new_audiobook_mimearray
 {
 	items = 

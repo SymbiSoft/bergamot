@@ -100,6 +100,11 @@ void CPodcastShowsView::ConstructL()
 	iListContainer->Listbox()->ItemDrawer()->FormattedCellData()->SetIconArrayL(icons);
 	CleanupStack::Pop(icons); // icons
 	iListContainer->Listbox()->SetListBoxObserver(this);
+	
+	HBufC* emptyText =  iEikonEnv->AllocReadResourceLC(R_PODCAST_EMPTY_QUEUE);
+	iListContainer->Listbox()->View()->SetListEmptyTextL(*emptyText);
+	CleanupStack::PopAndDestroy(emptyText);	
+	
 	iListContainer->SetKeyEventListener(this);
 	iPodcastModel.FeedEngine().AddObserver(this);
 	iPodcastModel.ShowEngine().AddObserver(this);
@@ -1000,8 +1005,8 @@ void CPodcastShowsView::UpdateToolbar()
 		toolbar->HideItem(EPodcastMarkAsPlayed, ETrue, ETrue );
 		toolbar->HideItem(EPodcastMarkAsUnplayed, ETrue, ETrue );
 		
-		toolbar->HideItem(EPodcastRemoveDownload, itemCnt == 0, ETrue);
-		toolbar->HideItem(EPodcastRemoveAllDownloads, itemCnt == 0, ETrue);
+		toolbar->SetItemDimmed(EPodcastRemoveDownload, itemCnt == 0, ETrue);
+		toolbar->SetItemDimmed(EPodcastRemoveAllDownloads, itemCnt == 0, ETrue);
 		toolbar->HideItem(EPodcastStopDownloads,iPodcastModel.ShowEngine().DownloadsStopped(), ETrue);
 		toolbar->HideItem(EPodcastResumeDownloads,!iPodcastModel.ShowEngine().DownloadsStopped(), ETrue);
 		break;
