@@ -987,6 +987,7 @@ void CPodcastShowsView::UpdateToolbar()
 	case EShowFeedShows:
 	case EShowDownloadedShows:
 		toolbar->HideItem(EPodcastUpdateFeed, updatingState, ETrue ); 
+		toolbar->HideItem(EPodcastCancelUpdateAllFeeds, !updatingState, ETrue );
 		toolbar->HideItem(EPodcastDownloadShow, hideDownloadShowCmd, ETrue );
 		toolbar->HideItem(EPodcastDeleteShow, !hideDownloadShowCmd, ETrue);
 		toolbar->HideItem(EPodcastMarkAsPlayed, hideSetPlayed, ETrue );
@@ -999,7 +1000,8 @@ void CPodcastShowsView::UpdateToolbar()
 
 		break;
 	case EShowPendingShows:
-		toolbar->HideItem(EPodcastUpdateFeed, ETrue, ETrue ); 
+		toolbar->HideItem(EPodcastUpdateFeed, ETrue, ETrue );
+		toolbar->HideItem(EPodcastCancelUpdateAllFeeds, ETrue, ETrue );
 		toolbar->HideItem(EPodcastDownloadShow, ETrue, ETrue );
 		toolbar->HideItem(EPodcastDeleteShow, ETrue, ETrue);
 		toolbar->HideItem(EPodcastMarkAsPlayed, ETrue, ETrue );
