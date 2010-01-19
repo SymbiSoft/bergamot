@@ -193,14 +193,14 @@ void CShowEngine::DownloadInfo(CHttpClient* aHttpClient, TInt aTotalBytes)
 		}
 	}
 
-void CShowEngine::GetShowL(CShowInfo *info)
+TBool CShowEngine::GetShowL(CShowInfo *info)
 	{
 	CFeedInfo *feedInfo = iPodcastModel.FeedEngine().GetFeedInfoByUid(
 			info->FeedUid());
 	if (feedInfo == NULL)
 		{
 		DP("Feed not found for this show!");
-		return;
+		return EFalse;
 		}
 
 	TFileName filePath;
@@ -220,7 +220,7 @@ void CShowEngine::GetShowL(CShowInfo *info)
 	filePath.Append(relPath);
 	info->SetFileNameL(filePath);
 
-	iShowClient->GetL(info->Url(), filePath);
+	return iShowClient->GetL(info->Url(), filePath);
 	}
 
 TBool CShowEngine::AddShowL(CShowInfo *item)
@@ -296,7 +296,7 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TInt aError)
 			// 400 and 500 series errors are serious errors on which probably another download will fail
 			if(aError >= HTTPStatus::EBadRequest && aError <= HTTPStatus::EBadRequest+200)
 				{
-				iShowDownloading->SetDownloadState(ENotDownloaded);
+				iShowDownloading->SetDownloadState(EFailedDownload);
 				DBUpdateShow(iShowDownloading);
 				DBRemoveDownload(iShowDownloading->Uid());
 				NotifyShowDownloadUpdated(100, 0, 1);	
@@ -1150,17 +1150,33 @@ void CShowEngine::DownloadNextShowL()
 			{
 
 			// Start the download
+			
 			CShowInfo *info = DBGetNextDownloadL();
-			if (info != NULL)
+			
+			while(info != NULL)
 				{
+				TBool getOk = EFalse;
 				DP1("CShowEngine::DownloadNextShow\tDownloading: %S", &(info->Title()));
 				info->SetDownloadState(EDownloading);
 				DBUpdateShow(info);
 				iShowDownloading = info;
-				TRAPD(error,GetShowL(info));
-				if (error != KErrNone)
+				TRAPD(error,getOk = GetShowL(info));
+				if (error != KErrNone || !getOk)
 					{
-					iDownloadsSuspended = ETrue;
+					info->SetDownloadState(EFailedDownload);
+					DBRemoveDownload(info->Uid());
+					DBUpdateShow(info);
+					info = DBGetNextDownloadL();
+					
+					if(info == NULL)
+						{
+						iDownloadsSuspended = ETrue;
+						iShowDownloading = NULL;
+						}
+					}				
+				else
+					{
+					break;
 					}
 				}
 			}

@@ -1,6 +1,6 @@
 CHARACTER_SET UTF8
 /////////////////////////////////////////////////////////////////////
-// Escarpod language file
+// Podcasting language file
 //
 // Language:   Polish PL/27
 // Translator:  Bartek Foks
@@ -102,7 +102,7 @@ rls_string STRING_r_podcast_feeds_is_updating "Aktualizacja..."
 rls_string STRING_r_podcast_no_feeds "Brak kanałów"
 
 // DIALOG string
-rls_string STRING_r_about_title "O programie Escarpod";
+rls_string STRING_r_about_title "O programie Podcasting";
 
 rls_string STRING_r_add_feed_title "Dodaj kanał"
 rls_string STRING_r_edit_feed_title "Edytuj kanał"

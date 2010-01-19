@@ -21,6 +21,7 @@
 
 #include <e32base.h>
 #include <APGCLI.H>
+#include "constants.h"
 #include "ShowInfo.h"
 #include "PodcastModel.h"
 #include "HttpClient.h"
@@ -87,7 +88,7 @@ private:
 	CShowEngine(CPodcastModel& aPodcastModel);
 	void ConstructL();
 
-	void GetShowL(CShowInfo *info);
+	TBool GetShowL(CShowInfo *info);
 
 	void NotifyDownloadQueueUpdated();
 	void NotifyShowDownloadUpdated(TInt aPercentOfCurrentDownload, TInt aBytesOfCurrentDownload, TInt aBytesTotal);
@@ -140,7 +141,7 @@ private:
 	TBuf8<512> iRecogBuffer;
 	
 	sqlite3* iDB;
-    TBuf<2048> iSqlBuffer;
+    TBuf<KDefaultSQLDataBufferLength> iSqlBuffer;
 };
 
 #endif /*SHOWENGINE_H_*/

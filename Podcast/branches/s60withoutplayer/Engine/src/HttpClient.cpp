@@ -2,7 +2,6 @@
 
 
 #include <e32base.h>
-#include "HttpClient.h"
 #include <http/rhttpheaders.h>
 #include <http.h>
 #include <commdb.h>
@@ -11,6 +10,8 @@
 #include <bautils.h>
 #include <CommDbConnPref.h>
 #include "debug.h"
+#include "constants.h"
+#include "HttpClient.h"
 const TInt KTempBufferSize = 100;
 
 CHttpClient::~CHttpClient()
@@ -72,8 +73,8 @@ TBool CHttpClient::GetL(const TDesC& url, const TDesC& fileName,  TBool aSilent)
 	
 	__ASSERT_DEBUG((iIsActive==EFalse), User::Panic(_L("Already active"), -2));
 			
-	TBuf8<2048> url8;
-	url8.Copy(url);
+	HBufC8* url8 = HBufC8::NewLC(KDefaultURLBufferLength);
+	url8->Des().Copy(url);
 	
 	if (iTransactionCount == 0) 
 		{
@@ -81,14 +82,21 @@ TBool CHttpClient::GetL(const TDesC& url, const TDesC& fileName,  TBool aSilent)
 		iSession.OpenL();
 		if(!iPodcastModel.ConnectHttpSessionL(iSession)) // Returns false if not connected
 			{
+			CleanupStack::PopAndDestroy(url8);
 			iSession.Close();
 			return EFalse;
 			}
 		}
 	
 	TUriParser8 uri; 
-	uri.Parse(url8);
+	TInt urlError = uri.Parse(*url8);
 	DP2("Getting '%S' to '%S'", &url, &fileName);
+	if(urlError != KErrNone ||!uri.IsSchemeValid())
+		{
+		CleanupStack::PopAndDestroy(url8);
+		iSession.Close();
+		return EFalse;
+		}
 
 	// since nothing should be downloading now. Delete the handler
 	if (iHandler)
@@ -134,7 +142,7 @@ TBool CHttpClient::GetL(const TDesC& url, const TDesC& fileName,  TBool aSilent)
 	iTrans.SubmitL();
 	iIsActive = ETrue;	
 	DP("CHttpClient::Get END");
-	
+	CleanupStack::PopAndDestroy(url8);
 	return ETrue;
 }
 

@@ -1,6 +1,6 @@
 CHARACTER_SET UTF8
 /////////////////////////////////////////////////////////////////////
-// Escarpod language file
+// Podcasting language file
 //
 // Language:   Danish DA/07
 // Translator: Michell Bak
@@ -101,7 +101,7 @@ rls_string STRING_r_podcast_feeds_is_updating "Bliver opdateret"
 rls_string STRING_r_podcast_no_feeds "Ingen feed"
 
 // DIALOG string
-rls_string STRING_r_about_title "Om Escarpod";
+rls_string STRING_r_about_title "Om Podcasting";
 
 rls_string STRING_r_add_feed_title "Tilføj Feed"
 rls_string STRING_r_edit_feed_title "Rediger Feed"

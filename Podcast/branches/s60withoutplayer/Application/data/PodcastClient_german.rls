@@ -1,6 +1,6 @@
 CHARACTER_SET UTF8
 /////////////////////////////////////////////////////////////////////
-// Escarpod language file
+// Podcasting language file
 //
 // Language:   German GE/03
 // Translator: torsten@t-cubed.de
@@ -101,7 +101,7 @@ rls_string STRING_r_podcast_feeds_is_updating "Wird aktualisiert..."
 rls_string STRING_r_podcast_no_feeds "Keine Abonnements"
 
 // DIALOG string
-rls_string STRING_r_about_title "Über Escarpod";
+rls_string STRING_r_about_title "Über Podcasting";
 
 rls_string STRING_r_add_feed_title "Abonnement hinzufügen"
 rls_string STRING_r_edit_feed_title "Abonnement bearbeiten"

@@ -1,6 +1,6 @@
 CHARACTER_SET UTF8
 /////////////////////////////////////////////////////////////////////
-// Escarpod language file
+// Podcasting language file
 //
 // Language:   Catalan
 // Translator: Santi Güell 
@@ -101,7 +101,7 @@ rls_string STRING_r_podcast_feeds_is_updating "Actualitzant..."
 rls_string STRING_r_podcast_no_feeds "Sense fonts"
 
 // DIALOG string
-rls_string STRING_r_about_title "Sobre Escarpod"
+rls_string STRING_r_about_title "Sobre Podcasting"
 
 rls_string STRING_r_add_feed_title "Afegir font"
 rls_string STRING_r_edit_feed_title "Editar font"

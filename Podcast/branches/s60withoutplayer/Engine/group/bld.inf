@@ -7,4 +7,4 @@ PRJ_MMPFILES
 
 PRJ_EXPORTS
 ..\config\defaultfeeds_emu.xml \epoc32\winscw\c\private\A0009D00\defaultfeeds.xml
-..\config\escarpod.sqlite \epoc32\winscw\c\private\A0009D00\escarpod.sqlite.template
+..\config\podcasting.sqlite \epoc32\winscw\c\private\A0009D00\podcasting.sqlite.template

@@ -1,6 +1,6 @@
 CHARACTER_SET UTF8
 /////////////////////////////////////////////////////////////////////
-// Escarpod language file
+// Podcasting language file
 //
 // Language:   Swedish SW/06
 // Translator: Sebastian Brännström
@@ -101,7 +101,7 @@ rls_string STRING_r_podcast_feeds_is_updating "Uppdaterar"
 rls_string STRING_r_podcast_no_feeds "Inga kanaler"
 
 // DIALOG string
-rls_string STRING_r_about_title "Om Escarpod";
+rls_string STRING_r_about_title "Om Podcasting";
 
 rls_string STRING_r_add_feed_title "Lägg till kanal"
 rls_string STRING_r_edit_feed_title "Ändra kanal"

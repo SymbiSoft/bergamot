@@ -34,7 +34,7 @@
 class CPodcastModel;
 
 _LIT(KOpmlFeed, "  <outline text=\"%S\" xmlUrl=\"%S\"/>");
-_LIT(KOpmlHeader, "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<opml version=\"1.1\"><head>\n  <title>Escarpod Feed List</title>\n</head>\n<body>");
+_LIT(KOpmlHeader, "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<opml version=\"1.1\"><head>\n  <title>Podcasting Feed List</title>\n</head>\n<body>");
 _LIT(KOpmlFooter, "</body>\n</opml>");
 
 enum TClientState {
@@ -154,7 +154,7 @@ private:
     
     sqlite3* iDB;
     
-    TBuf<2048> iSqlBuffer;
+    TBuf<KDefaultSQLDataBufferLength> iSqlBuffer;
 };
 #endif /*FEEDENGINE_H_*/
 

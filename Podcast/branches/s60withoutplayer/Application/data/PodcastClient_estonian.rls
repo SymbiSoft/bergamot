@@ -1,6 +1,6 @@
 CHARACTER_SET UTF8
 /////////////////////////////////////////////////////////////////////
-// Escarpod language file
+// Podcasting language file
 //
 // Language:   Estonian ET/49
 // Translator: Valdur Palm
@@ -19,7 +19,7 @@ rls_string STRING_r_view_all_shows_cmd "Kõik"
 rls_string STRING_r_view_new_shows_cmd "Kuulamata"
 rls_string STRING_r_view_dl_shows_cmd "Telefoni laetud lood"
 rls_string STRING_r_view_dling_shows_cmd "Allalaetavad lood"
-rls_string STRING_r_view_about_cmd "Escarpodi info"
+rls_string STRING_r_view_about_cmd "Podcasti info"
 
 // Navigation to feeds
 rls_string STRING_r_view_feeds_cmd "Kanalid"
@@ -101,7 +101,7 @@ rls_string STRING_r_podcast_feeds_is_updating "Uuendamine"
 rls_string STRING_r_podcast_no_feeds "Kanalid puuduvad"
 
 // DIALOG string
-rls_string STRING_r_about_title "Info Escarpod:ist";
+rls_string STRING_r_about_title "Info Podcasting:ist";
 
 rls_string STRING_r_add_feed_title "Lisa kanal"
 rls_string STRING_r_edit_feed_title "Muuda kanalit"

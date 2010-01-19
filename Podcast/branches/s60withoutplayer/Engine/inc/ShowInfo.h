@@ -36,6 +36,7 @@ enum TDownloadState {
 	ENotDownloaded,
 	EQueued,
 	EDownloading,
+	EFailedDownload,
 	EDownloaded
 };
 

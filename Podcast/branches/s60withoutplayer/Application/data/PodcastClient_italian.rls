@@ -1,6 +1,6 @@
 CHARACTER_SET UTF8
 /////////////////////////////////////////////////////////////////////
-// Escarpod language file
+// Podcasting language file
 //
 // Language:   Italian IT/05
 // Translator: ganassa 
@@ -102,7 +102,7 @@ rls_string STRING_r_podcast_feeds_is_updating "In aggiornamento..."
 rls_string STRING_r_podcast_no_feeds "Nessun feed"
 
 // DIALOG string
-rls_string STRING_r_about_title "Informazioni su Escarpod";
+rls_string STRING_r_about_title "Informazioni su Podcasting";
 
 rls_string STRING_r_add_feed_title "Aggiungi Feed"
 rls_string STRING_r_edit_feed_title "Modifica Feed"
