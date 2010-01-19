@@ -694,6 +694,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 									info->SetTitleL(title);
 									info->SetCustomTitle();	
 									}
+								iPodcastModel.FeedEngine().UpdateFeed(info);
 								UpdateListboxItemsL();
 							} else {
 								// the feed existed. Object deleted in AddFeed.	
