@@ -37,6 +37,7 @@ class CSoundEngine;
 class CShowEngine;
 class CSettingsEngine;
 class CCommsDatabase;
+class CConnectionEngine;
 
 class TPodcastIAPItem
 {
@@ -104,7 +105,7 @@ private:
    CShowEngine* iShowEngine;
    CSoundEngine* iSoundEngine;
    CSettingsEngine *iSettingsEngine;
-   
+   CConnectionEngine* iConnectionEngine;
    RShowInfoArray iActiveShowList;
    CFeedInfo *iActiveFeed;   
    

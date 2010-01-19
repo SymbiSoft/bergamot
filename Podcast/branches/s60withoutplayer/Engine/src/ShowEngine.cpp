@@ -26,8 +26,8 @@
 #include <httperr.h>
 #include "SoundEngine.h"
 #include "debug.h"
-#include <mpxmedia.h>
-#include <mpxattribute.h>
+//#include <mpxmedia.h>
+//#include <mpxattribute.h>
 
 const TUint KMaxDownloadErrors = 3;
 const TInt KMimeBufLength = 100;

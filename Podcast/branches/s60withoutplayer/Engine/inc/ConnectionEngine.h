@@ -38,16 +38,18 @@ class MDataMobilityPrinter;
  */
 class CConnectionEngine:public CActive, public MMobilityProtocolResp
 	{
+public:
 	enum TConnectionType
 		{
 		EUserSelectConnection,
 		ESNAPConnection,
 		EMobilityConnection
 		};
-public:
+
 	static CConnectionEngine* NewL();
 	~CConnectionEngine();
 	void StartL(TConnectionType aConnectionType);
+	RConnection& Connection();
 private: // Methods
 	CConnectionEngine();
 	void ConstructL();

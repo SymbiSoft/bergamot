@@ -22,6 +22,8 @@
 #include "SoundEngine.h"
 #include "SettingsEngine.h"
 #include "ShowEngine.h"
+#include "connectionengine.h"
+
 #include <bautils.h>
 
 const TInt KDefaultGranu = 5;
@@ -53,6 +55,7 @@ CPodcastModel::~CPodcastModel()
 	iSocketServ.Close();	
 	sqlite3_close(iDB);
 	iFsSession.Close();
+	delete iConnectionEngine;
 }
 
 CPodcastModel::CPodcastModel()
@@ -74,7 +77,8 @@ void CPodcastModel::ConstructL()
 	iShowEngine = CShowEngine::NewL(*this);
 
 	iSoundEngine = CSoundEngine::NewL(*this);
-
+	iConnectionEngine = CConnectionEngine::NewL();
+	
 	User::LeaveIfError(iSocketServ.Connect());
 	User::LeaveIfError(iConnection.Open(iSocketServ));
 }
@@ -286,6 +290,7 @@ TBool CPodcastModel::ConnectHttpSessionL(RHTTPSession &aSession)
 {
 	DP("ConnectHttpSessionL START");
 	iConnection.Stop();
+	//iConnectionEngine->StartL(CConnectionEngine::EUserSelectConnection);
 	/*if(iSettingsEngine->SpecificIAP() == -1)
 	{
 		TInt iapSelected = iConnPref.IapId();

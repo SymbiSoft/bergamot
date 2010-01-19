@@ -57,10 +57,7 @@ void CConnectionEngine::RunL()
 			{
 
 			}break;
-		case ESNAPConnection:
-			{
-
-			}break;
+		case ESNAPConnection:			
 		case EMobilityConnection:
 			{
 			if ( iStatus.Int() == KErrNone )
@@ -168,6 +165,7 @@ void CConnectionEngine::StartL(TConnectionType aConnectionType)
 					{					
 					iSnapPreference.SetSnap( iUserSelection.iId );
 					iConnection.Start( iSnapPreference, iStatus );
+					aConnectionType = ESNAPConnection;
 					break;
 					}
 				case CMManager::EConnectionMethod:
@@ -207,4 +205,8 @@ void CConnectionEngine::StartL(TConnectionType aConnectionType)
 	iConnectionType = aConnectionType;
 	}
 
+RConnection& CConnectionEngine::Connection()
+	{
+	return iConnection;	
+	}
 
