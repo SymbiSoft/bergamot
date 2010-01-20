@@ -712,9 +712,9 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 				}
 			}
 			break;
-		case EPodcastUpdateLibrary:
-			iPodcastModel.ShowEngine().CheckFilesL();
-			break;
+//		case EPodcastUpdateLibrary:
+//			iPodcastModel.ShowEngine().CheckFilesL();
+//			break;
 		case EPodcastShowUnplayedOnlyOn:
 			iPodcastModel.SettingsEngine().SetSelectUnplayedOnly(ETrue);
 			UpdateListboxItemsL();
@@ -820,7 +820,7 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 	UpdateToolbar();
 	}
 	
-	void CPodcastShowsView::DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane)
+	void CPodcastShowsView::DynInitMenuPaneL(TInt /*aResourceId*/,CEikMenuPane* /*aMenuPane*/)
 	{
 //		if(aResourceId == R_PODCAST_SHOWSVIEW_MENU)
 //		{
