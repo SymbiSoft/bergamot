@@ -153,5 +153,6 @@ EXPORTS
 	?MetaDataReader@CShowEngine@@QAEAAVCMetaDataReader@@XZ @ 152 NONAME ; class CMetaDataReader & CShowEngine::MetaDataReader(void)
 	?NewL@CShowEngine@@SAPAV1@AAVCPodcastModel@@@Z @ 153 NONAME ; class CShowEngine * CShowEngine::NewL(class CPodcastModel &)
 	?NewLC@CShowInfo@@SAPAV1@I@Z @ 154 NONAME ; class CShowInfo * CShowInfo::NewLC(unsigned int)
-	?NotifyShowListUpdated@CShowEngine@@QAEXXZ @ 155 NONAME ; void CShowEngine::NotifyShowListUpdated(void)
+	?AddShowL@CShowEngine@@QAEHPAVCShowInfo@@@Z @ 155 NONAME ; int CShowEngine::AddShowL(class CShowInfo *)
+	?NotifyShowListUpdatedL@CShowEngine@@QAEXXZ @ 156 NONAME ; void CShowEngine::NotifyShowListUpdatedL(void)
 

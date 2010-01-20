@@ -157,8 +157,8 @@ EXPORT_C TBool CShowEngine::RemoveDownloadL(TUint aUid)
 			BaflUtils::DeleteFile(iPodcastModel.FsSession(), iShowDownloading->FileName());
 			}
 
-		NotifyShowDownloadUpdated(-1, -1, -1);
-		NotifyDownloadQueueUpdated();
+		NotifyShowDownloadUpdatedL(-1, -1, -1);
+		NotifyDownloadQueueUpdatedL();
 		DownloadNextShowL();
 		retVal = ETrue;
 		}
@@ -180,7 +180,7 @@ void CShowEngine::Progress(CHttpClient* /*aHttpClient */, TInt aBytes,
 		}
 
 	iShowDownloading->SetShowSize(aTotalBytes);
-	NotifyShowDownloadUpdated(percent, aBytes, aTotalBytes);
+	NotifyShowDownloadUpdatedL(percent, aBytes, aTotalBytes);
 	}
 
 void CShowEngine::Disconnected(CHttpClient* /*aClient */)
@@ -290,7 +290,7 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TInt aError)
 			DBUpdateShow(iShowDownloading);
 			DBRemoveDownload(iShowDownloading->Uid());
 			AddShowToMpxCollection(*iShowDownloading);
-			NotifyShowDownloadUpdated(100, 0, 1);
+			NotifyShowDownloadUpdatedL(100, 0, 1);
 
 			delete iShowDownloading;
 			iShowDownloading = NULL;
@@ -303,7 +303,7 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TInt aError)
 				iShowDownloading->SetDownloadState(EFailedDownload);
 				DBUpdateShow(iShowDownloading);
 				DBRemoveDownload(iShowDownloading->Uid());
-				NotifyShowDownloadUpdated(100, 0, 1);	
+				NotifyShowDownloadUpdatedL(100, 0, 1);	
 				delete iShowDownloading;
 				iShowDownloading = NULL;
 				}
@@ -318,7 +318,7 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TInt aError)
 				{
 				DP("Too many downloading errors, suspending downloads");
 				iDownloadsSuspended = ETrue;
-				NotifyShowDownloadUpdated(-1, -1, -1);
+				NotifyShowDownloadUpdatedL(-1, -1, -1);
 				}
 			}
 		}
@@ -1152,7 +1152,7 @@ void CShowEngine::DownloadNextShowL()
 	DP("CShowEngine::DownloadNextShow\tTrying to start new download");DP1("CShowEngine::DownloadNextShow\tShows in download queue %d", count);
 
 	// Inform the observers
-	NotifyDownloadQueueUpdated();
+	NotifyDownloadQueueUpdatedL();
 
 	if (count > 0)
 		{
@@ -1207,30 +1207,30 @@ void CShowEngine::DownloadNextShowL()
 		}
 	}
 
-void CShowEngine::NotifyDownloadQueueUpdated()
+void CShowEngine::NotifyDownloadQueueUpdatedL()
 	{
 	const TInt count = iObservers.Count();
 	for (TInt i = 0; i < count; i++)
 		{
-		iObservers[i]->DownloadQueueUpdated(1, DBGetDownloadsCount() - 1);
+		iObservers[i]->DownloadQueueUpdatedL(1, DBGetDownloadsCount() - 1);
 		}
 	}
 
-void CShowEngine::NotifyShowDownloadUpdated(TInt aPercentOfCurrentDownload,
+void CShowEngine::NotifyShowDownloadUpdatedL(TInt aPercentOfCurrentDownload,
 		TInt aBytesOfCurrentDownload, TInt aBytesTotal)
 	{
 	const TInt count = iObservers.Count();
 	for (TInt i = 0; i < count; i++)
 		{
-			TRAP_IGNORE(iObservers[i]->ShowDownloadUpdatedL(aPercentOfCurrentDownload, aBytesOfCurrentDownload, aBytesTotal));
+			iObservers[i]->ShowDownloadUpdatedL(aPercentOfCurrentDownload, aBytesOfCurrentDownload, aBytesTotal);
 		}
 	}
 
-EXPORT_C void CShowEngine::NotifyShowListUpdated()
+EXPORT_C void CShowEngine::NotifyShowListUpdatedL()
 	{
 	for (TInt i = 0; i < iObservers.Count(); i++)
 		{
-		iObservers[i]->ShowListUpdated();
+		iObservers[i]->ShowListUpdatedL();
 		}
 	}
 
@@ -1240,9 +1240,9 @@ void CShowEngine::ReadMetaData(CShowInfo *aShowInfo)
 	DBUpdateShow(aShowInfo);
 	}
 
-void CShowEngine::ReadMetaDataComplete()
+void CShowEngine::ReadMetaDataCompleteL()
 	{
-	NotifyShowListUpdated();
+	NotifyShowListUpdatedL();
 	MetaDataReader().SetIgnoreTrackNo(EFalse);
 	}
 

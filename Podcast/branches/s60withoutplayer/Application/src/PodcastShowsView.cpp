@@ -219,9 +219,9 @@ void CPodcastShowsView::DoDeactivate()
 	}
 
 // Engine callback when new shows are available
-void CPodcastShowsView::ShowListUpdated()
+void CPodcastShowsView::ShowListUpdatedL()
 	{
-	TRAP_IGNORE(UpdateListboxItemsL());
+	UpdateListboxItemsL();
 	}
 
 void CPodcastShowsView::ShowDownloadUpdatedL(TInt aPercentOfCurrentDownload,

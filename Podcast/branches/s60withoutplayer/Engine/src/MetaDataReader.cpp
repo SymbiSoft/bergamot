@@ -77,7 +77,7 @@ void CMetaDataReader::ParseNextShowL()
 	iPlayer->Close();
 	if (iShowsToParse.Count() == 0) {
 		DP("No more shows, stopping");
-		iObserver.ReadMetaDataComplete();
+		iObserver.ReadMetaDataCompleteL();
 		return;
 	}
 	
