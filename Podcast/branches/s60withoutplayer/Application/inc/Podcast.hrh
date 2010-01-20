@@ -61,7 +61,7 @@ enum TPodcastCommandIds
 	EPodcastShowUnplayedOnly,
 	EPodcastShowUnplayedOnlyOn,
 	EPodcastShowUnplayedOnlyOff,
-	EPodcastUpdateLibrary,
+//	EPodcastUpdateLibrary,
 	// Audio book commands
 	EPodcastAddNewAudioBook,
 	EPodcastAddAudioBookChapter,
