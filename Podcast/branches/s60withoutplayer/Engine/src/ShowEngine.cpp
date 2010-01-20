@@ -180,7 +180,7 @@ void CShowEngine::Progress(CHttpClient* /*aHttpClient */, TInt aBytes,
 		}
 
 	iShowDownloading->SetShowSize(aTotalBytes);
-	NotifyShowDownloadUpdatedL(percent, aBytes, aTotalBytes);
+	TRAP_IGNORE(NotifyShowDownloadUpdatedL(percent, aBytes, aTotalBytes));
 	}
 
 void CShowEngine::Disconnected(CHttpClient* /*aClient */)
