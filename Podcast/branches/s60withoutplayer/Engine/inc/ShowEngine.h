@@ -32,8 +32,8 @@
 class CShowEngine : public CBase, public MHttpClientObserver, public MMetaDataReaderObserver
 {
 public:
-	static CShowEngine* NewL(CPodcastModel& aPodcastModel);
-	virtual ~CShowEngine();
+	IMPORT_C static CShowEngine* NewL(CPodcastModel& aPodcastModel);
+	IMPORT_C virtual ~CShowEngine();
 	
 public:
 	IMPORT_C void AddDownloadL(CShowInfo *info);
@@ -44,46 +44,47 @@ public:
 	IMPORT_C void ResumeDownloadsL();
 	IMPORT_C TBool DownloadsStopped();
 
-	IMPORT_C TInt GetNumDownloadingShowsL();
+	IMPORT_C TInt GetNumDownloadingShows();
 	IMPORT_C CShowInfo* ShowDownloading();
 	IMPORT_C CShowInfo* GetShowByUidL(TUint aShowUid);
-	CShowInfo* GetNextShowByTrackL(CShowInfo* aShowInfo);
+	IMPORT_C CShowInfo* GetNextShowByTrackL(CShowInfo* aShowInfo);
 	
 	// show access methods
-	void GetAllShowsL(RShowInfoArray &aArray);
-	void GetShowsByFeedL(RShowInfoArray &aArray, TUint aFeedUid);
-	void GetShowsDownloadedL(RShowInfoArray &aArray);
-	void GetNewShowsL(RShowInfoArray &aArray);
-	void GetShowsDownloadingL(RShowInfoArray &aArray);
-	CShowInfo* DBGetShowByFileNameL(TFileName aFileName);
+	IMPORT_C void GetAllShowsL(RShowInfoArray &aArray);
+	IMPORT_C void GetShowsByFeedL(RShowInfoArray &aArray, TUint aFeedUid);
+	IMPORT_C void GetShowsDownloadedL(RShowInfoArray &aArray);
+	IMPORT_C void GetNewShowsL(RShowInfoArray &aArray);
+	IMPORT_C void GetShowsDownloadingL(RShowInfoArray &aArray);
+	IMPORT_C CShowInfo* DBGetShowByFileNameL(TFileName aFileName);
 	
-	void CompleteL(CHttpClient* aClient, TInt aError);
-	TBool AddShowL(CShowInfo *item);
+	IMPORT_C TBool AddShowL(CShowInfo *item);
 	IMPORT_C void DeletePlayedShows(RShowInfoArray &aShowInfoArray);
 	IMPORT_C void DeleteAllShowsByFeedL(TUint aFeedUid,TBool aDeleteFiles=ETrue);
 	IMPORT_C void DeleteShowL(TUint aShowUid, TBool aRemoveFile=ETrue);
-	void DeleteOldShowsByFeed(TUint aFeedUid);
+	IMPORT_C void DeleteOldShowsByFeed(TUint aFeedUid);
 	
-	IMPORT_C void CheckFilesL();
 	IMPORT_C void AddObserver(MShowEngineObserver *observer);
 	IMPORT_C void RemoveObserver(MShowEngineObserver *observer);
 
-	void NotifyShowListUpdated();
+	IMPORT_C void NotifyShowListUpdated();
 	IMPORT_C void UpdateShow(CShowInfo *aInfo);
 
 	IMPORT_C void GetMimeType(const TDesC& aFileName, TDes& aMimeType);
 
-	CMetaDataReader& MetaDataReader();
-protected:
+	IMPORT_C CMetaDataReader& MetaDataReader();
+
+private:
 	// from HttpClientObserver, dont have to be public
 	void Connected(CHttpClient* aClient);
 	void Disconnected(CHttpClient* aClient);
+	void CompleteL(CHttpClient* aClient, TInt aError);
 	void Progress(CHttpClient* aHttpClient, int aBytes, int aTotalBytes);
 	void DownloadInfo(CHttpClient* aClient, int aSize);
 	void FileError(TUint aError);
 	// from MetaDataReaderObserver
 	void ReadMetaData(CShowInfo *aShowInfo);
 	void ReadMetaDataComplete();
+	
 private:
 	CShowEngine(CPodcastModel& aPodcastModel);
 	void ConstructL();
@@ -94,7 +95,6 @@ private:
 	void NotifyShowDownloadUpdated(TInt aPercentOfCurrentDownload, TInt aBytesOfCurrentDownload, TInt aBytesTotal);
 
 	void DownloadNextShowL();
-	void ListDirL(TFileName &folder);
 
 	static TInt CompareShowsByDate(const CShowInfo &a, const CShowInfo &b);
 	static TBool CompareShowsByUid(const CShowInfo &a, const CShowInfo &b);
@@ -114,6 +114,7 @@ private:
 	void DBGetNewShowsL(RShowInfoArray& aShowArray);
 	void DBGetDownloadedShowsL(RShowInfoArray& aShowArray);
 	TBool DBDeleteAllShowsByFeed(TUint aFeedUid);
+	void DBDeleteOldShowsByFeed(TUint aFeedUid);
 	TBool DBDeleteShow(TUint aUid);
 	void DBRemoveAllDownloads();
 	void DBRemoveDownload(TUint aUid);
@@ -140,7 +141,7 @@ private:
     RApaLsSession iApaSession;
 	TBuf8<512> iRecogBuffer;
 	
-	sqlite3* iDB;
+	sqlite3& iDB;
     TBuf<KDefaultSQLDataBufferLength> iSqlBuffer;
 };
 
