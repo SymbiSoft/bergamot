@@ -49,6 +49,7 @@ enum TShowType {
 class CShowInfo: public CBase {
 public:
 	IMPORT_C static CShowInfo* NewL(TUint aVersion=KShowInfoVersion);
+	IMPORT_C static CShowInfo* NewLC(TUint aVersion=KShowInfoVersion);
 	~CShowInfo();
 	IMPORT_C CShowInfo(CShowInfo *aInfo); // copy constructor
 
