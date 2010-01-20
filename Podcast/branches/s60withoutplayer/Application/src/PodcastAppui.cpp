@@ -101,7 +101,7 @@ void CPodcastAppUi::HandleCommandL( TInt aCommand )
 void CPodcastAppUi::UpdateAppStatus()
 {
 	TBuf<40> buf;
-	if(iPodcastModel->ShowEngine().GetNumDownloadingShowsL() > 0) {
+	if(iPodcastModel->ShowEngine().GetNumDownloadingShows() > 0) {
 		buf.Copy(_L("Downloading"));
 	} else if (iPodcastModel->FeedEngine().ClientState() != ENotUpdating) {
 		buf.Copy(_L("Updating"));
@@ -139,7 +139,7 @@ void CPodcastAppUi::NaviShowTabGroupL()
 
 	}
 
-void CPodcastAppUi::TabChangedL (TInt aIndex)
+void CPodcastAppUi::TabChangedL (TInt /*aIndex*/)
 	{
 	DP("CPodcastListView::TabChangedL ");
 	TInt index = iTabGroup->ActiveTabIndex();
