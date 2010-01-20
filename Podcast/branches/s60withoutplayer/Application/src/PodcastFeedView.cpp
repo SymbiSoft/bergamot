@@ -887,7 +887,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 		((CPodcastAppUi*)AppUi())->UpdateAppStatus();
 	}
 
-void CPodcastFeedView::DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane)
+void CPodcastFeedView::DynInitMenuPaneL(TInt /*aResourceId*/,CEikMenuPane* /*aMenuPane*/)
 {
 //	if(aResourceId == R_PODCAST_FEEDVIEW_MENU)
 //	{
