@@ -9,8 +9,12 @@
 
 <!-- problematic feeds -->
   <outline xmlUrl="http://video.google.com/videofeed?type=search&amp;q=baseball&amp;num=20&amp;output=rss"/>
-
-<!-- previously broken feeds, uncomment for regression testing
+  <outline xmlUrl="http://www.sr.se/rssfeed/rssfeed.aspx?Poddfeed=3971"/>
+  <outline xmlUrl="www.3sat.de/neues/podcast/podcast.xml"/>
+  <outline xmlUrl="http://podkast.nrk.no/program/radioresepsjonen.rss"/>
+  <outline xmlUrl="http://www.europe1.fr/rss_export/feed/revue-de-presque-nicolas-canteloup"/>
+ 
+<!-- previously broken feeds, uncomment for regression testing -->
   <outline xmlUrl="http://www.cnet.com/i/pod/cnet_buzz.xml"/>
   <outline xmlUrl="http://www2.rozhlas.cz/podcast/leonardo.rss"/>
   <outline xmlUrl="http://www2.rozhlas.cz/podcast/radio_cesko.rss"/>
