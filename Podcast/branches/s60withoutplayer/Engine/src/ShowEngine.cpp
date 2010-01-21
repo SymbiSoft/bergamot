@@ -33,6 +33,7 @@ const TUint KMaxDownloadErrors = 3;
 const TInt KMimeBufLength = 100;
 
 // Cleanup stack macro for SQLite3
+// TODO Move this to some common place.
 static void Cleanup_sqlite3_finalize_wrapper(TAny* handle)
 	{
 	sqlite3_finalize(static_cast<sqlite3_stmt*>(handle));
