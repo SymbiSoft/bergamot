@@ -54,7 +54,8 @@ void CPodcastAppUi::ConstructL()
     }
 
 CPodcastAppUi::~CPodcastAppUi()
-    {	
+    {
+	delete iNaviDecorator;
     }
 
 // -----------------------------------------------------------------------------
