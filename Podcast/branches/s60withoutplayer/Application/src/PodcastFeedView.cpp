@@ -757,7 +757,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 				{
 				iUpdatingAllRunning = EFalse;
 
-				iPodcastModel.FeedEngine().CancelUpdateAllFeedsL();
+				iPodcastModel.FeedEngine().CancelUpdateAllFeeds();
 				}
 			}break;
 		case EPodcastPlayAudioBook:

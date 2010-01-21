@@ -773,7 +773,7 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 			}
 			break;
 		case EPodcastCancelUpdateAllFeeds:
-			iPodcastModel.FeedEngine().CancelUpdateAllFeedsL();
+			iPodcastModel.FeedEngine().CancelUpdateAllFeeds();
 			break;
 		case EPodcastRemoveAllDownloads:
 			{
