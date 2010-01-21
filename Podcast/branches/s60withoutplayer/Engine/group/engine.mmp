@@ -5,6 +5,7 @@ UID             0x1000008d 0xA11F867F
 SOURCEPATH ..\src
 USERINCLUDE ..\inc
 SYSTEMINCLUDE \epoc32\include 
+SYSTEMINCLUDE \epoc32\include\mw 		// needed for S^3
 
 // Engine
 SOURCE			HttpClient.cpp

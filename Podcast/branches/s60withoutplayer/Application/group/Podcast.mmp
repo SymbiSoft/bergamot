@@ -2,8 +2,6 @@ TARGET			Podcast.exe
 TARGETTYPE  	exe
 UID				0x100039CE 0xA0009D00  
 
-MACRO XYZ
-
 CAPABILITY NetworkServices UserEnvironment
 
 EPOCSTACKSIZE 81920
@@ -60,9 +58,11 @@ START BITMAP Podcast.mbm
 	SOURCE 8 emptyimage.bmp
 END
 
-SYSTEMINCLUDE   \epoc32\include
+SYSTEMINCLUDE \epoc32\include
 SYSTEMINCLUDE \epoc32\include\mmf\common 
 SYSTEMINCLUDE \epoc32\include\domain\middleware
+SYSTEMINCLUDE \epoc32\include\mw					// for Symbian^3
+SYSTEMINCLUDE \epoc32\include\platform\mw			// for Symbian^3
 
 USERINCLUDE ..\..\engine\inc
 USERINCLUDE . 
