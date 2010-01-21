@@ -56,7 +56,7 @@ public:
 	IMPORT_C void RemoveFeedL(TUint aUid);
 	IMPORT_C TBool UpdateFeedL(TUint aFeedUid);
 	IMPORT_C void UpdateAllFeedsL();
-	IMPORT_C void CancelUpdateAllFeedsL();
+	IMPORT_C void CancelUpdateAllFeeds();
 	IMPORT_C const RFeedInfoArray& GetSortedFeeds();
 	IMPORT_C CFeedInfo* GetFeedInfoByUid(TUint aFeedUid);	
 	IMPORT_C void GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed, TBool aIsBookFeed );
@@ -74,8 +74,8 @@ public:
 
 	void RunFeedTimer();
 	
-	void FileNameFromUrl(const TDesC &aUrl, TFileName &aFileName);
-	void EnsureProperPathName(TFileName &aPath);
+	static void FileNameFromUrl(const TDesC &aUrl, TFileName &aFileName);
+	static void EnsureProperPathName(TFileName &aPath);
 
 	IMPORT_C void UpdateFeed(CFeedInfo *aItem);
 	/**
@@ -108,7 +108,8 @@ private:
 	void ParsingCompleteL(CFeedInfo *item);
 
 	void GetFeedImageL(CFeedInfo *aFeedInfo);
-	void ReplaceString(TDes & aString, const TDesC& aStringToReplace,const TDesC& aReplacement);
+	static void ReplaceChar(TDes & aString, TUint aCharToReplace, TUint aReplacement);
+	static void ReplaceString(TDes & aString, const TDesC& aStringToReplace,const TDesC& aReplacement);
 	void CleanHtmlL(TDes &str);
 	
 	void UpdateNextFeedL();
@@ -146,13 +147,13 @@ private:
 
 	RFeedInfoArray iFeedsUpdating;
 	
-	// observers that will receive callbacks
+	// observers that will receive callbacks, not owning
     RArray<MFeedEngineObserver*> iObservers;
     
     TBool iCatchupMode;
     TUint iCatchupCounter;
     
-    sqlite3* iDB;
+    sqlite3& iDB;
     
     TBuf<KDefaultSQLDataBufferLength> iSqlBuffer;
 };
