@@ -15,7 +15,7 @@ EXPORTS
 	?AddObserver@CSoundEngine@@QAEXPAVMSoundEngineObserver@@@Z @ 14 NONAME ; void CSoundEngine::AddObserver(class MSoundEngineObserver *)
 	?BaseDir@CSettingsEngine@@QAEAAV?$TBuf@$0BAA@@@XZ @ 15 NONAME ; class TBuf<256> & CSettingsEngine::BaseDir(void)
 	?BuildDate@CFeedInfo@@QAE?AVTTime@@XZ @ 16 NONAME ; class TTime CFeedInfo::BuildDate(void)
-	?CancelUpdateAllFeedsL@CFeedEngine@@QAEXXZ @ 17 NONAME ; void CFeedEngine::CancelUpdateAllFeedsL(void)
+	?CancelUpdateAllFeedsL@CFeedEngine@@QAEXXZ @ 17 NONAME ABSENT ; void CFeedEngine::CancelUpdateAllFeedsL(void)
 	?CheckFilesL@CShowEngine@@QAEXXZ @ 18 NONAME ABSENT ; void CShowEngine::CheckFilesL(void)
 	?ClientState@CFeedEngine@@QAE?AW4TClientState@@XZ @ 19 NONAME ; enum TClientState CFeedEngine::ClientState(void)
 	?CustomTitle@CFeedInfo@@QAEHXZ @ 20 NONAME ; int CFeedInfo::CustomTitle(void)
@@ -155,4 +155,5 @@ EXPORTS
 	?NewLC@CShowInfo@@SAPAV1@I@Z @ 154 NONAME ; class CShowInfo * CShowInfo::NewLC(unsigned int)
 	?AddShowL@CShowEngine@@QAEHPAVCShowInfo@@@Z @ 155 NONAME ; int CShowEngine::AddShowL(class CShowInfo *)
 	?NotifyShowListUpdatedL@CShowEngine@@QAEXXZ @ 156 NONAME ; void CShowEngine::NotifyShowListUpdatedL(void)
+	?CancelUpdateAllFeeds@CFeedEngine@@QAEXXZ @ 157 NONAME ; void CFeedEngine::CancelUpdateAllFeeds(void)
 
