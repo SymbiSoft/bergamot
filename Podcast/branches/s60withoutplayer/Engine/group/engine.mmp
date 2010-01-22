@@ -1,6 +1,12 @@
+#ifdef SQLITE_INCLUDED
+// must build a .lib since sqlite uses "initialized writable data"
+TARGET podcastengine.lib
+TARGETTYPE LIB
+#else
 TARGET podcastengine.dll
 TARGETTYPE DLL
 UID             0x1000008d 0xA11F867F
+#endif
 
 SOURCEPATH ..\src
 USERINCLUDE ..\inc
@@ -24,8 +30,9 @@ SOURCE			PodcastUtils.cpp
 SOURCE			PodCastModel.cpp ConnectionEngine.cpp 
 
 CAPABILITY NetworkServices UserEnvironment
-LIBRARY	sqlite3.lib
 
+#ifndef SQLITE_INCLUDED
+LIBRARY	sqlite3.lib
 LIBRARY	euser.lib 
 LIBRARY	bafl.lib
 LIBRARY	efsrv.lib
@@ -47,3 +54,4 @@ LIBRARY apmime.lib
 LIBRARY cmmanager.lib
 //LIBRARY mpxcommon.lib 
 //LIBRARY mpxcollectionhelper.lib
+#endif

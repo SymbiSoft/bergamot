@@ -95,7 +95,22 @@ TARGETPATH 	  \private\10003a3f\import\apps
 #endif
 END
 
+#ifdef SQLITE_INCLUDED
+STATICLIBRARY PodCastEngine.lib
+STATICLIBRARY sqlite_podcasting.lib
+LIBRARY	mediaclientaudio.lib
+LIBRARY	inetprotutil.lib
+LIBRARY	xmlframework.lib
+LIBRARY	http.lib 
+LIBRARY	ezlib.lib
+LIBRARY	commdb.lib
+LIBRARY esock.lib
+LIBRARY mmfcontrollerframework.lib 
+LIBRARY cmmanager.lib
+LIBRARY libc.lib
+#else
 LIBRARY PodCastEngine.lib
+#endif
 LIBRARY	euser.lib 
 LIBRARY	apparc.lib
 LIBRARY	cone.lib

@@ -98,21 +98,6 @@ void CPodcastAppUi::HandleCommandL( TInt aCommand )
         }
     }
 
-
-void CPodcastAppUi::UpdateAppStatus()
-{
-	TBuf<40> buf;
-	if(iPodcastModel->ShowEngine().GetNumDownloadingShows() > 0) {
-		buf.Copy(_L("Downloading"));
-	} else if (iPodcastModel->FeedEngine().ClientState() != ENotUpdating) {
-		buf.Copy(_L("Updating"));
-	} else {
-		buf.Copy(_L("Idle"));
-	}
-	
-	//iFeedView->SetNaviTextL(buf); // now we show tabs here...
-}
-
 void CPodcastAppUi::NaviShowTabGroupL()
 	{
 	iNaviDecorator = iNaviPane->CreateTabGroupL();

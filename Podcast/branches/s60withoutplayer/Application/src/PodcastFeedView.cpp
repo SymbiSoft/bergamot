@@ -884,7 +884,6 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			break;
 		}
 		UpdateToolbar();
-		((CPodcastAppUi*)AppUi())->UpdateAppStatus();
 	}
 
 void CPodcastFeedView::DynInitMenuPaneL(TInt /*aResourceId*/,CEikMenuPane* /*aMenuPane*/)

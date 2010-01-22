@@ -1,8 +1,14 @@
-#include "..\..\engine\group\bld.inf"
-
 PRJ_PLATFORMS
 GCCE
 WINSCW
+
+PRJ_MMPFILES
+
+#ifdef SQLITE_INCLUDED
+..\..\Engine\sqlite\group\sqlite.mmp
+#endif
+
+#include "..\..\engine\group\bld.inf"
 
 PRJ_MMPFILES
 gnumakefile icons.mk

@@ -43,7 +43,6 @@ class CPodcastAppUi : public CAknViewAppUi, public MAknTabObserver
         void ConstructL();
        ~CPodcastAppUi();
 
-       void UpdateAppStatus();
        void SetActiveTab(TInt aIndex);
     private:
         // From MEikMenuObserver
