@@ -23,4 +23,4 @@ CHARACTER_SET UTF8
 rls_string STRING_r_caption "Podcasting"
 rls_string STRING_r_short_caption "Podcasting"
 
-rls_string STRING_r_about_text_s60 "Podcasting 1.00\n© 2007-2009"
+rls_string STRING_r_about_text_s60 "Podcasting 1.00\n© 2007-2010"

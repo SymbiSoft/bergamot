@@ -79,7 +79,8 @@ enum TPodcastCommandIds
 	EPodcastSetVolume,
 	EPodcastSetAudioBookPlayOrderSwap,
 	EPodcastAbout,
-	EPodcastHide
+	EPodcastHide,
+	EPodcastHelp
 };
 
 enum TPodcastControl

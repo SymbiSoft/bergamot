@@ -48,7 +48,7 @@ class CPodcastAppUi : public CAknViewAppUi, public MAknTabObserver
         // From MEikMenuObserver
         void DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane);
         void TabChangedL (TInt aIndex);
-
+        CArrayFix<TCoeHelpContext>* HelpContextL() const;
     private:
         void HandleCommandL(TInt aCommand);
         void NaviShowTabGroupL();

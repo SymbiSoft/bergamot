@@ -247,7 +247,7 @@ void CPodcastListView::HandleCommandL(TInt aCommand)
 		RunAboutDialogL();
 		break;
 	default:
-		break;
+		AppUi()->HandleCommandL(aCommand);
 	}
 }
 

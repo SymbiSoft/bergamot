@@ -31,3 +31,7 @@ PRJ_MMPFILES
 PRJ_MMPFILES
 gnumakefile icons.mk
 Podcast.mmp
+
+PRJ_EXPORTS
+
+..\help\podcasting.hlp \epoc32\winscw\c\resource\help\podcasting.hlp

@@ -25,6 +25,10 @@
 #include "ShowEngine.h"
 #include "PodcastModel.h"
 #include "debug.h"
+#include "..\help\podcasting.hlp.hrh"
+#include "PodcastApp.h"
+
+#include <HLPLCH.H>
 #include <avkon.hrh>
 
 CPodcastAppUi::CPodcastAppUi(CPodcastModel* aPodcastModel):iPodcastModel(aPodcastModel)
@@ -93,10 +97,29 @@ void CPodcastAppUi::HandleCommandL( TInt aCommand )
 			task.SendToBackground(); 
 			break;
         	}
+	case EPodcastHelp:
+        	{
+        	CArrayFix<TCoeHelpContext>* buf = CPodcastAppUi::AppHelpContextL();		
+        	HlpLauncher::LaunchHelpApplicationL(iEikonEnv->WsSession(), buf);
+        	}
+        	break;      	
         default:
             break;      
         }
     }
+
+CArrayFix<TCoeHelpContext>* CPodcastAppUi::HelpContextL() const
+   {
+ 
+	TUid KUidHelpExampleApp; // this is the uid of your .hlp file.
+ 
+    CArrayFixFlat<TCoeHelpContext>* array = 
+                new(ELeave)CArrayFixFlat<TCoeHelpContext>(1);
+    CleanupStack::PushL(array);
+	array->AppendL(TCoeHelpContext(KUidPodcast,KContextApplication));
+    CleanupStack::Pop(array);
+    return array;
+	}
 
 void CPodcastAppUi::NaviShowTabGroupL()
 	{
