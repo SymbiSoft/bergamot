@@ -707,6 +707,12 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 						iPodcastModel.ShowEngine().DeleteShowL(iPodcastModel.ActiveShowList()[index]->Uid());
 						}
 					
+					// and mark as played, and not downloaded
+					CShowInfo *info = iPodcastModel.ActiveShowList()[index];
+					info->SetDownloadState(ENotDownloaded);
+					info->SetPlayState(EPlayed);
+					iPodcastModel.ShowEngine().UpdateShow(info);
+					
 					UpdateListboxItemsL();
 					}
 				}
