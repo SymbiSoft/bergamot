@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2007-2010 Sebastian Brannstrom, Lars Persson, EmbedDev AB
+ *
+ * All rights reserved.
+ * This component and the accompanying materials are made available
+ * under the terms of the License "Eclipse Public License v1.0"
+ * which accompanies this distribution, and is available
+ * at the URL "http://www.eclipse.org/legal/epl-v10.html".
+ *
+ * Initial Contributors:
+ * EmbedDev AB - initial contribution.
+ *
+ * Contributors:
+ *
+ * Description:
+ *
+ */
+ 
 TARGET			Podcast.exe
 TARGETTYPE  	exe
 UID				0x100039CE 0xA0009D00  
@@ -83,7 +101,7 @@ SOURCEPATH ..\data
 START RESOURCE Podcast.rss
 	HEADER
 	TARGETPATH resource\apps
-	LANG			  01 02 03 04 05 06 07 16 17 25 27 44 49
+	LANG SC
 END
 
 START RESOURCE Podcast_reg.rss
@@ -139,5 +157,3 @@ LIBRARY etext.lib
 LIBRARY PlatformEnv.lib // for PathInfo
 LIBRARY form.lib 
 LIBRARY ws32.lib 
-
-

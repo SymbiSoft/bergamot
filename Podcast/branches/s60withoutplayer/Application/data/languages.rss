@@ -1,30 +1,23 @@
-//#include <e32const.h> // just so I can easily lookup language numbers :)
+/*
+ * Copyright (c) 2007-2010 Sebastian Brannstrom, Lars Persson, EmbedDev AB
+ *
+ * All rights reserved.
+ * This component and the accompanying materials are made available
+ * under the terms of the License "Eclipse Public License v1.0"
+ * which accompanies this distribution, and is available
+ * at the URL "http://www.eclipse.org/legal/epl-v10.html".
+ *
+ * Initial Contributors:
+ * EmbedDev AB - initial contribution.
+ *
+ * Contributors:
+ *
+ * Description:
+ *
+ */
 
 #include "PodcastClient_common.rls" // strings common between languages
-#ifdef LANGUAGE_01
+
+//#ifdef LANGUAGE_01
 	#include "PodcastClient_english.rls"
-#elif defined LANGUAGE_02
-	#include "PodcastClient_french.rls"
-#elif defined LANGUAGE_03
-	#include "PodcastClient_german.rls"
-#elif defined LANGUAGE_04
-	#include "PodcastClient_spanish.rls"
-#elif defined LANGUAGE_05
-	#include "PodcastClient_italian.rls"
-#elif defined LANGUAGE_06
-	#include "PodcastClient_swedish.rls"
-#elif defined LANGUAGE_07
-	#include "PodcastClient_danish.rls"
-#elif defined LANGUAGE_16
-	#include "PodcastClient_russian.rls"
-#elif defined LANGUAGE_17
-	#include "PodcastClient_hungarian.rls"
-#elif defined LANGUAGE_25
-	#include "PodcastClient_czech.rls"
-#elif defined LANGUAGE_27
-	#include "PodcastClient_polish.rls"
-#elif defined LANGUAGE_44
-	#include "PodcastClient_catalan.rls"
-#elif defined LANGUAGE_49
-	#include "PodcastClient_estonian.rls"
-#endif
+//#endif
