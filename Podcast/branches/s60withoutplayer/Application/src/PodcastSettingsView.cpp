@@ -48,8 +48,8 @@ public:
 		
 		CArrayPtr< CAknEnumeratedText > * enumeratedArr = EnumeratedTextArray();
 		CArrayPtr< HBufC > * poppedUpTextArray = PoppedUpTextArray();
-		enumeratedArr->Reset();
-		poppedUpTextArray->Reset();
+		enumeratedArr->ResetAndDestroy();
+		poppedUpTextArray->ResetAndDestroy();
 		CDesCArrayFlat *iapArray = iPodcastModel.IAPNames();
 
 		DP2("InternalValue=%d, ExternalValue=%d", InternalValue(), ExternalValue());
@@ -58,12 +58,15 @@ public:
 			poppedUpTextArray->AppendL(buf);
 
 			DP2("IAP name='%S', id=%d", buf, iPodcastModel.IAPIds()[i].iIapId);
-			CAknEnumeratedText *enumerated = new CAknEnumeratedText(iPodcastModel.IAPIds()[i].iIapId, buf);
+			
+			// both arrays destroy themselves, so we need two copies to prevent USER 44
+			HBufC *buf2 = (*iapArray)[i].AllocL();
+			
+			CAknEnumeratedText *enumerated = new CAknEnumeratedText(iPodcastModel.IAPIds()[i].iIapId, buf2);
 			enumeratedArr->AppendL(enumerated);
 		}
 		
 		HandleTextArrayUpdateL();
-			
 		}
 
 	void EditItemL(TBool aCalledFromMenu)
