@@ -1,5 +1,5 @@
 //  RESOURCE IDENTIFIER
-NAME    ESPD // 4 letter ID
+NAME    PODC // 4 letter ID
 #include <eikon.hrh>
 #include <eikon.rh>
 #include <avkon.rsg>
@@ -33,7 +33,6 @@ RESOURCE LOCALISABLE_APP_INFO r_podcast_localisable_app_info
 
 
 #include "PodcastMainView.ra"
-#include "PodcastPlayView.ra"
 #include "PodcastFeedView.ra"
 #include "PodcastShowsView.ra"
 #include "PodcastSettingsView.ra"
