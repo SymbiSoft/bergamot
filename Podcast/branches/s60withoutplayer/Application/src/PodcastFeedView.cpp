@@ -199,6 +199,8 @@ switch(aCustomMessageId.iUid)
 		break;
 	}	
 
+	UpdateToolbar();
+	
 	CPodcastListView::DoActivateL(aPrevViewId, aCustomMessageId, aCustomMessage);
 	iPreviousView = TVwsViewId(KUidPodcast, KUidPodcastBaseViewID);		
 }
@@ -1049,6 +1051,8 @@ void CPodcastFeedView::UpdateToolbar()
 	
 	if (toolbar)
 		{
-		toolbar->SetItemDimmed(EPodcastUpdateAllFeeds, iUpdatingAllRunning, ETrue);
+		toolbar->HideItem(EPodcastUpdateAllFeeds, iUpdatingAllRunning, ETrue);
+		toolbar->HideItem(EPodcastCancelUpdateAllFeeds, !iUpdatingAllRunning, ETrue );
+
 		}
 }

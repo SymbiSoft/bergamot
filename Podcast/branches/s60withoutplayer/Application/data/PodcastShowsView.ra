@@ -266,42 +266,6 @@ RESOURCE AVKON_TOOLBAR r_showsview_toolbar
 			TBAR_CTRL
 				{
 				type = EAknCtButton;
-				id =EPodcastRemoveDownload;
-				control = AVKON_BUTTON
-					{
-					states =
-						{
-						AVKON_BUTTON_STATE
-							{
-							//bmpfile = AVKON_BITMAP_FILE;
-							//bmpid = EMbmAvkonQgn_indi_find_goto;
-							txt = STRING_r_view_remove_download_short_cmd;
-							helptxt = STRING_r_view_remove_download_cmd;
-							}  
-						};
-					};
-				},
-			TBAR_CTRL
-				{
-				type = EAknCtButton;
-				id =EPodcastRemoveAllDownloads;
-				control = AVKON_BUTTON
-					{
-					states =
-						{
-						AVKON_BUTTON_STATE
-							{
-							//bmpfile = AVKON_BITMAP_FILE;
-							//bmpid = EMbmAvkonQgn_indi_find_goto;
-							txt = STRING_r_view_remove_all_downloads_cmd_short;
-							helptxt = STRING_r_view_remove_all_downloads_cmd;
-							}  
-						};
-					};
-				},
-			TBAR_CTRL
-				{
-				type = EAknCtButton;
 				id =EPodcastStopDownloads;
 				control = AVKON_BUTTON
 					{
@@ -331,6 +295,42 @@ RESOURCE AVKON_TOOLBAR r_showsview_toolbar
 							//bmpid = EMbmAvkonQgn_indi_find_goto;
 							txt = STRING_r_view_resume_short_dls_cmd;
 							helptxt = STRING_r_view_resume_downloads_cmd;
+							}  
+						};
+					};
+				},
+			TBAR_CTRL
+				{
+				type = EAknCtButton;
+				id =EPodcastRemoveDownload;
+				control = AVKON_BUTTON
+					{
+					states =
+						{
+						AVKON_BUTTON_STATE
+							{
+							//bmpfile = AVKON_BITMAP_FILE;
+							//bmpid = EMbmAvkonQgn_indi_find_goto;
+							txt = STRING_r_view_remove_download_short_cmd;
+							helptxt = STRING_r_view_remove_download_cmd;
+							}  
+						};
+					};
+				},
+			TBAR_CTRL
+				{
+				type = EAknCtButton;
+				id =EPodcastRemoveAllDownloads;
+				control = AVKON_BUTTON
+					{
+					states =
+						{
+						AVKON_BUTTON_STATE
+							{
+							//bmpfile = AVKON_BITMAP_FILE;
+							//bmpid = EMbmAvkonQgn_indi_find_goto;
+							txt = STRING_r_view_remove_all_downloads_cmd_short;
+							helptxt = STRING_r_view_remove_all_downloads_cmd;
 							}  
 						};
 					};

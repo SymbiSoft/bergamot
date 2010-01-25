@@ -80,7 +80,8 @@ enum TPodcastCommandIds
 	EPodcastSetAudioBookPlayOrderSwap,
 	EPodcastAbout,
 	EPodcastHide,
-	EPodcastHelp
+	EPodcastHelp,
+	EPodcastFeedsToolbarExtension
 };
 
 enum TPodcastControl
