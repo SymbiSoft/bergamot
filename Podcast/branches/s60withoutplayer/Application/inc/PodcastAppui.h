@@ -27,7 +27,6 @@
 class CPodcastMainView;
 class CPodcastFeedView;
 class CPodcastShowsView;
-class CPodcastPlayView;
 class CPodcastSettingsView;
 class CPodcastModel;
 const TUid KUidPodcastClientID          = {0xA00046AE};
