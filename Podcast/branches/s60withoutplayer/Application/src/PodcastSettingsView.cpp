@@ -122,12 +122,10 @@ public:
 		
 		if (iConnection == 1) {
 			DP1("Specific IAP: %d", iIap);
-			se.SetSpecificIAP(iIap);
-			iPodcastModel.SetIap(iIap);
+			se.SetSpecificIAP(iIap);			
 		} else {
 			DP("Specific IAP: -1");
-			se.SetSpecificIAP(-1);
-			iPodcastModel.SetIap(-1);
+			se.SetSpecificIAP(-1);			
 		}
 		
 		DP1("Download automatically: %d", iAutoDownload);

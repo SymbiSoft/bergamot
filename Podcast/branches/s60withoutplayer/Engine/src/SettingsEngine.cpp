@@ -158,8 +158,7 @@ void CSettingsEngine::LoadSettingsL()
 		iDownloadAutomatically = stream.ReadInt32L();
 		
 		iMaxSimultaneousDownloads = stream.ReadInt32L();
-		iIap = stream.ReadInt32L();
-		iPodcastModel.SetIap(iIap);
+		iIap = stream.ReadInt32L();		
 		
 		TInt low = stream.ReadInt32L();
 		TInt high = stream.ReadInt32L();

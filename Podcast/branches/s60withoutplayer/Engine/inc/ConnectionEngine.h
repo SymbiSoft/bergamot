@@ -28,9 +28,14 @@
 
 // Using connection manager settings UI
 #include <cmapplicationsettingsui.h>
+class CPodcastModel;
 
-// Forward declarations
-class MDataMobilityPrinter;
+class MConnectionObserver
+	{
+public:
+	virtual void ConnectCompleteL(TInt aErrorCode) = 0;
+	virtual void Disconnected() = 0;
+	};
 
 /**
  * This class helps to connect using three available methods
@@ -45,13 +50,23 @@ public:
 		ESNAPConnection,
 		EMobilityConnection
 		};
+	
+	enum TConnectionState
+		{
+		ENotConnected,
+		EConnecting,
+		EConnected
+		};
 
-	static CConnectionEngine* NewL();
+	static CConnectionEngine* NewL(CPodcastModel& aPodcastModel);
 	~CConnectionEngine();
 	void StartL(TConnectionType aConnectionType);
 	RConnection& Connection();
+	TConnectionState ConnectionState();
+	void AddObserver(MConnectionObserver* aObserver);
+	RSocketServ& SockServ();
 private: // Methods
-	CConnectionEngine();
+	CConnectionEngine(CPodcastModel& aPodcastModel);
 	void ConstructL();
 protected:
 	// From CActive
@@ -70,6 +85,8 @@ protected:
 protected:
 	// UI Setting
 	TBool ConnectionSettingL();
+	
+	void ReportConnection(TInt aError);
 private:
 	RConnection                   iConnection;
 	RSocketServ                   iSocketServer;
@@ -83,6 +100,9 @@ private:
 	TConnSnapPref iSnapPreference;
 	TCommDbConnPref iCommDBPreference;
 	TConnectionType iConnectionType;
+	TConnectionState iConnectionState;
+	RPointerArray<MConnectionObserver> iObserverArray;
+	CPodcastModel &iPodcastModel; 	// reference to the model
 	};
 
 #endif // PODCAST_CONNECTIONENGINE_H

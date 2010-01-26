@@ -12,6 +12,9 @@
 #include "debug.h"
 #include "constants.h"
 #include "HttpClient.h"
+#include "connectionengine.h"
+#include "settingsengine.h"
+
 const TInt KTempBufferSize = 100;
 
 CHttpClient::~CHttpClient()
@@ -47,7 +50,7 @@ CHttpClient* CHttpClient::NewLC(CPodcastModel& aPodcastModel, MHttpClientObserve
 
 void CHttpClient::ConstructL()
   {
-
+  iPodcastModel.ConnectionEngine().AddObserver(this);
   }
 
 void CHttpClient::SetHeaderL(RHTTPHeaders aHeaders, TInt aHdrField, const TDesC8& aHdrValue)
@@ -68,34 +71,74 @@ void CHttpClient::SetResumeEnabled(TBool aEnabled)
 	iResumeEnabled = aEnabled;
 	}
 
-TBool CHttpClient::GetL(const TDesC& url, const TDesC& fileName,  TBool aSilent) {
-	DP("CHttpClient::Get START");
-	
-	__ASSERT_DEBUG((iIsActive==EFalse), User::Panic(_L("Already active"), -2));
-			
-	HBufC8* url8 = HBufC8::NewLC(KDefaultURLBufferLength);
-	url8->Des().Copy(url);
-	
-	if (iTransactionCount == 0) 
+
+TBool CHttpClient::ConnectHttpSessionL()
+{
+	DP("ConnectHttpSessionL START");	
+	if(iPodcastModel.ConnectionEngine().ConnectionState() == CConnectionEngine::EConnected)
 		{
-		DP("CHttpClient::GetL\t*** Opening HTTP session ***");
-		iSession.OpenL();
-		if(!iPodcastModel.ConnectHttpSessionL(iSession)) // Returns false if not connected
-			{
-			CleanupStack::PopAndDestroy(url8);
-			iSession.Close();
-			return EFalse;
-			}
+		// Session already connected, call connect complete directly
+		ConnectCompleteL(KErrNone);
+		return ETrue;
 		}
 	
-	TUriParser8 uri; 
-	TInt urlError = uri.Parse(*url8);
-	DP2("Getting '%S' to '%S'", &url, &fileName);
-	if(urlError != KErrNone ||!uri.IsSchemeValid())
+	if(iPodcastModel.SettingsEngine().SpecificIAP() == -1)
+	{
+		iPodcastModel.ConnectionEngine().StartL(CConnectionEngine::EUserSelectConnection);	
+	}
+	else
 		{
-		CleanupStack::PopAndDestroy(url8);
-		iSession.Close();
-		return EFalse;
+		iPodcastModel.ConnectionEngine().StartL(CConnectionEngine::EMobilityConnection);
+		}
+		
+	DP("ConnectHttpSessionL END");
+	return EFalse;
+}
+
+void CHttpClient::ConnectCompleteL(TInt aErrorCode)
+	{
+	if(iWaitingForGet)
+		{
+		iWaitingForGet = EFalse;
+		if( aErrorCode == KErrNone)
+			{
+			RHTTPConnectionInfo connInfo = iSession.ConnectionInfo();
+			RStringPool pool = iSession.StringPool();
+			// Attach to socket server
+			connInfo.SetPropertyL(pool.StringF(HTTP::EHttpSocketServ, RHTTPSession::GetTable()), THTTPHdrVal(iPodcastModel.ConnectionEngine().SockServ().Handle()));
+			// Attach to connection
+			TInt connPtr = REINTERPRET_CAST(TInt, &iPodcastModel.ConnectionEngine().Connection());
+			connInfo.SetPropertyL(pool.StringF(HTTP::EHttpSocketConnection, RHTTPSession::GetTable()), THTTPHdrVal(connPtr));
+
+
+			iPodcastModel.SetProxyUsageIfNeededL(iSession);
+			
+			if(!DoGetAfterConnectL())
+				{
+				iObserver.CompleteL(this, KErrBadName);
+				}
+			}
+		else
+			{
+			iSession.Close();
+			}
+		}			
+	}
+
+void CHttpClient::Disconnected()
+	{
+	
+	}
+
+TBool CHttpClient::DoGetAfterConnectL()
+	{
+	TUriParser8 uri; 
+	TInt urlError = uri.Parse(iCurrentURL);
+	
+	if(urlError != KErrNone ||!uri.IsSchemeValid())
+		{		
+		iSession.Close();		
+		return EFalse;		
 		}
 
 	// since nothing should be downloading now. Delete the handler
@@ -106,20 +149,20 @@ TBool CHttpClient::GetL(const TDesC& url, const TDesC& fileName,  TBool aSilent)
 		}
 		
 	iHandler = CHttpEventHandler::NewL(this, iObserver, iPodcastModel.FsSession());
-	iHandler->SetSilent(aSilent);
+	iHandler->SetSilent(iSilentGet);
 
 	TEntry entry;
 	TBuf8<KTempBufferSize> rangeText;
 
-	if (iResumeEnabled && iPodcastModel.FsSession().Entry(fileName, entry) == KErrNone) {
+	if (iResumeEnabled && iPodcastModel.FsSession().Entry(iCurrentFileName, entry) == KErrNone) {
 		DP1("Found file, with size=%d", entry.iSize);
 		// file exists, so we should probably resume
 		rangeText.Format(_L8("bytes=%d-"), entry.iSize-KByteOverlap);
-		iHandler->SetSaveFileName(fileName, ETrue);
+		iHandler->SetSaveFileName(iCurrentFileName, ETrue);
 	} else {
 		// otherwise just make sure the directory exists
-		BaflUtils::EnsurePathExistsL(iPodcastModel.FsSession(),fileName);
-		iHandler->SetSaveFileName(fileName);
+		BaflUtils::EnsurePathExistsL(iPodcastModel.FsSession(),iCurrentFileName);
+		iHandler->SetSaveFileName(iCurrentFileName);
 	}
 	
 	RStringPool strP = iSession.StringPool();
@@ -141,9 +184,30 @@ TBool CHttpClient::GetL(const TDesC& url, const TDesC& fileName,  TBool aSilent)
 	// submit the transaction
 	iTrans.SubmitL();
 	iIsActive = ETrue;	
-	DP("CHttpClient::Get END");
-	CleanupStack::PopAndDestroy(url8);
+	DP("CHttpClient::Get END");	
 	return ETrue;
+	}
+
+TBool CHttpClient::GetL(const TDesC& aUrl, const TDesC& aFileName,  TBool aSilent) {
+	DP("CHttpClient::Get START");
+	DP2("Getting '%S' to '%S'", &aUrl, &aFileName);	
+	__ASSERT_DEBUG((iIsActive==EFalse), User::Panic(_L("Already active"), -2));
+	iCurrentURL.Copy(aUrl);				
+	iSilentGet = aSilent;
+	iCurrentFileName.Copy(aFileName);
+	iWaitingForGet = ETrue;
+	
+	if (iTransactionCount == 0) 
+		{
+		DP("CHttpClient::GetL\t*** Opening HTTP session ***");
+		iSession.OpenL();
+		ConnectHttpSessionL();	
+		return ETrue;
+		}
+	else
+		{
+		return DoGetAfterConnectL();
+		}		
 }
 
 void CHttpClient::Stop()

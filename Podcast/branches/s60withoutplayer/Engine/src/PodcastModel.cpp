@@ -50,9 +50,7 @@ CPodcastModel::~CPodcastModel()
 
 	delete iIapNameArray;
 	iIapIdArray.Close();
-	delete iCommDB;
-	iConnection.Close();
-	iSocketServ.Close();	
+	delete iCommDB;	
 	sqlite3_close(iDB);
 	iFsSession.Close();
 	delete iConnectionEngine;
@@ -73,39 +71,30 @@ void CPodcastModel::ConstructL()
 	UpdateIAPListL();
 	
 	iSettingsEngine = CSettingsEngine::NewL(*this);
+	iConnectionEngine = CConnectionEngine::NewL(*this);	
+	
 	iFeedEngine = CFeedEngine::NewL(*this);
 	iShowEngine = CShowEngine::NewL(*this);
 
-	iSoundEngine = CSoundEngine::NewL(*this);
-	iConnectionEngine = CConnectionEngine::NewL();
-	
-	User::LeaveIfError(iSocketServ.Connect());
-	User::LeaveIfError(iConnection.Open(iSocketServ));
+	iSoundEngine = CSoundEngine::NewL(*this);	
 }
 
 void CPodcastModel::UpdateIAPListL()
 {
 	iIapNameArray->Reset();
 	iIapIdArray.Reset();
-    //TUint32 bearerset = KCommDbBearerWcdma | KCommDbBearerWLAN | KCommDbBearerLAN;
-    //TCommDbConnectionDirection connDirection = ECommDbConnectionDirectionOutgoing;
-
-    //CCommsDbTableView* table = iCommDB->OpenIAPTableViewMatchingBearerSetLC(bearerset, connDirection);
-
-	CCommsDbTableView* table = iCommDB->OpenTableLC (TPtrC (IAP)); 
+   
+	CCommsDbTableView* table = iCommDB->OpenTableLC (TPtrC (NETWORK)); 
 	TInt ret = table->GotoFirstRecord ();
 	TPodcastIAPItem IAPItem;
 	TBuf <KCommsDbSvrMaxFieldLength> bufName;
 	while (ret == KErrNone) // There was a first record
 	{
 		table->ReadUintL(TPtrC(COMMDB_ID), IAPItem.iIapId);
-		table->ReadTextL (TPtrC(COMMDB_NAME), bufName);
-		table->ReadTextL (TPtrC(IAP_BEARER_TYPE), IAPItem.iBearerType);
-		table->ReadTextL (TPtrC(IAP_SERVICE_TYPE), IAPItem.iServiceType);
+		table->ReadTextL (TPtrC(COMMDB_NAME), bufName);		
 
 		iIapIdArray.Append(IAPItem);
-		iIapNameArray->AppendL(bufName); 
-		//iIapNameArray->AppendL(IAPItem.iBearerType); 
+		iIapNameArray->AppendL(bufName); 		
 		ret = table->GotoNextRecord();
 	}
 	CleanupStack::PopAndDestroy(); // Close table
@@ -155,6 +144,11 @@ EXPORT_C CSoundEngine& CPodcastModel::SoundEngine()
 EXPORT_C CSettingsEngine& CPodcastModel::SettingsEngine()
 {
 	return *iSettingsEngine;
+}
+
+EXPORT_C CConnectionEngine& CPodcastModel::ConnectionEngine()
+{
+	return *iConnectionEngine;
 }
 
 EXPORT_C void CPodcastModel::PlayPausePodcastL(CShowInfo* aPodcast, TBool aPlayOnInit) 
@@ -220,16 +214,6 @@ void CPodcastModel::SetActiveShowList(RShowInfoArray& aShowArray)
 	}
 }
 
-RConnection& CPodcastModel::Connection()
-{
-	return iConnection;
-}
-
-TConnPref& CPodcastModel::ConnPref()
-{
-	return iConnPref;
-}
-
 sqlite3* CPodcastModel::DB()
 {
 	if (iDB == NULL) {		
@@ -257,92 +241,6 @@ sqlite3* CPodcastModel::DB()
 	}
 	return iDB;
 }
-
-
-class CConnectionWaiter:public CActive
-{
-public:
-	CConnectionWaiter():CActive(0)
-	{
-		CActiveScheduler::Add(this);
-		iStatus = KRequestPending;
-		SetActive();
-	}
-
-	~CConnectionWaiter()
-	{
-		Cancel();
-	}
-
-	void DoCancel()
-	{
-		TRequestStatus* status = &iStatus;
-		User::RequestComplete(status, KErrCancel);
-	}
-
-	void RunL()
-	{
-		CActiveScheduler::Stop();
-	}
-};
-
-TBool CPodcastModel::ConnectHttpSessionL(RHTTPSession &aSession)
-{
-	DP("ConnectHttpSessionL START");
-	iConnection.Stop();
-	//iConnectionEngine->StartL(CConnectionEngine::EUserSelectConnection);
-	/*if(iSettingsEngine->SpecificIAP() == -1)
-	{
-		TInt iapSelected = iConnPref.IapId();
-		/*CPodcastClientIAPDlg* selectIAPDlg = new (ELeave) CPodcastClientIAPDlg(*this, iapSelected);
-		if(selectIAPDlg->ExecuteLD(R_PODCAST_IAP_DLG))
-		{
-			iConnPref.SetIapId(iapSelected);
-		}
-		else
-		{
-			return EFalse;
-		}
-	}*/
-
-	CConnectionWaiter* connectionWaiter = new (ELeave) CConnectionWaiter;
-	
-	iConnection.Start(iConnPref, connectionWaiter->iStatus);
-	CActiveScheduler::Start();
-	TInt result = connectionWaiter->iStatus.Int();
-	delete connectionWaiter;
-	User::LeaveIfError(result);
-
-	RHTTPConnectionInfo connInfo = aSession.ConnectionInfo();
-	RStringPool pool = aSession.StringPool();
-	// Attach to socket server
-	connInfo.SetPropertyL(pool.StringF(HTTP::EHttpSocketServ, RHTTPSession::GetTable()), THTTPHdrVal(iSocketServ.Handle()));
-	// Attach to connection
-	TInt connPtr = REINTERPRET_CAST(TInt, &iConnection);
-	connInfo.SetPropertyL(pool.StringF(HTTP::EHttpSocketConnection, RHTTPSession::GetTable()), THTTPHdrVal(connPtr));
-	
-	
-	SetProxyUsageIfNeededL(aSession);
-
-	
-	
-	DP("ConnectHttpSessionL END");
-	return ETrue;
-}
-
-EXPORT_C void CPodcastModel::SetIap(TInt aIap)
-	{
-	if (aIap == -1) {
-		iConnPref.SetDialogPreference(ECommDbDialogPrefDoNotPrompt);
-		iConnPref.SetDirection(ECommDbConnectionDirectionOutgoing);
-		iConnPref.SetIapId(0);
-	} else {
-		iConnPref.SetDialogPreference(ECommDbDialogPrefDoNotPrompt);
-		iConnPref.SetDirection(ECommDbConnectionDirectionOutgoing);
-		iConnPref.SetIapId(aIap);
-	}
-	
-	}
 
 void CPodcastModel::SetProxyUsageIfNeededL(RHTTPSession& aSession)
 	{
@@ -411,7 +309,7 @@ TInt CPodcastModel::GetIapId()
 	{
 	_LIT(KSetting, "IAP\\Id");
 	TUint32 iapId = 0;
-	iConnection.GetIntSetting(KSetting, iapId);
+	iConnectionEngine->Connection().GetIntSetting(KSetting, iapId);
 	return iapId;
 	}
 

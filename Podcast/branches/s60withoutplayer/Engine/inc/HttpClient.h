@@ -23,17 +23,19 @@
 #include "HttpClientObserver.h"
 #include "HttpEventHandler.h"
 #include "PodcastModel.h"
+#include "connectionengine.h"
 #include "es_sock.h"
+#include "constants.h"
 
 _LIT8(KUserAgent, "Podcasting/Symbian");
 _LIT8(KAccept, "*/*");
 
-class CHttpClient : public CBase
+class CHttpClient : public CBase, public MConnectionObserver
 {
 public:
 	virtual ~CHttpClient();
 	static CHttpClient* NewL(CPodcastModel& aPodcastModel, MHttpClientObserver& aResObs);
-	TBool GetL(const TDesC& url, const TDesC& fileName, TBool aSilent = EFalse);
+	TBool GetL(const TDesC& aUrl, const TDesC& aFileName, TBool aSilent = EFalse);
 	void Stop();
   	TBool IsActive();
 	void ClientRequestCompleteL(TInt aErrorCode);
@@ -44,9 +46,13 @@ private:
 	static CHttpClient* NewLC(CPodcastModel& aPodcastModel, MHttpClientObserver& aResObs);
 	void ConstructL();
 	void SetHeaderL(RHTTPHeaders aHeaders, TInt aHdrField, const TDesC8& aHdrValue);
-
+	TBool ConnectHttpSessionL();
+	void ConnectCompleteL(TInt aErrorCode);
+	void Disconnected();
+	TBool DoGetAfterConnectL();
 private:
 	RHTTPSession iSession;	
+	TBool iWaitingForGet;
 	TBool iIsActive;
 	RHTTPTransaction iTrans;
 	CHttpEventHandler* iHandler;
@@ -54,6 +60,9 @@ private:
 	CPodcastModel& iPodcastModel;
 	MHttpClientObserver& iObserver;
 	TInt iTransactionCount;
+	TBuf8<KDefaultURLBufferLength> iCurrentURL;
+	TBool iSilentGet;
+	TFileName iCurrentFileName;
 };
 #endif
 

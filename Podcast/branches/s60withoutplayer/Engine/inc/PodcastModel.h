@@ -59,6 +59,7 @@ public:
 	IMPORT_C CShowEngine& ShowEngine();
 	IMPORT_C CSoundEngine& SoundEngine();
 	IMPORT_C CSettingsEngine& SettingsEngine();
+	IMPORT_C CConnectionEngine& ConnectionEngine();
 	IMPORT_C CShowInfo* PlayingPodcast();
 	IMPORT_C void SetPlayingPodcast(CShowInfo* aPodcast);
 	IMPORT_C void PlayPausePodcastL(CShowInfo * aPodcast, TBool aPlayOnInit = EFalse);
@@ -74,12 +75,7 @@ public:
 	void UpdateIAPListL();
 	IMPORT_C CDesCArrayFlat* IAPNames();
 	IMPORT_C RArray<TPodcastIAPItem>& IAPIds();
-	
-	IMPORT_C void SetIap(TInt aIap);
-	RConnection& Connection();
-	TConnPref& ConnPref();
-	TBool ConnectHttpSessionL(RHTTPSession& aSession);
-	
+
 	void SetProxyUsageIfNeededL(RHTTPSession& aSession);
 	void GetProxyInformationForConnectionL(TBool& aIsUsed, HBufC*& aServerName, TUint32& aPort);
 	TInt GetIapId();
@@ -112,12 +108,7 @@ private:
    RFs iFsSession;
    RArray<TPodcastIAPItem> iIapIdArray;
    CDesCArrayFlat* iIapNameArray;
-   CCommsDatabase* iCommDB;
-   
-   RSocketServ iSocketServ;
-
-   RConnection iConnection;
-   TCommDbConnPref iConnPref;
+   CCommsDatabase* iCommDB;  
    
    sqlite3* iDB;   
 };

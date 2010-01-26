@@ -17,10 +17,12 @@
  */
 
 #include "connectionengine.h"
+#include "settingsengine.h"
+#include "podcastmodel.h"
 
-CConnectionEngine* CConnectionEngine::NewL()
+CConnectionEngine* CConnectionEngine::NewL(CPodcastModel& aPodcastModel)
 	{
-	CConnectionEngine* self = new (ELeave) CConnectionEngine();
+	CConnectionEngine* self = new (ELeave) CConnectionEngine(aPodcastModel);
 	CleanupStack::PushL(self);
 	self->ConstructL();
 	CleanupStack::Pop(self);
@@ -38,7 +40,8 @@ CConnectionEngine::~CConnectionEngine()
 	iSocketServer.Close();
 	}
 
-CConnectionEngine::CConnectionEngine():CActive(CActive::EPriorityStandard)
+CConnectionEngine::CConnectionEngine(CPodcastModel& aPodcastModel):
+					CActive(CActive::EPriorityStandard),iPodcastModel(aPodcastModel)
 	{
 	CActiveScheduler::Add(this);	
 	}
@@ -64,8 +67,11 @@ void CConnectionEngine::RunL()
 				{				
 				iMobility = CActiveCommsMobilityApiExt::NewL( iConnection, *this );
 				}
+			
 			}break;
 		}
+	iConnectionState = iStatus.Int() == KErrNone?CConnectionEngine::EConnected:CConnectionEngine::ENotConnected;
+	ReportConnection( iStatus.Int() );
 	}
 
 void CConnectionEngine::DoCancel()
@@ -150,11 +156,10 @@ TBool CConnectionEngine::ConnectionSettingL()
 void CConnectionEngine::StartL(TConnectionType aConnectionType)
 	{
 	iConnection.Close();
-	
+	User::LeaveIfError( iConnection.Open( iSocketServer ) );
 	// Connect using UI Setting
 	if(aConnectionType == EUserSelectConnection)
-		{		
-		User::LeaveIfError( iConnection.Open( iSocketServer ) );
+		{				
 		TBool selected = ConnectionSettingL();
 
 		if ( selected )
@@ -192,12 +197,14 @@ void CConnectionEngine::StartL(TConnectionType aConnectionType)
 	// Connect using SNAP
 	else if (aConnectionType == ESNAPConnection)
 		{	
+		iSnapPreference.SetSnap(iPodcastModel.SettingsEngine().SpecificIAP());
 		iConnection.Start( iSnapPreference, iStatus );
 		SetActive();
 		}
 	// Connect using mobility UI
 	else
 		{
+		iSnapPreference.SetSnap(iPodcastModel.SettingsEngine().SpecificIAP());
 		iConnection.Start( iSnapPreference, iStatus );
 		SetActive();	
 		}		
@@ -210,3 +217,28 @@ RConnection& CConnectionEngine::Connection()
 	return iConnection;	
 	}
 
+CConnectionEngine::TConnectionState CConnectionEngine::ConnectionState()
+	{
+	return iConnectionState;
+	}
+
+void CConnectionEngine::AddObserver(MConnectionObserver* aObserver)
+	{
+	iObserverArray.Append(aObserver);
+	}
+
+RSocketServ& CConnectionEngine::SockServ()
+	{
+	return iSocketServer;
+	}
+
+
+void CConnectionEngine::ReportConnection(TInt aError)
+	{
+	TInt noObservers = iObserverArray.Count();
+	while(noObservers)
+		{
+		noObservers--;
+		iObserverArray[noObservers]->ConnectCompleteL(aError);
+		}
+	}
