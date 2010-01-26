@@ -53,6 +53,8 @@ const TUint KIconArrayIds[] =
 			EMbmPodcastOld_40x40m,
 			EMbmPodcastDownloaded_new_40x40,
 			EMbmPodcastDownloaded_new_40x40m,
+			EMbmPodcastShowwarning_40x40,
+			EMbmPodcastShowwarning_40x40m,
 			0,
 			0
 	};
@@ -349,6 +351,9 @@ void CPodcastShowsView::GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex)
 				break;
 			case EDownloading:
 				aIconIndex = dlStop ? ESuspendedShowIcon : EDownloadingShowIcon;		
+				break;
+			case EFailedDownload:
+				aIconIndex = EFailedShowIcon;
 				break;
 			}
 		}

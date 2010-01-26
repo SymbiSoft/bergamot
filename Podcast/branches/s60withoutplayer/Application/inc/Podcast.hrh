@@ -125,7 +125,8 @@ enum TShowsIconIndex
 	ESuspendedShowIcon,
 	EQuedShowIcon,
 	EOldShowIcon,
-	EDownloadedNewShowIcon
+	EDownloadedNewShowIcon,
+	EFailedShowIcon
 	};
 
 #endif
