@@ -41,33 +41,6 @@ rls_string STRING_r_view_about_cmd "About"
 // Navigation to feeds
 rls_string STRING_r_view_feeds_cmd "Feeds"
 
-// Navigation to the player
-rls_string STRING_r_view_player_cmd "Player"
-
-// Navigation to the audio books
-rls_string STRING_r_view_audiobooks_cmd "Audio Books"
-rls_string STRING_r_view_new_audiobook_cmd "New Book"
-rls_string STRING_r_view_remove_audiobook_cmd "Remove Book"
-
-// Actions for the player
-rls_string STRING_r_play_cmd "Play"
-rls_string STRING_r_stop_cmd "Stop"
-rls_string STRING_r_pause_cmd "Pause"
-rls_string STRING_r_volume_cmd "Volume"
-
-rls_string STRING_r_view_download_cmd "Download"
-rls_string STRING_r_view_download_short_cmd "Get"
-rls_string STRING_r_view_remove_download_short_cmd "Remove"
-rls_string STRING_r_view_remove_download_cmd "Remove Download"
-
-rls_string STRING_r_view_show_cmd "Show"
-rls_string STRING_r_view_cmd "View"
-rls_string STRING_r_view_play_cmd "Play"
-rls_string STRING_r_view_mark_as_played_cmd "Mark as Played"
-rls_string STRING_r_view_mark_as_unplayed_cmd "Mark as Unplayed"
-rls_string STRING_r_view_mark_as_played_cmd_short "Mark old"
-rls_string STRING_r_view_mark_as_unplayed_cmd_short "Mark new"
-
 // Actions for feeds
 rls_string STRING_r_view_add_feed_cmd "Add Feed"
 rls_string STRING_r_view_add_feed_cmd_short "Add"
@@ -107,7 +80,6 @@ rls_string STRING_r_category_pending "Downloader"
 
 // View titles
 rls_string STRING_r_view_feeds_title "Feeds"
-rls_string STRING_r_view_audiobooks_title "Audio books"
 
 // Shows view status strings
 rls_string STRING_r_podcast_shows_title_format "%d Unplayed, %d Total"
@@ -117,7 +89,6 @@ rls_string STRING_r_podcast_shows_no_items "No items"
 
 // Feeds view status strings
 rls_string STRING_r_podcast_feeds_title_format "%d Feeds"
-rls_string STRING_r_podcast_books_title_format "%d Books"
 rls_string STRING_r_podcast_feeds_status_format "%d/%d Shows"
 rls_string STRING_r_podcast_shows_never_updated "Never"
 rls_string STRING_r_podcast_feeds_is_updating "Is updating..."
@@ -172,14 +143,7 @@ rls_string STRING_podcast_autoupdate_attime "At"
 
 rls_string STRING_r_podcast_iap_dlg_title "Select Internet Connection"
 
-// Audio book dialog
-rls_string STRING_r_podcast_new_audiobook_title "Add New Book"
-rls_string STRING_r_podcast_new_audiobook_prompt "Book Title"
-rls_string STRING_r_podcast_new_audiobook_label "%d Files Selected"
-rls_string STRING_r_podcast_new_audiobook_select_files "Choose Files" // Max 80 chars
-
 // Latest strings here
-rls_string STRING_r_view_books_no_books "No Books" // No Books
 
 rls_string STRING_r_view_import_export_feeds_cmd "Import/export feeds" // Import feeds cmd in feedview
 
@@ -188,7 +152,6 @@ rls_string STRING_r_view_import_feeds_cmd_short "Import"
 
 rls_string STRING_r_view_import_feeds_title "Select OPML File"
 
-rls_string STRING_r_view_books_status "%d Books" // Used in base view listbox status text max 32 chars
 rls_string STRING_r_view_feeds_status "%d Feeds" // Used in base view listbox for feeds status text max 32 chars
 
 rls_string STRING_r_cancel_update_all_feeds_cmd "Cancel Update"
@@ -198,13 +161,6 @@ rls_string STRING_r_suspend_download_cmd "Suspend" // String used for cmd to sus
 rls_string STRING_r_view_resume_short_dls_cmd "Resume" // Short download cmd
 rls_string STRING_r_view_onphone_status "%d Unplayed, %d Total" // Used in base view listbox status for shows on phone text max 32 chars
 rls_string STRING_r_view_onphone_status_unknown "Unknown" // Used for unknown status event
-
-// Strings used to set the playorder of an audio book
-rls_string STRING_r_view_books_setorder "Change Order" // cmd for set audio book playorder
-rls_string STRING_r_view_books_setorder_dlgtitle "Set Chapter Order"
-rls_string STRING_r_view_books_setorder_dlg_swapcmd "Swap"
-rls_string STRING_r_view_books_setorder_dlg_label "Select Chapter to Swap With"
-rls_string STRING_r_view_books_setorder_dlg_selectlabel "Select Chapter to Swap"
 
 rls_string STRING_r_view_remove_all_downloads_cmd "Remove All"
 rls_string STRING_r_view_remove_all_downloads_cmd_short "Clear"
@@ -221,18 +177,6 @@ rls_string STRING_r_view_export_feeds_cmd_short "Export"
 
 rls_string STRING_r_catchup_feed "Mark all shows as played?" // shown when first updating a new feed
 rls_string STRING_r_catchup_feed_title "First Update" // title to dialog
-
-rls_string STRING_r_remove_book_title "Remove Book"
-rls_string STRING_r_remove_book_prompt "Are you sure to remove this audio book?"
-
-rls_string STRING_r_remove_chapter_title "Remove Chapter"
-rls_string STRING_r_remove_chapter_prompt "Are you sure to remove this chapter?"
-
-rls_string STRING_r_podcast_books_status_format "%d/%d Chapters"
-rls_string STRING_r_podcast_books_add_chapter "Add Chapters"
-
-rls_string STRING_r_view_import_audiobook_cmd "Import Book"
-rls_string STRING_r_view_import_book_title "Select M3U file"
 
 rls_string STRING_r_on "On"
 rls_string STRING_r_off "Off"

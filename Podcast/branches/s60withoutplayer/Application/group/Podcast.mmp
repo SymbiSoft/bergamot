@@ -55,8 +55,6 @@ START BITMAP Podcast.mbm
 	SOURCE 8 show_playing_40x40m.bmp
 	SOURCE c16 downloading_40x40.bmp
 	SOURCE 8 downloading_40x40m.bmp 
-	SOURCE c16 audiobooks_40x40.bmp
-	SOURCE 8 audiobooks_40x40m.bmp
 	SOURCE c16 new_40x40.bmp
 	SOURCE 8 new_40x40m.bmp
 	SOURCE c16 old_40x40.bmp
@@ -67,12 +65,6 @@ START BITMAP Podcast.mbm
 	SOURCE 8 suspended_40x40m.bmp
 	SOURCE c16 showwarning_40x40.bmp
 	SOURCE 8 showwarning_40x40m.bmp
-	SOURCE c16 AudioBookChapter_40x40.bmp
-	SOURCE 8 AudioBookChapter_40x40m.bmp
-	SOURCE c16 AudioBookIndividual_40x40.bmp
-	SOURCE 8 AudioBookIndividual_40x40m.bmp
-	SOURCE c16 AudioBook_120.bmp
-	SOURCE 8 AudioBook_120m.bmp
 	SOURCE c16 Show_120.bmp
 	SOURCE 8 Show_120m.bmp 
 	SOURCE 8 emptyimage.bmp

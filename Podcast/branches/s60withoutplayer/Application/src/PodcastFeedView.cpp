@@ -101,7 +101,6 @@ void CPodcastFeedView::ConstructL()
 {
 	BaseConstructL(R_PODCAST_FEEDVIEW);
 	iNeverUpdated = iEikonEnv->AllocReadResourceL(R_PODCAST_FEEDS_NEVER_UPDATED);
-	iBooksFormat = iEikonEnv->AllocReadResourceL(R_PODCAST_BOOKS_STATUS_FORMAT);
 	iFeedsFormat = iEikonEnv->AllocReadResourceL(R_PODCAST_FEEDS_STATUS_FORMAT);
 	CPodcastListView::ConstructL();
 	iPodcastModel.FeedEngine().AddObserver(this);
@@ -130,7 +129,7 @@ void CPodcastFeedView::ConstructL()
 
 	bitmap = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastFeed_new_40x40);
 	CleanupStack::PushL( bitmap );		
-	// Load the mask for audiobook icon	
+	// Load the mask
 	mask = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastFeed_new_40x40m );	
 	CleanupStack::PushL( mask );
 	// Append the feed icon to icon array
@@ -153,7 +152,6 @@ void CPodcastFeedView::ConstructL()
 CPodcastFeedView::~CPodcastFeedView()
     {
 	iPodcastModel.FeedEngine().RemoveObserver(this);
-	delete iBooksFormat;
 	delete iFeedsFormat;
 	delete iNeverUpdated;
     }
@@ -167,38 +165,6 @@ void CPodcastFeedView::DoActivateL(const TVwsViewId& aPrevViewId,
 	                                  TUid aCustomMessageId,
 	                                  const TDesC8& aCustomMessage)
 {
-switch(aCustomMessageId.iUid)
-	{
-	case EFeedsAudioBooksMode:
-		{
-		iCurrentViewMode = EFeedsAudioBooksMode;
-		}
-		break;
-	case EFeedsNormalMode:
-		{
-		iCurrentViewMode = EFeedsNormalMode;
-		}break;
-	default:
-		{
-		// Fix for issue #72
-		if (aPrevViewId.iAppUid != KUidPodcastClientID) {
-		break;
-		}
-
-		if(/*(aPrevViewId == TVwsViewId(KUidPodcastClientID, KUidPodcastShowsViewID) ||
-			aPrevViewId == TVwsViewId(KUidPodcastClientID, KUidPodcastFeedViewID)) &&*/	
-				iPodcastModel.ActiveFeedInfo() != NULL && iPodcastModel.ActiveFeedInfo()->IsBookFeed())
-			{
-			iCurrentViewMode = EFeedsAudioBooksMode;
-			}
-		else
-			{
-			iCurrentViewMode = EFeedsNormalMode;
-			}
-		}
-		break;
-	}	
-
 	UpdateToolbar();
 	
 	CPodcastListView::DoActivateL(aPrevViewId, aCustomMessageId, aCustomMessage);
@@ -221,14 +187,7 @@ void CPodcastFeedView::HandleListBoxEventL(CEikListBox* /* aListBox */, TListBox
 		{
 			const RFeedInfoArray* sortedItems = NULL;
 			TInt index = iListContainer->Listbox()->CurrentItemIndex();
-			if(iCurrentViewMode == EFeedsAudioBooksMode)
-				{
-				sortedItems = &iPodcastModel.FeedEngine().GetSortedBooks();
-				}
-			else
-				{
-				sortedItems = &iPodcastModel.FeedEngine().GetSortedFeeds();
-				}
+			sortedItems = &iPodcastModel.FeedEngine().GetSortedFeeds();
 
 			if(index >= 0 && index < sortedItems->Count())
 				{
@@ -246,25 +205,22 @@ void CPodcastFeedView::HandleListBoxEventL(CEikListBox* /* aListBox */, TListBox
 void CPodcastFeedView::FeedInfoUpdatedL(TUint aFeedUid)
 	{
 
-	if (iCurrentViewMode == EFeedsNormalMode)
-		{
-		const RFeedInfoArray& feeds = iPodcastModel.FeedEngine().GetSortedFeeds();
+	const RFeedInfoArray& feeds = iPodcastModel.FeedEngine().GetSortedFeeds();
 
-		TInt index = KErrNotFound;
-		for (int i = 0; i < feeds.Count(); i++) {
-			if (feeds[i]->Uid() == aFeedUid) {
-				index = i;
-			}
+	TInt index = KErrNotFound;
+	for (int i = 0; i < feeds.Count(); i++) {
+		if (feeds[i]->Uid() == aFeedUid) {
+			index = i;
 		}
+	}
 
-		if (index != KErrNotFound && index<iItemArray->Count())
-			{
-			UpdateFeedInfoDataL(feeds[index], index);
-			if (iListContainer->Listbox()->TopItemIndex() <= index &&
-				iListContainer->Listbox()->BottomItemIndex() >= index) {
-					iListContainer->Listbox()->DrawItem(index);
-			}
-			}
+	if (index != KErrNotFound && index<iItemArray->Count())
+		{
+		UpdateFeedInfoDataL(feeds[index], index);
+		if (iListContainer->Listbox()->TopItemIndex() <= index &&
+			iListContainer->Listbox()->BottomItemIndex() >= index) {
+				iListContainer->Listbox()->DrawItem(index);
+		}
 		}
 	}
 
@@ -303,33 +259,29 @@ void CPodcastFeedView::FeedDownloadUpdatedL(TUint aFeedUid, TInt aPercentOfCurre
 
 void CPodcastFeedView::UpdateFeedInfoStatusL(TUint aFeedUid, TBool aIsUpdating)
 	{
-	
-	if(iCurrentViewMode == EFeedsNormalMode)
-		{	
-		const RFeedInfoArray& feeds = iPodcastModel.FeedEngine().GetSortedFeeds();
+	const RFeedInfoArray& feeds = iPodcastModel.FeedEngine().GetSortedFeeds();
 
-		TInt cnt = feeds.Count();
-		TInt index = KErrNotFound;
-		while(index == KErrNotFound && cnt>0)
+	TInt cnt = feeds.Count();
+	TInt index = KErrNotFound;
+	while(index == KErrNotFound && cnt>0)
+	{
+		cnt--;
+		if(feeds[cnt]->Uid() == aFeedUid)
 		{
-			cnt--;
-			if(feeds[cnt]->Uid() == aFeedUid)
-			{
-				index = cnt;
-				break;
-			}
+			index = cnt;
+			break;
 		}
-		
-		if (index != KErrNotFound && index < iItemArray->MdcaCount())
-			{
-			UpdateFeedInfoDataL(feeds[index], index, aIsUpdating);
-			if (iListContainer->Listbox()->TopItemIndex() <= index &&
-				iListContainer->Listbox()->BottomItemIndex() >= index) {
-					iListContainer->Listbox()->DrawItem(index);
-			}
-			}
+	}
+	
+	if (index != KErrNotFound && index < iItemArray->MdcaCount())
+		{
+		UpdateFeedInfoDataL(feeds[index], index, aIsUpdating);
+		if (iListContainer->Listbox()->TopItemIndex() <= index &&
+			iListContainer->Listbox()->BottomItemIndex() >= index) {
+				iListContainer->Listbox()->DrawItem(index);
 		}
-		UpdateToolbar();
+		}
+	UpdateToolbar();
 	}
 
 void CPodcastFeedView::UpdateFeedInfoDataL(CFeedInfo* aFeedInfo, TInt aIndex, TBool aIsUpdating )
@@ -349,7 +301,7 @@ void CPodcastFeedView::UpdateFeedInfoDataL(CFeedInfo* aFeedInfo, TInt aIndex, TB
 		}
 	else
 	{
-		iPodcastModel.FeedEngine().GetStatsByFeed(aFeedInfo->Uid(), showCount, unplayedCount, aFeedInfo->IsBookFeed());
+		iPodcastModel.FeedEngine().GetStatsByFeed(aFeedInfo->Uid(), showCount, unplayedCount, EFalse);
 		
 		if (unplayedCount > 0) {
 		    iconIndex = 2;
@@ -400,14 +352,7 @@ void CPodcastFeedView::UpdateListboxItemsL()
 	if(iListContainer->IsVisible())
 		{		
 		const RFeedInfoArray* sortedItems = NULL;
-		if(iCurrentViewMode == EFeedsAudioBooksMode)
-			{
-			sortedItems = &iPodcastModel.FeedEngine().GetSortedBooks();
-			}
-		else
-			{
-			sortedItems = &iPodcastModel.FeedEngine().GetSortedFeeds();
-			}
+		sortedItems = &iPodcastModel.FeedEngine().GetSortedFeeds();
 		
 		TInt len = sortedItems->Count();
 		TBool allUidsMatch = EFalse;
@@ -454,12 +399,8 @@ void CPodcastFeedView::UpdateListboxItemsL()
 					TInt iconIndex = 0;
 					TUint unplayedCount = 0;
 					TUint showCount = 0;
-					iPodcastModel.FeedEngine().GetStatsByFeed(fi->Uid(), showCount, unplayedCount, fi->IsBookFeed());
-					if (fi->IsBookFeed()) {
-						unplayedShows.Format(*iBooksFormat, unplayedCount, showCount);
-					} else {
-						unplayedShows.Format(*iFeedsFormat, unplayedCount, showCount);
-					}
+					iPodcastModel.FeedEngine().GetStatsByFeed(fi->Uid(), showCount, unplayedCount, EFalse);
+					unplayedShows.Format(*iFeedsFormat, unplayedCount, showCount);
 
 					if (fi->LastUpdated().Int64() == 0) 
 						{
@@ -499,14 +440,7 @@ void CPodcastFeedView::UpdateListboxItemsL()
 			else 
 				{					
 				TBuf<KMaxFeedNameLength> itemName;
-				if(iCurrentViewMode == EFeedsAudioBooksMode)
-					{
-					iEikonEnv->ReadResourceL(itemName, R_PODCAST_BOOKS_NO_BOOKS);
-					}
-				else
-					{
-					iEikonEnv->ReadResourceL(itemName, R_PODCAST_FEEDS_NO_FEEDS);
-					}
+				iEikonEnv->ReadResourceL(itemName, R_PODCAST_FEEDS_NO_FEEDS);
 				iItemArray->Reset();
 				iItemIdArray.Reset();
 
@@ -762,125 +696,6 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 				iPodcastModel.FeedEngine().CancelUpdateAllFeeds();
 				}
 			}break;
-		case EPodcastPlayAudioBook:
-			{
-			if(iListContainer->Listbox() != NULL)
-				{
-				TInt index = iListContainer->Listbox()->CurrentItemIndex();
-
-				if(index < iItemArray->MdcaCount() && index >= 0)
-					{
-					CFeedInfo *feedInfo = iPodcastModel.FeedEngine().GetFeedInfoByUid(iItemIdArray[index]);
-
-					if (feedInfo != NULL) {
-					iPodcastModel.SetActiveFeedInfo(feedInfo);
-					TBool aUnplayedOnlyState = iPodcastModel.SettingsEngine().SelectUnplayedOnly();
-					// we only select unplayed chapters
-					iPodcastModel.SettingsEngine().SetSelectUnplayedOnly(ETrue);
-					iPodcastModel.GetShowsByFeed(feedInfo->Uid());
-					iPodcastModel.SettingsEngine().SetSelectUnplayedOnly(aUnplayedOnlyState);
-
-					RShowInfoArray& showArray = iPodcastModel.ActiveShowList();
-
-					if(showArray.Count() == 0 || showArray[0] == NULL) {
-					// can't play empty books...
-					return;
-					}
-
-					// this should be the first unplayed chapter in this book
-					CShowInfo *startShow = showArray[0];
-
-					TPckgBuf<TInt> showUid;
-					showUid() = startShow->Uid();
-					/*
-					AppUi()->ActivateLocalViewL(KUidPodcastPlayViewID, TUid::Uid(KActiveShowUIDCmd), showUid);
-					*/
-#pragma message("LAPER Handle MPX activate here. Or in themodel perhaps??")
-					iPodcastModel.PlayPausePodcastL(startShow, ETrue);
-					}
-
-					}
-				}			
-			}
-			break;
-		case EPodcastPauseAudioBook:
-			{
-#pragma message("LAPER Handle MPX activate here. Or in themodel perhaps??")
-			//iPodcastModel.SoundEngine().Pause();			
-			}
-			break;
-		case EPodcastAddNewAudioBook:
-			{
-			HandleAddNewAudioBookL();
-			UpdateListboxItemsL();
-			}break;
-		case EPodcastImportAudioBook:
-			{
-			CAknMemorySelectionDialog* memDlg = 
-				CAknMemorySelectionDialog::NewL(ECFDDialogTypeNormal, ETrue);
-			CleanupStack::PushL(memDlg);
-			CAknMemorySelectionDialog::TMemory memory = 
-				CAknMemorySelectionDialog::EPhoneMemory;
-
-			if (memDlg->ExecuteL(memory))
-				{
-				TFileName importName;
-			
-				if (memory==CAknMemorySelectionDialog::EMemoryCard)
-				{
-					importName = PathInfo:: MemoryCardRootPath();
-				}
-				else
-				{
-					importName = PathInfo:: PhoneMemoryRootPath();
-				}
-
-				CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeNormal, R_PODCAST_IMPORT_AUDIOBOOK);
-				CleanupStack::PushL(dlg);
-
-				dlg->SetDefaultFolderL(importName);
-				
-				if(dlg->ExecuteL(importName))
-					{
-					if(importName.Length()>0)
-						{
-						TBuf<KMaxTitleLength> title;
-						CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(title) ;//CPodcastClientAddFeedDlg(iPodcastModel);
-
-						HBufC* prompt= iEikonEnv->AllocReadResourceLC(R_PODCAST_ADDBOOK_PROMPT);
-						
-						if (dlg->ExecuteLD(R_PODCAST_NEW_AUDIOBOOK_DLG, *prompt))
-							{
-							// Add book // See CPodcastClientAudioBookDlg
-							iPodcastModel.FeedEngine().ImportBookL(title, importName);
-							UpdateListboxItemsL();
-							}
-						CleanupStack::PopAndDestroy(prompt);
-						}
-					}
-				CleanupStack::PopAndDestroy(dlg);
-				}
-			CleanupStack::PopAndDestroy(memDlg);								
-			}break;
-		case EPodcastRemoveAudioBookHardware:
-		case EPodcastRemoveAudioBook:
-			{
-			if(iListContainer->Listbox() != NULL)
-				{
-				TInt index = iListContainer->Listbox()->CurrentItemIndex();			
-				if(index < iItemArray->MdcaCount() && index >= 0)
-					{
-					if(iEikonEnv->QueryWinL(R_PODCAST_REMOVE_BOOK_TITLE, R_PODCAST_REMOVE_BOOK_PROMPT))
-						{
-						iPodcastModel.FeedEngine().RemoveBookL(iItemIdArray[index]);
-						iItemArray->Delete(index);
-						iItemIdArray.Remove(index);
-						iListContainer->Listbox()->HandleItemRemovalL();
-						}					
-					}
-				UpdateListboxItemsL();
-				}
-			}break;		
 		default:
 			CPodcastListView::HandleCommandL(aCommand);
 			break;
@@ -890,136 +705,8 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 
 void CPodcastFeedView::DynInitMenuPaneL(TInt /*aResourceId*/,CEikMenuPane* /*aMenuPane*/)
 {
-//	if(aResourceId == R_PODCAST_FEEDVIEW_MENU)
-//	{
-//		if (iListContainer->Listbox() == NULL)
-//			return;
-//		TInt index = iListContainer->Listbox()->CurrentItemIndex();
-//		TBool isBookMode = (iCurrentViewMode == EFeedsAudioBooksMode);
-//		const RFeedInfoArray* sortedItems = NULL;
-//		if(isBookMode)
-//		{
-//			sortedItems = &iPodcastModel.FeedEngine().GetSortedBooks();
-//		}
-//		else
-//		{
-//			sortedItems = &iPodcastModel.FeedEngine().GetSortedFeeds();
-//		}
-//
-//		TUint cnt = sortedItems->Count();
-//
-//		if (cnt == 0)
-//		{		
-//			aMenuPane->SetItemDimmed(EPodcastDeleteFeed, ETrue);
-//			aMenuPane->SetItemDimmed(EPodcastUpdateAllFeeds, ETrue);
-//			aMenuPane->SetItemDimmed(EPodcastEditFeed, ETrue);
-//			aMenuPane->SetItemDimmed(EPodcastRemoveAudioBook, ETrue);
-//		}
-//		else
-//		{			
-//			aMenuPane->SetItemDimmed(EPodcastDeleteFeed, (isBookMode||iUpdatingAllRunning));
-//			aMenuPane->SetItemDimmed(EPodcastUpdateAllFeeds, (isBookMode || iUpdatingAllRunning));
-//			aMenuPane->SetItemDimmed(EPodcastEditFeed, (isBookMode||iUpdatingAllRunning));	
-//			aMenuPane->SetItemDimmed(EPodcastRemoveAudioBook, !isBookMode);
-//		}
-//		
-//		aMenuPane->SetItemDimmed(EPodcastAddNewAudioBook, !isBookMode);
-//		aMenuPane->SetItemDimmed(EPodcastImportAudioBook, !isBookMode);
-//		aMenuPane->SetItemDimmed(EPodcastAddFeed, (isBookMode||iUpdatingAllRunning));
-//		aMenuPane->SetItemDimmed(EPodcastImportFeeds, (isBookMode||iUpdatingAllRunning));
-//		aMenuPane->SetItemDimmed(EPodcastExportFeeds, (isBookMode||iUpdatingAllRunning));
-//#pragma message("LAPER Handle MPX activate here. Or in themodel perhaps??")
-//		TBool playingThisBook = EFalse;//(iPodcastModel.PlayingPodcast() != NULL) && (sortedItems != NULL && sortedItems->Count() > 0) && (iPodcastModel.PlayingPodcast()->FeedUid() == (*sortedItems)[index]->Uid()) && iPodcastModel.SoundEngine().State() == ESoundEnginePlaying;
-//		aMenuPane->SetItemDimmed(EPodcastPlayAudioBook, !(isBookMode && cnt && !playingThisBook));
-//		aMenuPane->SetItemDimmed(EPodcastPauseAudioBook, !(isBookMode && cnt && playingThisBook));
-//		
-//		aMenuPane->SetItemDimmed(EPodcastCancelUpdateAllFeeds, (isBookMode||!iUpdatingAllRunning));	
-//	}
+
 }
-
-void CPodcastFeedView::HandleAddNewAudioBookL()
-	{
-	CAknMemorySelectionDialog* memDlg = 
-		CAknMemorySelectionDialog::NewL(ECFDDialogTypeNormal, ETrue);
-	CleanupStack::PushL(memDlg);
-	CAknMemorySelectionDialog::TMemory memory = 
-		CAknMemorySelectionDialog::EPhoneMemory;
-
-	if (memDlg->ExecuteL(memory))
-		{
-		TFileName importName;
-	
-		if (memory==CAknMemorySelectionDialog::EMemoryCard)
-		{
-			importName = PathInfo:: MemoryCardRootPath();
-		}
-		else
-		{
-			importName = PathInfo:: PhoneMemoryRootPath();
-		}
-
-		CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeSave, R_PODCAST_SHOWDIR_SELECTOR);
-		HBufC* select = iEikonEnv->AllocReadResourceLC(R_PODCAST_SOFTKEY_SELECT);
-		dlg->SetLeftSoftkeyFileL(*select);
-		CleanupStack::PopAndDestroy(select);
-		CleanupStack::PushL(dlg);
-
-		dlg->SetDefaultFolderL(importName);
-
-		CDesCArrayFlat* fileNameArray = new (ELeave) CDesCArrayFlat(KDefaultGran);
-
-		if(dlg->ExecuteL(importName))
-			{			
-			CDirScan *dirScan = CDirScan::NewLC(iEikonEnv->FsSession());
-			//DP1("Listing dir: %S", &folder);
-			dirScan ->SetScanDataL(importName, KEntryAttDir, ESortByName);
-
-			CDir *dirPtr;
-			dirScan->NextL(dirPtr);
-			for (TInt i = 0; i < dirPtr->Count(); i++)
-				{
-				const TEntry &entry = (TEntry) (*dirPtr)[i];
-				if (!entry.IsDir()) 
-					{
-					TFileName pathName;
-					pathName.Copy(importName);
-					pathName.Append(entry.iName);
-
-					TBuf<KMimeBufLength> mimeType;
-					iPodcastModel.ShowEngine().GetMimeType(pathName, mimeType);
-					DP2("'%S' has mime: '%S'", &pathName, &mimeType);
-					if (mimeType.Left(5) == _L("audio"))
-						{
-						fileNameArray->AppendL(pathName);
-						}
-					}					
-				}
-			delete dirPtr;
-			CleanupStack::PopAndDestroy(dirScan);
-			
-			TBuf<KMaxMessageLength> title;
-			CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(title);
-		
-			HBufC* inputprompt= iEikonEnv->AllocReadResourceLC(R_PODCAST_ADDBOOK_PROMPT);			
-			HBufC* promptformat = iEikonEnv->AllocReadResourceLC(R_PODCAST_ADDBOOK_PROMPTFORMAT);						
-			HBufC* prompt = HBufC::NewLC(inputprompt->Length()+promptformat->Length()+ KNumberOfFilesMaxLength);
-			prompt->Des().Format(*promptformat, fileNameArray->Count());
-			prompt->Des().Append('\n');
-			prompt->Des().Append(*inputprompt);
-			if (dlg->ExecuteLD(R_PODCAST_NEW_AUDIOBOOK_DLG, *prompt))
-				{
-				// Add book // See CPodcastClientAudioBookDlg
-				iPodcastModel.FeedEngine().AddBookL(title, fileNameArray);
-				UpdateListboxItemsL();
-				}			
-			CleanupStack::PopAndDestroy(3, inputprompt);
-			}
-		
-			delete fileNameArray;
-		CleanupStack::PopAndDestroy(dlg);
-		}
-	CleanupStack::PopAndDestroy(memDlg);		
-	}
 
 TKeyResponse CPodcastFeedView::OfferKeyEventL(const TKeyEvent& aKeyEvent, TEventCode aType)
 	{

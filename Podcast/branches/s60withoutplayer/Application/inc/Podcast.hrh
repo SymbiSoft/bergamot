@@ -29,8 +29,6 @@ enum TPodcastCommandIds
 	EPodcastViewDownloadedShows,
 	EPodcastViewPendingShows,
 	EPodcastViewFeeds,
-	EPodcastViewPlayer,
-	EPodcastViewAudioBooks,
 	EPodcastPlay,
 	EPodcastStop,
 	EPodcastPause,
@@ -61,34 +59,20 @@ enum TPodcastCommandIds
 	EPodcastShowUnplayedOnly,
 	EPodcastShowUnplayedOnlyOn,
 	EPodcastShowUnplayedOnlyOff,
-//	EPodcastUpdateLibrary,
-	// Audio book commands
-	EPodcastAddNewAudioBook,
-	EPodcastAddAudioBookChapter,
-	EPodcastRemoveAudioBook,
-	EPodcastRemoveAudioBookHardware,
-	EPodcastImportAudioBook,
-	EPodcastSetOrderAudioBook,
-	EPodcastPlayAudioBook,
-	EPodcastPauseAudioBook,
 	// Common commands
 	EPodcastBack,
 	EPodcastZoomSetting,
 	EPodcastSettings,
 	EPodcastSelectShowDir,
 	EPodcastSetVolume,
-	EPodcastSetAudioBookPlayOrderSwap,
 	EPodcastAbout,
 	EPodcastHide,
-	EPodcastHelp,
-	EPodcastFeedsToolbarExtension
+	EPodcastHelp
 };
 
 enum TPodcastControl
 	{
 	EPodcastListViewListCtrl= 0x1000,	
-	// Controls for view context	
-	// Settings View controls
 	EPodcastSettingShowDir,
 	EPodcastSettingAutoDownload,
 	EPodcastSettingAutoUpdate,
@@ -97,9 +81,10 @@ enum TPodcastControl
 	EPodcastSettingMaxsimdls,
 	EPodcastSettingConnection,
 	EPodcastSettingIAPList,
-	EPodcastSettingsVolume,
-	EPodcastAboutDlg
+	EPodcastAboutDlg,
+	EPodcastFeedsToolbarExtension
 	};
+
 enum TPodcastClientShowCategory
 	{
 	EShowAllShows = 0x4000,
@@ -108,12 +93,6 @@ enum TPodcastClientShowCategory
 	EShowDownloadedShows,
 	EShowPendingShows
 	};
-
-enum TFeedsViewMode
-{
-	EFeedsNormalMode = 0x100,
-	EFeedsAudioBooksMode = 0x101
-};
 
 enum TShowsIconIndex
 	{

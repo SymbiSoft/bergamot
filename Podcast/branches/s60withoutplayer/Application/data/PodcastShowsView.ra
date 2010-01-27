@@ -79,17 +79,6 @@ RESOURCE MENU_PANE r_podcast_showsview_menu
 			command = EPodcastDeleteShow;
 			txt = STRING_r_view_delete_show_cmd;
 			},
-
-		MENU_ITEM
-			{
-			command = EPodcastAddAudioBookChapter;
-			txt = STRING_r_podcast_books_add_chapter;
-			},
-		MENU_ITEM
-			{
-			command = EPodcastSetOrderAudioBook;
-			txt = STRING_r_view_books_setorder;
-			},
 		MENU_ITEM
 			{
 			command = EPodcastRemoveDownload;
@@ -340,20 +329,8 @@ RESOURCE AVKON_TOOLBAR r_showsview_toolbar
 
 RESOURCE TBUF r_podcast_shows_no_items {buf = STRING_r_podcast_shows_no_items;}
 
-RESOURCE TBUF r_podcast_new_audiobook_select_files { buf = STRING_r_podcast_new_audiobook_select_files;}
 // Shows view status strings
 RESOURCE TBUF r_podcast_shows_title_format { buf =  STRING_r_podcast_shows_title_format;}
 RESOURCE TBUF r_podcast_shows_title_download {buf = STRING_r_podcast_shows_title_download;}
 RESOURCE TBUF r_podcast_shows_downloads_suspended { buf = STRING_r_podcast_shows_downloads_suspended;}
 RESOURCE TBUF r_podcast_empty_queue { buf = STRING_r_podcast_empty_queue; }
-RESOURCE ARRAY r_podcast_new_audiobook_mimearray
-{
-	items = 
-	{
-	 LBUF {txt = "audio/wav";},
-	 LBUF {txt = "audio/mp3";},
-	 LBUF {txt = "audio/mp4";},
-	 LBUF {txt = "audio/*";}
-	};
-
-}

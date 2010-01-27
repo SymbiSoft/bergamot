@@ -385,51 +385,27 @@ void CPodcastShowsView::UpdateShowItemDataL(CShowInfo* aShowInfo,TInt aIndex, TI
 	TBuf<KMaxShortDateFormatSpec*2> showDate;
 	
 	GetShowIcons(aShowInfo, iconIndex);		
-	if(aShowInfo->ShowType() == EAudioBook)
-	{		
-		infoSize.Format(KChapterFormatting(), aShowInfo->TrackNo());	
-					
-		if(aShowInfo->PlayTime() != 0)
-			{
-			TInt playtime = aShowInfo->PlayTime();
-			TInt hour = playtime/3600;
-			playtime = playtime-(hour*3600);
-			
-			TInt sec = (playtime%60);
-			TInt min = (playtime/60);
-			showDate.Format(_L("%01d:%02d:%02d"),hour, min, sec);
-			}
-		else
-			{
-			HBufC* unknown =  iEikonEnv->AllocReadResourceLC(R_PODCAST_ONPHONE_STATUS_UNKNOWN);
-			showDate = *unknown;
-			CleanupStack::PopAndDestroy(unknown);
-			}
-	}
-	else
+	if(aSizeDownloaded > 0)
 	{
-		if(aSizeDownloaded > 0)
-		{
-			infoSize.Format(KSizeDownloadingOf(), ((float) aSizeDownloaded / (float) KSizeMb),
-				((float)aShowInfo->ShowSize() / (float)KSizeMb));
-		}
-		else if (aShowInfo->ShowSize() > 0)
-		{
-			infoSize.Format(KShowsSizeFormatS60(), (float)aShowInfo->ShowSize() / (float)KSizeMb);
-		} 
-		else {
-			infoSize = KNullDesC();	
-		}
-		
-		if (aShowInfo->PubDate().Int64() == 0)
-			{
-			showDate = KNullDesC();
-			}
-		else
-			{
-			aShowInfo->PubDate().FormatL(showDate, KDateFormatShort());
-			}
+		infoSize.Format(KSizeDownloadingOf(), ((float) aSizeDownloaded / (float) KSizeMb),
+			((float)aShowInfo->ShowSize() / (float)KSizeMb));
 	}
+	else if (aShowInfo->ShowSize() > 0)
+	{
+		infoSize.Format(KShowsSizeFormatS60(), (float)aShowInfo->ShowSize() / (float)KSizeMb);
+	} 
+	else {
+		infoSize = KNullDesC();	
+	}
+	
+	if (aShowInfo->PubDate().Int64() == 0)
+		{
+		showDate = KNullDesC();
+		}
+	else
+		{
+		aShowInfo->PubDate().FormatL(showDate, KDateFormatShort());
+		}
 	
 	iListboxFormatbuffer.Format(KShowFormat(), iconIndex, &aShowInfo->Title(), &showDate, &infoSize);
 	iItemArray->Delete(aIndex);
@@ -535,46 +511,23 @@ void CPodcastShowsView::UpdateListboxItemsL()
 						CShowInfo *si = fItems[i];
 						iItemIdArray.Append(si->Uid());
 
-						if (si->ShowType() == EAudioBook)
+						if (si->ShowSize() == 0)
 							{
-							showSize.Format(KChapterFormatting(), si->TrackNo());
-							if (si->PlayTime() != 0)
-								{
-								TInt playtime = si->PlayTime();
-								TInt hour = playtime/3600;
-								playtime = playtime-(hour*3600);
-
-								TInt sec = (playtime%60);
-								TInt min = (playtime/60);
-								showDate.Format(_L("%01d:%02d:%02d"),hour, min, sec);
-								}
-							else
-								{
-								HBufC* unknown=  iEikonEnv->AllocReadResourceLC(R_PODCAST_ONPHONE_STATUS_UNKNOWN);
-								showDate = *unknown;
-								CleanupStack::PopAndDestroy(unknown);
-								}
+							showSize = KNullDesC();
 							}
 						else
 							{
-							if (si->ShowSize() == 0)
-								{
-								showSize = KNullDesC();
-								}
-							else
-								{
-								showSize.Format(KShowsSizeFormatS60(),
-										(float)si->ShowSize()/ (float)KSizeMb);
-								}
+							showSize.Format(KShowsSizeFormatS60(),
+									(float)si->ShowSize()/ (float)KSizeMb);
+							}
 
-							if (si->PubDate().Int64() == 0)
-								{
-								showDate = KNullDesC();
-								}
-							else
-								{
-								si->PubDate().FormatL(showDate, KDateFormatShort());
-								}
+						if (si->PubDate().Int64() == 0)
+							{
+							showDate = KNullDesC();
+							}
+						else
+							{
+							si->PubDate().FormatL(showDate, KDateFormatShort());
 							}
 						TInt iconIndex = 0;						
 						GetShowIcons(si, iconIndex);
@@ -648,44 +601,6 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 				}
 			}
 			break;
-		case EPodcastSetOrderAudioBook:
-			{
-			if (iPodcastModel.ActiveFeedInfo() != NULL)
-				{
-				/*CPodcastClientSetAudioBookOrderDlg* dlg = new (ELeave) CPodcastClientSetAudioBookOrderDlg(iPodcastModel, iPodcastModel.ActiveFeedInfo()->Uid());
-				 dlg->ExecuteLD(R_PODCAST_AUDIOBOOK_PLAYORDERDLG);*/
-				UpdateListboxItemsL();
-				}
-			}
-			break;
-		case EPodcastAddAudioBookChapter:
-			{
-			if (iPodcastModel.ActiveFeedInfo() != NULL)
-				{
-
-				CDesCArrayFlat* mimeArray= iEikonEnv->ReadDesCArrayResourceL(R_PODCAST_NEW_AUDIOBOOK_MIMEARRAY);
-				CleanupStack::PushL(mimeArray);
-				CDesCArrayFlat* fileNameArray = new (ELeave) CDesCArrayFlat(KDefaultGran);
-				CleanupStack::PushL(fileNameArray);
-				HBufC* dialogTitle= iEikonEnv->AllocReadResourceLC(R_PODCAST_NEW_AUDIOBOOK_SELECT_FILES);
-				/*	TQikDefaultFolderDescription defaultFolder;
-				 defaultFolder.SetDefaultFolder(EQikFileHandlingDefaultFolderAudio);
-
-				 if(CQikSelectFileDlg::RunDlgLD(*mimeArray, *fileNameArray, defaultFolder, dialogTitle, EQikSelectFileDialogEnableMultipleSelect|EQikSelectFileDialogSortByName))*/
-					{
-					if (fileNameArray->Count() > 0)
-						{
-						iPodcastModel.FeedEngine().AddBookChaptersL(
-								*iPodcastModel.ActiveFeedInfo(), fileNameArray);
-						}
-					}
-
-				CleanupStack::PopAndDestroy(dialogTitle);
-				CleanupStack::PopAndDestroy(fileNameArray);
-				CleanupStack::PopAndDestroy(mimeArray);
-				}
-			}
-			break;
 		case EPodcastDeleteShowHardware:
 		case EPodcastDeleteShow:
 			{
@@ -699,18 +614,9 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 					iPodcastModel.SoundEngine().Stop();
 					}*/
 
-				TBool isBook = (iPodcastModel.ActiveShowList()[index]->ShowType() == EAudioBook);
-				if (iEikonEnv->QueryWinL(isBook?R_PODCAST_REMOVE_CHAPTER_TITLE:R_PODCAST_DELETE_SHOW_TITLE,
-						isBook?R_PODCAST_REMOVE_CHAPTER_PROMPT:R_PODCAST_DELETE_SHOW_PROMPT))
+				if (iEikonEnv->QueryWinL(R_PODCAST_DELETE_SHOW_TITLE, R_PODCAST_DELETE_SHOW_PROMPT))
 					{
-					if (isBook)
-						{
-						iPodcastModel.ShowEngine().DeleteShowL(iPodcastModel.ActiveShowList()[index]->Uid(), EFalse);
-						}
-					else
-						{
-						iPodcastModel.ShowEngine().DeleteShowL(iPodcastModel.ActiveShowList()[index]->Uid());
-						}
+					iPodcastModel.ShowEngine().DeleteShowL(iPodcastModel.ActiveShowList()[index]->Uid());
 					
 					// and mark as played, and not downloaded
 					CShowInfo *info = iPodcastModel.ActiveShowList()[index];
@@ -723,9 +629,6 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 				}
 			}
 			break;
-//		case EPodcastUpdateLibrary:
-//			iPodcastModel.ShowEngine().CheckFilesL();
-//			break;
 		case EPodcastShowUnplayedOnlyOn:
 			iPodcastModel.SettingsEngine().SetSelectUnplayedOnly(ETrue);
 			UpdateListboxItemsL();
@@ -746,14 +649,6 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 				iPodcastModel.ShowEngine().AddDownloadL(iPodcastModel.ActiveShowList()[index]);
 				UpdateShowItemL(iPodcastModel.ActiveShowList()[index]->Uid(),-1);
 				}
-			if (iPodcastModel.ShowEngine().DownloadsStopped()) {
-				if(iEikonEnv->QueryWinL(R_PODCAST_ENABLE_DOWNLOADS_TITLE, R_PODCAST_ENABLE_DOWNLOADS_PROMPT))
-				{
-					iPodcastModel.ShowEngine().ResumeDownloadsL();
-				} else {
-					iPodcastModel.ShowEngine().StopDownloads();
-				}
-			}
 			}
 			break;
 		case EPodcastDeleteAllPlayed:
@@ -833,125 +728,8 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 	
 	void CPodcastShowsView::DynInitMenuPaneL(TInt /*aResourceId*/,CEikMenuPane* /*aMenuPane*/)
 	{
-//		if(aResourceId == R_PODCAST_SHOWSVIEW_MENU)
-//		{
-//			
-//			RShowInfoArray &fItems = iPodcastModel.ActiveShowList();
-//			TInt itemCnt = fItems.Count();
-//			TBool removeDeleteShowCmd = ETrue;
-//			TBool removeDownloadShowCmd = ETrue;
-//			TBool removeRemoveSuspendCmd = EFalse;
-//			TBool updatingState = (iCurrentCategory != EShowDownloadedShows && iPodcastModel.FeedEngine().ClientState() != ENotUpdating && iPodcastModel.FeedEngine().ActiveClientUid() == iPodcastModel.ActiveFeedInfo()->Uid());
-//			TBool removeSetPlayed = EFalse;
-//			
-//			if(iListContainer->Listbox() != NULL)
-//			{
-//				TInt index = iListContainer->Listbox()->CurrentItemIndex();
-//				
-//				if(index>= 0 && index < itemCnt)
-//				{							
-//					if(fItems[index]->DownloadState() != EQueued &&  fItems[index]->DownloadState() != EDownloading)
-//					{			
-//					}
-//					else
-//					{
-//						if(fItems[index]->DownloadState() == EQueued)
-//						{
-//							aMenuPane->SetItemTextL(EPodcastRemoveDownload, R_PODCAST_PLAYER_REMOVE_DL_CMD);							
-//						}
-//						else
-//						{					
-//							aMenuPane->SetItemTextL(EPodcastRemoveDownload, R_PODCAST_PLAYER_SUSPEND_DL_CMD);
-//							removeRemoveSuspendCmd = ETrue;
-//						}
-//					}
-//					
-//					removeDeleteShowCmd = fItems[index]->DownloadState() != EDownloaded || updatingState || 
-//						(iPodcastModel.PlayingPodcast() != NULL && fItems[index] == iPodcastModel.PlayingPodcast() /*&& iPodcastModel.SoundEngine().State() == ESoundEnginePlaying*/);
-//#pragma message("LAPER FIX SOUNDENGINE HANDLING HERE")
-//					if(fItems[index]->DownloadState() == ENotDownloaded)
-//					{
-//						removeDownloadShowCmd = EFalse;
-//					}
-//					
-//					if(fItems[index]->PlayState() == EPlayed) {
-//						removeSetPlayed = ETrue;
-//					}
-//					
-//				}
-//				
-//			}		
-//			
-//			TBool iUpdateRunning = iPodcastModel.FeedEngine().ClientState() != ENotUpdating && iPodcastModel.ActiveFeedInfo() != NULL && iPodcastModel.FeedEngine().ActiveClientUid() == iPodcastModel.ActiveFeedInfo()->Uid();
-//			
-//			aMenuPane->SetItemDimmed(EPodcastUpdateFeed, iUpdateRunning || (iCurrentCategory != EShowFeedShows || iPodcastModel.ActiveFeedInfo()->IsBookFeed()));
-//			aMenuPane->SetItemDimmed(EPodcastCancelUpdateAllFeeds, !iUpdateRunning);
-//			
-//			aMenuPane->SetItemDimmed(EPodcastDownloadShow, removeDownloadShowCmd || updatingState);
-//			
-//			aMenuPane->SetItemDimmed(EPodcastMarkAllPlayed, updatingState);
-//			
-//			aMenuPane->SetItemDimmed(EPodcastDeleteShow, removeDeleteShowCmd);					
-//			TBool isOrdinaryList = iCurrentCategory == EShowDownloadedShows || (iCurrentCategory == EShowFeedShows && !(iPodcastModel.ActiveFeedInfo()?iPodcastModel.ActiveFeedInfo()->IsBookFeed():ETrue));
-//			aMenuPane->SetItemDimmed(EPodcastDeleteAllPlayed, (!(!updatingState && !iPodcastModel.SettingsEngine().SelectUnplayedOnly()) || !isOrdinaryList));						
-//			
-//			aMenuPane->SetItemDimmed(EPodcastSetOrderAudioBook, !(EShowFeedShows == iCurrentCategory && (iPodcastModel.ActiveFeedInfo()?iPodcastModel.ActiveFeedInfo()->IsBookFeed(): ETrue)));
-//			aMenuPane->SetItemDimmed(EPodcastAddAudioBookChapter, !(EShowFeedShows == iCurrentCategory && (iPodcastModel.ActiveFeedInfo()?iPodcastModel.ActiveFeedInfo()->IsBookFeed(): ETrue)));
-//			
-//			aMenuPane->SetItemDimmed(EPodcastRemoveAllDownloads, ETrue);
-//			aMenuPane->SetItemDimmed(EPodcastMarkAsPlayed, removeSetPlayed || !itemCnt);
-//			aMenuPane->SetItemDimmed(EPodcastMarkAsUnplayed, !removeSetPlayed || !itemCnt);
-//			
-//			
-//			switch(iCurrentCategory)
-//			{	
-//			case EShowPendingShows:
-//				{
-//					aMenuPane->SetItemDimmed(EPodcastMarkAllPlayed, ETrue);
-//					aMenuPane->SetItemDimmed(EPodcastUpdateLibrary, ETrue);
-//					aMenuPane->SetItemDimmed(EPodcastRemoveDownload, (!itemCnt|| removeRemoveSuspendCmd));				
-//					aMenuPane->SetItemDimmed(EPodcastRemoveAllDownloads, (!iPodcastModel.ShowEngine().DownloadsStopped() || !itemCnt));				
-//					aMenuPane->SetItemDimmed(EPodcastStopDownloads, (iPodcastModel.ShowEngine().DownloadsStopped()));
-//					aMenuPane->SetItemDimmed(EPodcastResumeDownloads, (!iPodcastModel.ShowEngine().DownloadsStopped()));			
-//					aMenuPane->SetItemDimmed(EPodcastShowUnplayedOnly, ETrue);				
-//					aMenuPane->SetItemDimmed(EPodcastDownloadShow, ETrue);
-//					aMenuPane->SetItemDimmed(EPodcastMarkAsPlayed, ETrue);
-//					aMenuPane->SetItemDimmed(EPodcastMarkAsUnplayed, ETrue);
-//					aMenuPane->SetItemDimmed(EPodcastDeleteShow, ETrue);
-//				}break;
-//			case EShowDownloadedShows:
-//				{
-//					aMenuPane->SetItemDimmed(EPodcastMarkAllPlayed, updatingState);
-//					aMenuPane->SetItemDimmed(EPodcastUpdateLibrary, EFalse);
-//					aMenuPane->SetItemDimmed(EPodcastRemoveDownload, ETrue);
-//					aMenuPane->SetItemDimmed(EPodcastStopDownloads, ETrue);
-//					aMenuPane->SetItemDimmed(EPodcastResumeDownloads, ETrue);
-//					aMenuPane->SetItemDimmed(EPodcastShowUnplayedOnly, EFalse);
-//				}break;
-//			default:
-//				{
-//					aMenuPane->SetItemDimmed(EPodcastRemoveDownload, ETrue);					
-//					aMenuPane->SetItemDimmed(EPodcastStopDownloads, ETrue);
-//					aMenuPane->SetItemDimmed(EPodcastResumeDownloads, ETrue);
-//					aMenuPane->SetItemDimmed(EPodcastMarkAllPlayed, updatingState);
-//					aMenuPane->SetItemDimmed(EPodcastUpdateLibrary, ETrue);
-//					aMenuPane->SetItemDimmed(EPodcastShowUnplayedOnly, EFalse);
-//				}break;
-//			}	
-//			
-//			
-//	} else if (aResourceId == R_ONOFF_MENU) {
-//		if (iPodcastModel.SettingsEngine().SelectUnplayedOnly())
-//		{
-//		aMenuPane->SetItemButtonState(EPodcastShowUnplayedOnlyOff, EEikMenuItemSymbolIndeterminate);
-//		aMenuPane->SetItemButtonState(EPodcastShowUnplayedOnlyOn, EEikMenuItemSymbolOn);
-//		} else {
-//		aMenuPane->SetItemButtonState(EPodcastShowUnplayedOnlyOn, EEikMenuItemSymbolIndeterminate);
-//		aMenuPane->SetItemButtonState(EPodcastShowUnplayedOnlyOff, EEikMenuItemSymbolOn);
-//		}
-//
-//	}
-}
+
+	}
 
 void CPodcastShowsView::OfferToolbarEventL(TInt aCommand)
 	{

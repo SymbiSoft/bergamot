@@ -158,7 +158,6 @@ void CPodcastAppUi::TabChangedL (TInt /*aIndex*/)
 	
 	if (index == 0) {
 		newview = KUidPodcastFeedViewID;
-		messageUid = TUid::Uid(EFeedsNormalMode);
 	} else if (index == 1) {
 		newview = KUidPodcastShowsViewID;
 		messageUid = TUid::Uid(EShowPendingShows);
@@ -171,10 +170,8 @@ void CPodcastAppUi::TabChangedL (TInt /*aIndex*/)
 	
 	if(newview.iUid != 0)
 		{			
-			ActivateLocalViewL(newview,  messageUid, KNullDesC8());
+		ActivateLocalViewL(newview,  messageUid, KNullDesC8());
 		}
-	
-	//
 	}
 
 void CPodcastAppUi::SetActiveTab(TInt aIndex) {

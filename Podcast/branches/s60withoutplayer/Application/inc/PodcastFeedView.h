@@ -85,7 +85,6 @@ class CPodcastFeedView : public CPodcastListView, MEikListBoxObserver,
 		void UpdateFeedInfoStatusL(TUint aFeedUid, TBool aIsUpdating = EFalse);
 
 		 void DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane);
-		void HandleAddNewAudioBookL();
 		TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType);
 
 		void OfferToolbarEventL(TInt aCommand);
@@ -95,8 +94,6 @@ class CPodcastFeedView : public CPodcastListView, MEikListBoxObserver,
 	private:
 		CPodcastModel& iPodcastModel;		
 		TBool iUpdatingAllRunning;
-		TFeedsViewMode iCurrentViewMode;
-		HBufC* iBooksFormat;
 		HBufC* iFeedsFormat;
 		HBufC* iNeverUpdated;
 };
