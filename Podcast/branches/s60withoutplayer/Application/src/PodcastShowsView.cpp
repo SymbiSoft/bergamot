@@ -796,6 +796,8 @@ void CPodcastShowsView::UpdateToolbar()
 		toolbar->HideItem(EPodcastMarkAsPlayed, ETrue, ETrue );
 		toolbar->HideItem(EPodcastMarkAsUnplayed, ETrue, ETrue );
 		
+		toolbar->HideItem(EPodcastRemoveDownload, EFalse, ETrue);
+		toolbar->HideItem(EPodcastRemoveAllDownloads, EFalse, ETrue);
 		toolbar->SetItemDimmed(EPodcastRemoveDownload, itemCnt == 0, ETrue);
 		toolbar->SetItemDimmed(EPodcastRemoveAllDownloads, itemCnt == 0, ETrue);
 		toolbar->HideItem(EPodcastStopDownloads,iPodcastModel.ShowEngine().DownloadsStopped(), ETrue);

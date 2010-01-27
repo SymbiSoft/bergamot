@@ -39,94 +39,15 @@ RESOURCE MENU_PANE r_onoff_menu
 			txt = STRING_r_off;
 	        flags = EEikMenuItemRadioEnd;
 			}
-	};
-			
+	};		
 	}
-
-RESOURCE MENU_PANE r_podcast_showsview_menu
-    {
-    items =
-		{
-		// Feed handling
-		MENU_ITEM
-			{
-			command = EPodcastUpdateFeed;
-			txt = STRING_r_update_feed_cmd;
-			},
-		MENU_ITEM
-			{
-			command = EPodcastCancelUpdateAllFeeds;
-			txt = STRING_r_cancel_update_all_feeds_cmd;
-			},
-		// Show handling		
-		MENU_ITEM
-			{
-			command = EPodcastDownloadShow;
-			txt = STRING_r_view_download_show_cmd;
-			},
-		MENU_ITEM
-			{
-			command = EPodcastMarkAsPlayed;
-			txt = STRING_r_view_mark_as_played_cmd;
-			},
-		MENU_ITEM
-			{
-			command = EPodcastMarkAsUnplayed;
-			txt = STRING_r_view_mark_as_unplayed_cmd;
-			},
-		MENU_ITEM
-			{
-			command = EPodcastDeleteShow;
-			txt = STRING_r_view_delete_show_cmd;
-			},
-		MENU_ITEM
-			{
-			command = EPodcastRemoveDownload;
-			txt = STRING_r_view_remove_download_cmd;			
-			},
-		MENU_ITEM
-			{
-			command = EPodcastRemoveAllDownloads;
-
-			txt = STRING_r_view_remove_all_downloads_cmd;
-			},
-		MENU_ITEM
-			{
-			command = EPodcastStopDownloads;
-			txt = STRING_r_view_stop_downloads_cmd;
-			},
-		MENU_ITEM
-			{
-			command = EPodcastResumeDownloads;
-			txt = STRING_r_view_resume_downloads_cmd;
-			},
-		// Show filter handling and item marking for this
-		MENU_ITEM
-			{
-			command = EPodcastShowUnplayedOnly;
-			txt = STRING_r_view_show_unplayed_cmd;
-			cascade = r_onoff_menu;
-			},
-		MENU_ITEM
-			{
-			command = EPodcastMarkAllPlayed;
-			txt = STRING_r_view_mark_all_played_cmd;
-			},
-
-		MENU_ITEM
-			{
-			command = EPodcastDeleteAllPlayed;
-			txt = STRING_r_view_delete_played_cmd;
-			}
-   };
-    }
 
 
 RESOURCE MENU_BAR r_podcast_showsview_menubar
     {
     titles =
         {
-        MENU_TITLE { menu_pane = r_podcast_showsview_menu; txt = "Shows"; }
+        MENU_TITLE { menu_pane = r_podcast_feedview_menu; txt = "Shows"; }
         };
     }
 
