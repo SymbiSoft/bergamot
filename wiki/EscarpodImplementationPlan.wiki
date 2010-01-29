@@ -36,3 +36,23 @@ All the below issues are also [http://code.google.com/p/bergamot/issues/list?q=l
   * Implement podcast browsing and search
   * Create daemon that starts with your phone?
   * Create Qt GUI
+
+
+=== Icons ===
+
+We need icons for toolbars. Here we list which icons can be used from other system apps, or if we have to make new ones:
+
+||*Button*||*Icon from*||
+||update all||||
+||add||||
+||import||||
+||export||||
+||settings||||
+||update||||
+||delete||from messenger app||
+||mark old||||
+||suspend||||
+||resume||||
+||remove||same as delete||
+||clear||||
+ 
