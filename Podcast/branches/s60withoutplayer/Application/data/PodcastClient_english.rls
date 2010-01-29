@@ -197,5 +197,8 @@ rls_string STRING_r_tabgroup_feeds "Feeds"
 rls_string STRING_r_tabgroup_queue "Queue"
 rls_string STRING_r_tabgroup_downloaded "Downloaded"
 rls_string STRING_r_podcast_empty_queue "(queue empty)"
+rls_string STRING_r_podcast_empty_list "(list empty)"
 
 rls_string STRING_r_view_help "Help"
+rls_string STRING_r_view_mark_as_played_cmd_short "Mark old"
+rls_string STRING_r_view_mark_as_unplayed_cmd_short "Mark new"

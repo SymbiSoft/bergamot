@@ -103,9 +103,6 @@ void CPodcastShowsView::ConstructL()
 	CleanupStack::Pop(icons); // icons
 	iListContainer->Listbox()->SetListBoxObserver(this);
 	
-	HBufC* emptyText =  iEikonEnv->AllocReadResourceLC(R_PODCAST_EMPTY_QUEUE);
-	iListContainer->Listbox()->View()->SetListEmptyTextL(*emptyText);
-	CleanupStack::PopAndDestroy(emptyText);	
 	
 	iListContainer->SetKeyEventListener(this);
 	iPodcastModel.FeedEngine().AddObserver(this);
@@ -178,6 +175,9 @@ TUid CPodcastShowsView::Id() const
 void CPodcastShowsView::DoActivateL(const TVwsViewId& aPrevViewId,
 		TUid aCustomMessageId, const TDesC8& aCustomMessage)
 	{
+	DP("CPodcastShowsView::DoActivateL BEGIN");
+	HBufC* emptyText;
+	
 	switch (aCustomMessageId.iUid)
 		{
 		case EShowNewShows:
@@ -186,11 +186,16 @@ void CPodcastShowsView::DoActivateL(const TVwsViewId& aPrevViewId,
 		case EShowPendingShows:
 			iCurrentCategory
 					= (TPodcastClientShowCategory) aCustomMessageId.iUid;
+			emptyText =  iEikonEnv->AllocReadResourceLC(R_PODCAST_EMPTY_QUEUE);
 			break;
 		case EShowFeedShows:
 			iCurrentCategory = EShowFeedShows;
+			emptyText =  iEikonEnv->AllocReadResourceLC(R_PODCAST_EMPTY_LIST);
 			break;
 		}
+
+	iListContainer->Listbox()->View()->SetListEmptyTextL(*emptyText);
+	CleanupStack::PopAndDestroy(emptyText);	
 
 	CPodcastListView::DoActivateL(aPrevViewId, aCustomMessageId, aCustomMessage);
 	
@@ -213,6 +218,7 @@ void CPodcastShowsView::DoActivateL(const TVwsViewId& aPrevViewId,
 	
 	UpdateFeedUpdateStateL();
 	UpdateToolbar();
+	DP("CPodcastShowsView::DoActivateL END");
 	}
 
 void CPodcastShowsView::DoDeactivate()
@@ -256,7 +262,7 @@ void CPodcastShowsView::FeedInfoUpdated(TUint aFeedUid)
 		{
 		TRAP_IGNORE(UpdateFeedUpdateStateL());
 		// Title might have changed
-		TRAP_IGNORE(UpdateListboxItemsL());
+		//TRAP_IGNORE(UpdateListboxItemsL());
 		}
 	}
 
@@ -624,7 +630,8 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 					info->SetPlayState(EPlayed);
 					iPodcastModel.ShowEngine().UpdateShow(info);
 					
-					UpdateListboxItemsL();
+					UpdateShowItemDataL(iPodcastModel.ActiveShowList()[index], index, 0);
+					iListContainer->Listbox()->DrawItem(index);					
 					}
 				}
 			}

@@ -36,6 +36,7 @@
 #include <BAUTILS.H> 
 #include <pathinfo.h> 
 #include <f32file.h>
+#include <akntoolbarextension.h>
 
 const TInt KMaxFeedNameLength = 100;
 const TInt KMaxUnplayedFeedsLength =64;
@@ -185,6 +186,7 @@ void CPodcastFeedView::HandleListBoxEventL(CEikListBox* /* aListBox */, TListBox
 	case EEventItemDoubleClicked:
 	case EEventItemActioned:
 		{
+			DP("EEventItemActioned");
 			const RFeedInfoArray* sortedItems = NULL;
 			TInt index = iListContainer->Listbox()->CurrentItemIndex();
 			sortedItems = &iPodcastModel.FeedEngine().GetSortedFeeds();
@@ -463,6 +465,7 @@ void CPodcastFeedView::UpdateListboxItemsL()
  */
 void CPodcastFeedView::HandleCommandL(TInt aCommand)
 	{
+	CloseToolbarExtension();
 	switch(aCommand)
 		{
         case EPodcastHide:
@@ -471,11 +474,12 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 		case EPodcastAddFeed:
 			{
 			TBuf<KFeedUrlLength> url;
-			CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(url) ;//CPodcastClientAddFeedDlg(iPodcastModel);
+			CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(url);
 			dlg->PrepareLC(R_PODCAST_ADD_FEED_DLG);
 			HBufC* prompt = iEikonEnv->AllocReadResourceLC(R_PODCAST_ADDFEED_PROMPT);
 			dlg->SetPromptL(*prompt);
 			CleanupStack::PopAndDestroy(prompt);
+			
 			if(dlg->RunLD())
 				{
 				PodcastUtils::FixProtocolsL(url);
@@ -743,3 +747,11 @@ void CPodcastFeedView::UpdateToolbar()
 
 		}
 }
+
+void CPodcastFeedView::CloseToolbarExtension()
+{
+	CAknToolbar* toolbar = Toolbar();
+	CAknToolbarExtension* toolbarExtension = toolbar->ToolbarExtension();
+	toolbarExtension->SetShown( EFalse );
+}
+

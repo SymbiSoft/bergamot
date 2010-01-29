@@ -90,6 +90,7 @@ class CPodcastFeedView : public CPodcastListView, MEikListBoxObserver,
 		void OfferToolbarEventL(TInt aCommand);
 		void DynInitToolbarL (TInt aResourceId, CAknToolbar *aToolbar);
 		void UpdateToolbar();
+		void CloseToolbarExtension();
 		
 	private:
 		CPodcastModel& iPodcastModel;		
