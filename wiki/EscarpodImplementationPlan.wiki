@@ -11,6 +11,10 @@
 
   * Maintaining engine compatibility with UIQ would be nice, but is hardly a requirement
 
+== View and error handling ==
+
+  * See [ErrorHandling]
+
 == Implementation plan ==
 
 All the below issues are also [http://code.google.com/p/bergamot/issues/list?q=label:Implementation listed in the issue tracker with the tag "Implementation"].
