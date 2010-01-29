@@ -16,14 +16,6 @@
  *
  */
 
-RESOURCE HOTKEYS r_podcast_settingsview_hotkeys
-    {
-    control =
-        {
-        HOTKEY { command = EAknCmdExit; key='e'; }
-        };
-    }
-
 RESOURCE MENU_BAR r_podcast_settingsview_menubar
     {
     titles =
@@ -36,12 +28,6 @@ RESOURCE MENU_PANE r_podcast_settingsview_menu
     {
     items =
         {        
-	// Other commands	
-		/*MENU_ITEM
-			{
-			command = EPodcastZoomSetting;
-			txt = STRING_r_zoom_cmd;
-			},*/
 		MENU_ITEM
 			{
 			command = EPodcastAbout;
@@ -53,7 +39,6 @@ RESOURCE MENU_PANE r_podcast_settingsview_menu
 
 RESOURCE AVKON_VIEW r_podcast_settingsview
 {
-	hotkeys = r_podcast_settingsview_hotkeys;
 	menubar = r_podcast_settingsview_menubar;
 	cba = R_AVKON_SOFTKEYS_BACK;    
 }
@@ -183,7 +168,7 @@ RESOURCE ARRAY r_podcast_connection_closed
 {
     items = 
     {
-//    AVKON_ENUMERATED_TEXT{value=0; text = STRING_r_podcast_setting_default;},
+    AVKON_ENUMERATED_TEXT{value=0; text = STRING_r_podcast_setting_default;},
     AVKON_ENUMERATED_TEXT{value=-1; text = STRING_r_podcast_setting_wlanonly;},
     AVKON_ENUMERATED_TEXT{value=1; text = STRING_r_podcast_setting_usespecified;}
     };
@@ -193,7 +178,7 @@ RESOURCE ARRAY r_podcast_connection_opened
 {
     items = 
     {
-//    LBUF { txt=STRING_r_podcast_setting_default; },
+    LBUF { txt=STRING_r_podcast_setting_default; },
     LBUF { txt=STRING_r_podcast_setting_wlanonly; },	
     LBUF { txt=STRING_r_podcast_setting_usespecified; }
     };

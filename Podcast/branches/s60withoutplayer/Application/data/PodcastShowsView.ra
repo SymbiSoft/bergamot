@@ -16,32 +16,12 @@
 *
 */
 
-RESOURCE HOTKEYS r_podcast_showsview_hotkeys
-    {
-    control =
-        {
-        HOTKEY { command = EAknCmdExit; key='e'; }
-        };
-    }
-
-RESOURCE MENU_PANE r_onoff_menu
-	{
-	items =	{
-		MENU_ITEM
-			{
-			command = EPodcastShowUnplayedOnlyOn;
-			txt = STRING_r_on;
-			flags = EEikMenuItemRadioStart|EEikMenuItemSymbolOn;
-			},
-		MENU_ITEM
-			{
-			command = EPodcastShowUnplayedOnlyOff;
-			txt = STRING_r_off;
-	        flags = EEikMenuItemRadioEnd;
-			}
-	};		
-	}
-
+RESOURCE AVKON_VIEW r_podcast_showsview
+{
+	menubar = r_podcast_feedview_menubar;
+	cba = R_AVKON_SOFTKEYS_OPTIONS_BACK;
+	toolbar = r_showsview_toolbar;
+}
 
 RESOURCE MENU_BAR r_podcast_showsview_menubar
     {
@@ -50,15 +30,6 @@ RESOURCE MENU_BAR r_podcast_showsview_menubar
         MENU_TITLE { menu_pane = r_podcast_feedview_menu; txt = "Shows"; }
         };
     }
-
-RESOURCE AVKON_VIEW r_podcast_showsview
-{
-	hotkeys = r_podcast_showsview_hotkeys;
-	menubar = r_podcast_feedview_menubar;
-	cba = R_AVKON_SOFTKEYS_OPTIONS_BACK;
-	toolbar = r_showsview_toolbar;
-}
-
 
 RESOURCE AVKON_TOOLBAR r_showsview_toolbar
     {
@@ -247,12 +218,3 @@ RESOURCE AVKON_TOOLBAR r_showsview_toolbar
 				}
         };
     }
-
-RESOURCE TBUF r_podcast_shows_no_items {buf = STRING_r_podcast_shows_no_items;}
-
-// Shows view status strings
-RESOURCE TBUF r_podcast_shows_title_format { buf =  STRING_r_podcast_shows_title_format;}
-RESOURCE TBUF r_podcast_shows_title_download {buf = STRING_r_podcast_shows_title_download;}
-RESOURCE TBUF r_podcast_shows_downloads_suspended { buf = STRING_r_podcast_shows_downloads_suspended;}
-RESOURCE TBUF r_podcast_empty_queue { buf = STRING_r_podcast_empty_queue; }
-RESOURCE TBUF r_podcast_empty_list { buf = STRING_r_podcast_empty_list; }

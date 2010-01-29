@@ -23,8 +23,10 @@ NAME    PODC // 4 letter ID
 #include <eikon.rh>
 #include <avkon.rsg>
 #include <avkon.rh>
+#include <avkon.mbg>
 #include <appinfo.rh>
 #include <podcast.mbg>
+#include <podcastsvg.mbg>
 #include <commondialogs.rh>
 #include <commondialogs.hrh>
 
@@ -51,8 +53,29 @@ RESOURCE LOCALISABLE_APP_INFO r_podcast_localisable_app_info
 	};
     }
 
+RESOURCE DIALOG r_dlg_about
+    {
+    flags = EAknDialogGenericNoteFlags;
+    buttons = R_AVKON_SOFTKEYS_CLOSE;
+    items =
+        {
+        DLG_LINE
+            {
+            type = EAknCtNote;
+            id = EPodcastAboutDlg;
+            control = AVKON_NOTE
+				{
+				layout = ENoteWithImageLayout;
+				singular_label = STRING_r_about_text_s60; 
+				imagefile = "\\resource\\apps\\Podcastsvg.mif"; 
+				imageid = EMbmPodcastsvgPodcast;
+				imagemask = EMbmPodcastsvgPodcast_mask;
+				};
+			}
+        };
+    }
 
-#include "PodcastMainView.ra"
+#include "PodcastStrings.ra"
 #include "PodcastFeedView.ra"
 #include "PodcastShowsView.ra"
 #include "PodcastSettingsView.ra"

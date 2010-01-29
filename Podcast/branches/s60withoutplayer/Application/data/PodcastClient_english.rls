@@ -25,11 +25,7 @@ rls_string STRING_r_view_cmd "View"
 
 // Navigation to shows view
 rls_string STRING_r_view_main_cmd "Main"
-rls_string STRING_r_view_shows_cmd "Shows on Phone"
-rls_string STRING_r_view_all_shows_cmd "All Shows"
 rls_string STRING_r_view_new_shows_cmd "Unplayed"
-rls_string STRING_r_view_dl_shows_cmd "Shows on Phone"
-rls_string STRING_r_view_dling_shows_cmd "Downloader"
 rls_string STRING_r_view_about_cmd "About"
 
 // Navigation to feeds
@@ -65,7 +61,6 @@ rls_string STRING_r_view_mark_all_played_cmd "Mark All as Played"
 rls_string STRING_r_view_show_unplayed_cmd "Show Unplayed Only"
 
 // Common actions
-rls_string STRING_r_zoom_cmd "Zoom"
 rls_string STRING_r_settings_cmd "Settings"
 
 // Categories (strings max 20 character long)
@@ -96,7 +91,7 @@ rls_string STRING_r_about_title "About"
 rls_string STRING_r_add_feed_title "Add Feed"
 rls_string STRING_r_edit_feed_title "Edit Feed"
 
-rls_string STRING_r_add_feed_prompt "Feed URL"
+rls_string STRING_r_add_feed_prompt "Enter feed URL"
 rls_string STRING_r_add_feed_title_prompt "Feed Title"
 
 rls_string STRING_r_remove_feed_title "Remove Feed"
