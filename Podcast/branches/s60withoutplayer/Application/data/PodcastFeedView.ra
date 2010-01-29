@@ -132,6 +132,26 @@ RESOURCE AVKON_TOOLBAR r_feedview_toolbar
 					};
 				};
 		},
+		TBAR_CTRL
+			{
+			type = EAknCtButton;
+			id = EPodcastAddFeed;
+			control = AVKON_BUTTON
+				{
+				flags = KAknButtonTextInsideFrame;
+				states =
+					{
+					AVKON_BUTTON_STATE
+						{
+						//bmpfile = AVKON_BITMAP_FILE;
+						//bmpid = EMbmAvkonQgn_indi_find_goto;
+						//press_bmpid = EMbmAvkonQgn_indi_find_goto;
+						txt = STRING_r_view_add_feed_cmd_short;
+						helptxt = STRING_r_view_add_feed_cmd;
+						} 
+					};
+				};
+			},
         TBAR_CTRL
             {
             type = EAknCtToolbarExtension;
@@ -140,29 +160,9 @@ RESOURCE AVKON_TOOLBAR r_feedview_toolbar
             control = AVKON_TOOLBAR_EXTENSION 
                 {
                 flags = 0;
-                helptxt = "Drawing tools";               
+                helptxt = STRING_r_view_more_options;
                 items =
                     {
-                    TBAR_CTRL
-                        {
-                        type = EAknCtButton;
-                        id = EPodcastAddFeed;
-                        control = AVKON_BUTTON
-                            {
-                            flags = KAknButtonTextInsideFrame;
-                            states =
-                                {
-                                AVKON_BUTTON_STATE
-                                    {
-                                    bmpfile = AVKON_BITMAP_FILE;
-                                    bmpid = EMbmAvkonQgn_indi_find_goto;
-                                    press_bmpid = EMbmAvkonQgn_indi_find_goto;
-                                    txt = STRING_r_view_add_feed_cmd_short;
-                                    helptxt = STRING_r_view_add_feed_cmd;
-                                    } 
-                                };
-                            };
-                        },
 /* these are now in the popup menu
                         TBAR_CTRL
                             {
@@ -243,28 +243,29 @@ RESOURCE AVKON_TOOLBAR r_feedview_toolbar
 										} 
 									};
 								};
+							},
+							TBAR_CTRL
+								{
+								type = EAknCtButton;
+								id = EPodcastSettings;
+								control = AVKON_BUTTON
+									{
+									states =
+										{
+										AVKON_BUTTON_STATE
+											{
+											bmpfile = AVKON_BITMAP_FILE;
+											bmpid = EMbmAvkonQgn_indi_find_goto;
+											press_bmpid = EMbmAvkonQgn_indi_find_goto;
+											txt = STRING_r_settings_cmd;
+											helptxt = STRING_r_settings_cmd;
+										   }  
+										};
+									};
 							}
                     };
                 };
-            },
-		TBAR_CTRL
-			{
-			type = EAknCtButton;
-			id = EPodcastSettings;
-			control = AVKON_BUTTON
-				{
-				states =
-					{
-					AVKON_BUTTON_STATE
-						{
-						//bmpfile = AVKON_BITMAP_FILE;
-						//bmpid = EMbmAvkonQgn_indi_find_goto;
-						txt = STRING_r_settings_cmd;
-						helptxt = STRING_r_settings_cmd;
-					   }  
-					};
-				};
-		}
+            }
 			};// items
     }
 

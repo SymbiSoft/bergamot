@@ -1,15 +1,13 @@
-; EN=01 FR=02 GE=03 SP=04 IT=05 SW=06 DA=07 RU=16 HU=17 CS=25 PL=27 CA=44 ET=49; 
-
-&EN,FR,GE,SP,IT,SW,DA,RU,HU,CS,PL,CA,ET
-:"Bergamot Project"
-%{"Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project","Bergamot Project"}
-#{"Escarpod","Escarpod","Escarpod","Escarpod","Escarpod","Escarpod","Escarpod","Escarpod","Escarpod","Escarpod","Escarpod", "Escarpod","Escarpod"}, (0xA0009D00), 1, 20, 0, TYPE=SA
+&EN
+:"Symbian Foundation"
+%{"Podcatcher"}
+#{"Podcatcher"},(0xA0009D00), 1, 00, 0, TYPE=SA
 
 ;Supports S60 3rd edition
-[0x101F7961], 0, 0, 0, {"Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID"}
+[0x101F7961], 0, 0, 0, {"Series60ProductID"}
 
 ;Supports Symbian^1
-[0x1028315F], 0, 0, 0, {"Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID","Series60ProductID"}
+[0x1028315F], 0, 0, 0, {"Series60ProductID"}
 
 "\epoc32\data\z\resource\apps\Podcast.RSC"-"c:\resource\apps\Podcast.rsc"
 

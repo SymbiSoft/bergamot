@@ -33,7 +33,7 @@ NAME    PODC // 4 letter ID
 
 RESOURCE RSS_SIGNATURE { }
 
-RESOURCE TBUF { buf = "Podcasting"; }
+RESOURCE TBUF { buf = "Podcatcher"; }
 
 RESOURCE EIK_APP_INFO
     {

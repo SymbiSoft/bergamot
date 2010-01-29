@@ -27,7 +27,7 @@
 #include "es_sock.h"
 #include "constants.h"
 
-_LIT8(KUserAgent, "Podcasting/Symbian");
+_LIT8(KUserAgent, "Symbian/Podcatcher");
 _LIT8(KAccept, "*/*");
 
 class CHttpClient : public CBase, public MConnectionObserver

@@ -16,12 +16,6 @@
  *
  */
 
-/////////////////////////////////////////////////////////////////////
-// Podcasting language file
-//
-// Language:   English EN/01
-// Translator: -
-
 // list view commands
 rls_string STRING_r_listbox_listview_cmd_close_debug "Close (debug)"
 rls_string STRING_r_listbox_listview_cmd_close_debug_shorttext "Close"
@@ -202,3 +196,4 @@ rls_string STRING_r_podcast_empty_list "(list empty)"
 rls_string STRING_r_view_help "Help"
 rls_string STRING_r_view_mark_as_played_cmd_short "Mark old"
 rls_string STRING_r_view_mark_as_unplayed_cmd_short "Mark new"
+rls_string STRING_r_view_more_options "More actions"
