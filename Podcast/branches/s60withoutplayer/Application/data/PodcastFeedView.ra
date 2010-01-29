@@ -163,6 +163,7 @@ RESOURCE AVKON_TOOLBAR r_feedview_toolbar
                                 };
                             };
                         },
+/* these are now in the popup menu
                         TBAR_CTRL
                             {
                             type = EAknCtButton;
@@ -202,7 +203,7 @@ RESOURCE AVKON_TOOLBAR r_feedview_toolbar
 										} 
 									};
 								};
-							},
+							},*/
 						TBAR_CTRL
 							{
 							type = EAknCtButton;

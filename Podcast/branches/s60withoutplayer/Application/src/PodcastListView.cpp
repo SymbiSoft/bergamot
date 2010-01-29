@@ -146,8 +146,9 @@ TTypeUid::Ptr CPodcastListContainer::MopSupplyObject( TTypeUid aId )
 
 void CPodcastListContainer::HandlePointerEventL(const TPointerEvent& aPointerEvent)
 	{
-	iPointerListener->PointerEventL(aPointerEvent);
- 
+	if (iPointerListener)
+		iPointerListener->PointerEventL(aPointerEvent);
+
 	// Call base class HandlePointerEventL()
 	CCoeControl::HandlePointerEventL(aPointerEvent);
 	}
