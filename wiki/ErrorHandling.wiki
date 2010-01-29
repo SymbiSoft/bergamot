@@ -1,0 +1,41 @@
+= View description =
+
+== Feed View ==
+_Shows/lists Feeds_
+
+  * Add Feed
+  * Remove feed
+  * Change Feeds
+  * Update all Feeds
+  * Import all feeds
+  * Export Feeds
+  * Select Feed to goto to show view
+
+== Show view ==
+_Show Shows in Feed_
+  * Update  Feed
+  * Download show
+  * Play show
+  * Mark show as new
+  * Mark show as old
+  * Display show information (not enabled today)
+
+== Download queue view (show view filter) ==
+_Displays shows in download queue_
+
+  * SUspend downloads
+  * Start downloads
+  * Remove download from que
+  * Remove all from que
+
+== Settings view ==
+_Displays podcast settings_
+
+== Error handling ==
+  * Direct errors by action
+  * Logged error handling
+    * Transient errors
+    * Serious errors
+  * System/platform errors
+  * Display error icon at failed dled show or feed
+  * Display errors in status line.
