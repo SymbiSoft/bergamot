@@ -17,15 +17,20 @@
 */
 
 #include <e32std.h>
+#include <e32base.h>
 #include "PodcastUtils.h"
 			
 EXPORT_C void PodcastUtils::FixProtocolsL(TDes &aUrl)
 	{
+	HBufC* urlCopy = aUrl.AllocLC();
+	TPtr urlCopyPtr (urlCopy->Des());
+	urlCopyPtr.LowerCase();
+	
 	// url is always present so access that								
 	// Some pod links are written in format itpc://mylink.net/podcast.xml
 	// Symbian HTTP stack does not like itpc:// 
 	// Try to use a HTTP instead.
-	TInt p = aUrl.Find(KItpcPrefix);
+	TInt p = urlCopyPtr.Find(KItpcPrefix);
 	if (p >= 0)
 		{
 		aUrl.Delete(p, KItpcPrefix().Length());
@@ -34,14 +39,14 @@ EXPORT_C void PodcastUtils::FixProtocolsL(TDes &aUrl)
 	// Some pod links are written in format pcast://mylink.net/podcast.xml
 	// Symbian HTTP stack does not like itpc:// 
 	// Try to use a HTTP instead.
-	p = aUrl.Find(KPcastPrefix);
+	p = urlCopyPtr.Find(KPcastPrefix);
 	if (p >= 0)
 		{
 		aUrl.Delete(p, KPcastPrefix().Length());
 		}
 
 	// The URL must start with http://, otherwise the HTTP stack fails.
-	TInt pos = aUrl.Find(KURLPrefix);
+	TInt pos = urlCopyPtr.Find(KURLPrefix);
 	if (pos == KErrNotFound)
 		{
 		HBufC* newUrl = HBufC::NewL(aUrl.Length() + KURLPrefix().Length());
@@ -53,5 +58,7 @@ EXPORT_C void PodcastUtils::FixProtocolsL(TDes &aUrl)
 		aUrl.Copy(*newUrl);
 		delete newUrl;					
 		}
+	
+	CleanupStack::PopAndDestroy(urlCopy);
 	}
 
