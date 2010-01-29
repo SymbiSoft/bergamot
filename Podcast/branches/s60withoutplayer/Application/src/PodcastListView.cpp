@@ -67,7 +67,7 @@ void CPodcastListContainer::ConstructL( const TRect& aRect, TInt aListboxFlags )
 	iListbox->SetSize(aRect.Size());
 	iListbox->MakeVisible(ETrue);
     MakeVisible(EFalse);
-    
+
 	// Activate the window, which makes it ready to be drawn
     ActivateL();   
 }
@@ -143,6 +143,21 @@ TTypeUid::Ptr CPodcastListContainer::MopSupplyObject( TTypeUid aId )
     }
     return CCoeControl::MopSupplyObject(aId);
     }
+
+void CPodcastListContainer::HandlePointerEventL(const TPointerEvent& aPointerEvent)
+	{
+	iPointerListener->PointerEventL(aPointerEvent);
+ 
+	// Call base class HandlePointerEventL()
+	CCoeControl::HandlePointerEventL(aPointerEvent);
+	}
+
+
+void CPodcastListContainer::SetPointerListener(MPointerListener *aPointerListener)
+	{
+	iPointerListener = aPointerListener;
+	}
+
 
 CPodcastListView::CPodcastListView()
 {

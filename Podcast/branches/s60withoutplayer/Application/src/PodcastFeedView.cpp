@@ -142,12 +142,17 @@ void CPodcastFeedView::ConstructL()
 
 	iListContainer->Listbox()->SetListBoxObserver(this);
 	iListContainer->SetKeyEventListener(this);
+	iListContainer->SetPointerListener(this);
 	
     CAknToolbar *toolbar = Toolbar();
 	if (toolbar)
 		{
 		toolbar->SetToolbarObserver(this);
 		}
+	
+	iLongTapDetector = CAknLongTapDetector::NewL(this);
+	iListContainer->SetPointerListener(this);
+
 }
     
 CPodcastFeedView::~CPodcastFeedView()
@@ -155,6 +160,13 @@ CPodcastFeedView::~CPodcastFeedView()
 	iPodcastModel.FeedEngine().RemoveObserver(this);
 	delete iFeedsFormat;
 	delete iNeverUpdated;
+ 
+    if(iLongTapDetector)
+        delete iLongTapDetector, iLongTapDetector = NULL;
+
+    if(iStylusPopupMenu)
+        delete iStylusPopupMenu, iStylusPopupMenu = NULL;
+
     }
 
 TUid CPodcastFeedView::Id() const
@@ -755,3 +767,30 @@ void CPodcastFeedView::CloseToolbarExtension()
 	toolbarExtension->SetShown( EFalse );
 }
 
+void CPodcastFeedView::PointerEventL(const TPointerEvent& aPointerEvent)
+	{
+	// Pass the pointer event to Long tap detector component
+	iLongTapDetector->PointerEventL(aPointerEvent);
+	}
+
+
+void CPodcastFeedView::HandleLongTapEventL( const TPoint& aPenEventLocation, const TPoint& aPenEventScreenLocation )
+{
+    if(!iStylusPopupMenu)
+    {
+        iStylusPopupMenu = CAknStylusPopUpMenu::NewL( this , aPenEventLocation);
+        TResourceReader reader;
+        iCoeEnv->CreateResourceReaderLC(reader,R_FEEDVIEW_POPUP_MENU);
+        iStylusPopupMenu->ConstructFromResourceL(reader);
+        CleanupStack::PopAndDestroy();
+    }
+    iStylusPopupMenu->ShowMenu();
+    iStylusPopupMenu->SetPosition(aPenEventLocation);
+}
+
+void CPodcastFeedView::ProcessCommandL(TInt aCommand)
+{
+	HandleCommandL(aCommand);
+	CPodcastListView::ProcessCommandL(aCommand);
+	
+}

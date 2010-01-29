@@ -22,18 +22,22 @@
 #include <aknview.h>
 #include <AknToolbarObserver.h>
 #include <AknToolbar.h>
+#include <aknlongtapdetector.h>
+#include <aknstyluspopupmenu.h>
 #include "FeedEngine.h"
 #include "PodcastModel.h"
 #include "PodcastListView.h"
 #include "Podcast.hrh"
 
-class CPodcastFeedView : public CPodcastListView, MEikListBoxObserver, 
-	public MFeedEngineObserver, public MKeyEventListener, public MAknToolbarObserver
+class CPodcastFeedView : public CPodcastListView, public MEikListBoxObserver, 
+	public MFeedEngineObserver, public MKeyEventListener, public MAknToolbarObserver,
+	public MPointerListener, public MAknLongTapDetectorCallBack
     {
     public: 
         static CPodcastFeedView* NewL(CPodcastModel& aPodcastModel);
         static CPodcastFeedView* NewLC(CPodcastModel& aPodcastModel);
         ~CPodcastFeedView();
+        
 	protected:
 	    void ConstructL();
 		CPodcastFeedView(CPodcastModel& aPodcastModel);
@@ -67,6 +71,17 @@ class CPodcastFeedView : public CPodcastListView, MEikListBoxObserver,
 		void HandleListBoxEventL(CEikListBox* aListBox, TListBoxEvent aEventType);
 		void UpdateListboxItemsL();
 
+		// From MAknLongTapDetectorCallBack
+		virtual void HandleLongTapEventL( const TPoint& aPenEventLocation, const TPoint& aPenEventScreenLocation );
+		
+		//From MEikMenuObserver
+		void ProcessCommandL(TInt aCommandId);
+		void SetEmphasis(CCoeControl* /*aMenuControl*/,TBool /*aEmphasis*/)
+		{
+		}
+	 
+		void PointerEventL(const TPointerEvent& aPointerEvent);
+
 		
 		// from MFeedEngineObserver
 		void FeedInfoUpdated(TUint aFeedUid);
@@ -97,6 +112,9 @@ class CPodcastFeedView : public CPodcastListView, MEikListBoxObserver,
 		TBool iUpdatingAllRunning;
 		HBufC* iFeedsFormat;
 		HBufC* iNeverUpdated;
+		
+		CAknStylusPopUpMenu* iStylusPopupMenu;
+		CAknLongTapDetector* iLongTapDetector;
 };
 
 #endif // PODCASTFEEDVIEWH

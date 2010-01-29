@@ -340,6 +340,22 @@ RESOURCE DIALOG r_podcast_edit_feed_dlg
 	};
 }
 
+RESOURCE STYLUS_POPUP_MENU r_feedview_popup_menu
+	{
+		items =
+		{
+			STYLUS_POPUP_MENU_ITEM
+				{
+					txt = STRING_r_view_edit_feed_cmd_short;
+					command = EPodcastEditFeed; 
+				},
+			STYLUS_POPUP_MENU_ITEM
+				{
+					txt = STRING_r_view_delete_feed_cmd_short;
+					command = EPodcastDeleteFeed;
+				}
+		};
+	}
 
 RESOURCE FILESELECTIONDIALOG r_podcast_import_podcast
 {

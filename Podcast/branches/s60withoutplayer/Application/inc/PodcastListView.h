@@ -34,6 +34,11 @@ public:
 virtual TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType) = 0;
 };
 
+class MPointerListener {
+public:
+virtual void PointerEventL(const TPointerEvent& aPointerEvent) = 0;
+};
+
 class CPodcastListContainer : public CCoeControl
     {
     public: 
@@ -46,6 +51,8 @@ class CPodcastListContainer : public CCoeControl
 		void HandleResourceChange(TInt aType);
 		virtual TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType);
 		void SetKeyEventListener(MKeyEventListener *aKeyEventListener);
+		void SetPointerListener(MPointerListener *aPointerListener);
+		
 		CEikFormattedCellListBox* Listbox();
 		void ScrollToVisible();
     	void Draw(const TRect& aRect) const;
@@ -53,11 +60,12 @@ class CPodcastListContainer : public CCoeControl
 
 	protected:
 		TTypeUid::Ptr MopSupplyObject( TTypeUid aId );
-	
+		void HandlePointerEventL(const TPointerEvent& aPointerEvent);
+
 	private:
 		MKeyEventListener* iKeyEventListener;
+		MPointerListener* iPointerListener;
         CAknsBasicBackgroundControlContext* iBgContext;
-
 	};
 
 
