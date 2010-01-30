@@ -112,6 +112,7 @@ class CPodcastFeedView : public CPodcastListView, public MEikListBoxObserver,
 		TBool iUpdatingAllRunning;
 		HBufC* iFeedsFormat;
 		HBufC* iNeverUpdated;
+		TBool iLongTapUnderway;
 		
 		CAknStylusPopUpMenu* iStylusPopupMenu;
 		CAknLongTapDetector* iLongTapDetector;

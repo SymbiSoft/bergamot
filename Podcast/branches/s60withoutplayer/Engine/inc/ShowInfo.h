@@ -42,7 +42,6 @@ enum TDownloadState {
 
 enum TShowType {
 	EAudioPodcast = 0,
-	EAudioBook = 1, // this was previously a boolean IsAudioBook
 	EVideoPodcast
 };
 

@@ -31,9 +31,6 @@ _LIT(KDefaultFeedsFile, "defaultfeeds.xml");
 _LIT(KImportFeedsFile, "feeds.xml");
 
 _LIT(KConfigFile, "config.db");
-_LIT(KShowDB, "shows.db");
-_LIT(KFeedDB, "feeds.db");
-_LIT(KBookDB, "books.db");
 _LIT(KPodcastingDB, "podcasting.sqlite");
 
 // constants

@@ -59,15 +59,8 @@ public:
 	IMPORT_C void CancelUpdateAllFeeds();
 	IMPORT_C const RFeedInfoArray& GetSortedFeeds();
 	IMPORT_C CFeedInfo* GetFeedInfoByUid(TUint aFeedUid);	
-	IMPORT_C void GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed, TBool aIsBookFeed );
+	IMPORT_C void GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed);
 	IMPORT_C void GetDownloadedStats(TUint &aNumShows, TUint &aNumUnplayed);
-
-	IMPORT_C void AddBookL(const TDesC& aBookTitle, CDesCArrayFlat* aFileNameArray);
-	IMPORT_C void AddBookChaptersL(CFeedInfo& aFeedInfo, CDesCArrayFlat* aFileNameArray);
-	IMPORT_C void RemoveBookL(TUint aUid);
-	IMPORT_C const RFeedInfoArray& GetSortedBooks();
-	IMPORT_C void ImportBookL(const TDesC& aTitle, const TDesC& aFile);
-
 
 	IMPORT_C void AddObserver(MFeedEngineObserver *observer);
 	IMPORT_C void RemoveObserver(MFeedEngineObserver *observer);
@@ -137,10 +130,6 @@ private:
 	
 	// the list of feeds
 	RFeedInfoArray iSortedFeeds;
-
-	// the list of Books
-	RFeedInfoArray iSortedBooks;
-
 
 	CFeedInfo *iActiveFeed;
 	TFileName iUpdatingFeedFileName;

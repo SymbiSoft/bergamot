@@ -59,10 +59,7 @@ class CFeedInfo : public CBase
 
 		IMPORT_C const TDesC& ImageFileName() const;
 		IMPORT_C void SetImageFileNameL(const TDesC &aFileName);
-	
-		IMPORT_C TBool IsBookFeed();
-		IMPORT_C void SetIsBookFeed();
-		
+			
 		IMPORT_C void SetCustomTitle();
 		IMPORT_C TBool CustomTitle();
 	private:
@@ -79,7 +76,6 @@ class CFeedInfo : public CBase
 		TTime iBuildDate;
 		TTime iLastUpdated;
 		TUint iUid;
-		TBool iIsBookFeed;
 		TBool iCustomTitle;
 	};
 

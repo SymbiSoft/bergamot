@@ -192,12 +192,17 @@ void CPodcastFeedView::DoDeactivate()
 
 void CPodcastFeedView::HandleListBoxEventL(CEikListBox* /* aListBox */, TListBoxEvent aEventType)
 {
+	DP("CPodcastFeedView::HandleListBoxEventL BEGIN");
 	switch(aEventType)
 	{
 	case EEventEnterKeyPressed:
 	case EEventItemDoubleClicked:
 	case EEventItemActioned:
 		{
+			if (iLongTapUnderway) {
+				return;
+			}
+			
 			DP("EEventItemActioned");
 			const RFeedInfoArray* sortedItems = NULL;
 			TInt index = iListContainer->Listbox()->CurrentItemIndex();
@@ -214,6 +219,7 @@ void CPodcastFeedView::HandleListBoxEventL(CEikListBox* /* aListBox */, TListBox
 	default:
 		break;
 	}
+	DP("CPodcastFeedView::HandleListBoxEventL END");
 }
 
 void CPodcastFeedView::FeedInfoUpdatedL(TUint aFeedUid)
@@ -315,7 +321,7 @@ void CPodcastFeedView::UpdateFeedInfoDataL(CFeedInfo* aFeedInfo, TInt aIndex, TB
 		}
 	else
 	{
-		iPodcastModel.FeedEngine().GetStatsByFeed(aFeedInfo->Uid(), showCount, unplayedCount, EFalse);
+		iPodcastModel.FeedEngine().GetStatsByFeed(aFeedInfo->Uid(), showCount, unplayedCount);
 		
 		if (unplayedCount > 0) {
 		    iconIndex = 2;
@@ -418,7 +424,7 @@ void CPodcastFeedView::UpdateListboxItemsL()
 					TInt iconIndex = 0;
 					TUint unplayedCount = 0;
 					TUint showCount = 0;
-					iPodcastModel.FeedEngine().GetStatsByFeed(fi->Uid(), showCount, unplayedCount, EFalse);
+					iPodcastModel.FeedEngine().GetStatsByFeed(fi->Uid(), showCount, unplayedCount);
 					unplayedShows.Format(*iFeedsFormat, unplayedCount, showCount);
 
 					if (fi->LastUpdated().Int64() == 0) 
@@ -774,6 +780,7 @@ void CPodcastFeedView::CloseToolbarExtension()
 
 void CPodcastFeedView::PointerEventL(const TPointerEvent& aPointerEvent)
 	{
+	DP("CPodcastFeedView::PointerEventL");
 	// Pass the pointer event to Long tap detector component
 	iLongTapDetector->PointerEventL(aPointerEvent);
 	}
@@ -781,6 +788,7 @@ void CPodcastFeedView::PointerEventL(const TPointerEvent& aPointerEvent)
 
 void CPodcastFeedView::HandleLongTapEventL( const TPoint& aPenEventLocation, const TPoint& aPenEventScreenLocation )
 {
+	DP("CPodcastFeedView::HandleLongTapEventL BEGIN");
     if(!iStylusPopupMenu)
     {
         iStylusPopupMenu = CAknStylusPopUpMenu::NewL( this , aPenEventLocation);
@@ -791,10 +799,13 @@ void CPodcastFeedView::HandleLongTapEventL( const TPoint& aPenEventLocation, con
     }
     iStylusPopupMenu->ShowMenu();
     iStylusPopupMenu->SetPosition(aPenEventLocation);
+    iLongTapUnderway=ETrue; // this will disable listbox events
+	DP("CPodcastFeedView::HandleLongTapEventL END");
 }
 
 void CPodcastFeedView::ProcessCommandL(TInt aCommand)
 {
+	iLongTapUnderway = EFalse; // re-enable listbox events
 	HandleCommandL(aCommand);
 	CPodcastListView::ProcessCommandL(aCommand);
 	

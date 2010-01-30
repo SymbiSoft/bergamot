@@ -93,7 +93,7 @@ CFeedEngine::~CFeedEngine()
 	
 	iFeedsUpdating.Close();
 	iSortedFeeds.ResetAndDestroy();
-	iSortedBooks.ResetAndDestroy();
+	
 	delete iParser;
 	delete iFeedClient;
 	}
@@ -389,7 +389,7 @@ TBool CFeedEngine::DBAddFeedL(CFeedInfo *aItem)
 			" values (\"%S\",\"%S\", \"%S\", \"%S\", \"%S\", \"%S\", \"%Ld\", \"%Ld\", \"%u\", \"%u\", \"%u\")");
 	iSqlBuffer.Format(KSqlStatement,
 			&aItem->Url(), &aItem->Title(), &aItem->Description(), &aItem->ImageUrl(), &aItem->ImageFileName(), &aItem->Link(),
-			aItem->BuildDate().Int64(), aItem->LastUpdated().Int64(), aItem->Uid(), aItem->IsBookFeed(), aItem->CustomTitle());
+			aItem->BuildDate().Int64(), aItem->LastUpdated().Int64(), aItem->Uid(), EAudioPodcast, aItem->CustomTitle());
 
 	sqlite3_stmt *st;
 	 
@@ -486,7 +486,7 @@ TBool CFeedEngine::DBUpdateFeed(CFeedInfo *aItem)
 			"link=\"%S\", built=\"%Lu\", lastupdated=\"%Lu\", feedtype=\"%u\", customtitle=\"%u\" where uid=\"%u\"");
 	iSqlBuffer.Format(KSqlStatement,
 			&aItem->Url(), &aItem->Title(), &aItem->Description(), &aItem->ImageUrl(), &aItem->ImageFileName(), &aItem->Link(),
-			aItem->BuildDate().Int64(), aItem->LastUpdated().Int64(), aItem->IsBookFeed(), aItem->CustomTitle(), aItem->Uid());
+			aItem->BuildDate().Int64(), aItem->LastUpdated().Int64(), EAudioPodcast, aItem->CustomTitle(), aItem->Uid());
 
 	sqlite3_stmt *st;
 	 
@@ -654,60 +654,6 @@ EXPORT_C void CFeedEngine::ImportFeedsL(const TDesC& aFile)
 	opmlParser.ParseOpmlL(opmlPath);
 	}
 
-EXPORT_C void CFeedEngine::ImportBookL(const TDesC& aTitle, const TDesC& aFile)
-	{
-	CDesCArrayFlat *files = new (ELeave) CDesCArrayFlat(5);
-	CleanupStack::PushL(files);
-	
-	RFile rfile;
-	TInt error = rfile.Open(iPodcastModel.FsSession(), aFile,  EFileRead | EFileStreamText);
-	if (error != KErrNone) 
-		{
-		rfile.Close();
-		DP("CFeedEngine::ImportBookL\tFailed to read M3U");
-		User::Leave(KErrNotFound);
-		}
-	CleanupClosePushL(rfile);
-	TFileName path;
-	path.Copy(aFile.Left(aFile.LocateReverse('\\')));
-	path.Append('\\');
-	
-	TBuf8<1> buf8;
-	TBuf<1> buf16;
-	HBufC* line16 = HBufC::NewLC(KMaxLineLength);
-	
-	error = rfile.Read(buf8);
-	buf16.Copy(buf8);
-	DP("Parsing M3U");
-	while (error == KErrNone && buf16.Length() != 0) 
-		{
-		if (buf16[0] == '\r' || buf16[0] == '\n') {
-			if (line16->Length() > 0 && (*line16)[0] != '#') {
-				if (line16->Length() > 1 && (*line16)[1] != ':') {
-					TFileName tmp;
-					tmp.Copy(path);
-					tmp.Append(*line16);
-					line16->Des().Copy(tmp);
-				}
-				
-				DP1("File: %S", &line16);
-				files->AppendL(*line16);
-			}
-			line16->Des().Zero();
-		} else {
-			line16->Des().Append(buf16);
-		}
-			
-		error = rfile.Read(buf8);
-		buf16.Copy(buf8);
-		}
-	
-	CleanupStack::PopAndDestroy(2); // Destroy line 16 and close file
-	iPodcastModel.ShowEngine().MetaDataReader().SetIgnoreTrackNo(ETrue);
-	AddBookL(aTitle, files);
-	CleanupStack::PopAndDestroy(files);
-	}
-
 EXPORT_C TBool CFeedEngine::ExportFeedsL(TFileName& aFile)
 	{
 	RFile rfile;
@@ -762,15 +708,6 @@ EXPORT_C CFeedInfo* CFeedEngine::GetFeedInfoByUid(TUint aFeedUid)
 			}
 		}
 	
-	cnt = iSortedBooks.Count();
-	for (TInt i=0;i<cnt;i++)
-		{
-		if (iSortedBooks[i]->Uid() == aFeedUid)
-			{
-			return iSortedBooks[i];
-			}
-		}
-	
 	return NULL;
 	}
 		
@@ -780,125 +717,6 @@ EXPORT_C const RFeedInfoArray& CFeedEngine::GetSortedFeeds()
 
 	iSortedFeeds.Sort(sortOrder);
 	return iSortedFeeds;
-}
-
-EXPORT_C void CFeedEngine::AddBookChaptersL(CFeedInfo& aFeedInfo, CDesCArrayFlat* aFileNameArray)
-{
-	TInt cnt = aFileNameArray->Count();
-	CShowInfo* showInfo = NULL;
-	TEntry fileInfo;
-	RShowInfoArray showArray;
-	CleanupClosePushL(showArray);
-	iPodcastModel.ShowEngine().GetShowsByFeedL(showArray, aFeedInfo.Uid());
-	TInt offset = showArray.Count();
-	CleanupStack::PopAndDestroy();// close showArray
-
-	for(TInt loop = 0;loop<cnt;loop++)
-	{	
-		showInfo = CShowInfo::NewLC();
-		showInfo->SetTitleL(aFeedInfo.Title());		
-		showInfo->SetDescriptionL(aFeedInfo.Title());	
-		showInfo->SetDownloadState(EDownloaded);
-		showInfo->SetUrlL(aFileNameArray->MdcaPoint(loop));
-		showInfo->SetFeedUid(aFeedInfo.Uid());
-		showInfo->SetPubDate(aFeedInfo.LastUpdated());
-		showInfo->SetTrackNo(offset+loop+1);
-		showInfo->SetShowType(EAudioBook);
-		
-		showInfo->SetFileNameL(aFileNameArray->MdcaPoint(loop));
-		
-		if(iPodcastModel.FsSession().Entry(aFileNameArray->MdcaPoint(loop), fileInfo) == KErrNone)
-		{
-			showInfo->SetShowSize(fileInfo.iSize);
-		}
-		
-		showInfo->SetPlayState(ENeverPlayed);
-		iPodcastModel.ShowEngine().AddShowL(showInfo);			
-		iPodcastModel.ShowEngine().MetaDataReader().SubmitShowL(showInfo);
-		
-		CleanupStack::Pop(showInfo);
-		showInfo = NULL;
-	}
-
-	// Save the shows	
-	//iPodcastModel.ShowEngine().SaveShows();
-}
-
-
-EXPORT_C void CFeedEngine::AddBookL(const TDesC& aBookTitle, CDesCArrayFlat* aFileNameArray)
-	{
-	
-	if(aFileNameArray && aFileNameArray->Count() > 0)
-		{
-	
-		TParsePtrC parser (aFileNameArray->MdcaPoint(0));
-		CFeedInfo* item = CFeedInfo::NewLC();
-		
-		TFileName tempUrl;
-		tempUrl.Copy(parser.DriveAndPath());
-		tempUrl.Append(aBookTitle);
-		item->SetUrlL(tempUrl);
-		item->SetIsBookFeed();
-
-		for (TInt i=0;i<iSortedBooks.Count();i++) 
-			{
-			if (iSortedBooks[i]->Uid() == item->Uid()) 
-				{
-				DP1("Already have book %S, discarding", &item->Url());
-				CleanupStack::PopAndDestroy(item);
-				return;
-				}
-		}
-		item->SetTitleL(aBookTitle);
-		item->SetDescriptionL(aBookTitle);
-		TTime time;
-		time.HomeTime();
-		item->SetLastUpdated(time);
-		
-		TLinearOrder<CFeedInfo> sortOrder( CFeedEngine::CompareFeedsByTitle);
-		iSortedBooks.InsertInOrder(item, sortOrder);
-		CleanupStack::Pop(item);
-	    
-		// Save the feeds into DB
-		//SaveBooksL();
-		
-		AddBookChaptersL(*item, aFileNameArray);				
-		}
-	}
-
-EXPORT_C void CFeedEngine::RemoveBookL(TUint aUid)
-	{
-		for (int i=0;i<iSortedBooks.Count();i++) 
-		{
-		if (iSortedBooks[i]->Uid() == aUid) 
-			{
-			iPodcastModel.ShowEngine().DeleteAllShowsByFeedL(aUid, EFalse);
-					
-			CFeedInfo* feedToRemove = iSortedBooks[i];					
-				
-			//delete the folder. It has the same name as the title.
-			TFileName filePath;
-			filePath.Copy(iPodcastModel.SettingsEngine().BaseDir());
-			filePath.Append(feedToRemove->Title());
-			filePath.Append('\\');
-			// not sure we should do this... files are added manually after all
-			//iFs.RmDir(filePath);
-
-			iSortedBooks.Remove(i);
-			delete feedToRemove;
-			
-			DBRemoveFeed(aUid);
-			return;
-			}
-		}
-	}
-
-EXPORT_C const RFeedInfoArray& CFeedEngine::GetSortedBooks() 
-{
-	TLinearOrder<CFeedInfo> sortOrder( CFeedEngine::CompareFeedsByTitle);
-	
-	iSortedBooks.Sort(sortOrder);
-	return iSortedBooks;
 }
 
 void CFeedEngine::CleanHtmlL(TDes &str)
@@ -970,8 +788,8 @@ TInt CFeedEngine::CompareFeedsByTitle(const CFeedInfo &a, const CFeedInfo &b)
 EXPORT_C void CFeedEngine::GetDownloadedStats(TUint &aNumShows, TUint &aNumUnplayed)
 	{
 	DP("CFeedEngine::GetDownloadedStats");
-	_LIT(KSqlStatement, "select count(*) from shows where downloadstate=%u and showtype!=%u");
-	iSqlBuffer.Format(KSqlStatement, EDownloaded, EAudioBook);
+	_LIT(KSqlStatement, "select count(*) from shows where downloadstate=%u");
+	iSqlBuffer.Format(KSqlStatement, EDownloaded);
 
 	sqlite3_stmt *st;
 	 
@@ -987,8 +805,8 @@ EXPORT_C void CFeedEngine::GetDownloadedStats(TUint &aNumShows, TUint &aNumUnpla
 		  
 	sqlite3_finalize(st);
 
-	_LIT(KSqlStatement2, "select count(*) from shows where downloadstate=%u and showtype!=%u and playstate=%u");
-	iSqlBuffer.Format(KSqlStatement2, EDownloaded, EAudioBook, ENeverPlayed);
+	_LIT(KSqlStatement2, "select count(*) from shows where downloadstate=%u and playstate=%u");
+	iSqlBuffer.Format(KSqlStatement2, EDownloaded, ENeverPlayed);
 
 	rc = sqlite3_prepare16_v2(&iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
 		
@@ -1003,7 +821,7 @@ EXPORT_C void CFeedEngine::GetDownloadedStats(TUint &aNumShows, TUint &aNumUnpla
 	sqlite3_finalize(st);
 	}
 
-EXPORT_C void CFeedEngine::GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed, TBool /* aIsBookFeed */)
+EXPORT_C void CFeedEngine::GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed)
 	{
 	DP1("CFeedEngine::GetStatsByFeed, aFeedUid=%u", aFeedUid);
 	DBGetStatsByFeed(aFeedUid, aNumShows, aNumUnplayed);
@@ -1128,13 +946,9 @@ void CFeedEngine::DBLoadFeedsL()
 			
 			sqlite3_int64 feedtype = sqlite3_column_int64(st, 9);
 			TLinearOrder<CFeedInfo> sortOrder( CFeedEngine::CompareFeedsByTitle);
+
+			iSortedFeeds.InsertInOrder(feedInfo, sortOrder);
 			
-			if (feedtype) {
-				feedInfo->SetIsBookFeed();
-				iSortedBooks.InsertInOrder(feedInfo, sortOrder);
-			} else {
-				iSortedFeeds.InsertInOrder(feedInfo, sortOrder);
-			}
 			CleanupStack::Pop(feedInfo);
 				
 			rc = sqlite3_step(st);
@@ -1203,9 +1017,6 @@ CFeedInfo* CFeedEngine::DBGetFeedInfoByUidL(TUint aFeedUid)
 			// don't need to set UID, it will be set properly from URL
 			
 			sqlite3_int64 feedtype = sqlite3_column_int64(st, 9);
-			if (feedtype) {
-				feedInfo->SetIsBookFeed();
-			}
 			
 			sqlite3_int64 customtitle = sqlite3_column_int64(st, 10);
 			if (customtitle) {

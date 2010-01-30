@@ -174,17 +174,6 @@ EXPORT_C void CFeedInfo::SetImageFileNameL(const TDesC& aFileName)
 	iImageFileName = aFileName.AllocL();
 	}
 
-
-EXPORT_C TBool CFeedInfo::IsBookFeed()
-	{
-	return iIsBookFeed;
-	}
-
-EXPORT_C void CFeedInfo::SetIsBookFeed()
-	{
-	iIsBookFeed = ETrue;
-	}
-
 EXPORT_C TBool CFeedInfo::CustomTitle()
 	{
 	return iCustomTitle;

@@ -522,16 +522,9 @@ void CShowEngine::DBGetShowsByFeedL(RShowInfoArray& aShowArray, TUint aFeedUid)
 
 #ifndef DONT_SORT_SQL
 	CFeedInfo *feedInfo = iPodcastModel.FeedEngine().GetFeedInfoByUid(aFeedUid);
-	if (feedInfo->IsBookFeed())
-		{
-		_LIT(KSqlOrderByTrack, " order by trackno");
-		iSqlBuffer.Append(KSqlOrderByTrack);
-		}
-	else
-		{
-		_LIT(KSqlOrderByDate, " order by pubdate desc");
-		iSqlBuffer.Append(KSqlOrderByDate);
-		}
+	
+	_LIT(KSqlOrderByDate, " order by pubdate desc");
+	iSqlBuffer.Append(KSqlOrderByDate);
 #endif
 
 /*	TBuf<100> limit;
@@ -588,8 +581,8 @@ TUint CShowEngine::DBGetDownloadsCount()
 void CShowEngine::DBGetDownloadedShowsL(RShowInfoArray& aShowArray)
 	{
 	DP("CShowEngine::DBGetDownloadedShows");
-	_LIT(KSqlStatement, "select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows where downloadstate=%u and showtype!=%u");
-	iSqlBuffer.Format(KSqlStatement, EDownloaded, EAudioBook);
+	_LIT(KSqlStatement, "select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows where downloadstate=%u");
+	iSqlBuffer.Format(KSqlStatement, EDownloaded);
 
 	if (iPodcastModel.SettingsEngine().SelectUnplayedOnly())
 		{
