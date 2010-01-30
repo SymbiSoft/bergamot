@@ -77,7 +77,10 @@ void CSettingsEngine::ConstructL()
 			{
 			DP1("error saving: %d", error);
 			}
-		}		
+		}
+	
+#pragma message("SEB Remove the creation of logging path before delivery!")
+	BaflUtils::EnsurePathExistsL(iPodcastModel.FsSession(), _L("c:\\logs\\podcatcher\\"));
 	}
 
 void CSettingsEngine::GetDefaultBaseDirL(TDes & /*aBaseDir*/)

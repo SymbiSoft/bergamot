@@ -142,6 +142,7 @@ public:
 	
 	void UpdateSettingVisibility()
 		{
+		DP("UpdateSettingVisibility BEGIN");
 		LoadSettingsL();
 		TBool dimAutoUpdateInterval = iConnection == -1 || iAutoUpdate != EAutoUpdatePeriodically;
 		TBool dimAutoUpdateTime = iConnection == -1 || iAutoUpdate != EAutoUpdateAtTime;
@@ -157,10 +158,12 @@ public:
 		ListBox()->ScrollToMakeItemVisible(0);
 		
 		TRAP_IGNORE(HandleChangeInItemArrayOrVisibilityL());
+		DP("UpdateSettingVisibility END");
 		}
 
 	void  EditItemL (TInt aIndex, TBool aCalledFromMenu)
 		{
+		DP("EditItemL BEGIN");
 		if (aIndex == 0) {
 			CAknMemorySelectionDialog* memDlg = 
 				CAknMemorySelectionDialog::NewL(ECFDDialogTypeNormal, ETrue);
@@ -204,6 +207,7 @@ public:
 		}
 			StoreSettingsL();
 			UpdateSettingVisibility();
+		DP("EditItemL END");
 		}
 	
 	/**
@@ -216,6 +220,8 @@ public:
 	 */
 	CAknSettingItem* CreateSettingItemL( TInt aSettingId )
 		{
+		DP1("CreateSettingItemL BEGIN, aSettingId=%d", aSettingId);
+
 		CSettingsEngine &se = iPodcastModel.SettingsEngine();
 		iShowDir.Copy(se.BaseDir());
 		iAutoUpdate = se.UpdateAutomatically();
@@ -257,7 +263,8 @@ public:
 				return CAknSettingItemList::CreateSettingItemL(aSettingId);
 				break;
 			}
-		return NULL;
+		DP("CreateSettingItemL END");
+		return NULL;	
 		}
 	
 	TFileName iShowDir;
@@ -323,6 +330,7 @@ void CPodcastSettingsView::DoActivateL(const TVwsViewId& aPrevViewId,
 	                                  TUid /*aCustomMessageId*/,
 	                                  const TDesC8& /*aCustomMessage*/)
 {
+	DP("CPodcastSettingsView::DoActivateL BEGIN");
 	iPreviousView = aPrevViewId;
 	
 	if (iListbox) {
@@ -330,18 +338,21 @@ void CPodcastSettingsView::DoActivateL(const TVwsViewId& aPrevViewId,
 		iListbox = NULL;
 	}
 	
+	DP("Creating listbox");
 	iListbox =new (ELeave) CPodcastSettingItemList(iPodcastModel);
 	iListbox->SetMopParent( this );
 	iListbox->ConstructFromResourceL(R_PODCAST_SETTINGS);
 	iListbox->SetRect(ClientRect());
 	iListbox->ActivateL();   
 	
+	DP("Creating navipane");
 	iNaviPane =( CAknNavigationControlContainer * ) StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidNavi ) );
 		
 	HBufC *titleBuffer = iEikonEnv->AllocReadResourceL(R_SETTINGS_TITLE);
 	iNaviDecorator  = iNaviPane->CreateNavigationLabelL(*titleBuffer);
 	delete titleBuffer;
 
+	DP("Updating listbox");
 	AppUi()->AddToStackL(*this, iListbox);
 	iListbox->UpdateSettingVisibility();
 	iListbox->MakeVisible(ETrue);
@@ -352,6 +363,7 @@ void CPodcastSettingsView::DoActivateL(const TVwsViewId& aPrevViewId,
 		{
 		iNaviPane->PushL(*iNaviDecorator);
 		}
+	DP("CPodcastSettingsView::DoActivateL END");
 }
 
 void CPodcastSettingsView::DoDeactivate()

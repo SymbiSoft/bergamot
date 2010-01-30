@@ -488,7 +488,7 @@ void CPodcastFeedView::UpdateListboxItemsL()
  */
 void CPodcastFeedView::HandleCommandL(TInt aCommand)
 	{
-	CloseToolbarExtension();
+	//CloseToolbarExtension();
 	switch(aCommand)
 		{
         case EPodcastHide:
@@ -769,15 +769,20 @@ void CPodcastFeedView::UpdateToolbar()
 		toolbar->HideItem(EPodcastUpdateAllFeeds, iUpdatingAllRunning, ETrue);
 		toolbar->HideItem(EPodcastCancelUpdateAllFeeds, !iUpdatingAllRunning, ETrue );
 		toolbar->SetItemDimmed(EPodcastAddFeed, iUpdatingAllRunning, ETrue );
-		toolbar->SetItemDimmed(EPodcastFeedsToolbarExtension, iUpdatingAllRunning, ETrue );
+		//toolbar->SetItemDimmed(EPodcastFeedsToolbarExtension, iUpdatingAllRunning, ETrue );
+		toolbar->SetItemDimmed(EPodcastSettings, iUpdatingAllRunning, ETrue );
 		}
 }
 
 void CPodcastFeedView::CloseToolbarExtension()
 {
 	CAknToolbar* toolbar = Toolbar();
-	CAknToolbarExtension* toolbarExtension = toolbar->ToolbarExtension();
-	toolbarExtension->SetShown( EFalse );
+	if (toolbar) {
+		CAknToolbarExtension* toolbarExtension = toolbar->ToolbarExtension();
+		if (toolbarExtension) {
+		toolbarExtension->SetShown( EFalse );
+		}
+	}
 }
 
 void CPodcastFeedView::PointerEventL(const TPointerEvent& aPointerEvent)
@@ -788,7 +793,7 @@ void CPodcastFeedView::PointerEventL(const TPointerEvent& aPointerEvent)
 	}
 
 
-void CPodcastFeedView::HandleLongTapEventL( const TPoint& aPenEventLocation, const TPoint& aPenEventScreenLocation )
+void CPodcastFeedView::HandleLongTapEventL( const TPoint& aPenEventLocation, const TPoint& /* aPenEventScreenLocation */)
 {
 	DP("CPodcastFeedView::HandleLongTapEventL BEGIN");
     if(!iStylusPopupMenu)

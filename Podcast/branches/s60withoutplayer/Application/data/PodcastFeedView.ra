@@ -35,7 +35,13 @@ RESOURCE MENU_BAR r_podcast_feedview_menubar
 RESOURCE MENU_PANE r_podcast_feedview_menu
     {
     items =
-        {        
+        {
+		MENU_ITEM
+			{
+			command = EPodcastImportExportFeeds;
+			txt = STRING_r_view_import_export_feeds_cmd;
+			cascade = r_importexport_menu;
+			},
 		MENU_ITEM
 			{
 			command = EPodcastAbout;
@@ -150,7 +156,7 @@ RESOURCE AVKON_TOOLBAR r_feedview_toolbar
 					};
 				};
 			},
-        TBAR_CTRL
+/*        TBAR_CTRL
             {
             type = EAknCtToolbarExtension;
             id = EPodcastFeedsToolbarExtension;
@@ -222,7 +228,26 @@ RESOURCE AVKON_TOOLBAR r_feedview_toolbar
 							}
                     };
                 };
-            }
+            }*/
+			TBAR_CTRL
+				{
+				type = EAknCtButton;
+				id = EPodcastSettings;
+				control = AVKON_BUTTON
+					{
+					states =
+						{
+						AVKON_BUTTON_STATE
+							{
+							//bmpfile = AVKON_BITMAP_FILE;
+							//bmpid = EMbmAvkonQgn_indi_find_goto;
+							//press_bmpid = EMbmAvkonQgn_indi_find_goto;
+							txt = STRING_r_settings_cmd;
+							helptxt = STRING_r_settings_cmd;
+						   }  
+						};
+					};
+			}
 			};// items
     }
 

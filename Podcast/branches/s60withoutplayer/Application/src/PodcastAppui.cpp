@@ -109,10 +109,7 @@ void CPodcastAppUi::HandleCommandL( TInt aCommand )
     }
 
 CArrayFix<TCoeHelpContext>* CPodcastAppUi::HelpContextL() const
-   {
- 
-	TUid KUidHelpExampleApp; // this is the uid of your .hlp file.
- 
+   { 
     CArrayFixFlat<TCoeHelpContext>* array = 
                 new(ELeave)CArrayFixFlat<TCoeHelpContext>(1);
     CleanupStack::PushL(array);

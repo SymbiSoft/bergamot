@@ -29,7 +29,8 @@ void CHttpEventHandler::ConstructL()
 	}
 
 
-CHttpEventHandler::CHttpEventHandler(CHttpClient* aClient, MHttpClientObserver &aCallbacks, RFs& aFs): iHttpClient(aClient), iCallbacks(aCallbacks), iFileServ(aFs) 
+CHttpEventHandler::CHttpEventHandler(CHttpClient* aClient, MHttpClientObserver &aCallbacks, RFs& aFs): 
+	iFileServ(aFs), iHttpClient(aClient), iCallbacks(aCallbacks)
 	{
 	}
 
