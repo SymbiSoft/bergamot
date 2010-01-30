@@ -12,9 +12,9 @@
   </directories>
   <files>
     <source>
-      <file>podcasting.rtf</file>
+      <file>podcatcher.rtf</file>
     </source>
-    <destination>podcasting.hlp</destination>
+    <destination>podcatcher.hlp</destination>
 	<customization>custom.xml</customization>
   </files>
 </cshproj>

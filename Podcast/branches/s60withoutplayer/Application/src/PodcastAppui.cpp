@@ -25,7 +25,7 @@
 #include "ShowEngine.h"
 #include "PodcastModel.h"
 #include "debug.h"
-#include "..\help\podcasting.hlp.hrh"
+#include "..\help\podcatcher.hlp.hrh"
 #include "PodcastApp.h"
 
 #include <HLPLCH.H>

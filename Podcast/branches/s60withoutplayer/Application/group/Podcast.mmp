@@ -109,7 +109,7 @@ END
 
 #ifdef SQLITE_INCLUDED
 STATICLIBRARY PodCastEngine.lib
-STATICLIBRARY sqlite_podcasting.lib
+STATICLIBRARY sqlite_podcatcher.lib
 LIBRARY	mediaclientaudio.lib
 LIBRARY	inetprotutil.lib
 LIBRARY	xmlframework.lib

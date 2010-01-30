@@ -18,11 +18,11 @@
 ; configuration and DB
 "../../engine/config/config.cfg"-"c:\private\A0009D00\config.cfg"
 "../../engine/config/defaultfeeds.xml"-"c:\private\A0009D00\defaultfeeds.xml"
-"../../engine/config/podcasting.sqlite"-"c:\private\A0009D00\podcasting.sqlite.template"
+"../../engine/config/podcatcher.sqlite"-"c:\private\A0009D00\podcatcher.sqlite.template"
 
 ; backup
 "./backup_registration.xml" - "c:\private\A0009D00\backup_registration.xml"
 
-"..\help\podcasting.hlp"-"c:\resource\help\podcasting.hlp"
+"..\help\podcatcher.hlp"-"c:\resource\help\podcatcher.hlp"
 ; application UI - note that FR,RI does not work when SIS is self signed
 "\epoc32\release\gcce\udeb\Podcast.exe"-"c:\sys\bin\Podcast.exe",FR,RI

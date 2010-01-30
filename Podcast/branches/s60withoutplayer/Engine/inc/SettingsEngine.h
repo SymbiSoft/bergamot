@@ -31,7 +31,6 @@ _LIT(KDefaultFeedsFile, "defaultfeeds.xml");
 _LIT(KImportFeedsFile, "feeds.xml");
 
 _LIT(KConfigFile, "config.db");
-_LIT(KPodcastingDB, "podcasting.sqlite");
 
 // constants
 const TInt KSettingsUid = 1000;

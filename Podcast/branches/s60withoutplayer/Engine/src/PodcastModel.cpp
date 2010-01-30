@@ -27,8 +27,8 @@
 #include <bautils.h>
 
 const TInt KDefaultGranu = 5;
-_LIT(KDBFileName, "podcasting.sqlite");
-_LIT(KDBTemplateFileName, "podcasting.sqlite.template");
+_LIT(KDBFileName, "podcatcher.sqlite");
+_LIT(KDBTemplateFileName, "podcatcher.sqlite.template");
 
 EXPORT_C CPodcastModel* CPodcastModel::NewL()
 {
@@ -235,7 +235,7 @@ sqlite3* CPodcastModel::DB()
 		int rc = rc = sqlite3_open((const char*) filename8.PtrZ(), &iDB);
 		if( rc != SQLITE_OK){
 			DP("Error loading DB");
-			User::Panic(_L("Podcasting"), 10);
+			User::Panic(_L("Podcatcher"), 10);
 		}		
 
 	}

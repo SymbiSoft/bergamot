@@ -28,6 +28,7 @@
 #include "debug.h"
 //#include <mpxmedia.h>
 //#include <mpxattribute.h>
+//#include <mpxmediageneraldefs.h>
 
 const TUint KMaxDownloadErrors = 3;
 const TInt KMimeBufLength = 100;
@@ -261,8 +262,13 @@ EXPORT_C void CShowEngine::RemoveObserver(MShowEngineObserver *observer)
 
 void CShowEngine::AddShowToMpxCollection(CShowInfo &/*aShowInfo*/)
 	{
-	//CMPXMedia *media = CMPXMedia::NewL();
+/*	RArray<TInt> contentIDs;
+	contentIDs.AppendL( KMPXMediaIdGeneral );
 	
+	CMPXMedia* media = CMPXMedia::NewL( contentIDs.Array() );
+	CleanupStack::PushL( media );
+	contentIDs.Close();
+	CleanupStack::PopAndDestroy(media);   */
 	}
 
 void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TInt aError)
@@ -520,9 +526,7 @@ void CShowEngine::DBGetShowsByFeedL(RShowInfoArray& aShowArray, TUint aFeedUid)
 		iSqlBuffer.Append(KSqlUnplayedOnly);
 		}
 
-#ifndef DONT_SORT_SQL
-	CFeedInfo *feedInfo = iPodcastModel.FeedEngine().GetFeedInfoByUid(aFeedUid);
-	
+#ifndef DONT_SORT_SQL	
 	_LIT(KSqlOrderByDate, " order by pubdate desc");
 	iSqlBuffer.Append(KSqlOrderByDate);
 #endif
@@ -652,7 +656,6 @@ void CShowEngine::DBDeleteOldShowsByFeed(TUint aFeedUid)
 	// 2. select the first MaxListItems shows
 	// 3. delete the rest if downloadstate is ENotDownloaded
 	
-	CShowInfo *showInfo = NULL;
 	_LIT(KSqlStatement,"delete from shows where feeduid=%u and downloadstate=0 and uid not in " \
 			"(select uid from shows where feeduid=%u order by pubdate desc limit %u)");
 	iSqlBuffer.Format(KSqlStatement, aFeedUid, aFeedUid, iPodcastModel.SettingsEngine().MaxListItems());

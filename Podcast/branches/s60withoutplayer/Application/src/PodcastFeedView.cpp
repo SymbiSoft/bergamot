@@ -767,7 +767,8 @@ void CPodcastFeedView::UpdateToolbar()
 		{
 		toolbar->HideItem(EPodcastUpdateAllFeeds, iUpdatingAllRunning, ETrue);
 		toolbar->HideItem(EPodcastCancelUpdateAllFeeds, !iUpdatingAllRunning, ETrue );
-
+		toolbar->SetItemDimmed(EPodcastAddFeed, iUpdatingAllRunning, ETrue );
+		toolbar->SetItemDimmed(EPodcastFeedsToolbarExtension, iUpdatingAllRunning, ETrue );
 		}
 }
 

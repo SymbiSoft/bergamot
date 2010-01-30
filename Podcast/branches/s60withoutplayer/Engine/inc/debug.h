@@ -91,7 +91,7 @@ namespace Dbg
 
 // ------------------------------------------------- file output
 #ifdef SUPPORT_DP_FILE
-_LIT(KLogDir, "podcasting");
+_LIT(KLogDir, "podcatcher");
 _LIT(KLogFile, "debug.log");
 #   define DPF(a); RFileLogger::WriteFormat(Dbg::KLogDir, Dbg::KLogFile, EFileLoggingModeAppend, _L("%S %s"), &s, L##a);
 #   define DPF1(a,b); RFileLogger::WriteFormat(Dbg::KLogDir, Dbg::KLogFile, EFileLoggingModeAppend, _L("%S " L##a), &s, b);

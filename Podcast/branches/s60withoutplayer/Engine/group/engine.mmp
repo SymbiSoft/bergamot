@@ -70,6 +70,6 @@ LIBRARY apgrfx.lib
 LIBRARY cone.lib
 LIBRARY apmime.lib 
 LIBRARY cmmanager.lib
-//LIBRARY mpxcommon.lib 
-//LIBRARY mpxcollectionhelper.lib
+LIBRARY mpxcommon.lib 
+LIBRARY mpxcollectionutility.lib mediaclient.lib
 #endif

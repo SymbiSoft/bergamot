@@ -80,9 +80,9 @@ void CFeedEngine::ConstructL()
 	}
 
 CFeedEngine::CFeedEngine(CPodcastModel& aPodcastModel)
-		: iFeedTimer(this),
+		: iClientState(ENotUpdating),
+		  iFeedTimer(this),
 		  iPodcastModel(aPodcastModel),
-		  iClientState(ENotUpdating),
 		  iDB(*aPodcastModel.DB())
 	{
 	}
@@ -338,7 +338,7 @@ void CFeedEngine::ReplaceChar(TDes & aString, TUint aCharToReplace, TUint aRepla
 void CFeedEngine::ReplaceString(TDes & aString, const TDesC& aStringToReplace, const TDesC& aReplacement)
 	{
 	TInt pos=aString.Find(aStringToReplace);
-	TUint offset = 0;
+	TInt offset = 0;
 	while (pos != KErrNotFound)
 		{
 		aString.Replace(offset+pos, aStringToReplace.Length(), aReplacement);
@@ -935,16 +935,12 @@ void CFeedEngine::DBLoadFeedsL()
 			sqlite3_int64 lastupdated = sqlite3_column_int64(st, 7);
 			TTime lastupdatedtime(lastupdated);
 			feedInfo->SetLastUpdated(lastupdatedtime);
-
-			sqlite3_int64 uid = sqlite3_column_int64(st, 8);
-			// don't need to set UID, it will be set properly from URL
 			
 			sqlite3_int64 customtitle = sqlite3_column_int64(st, 10);
 			if (customtitle) {
 				feedInfo->SetCustomTitle();
 			}
 			
-			sqlite3_int64 feedtype = sqlite3_column_int64(st, 9);
 			TLinearOrder<CFeedInfo> sortOrder( CFeedEngine::CompareFeedsByTitle);
 
 			iSortedFeeds.InsertInOrder(feedInfo, sortOrder);
@@ -1012,11 +1008,6 @@ CFeedInfo* CFeedEngine::DBGetFeedInfoByUidL(TUint aFeedUid)
 			sqlite3_int64 lastupdated = sqlite3_column_int64(st, 7);
 			TTime lastupdatedtime(lastupdated);
 			feedInfo->SetLastUpdated(lastupdatedtime);
-
-			sqlite3_int64 uid = sqlite3_column_int64(st, 8);
-			// don't need to set UID, it will be set properly from URL
-			
-			sqlite3_int64 feedtype = sqlite3_column_int64(st, 9);
 			
 			sqlite3_int64 customtitle = sqlite3_column_int64(st, 10);
 			if (customtitle) {

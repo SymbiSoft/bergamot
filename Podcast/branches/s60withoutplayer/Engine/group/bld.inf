@@ -25,4 +25,4 @@ PRJ_MMPFILES
 
 PRJ_EXPORTS
 ..\config\defaultfeeds_emu.xml \epoc32\winscw\c\private\A0009D00\defaultfeeds.xml
-..\config\podcasting.sqlite \epoc32\winscw\c\private\A0009D00\podcasting.sqlite.template
+..\config\podcatcher.sqlite \epoc32\winscw\c\private\A0009D00\podcatcher.sqlite.template

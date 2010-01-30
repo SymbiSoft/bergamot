@@ -1,4 +1,4 @@
-TARGET                                  sqlite_podcasting.lib
+TARGET                                  sqlite_podcatcher.lib
 TARGETTYPE                              lib 
 SOURCEPATH                              ..\src 
 SOURCE                                  where.cpp 
