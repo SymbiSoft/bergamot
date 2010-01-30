@@ -349,15 +349,20 @@ void CPodcastFeedView::UpdateFeedInfoDataL(CFeedInfo* aFeedInfo, TInt aIndex, TB
 	itemProps.SetDimmed(aIsUpdating);
 	
 	iListboxFormatbuffer.Format(KFeedFormat(), iconIndex, &aFeedInfo->Title(), &updatedDate,  &unplayedShows);
-	iItemArray->Delete(aIndex);
-	if(aIndex>= iItemArray->MdcaCount())
-			{
-			iItemArray->AppendL(iListboxFormatbuffer);
-			}
-		else
-			{
-			iItemArray->InsertL(aIndex, iListboxFormatbuffer);
-			}
+	
+	TPtrC compareTo((*iItemArray)[aIndex]);
+	
+	if (iListboxFormatbuffer.Compare(compareTo) != 0) {
+		iItemArray->Delete(aIndex);
+		if(aIndex>= iItemArray->MdcaCount())
+				{
+				iItemArray->AppendL(iListboxFormatbuffer);
+				}
+			else
+				{
+				iItemArray->InsertL(aIndex, iListboxFormatbuffer);
+				}
+	}
 	iListContainer->Listbox()->ItemDrawer()->SetPropertiesL(aIndex, itemProps);
 	}
 
@@ -390,7 +395,7 @@ void CPodcastFeedView::UpdateListboxItemsL()
 			for(TInt loop = 0;loop< len ;loop++)
 				{	
 				UpdateFeedInfoDataL((*sortedItems)[loop], loop);
-				iListContainer->Listbox()->DrawItem(loop);		
+				//iListContainer->Listbox()->DrawItem(loop);		
 				}
 			}
 		else
