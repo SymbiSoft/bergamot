@@ -5,7 +5,7 @@
 </head>
 <body>
   <outline text="tech5" xmlUrl="http://www.podshow.com/feeds/tech5.xml"/>
-  <outline text="Adam Curry's Daily Source Code" xmlUrl="http://www.podshow.com/feeds/dailysourcecode.xml"/>
+  <outline text="All About Symbian Podcast" xmlUrl="http://rss.allaboutsymbian.com/media/podcastfeed.xml"/>
   <outline text="Daily GizWiz" xmlUrl="http://leo.am/podcasts/dgw"/>
   <outline text="Stephen Fry's PODGRAMS" xmlUrl="http://www.stephenfry.com/podcasts/rss.xml"/>
 </body>

@@ -497,6 +497,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 		case EPodcastAddFeed:
 			{
 			TBuf<KFeedUrlLength> url;
+			url.Copy(_L("http://"));
 			CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(url);
 			dlg->PrepareLC(R_PODCAST_ADD_FEED_DLG);
 			HBufC* prompt = iEikonEnv->AllocReadResourceLC(R_PODCAST_ADDFEED_PROMPT);
@@ -807,7 +808,7 @@ void CPodcastFeedView::HandleLongTapEventL( const TPoint& aPenEventLocation, con
 void CPodcastFeedView::ProcessCommandL(TInt aCommand)
 {
 	iLongTapUnderway = EFalse; // re-enable listbox events
-	HandleCommandL(aCommand);
+	//HandleCommandL(aCommand);
 	CPodcastListView::ProcessCommandL(aCommand);
 	
 }

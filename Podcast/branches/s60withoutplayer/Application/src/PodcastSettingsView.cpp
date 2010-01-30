@@ -146,7 +146,7 @@ public:
 		TBool dimAutoUpdateInterval = iConnection == -1 || iAutoUpdate != EAutoUpdatePeriodically;
 		TBool dimAutoUpdateTime = iConnection == -1 || iAutoUpdate != EAutoUpdateAtTime;
 		TBool dimAutoUpdate = iConnection == -1;
-		TBool dimAutoDownload = iConnection == -1 || iAutoUpdate == EAutoUpdateOff;
+		TBool dimAutoDownload = EFalse; //iConnection == -1 || iAutoUpdate == EAutoUpdateOff;
 		TBool dimIAP = iConnection < 0;
 	
 		iSettingAutoDownload->SetHidden(dimAutoDownload);
@@ -154,7 +154,8 @@ public:
 		iSettingAutoUpdateTime->SetHidden(dimAutoUpdateTime);
 		iSettingAutoUpdateInterval->SetHidden(dimAutoUpdateInterval);
 		iSettingIAP->SetHidden(dimIAP);
-				
+		ListBox()->ScrollToMakeItemVisible(0);
+		
 		TRAP_IGNORE(HandleChangeInItemArrayOrVisibilityL());
 		}
 
