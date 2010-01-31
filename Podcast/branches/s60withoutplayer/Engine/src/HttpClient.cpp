@@ -85,7 +85,7 @@ TBool CHttpClient::ConnectHttpSessionL()
 
 	DP1("SpecificIAP() == %d",iPodcastModel.SettingsEngine().SpecificIAP());
 
-	if(iPodcastModel.SettingsEngine().SpecificIAP() == -1)
+	if(iPodcastModel.SettingsEngine().SpecificIAP() == -1 || EFalse)
 	{
 		iPodcastModel.ConnectionEngine().StartL(CConnectionEngine::EUserSelectConnection);	
 	}

@@ -34,10 +34,12 @@ CConnectionEngine::~CConnectionEngine()
 	delete iMobility;
 
 	Cancel();
-
+	
 	iConnection.Close();
 
 	iSocketServer.Close();
+	
+	iObserverArray.Close();
 	}
 
 CConnectionEngine::CConnectionEngine(CPodcastModel& aPodcastModel):

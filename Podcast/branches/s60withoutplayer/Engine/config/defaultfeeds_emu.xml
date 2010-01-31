@@ -4,6 +4,7 @@
   <title>Default feed list (Emulator)</title>
 </head>
 <body>
+  <outline>
 <!-- test feed -->
   <outline xmlUrl="http://tantapanna.com/feed.xml"/>
 
@@ -42,5 +43,6 @@
   <outline xmlUrl="http://feeds.feedburner.com/scottsigler"/>
   <outline xmlUrl="http://www.hbo.com/apps/podcasts/podcast.xml?a=2"/>
   -->
+  </outline>
   </body>
 </opml>

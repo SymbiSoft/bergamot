@@ -210,6 +210,7 @@ CPodcastListView::~CPodcastListView()
     {
     delete iListContainer;  
     delete iItemArray;
+    delete iLongTapDetector;
     iItemIdArray.Close();
     }
 
@@ -329,7 +330,7 @@ void CPodcastListView::CloseToolbarExtension()
 
 void CPodcastListView::PointerEventL(const TPointerEvent& aPointerEvent)
 	{
-	DP("CPodcastListView::PointerEventL");
+	DP1("CPodcastListView::PointerEventL, iType=%d", aPointerEvent.iType);
 	// Pass the pointer event to Long tap detector component
 	iLongTapDetector->PointerEventL(aPointerEvent);
 	}
@@ -338,17 +339,11 @@ void CPodcastListView::PointerEventL(const TPointerEvent& aPointerEvent)
 void CPodcastListView::HandleLongTapEventL( const TPoint& aPenEventLocation, const TPoint& /* aPenEventScreenLocation */)
 {
 	DP("CPodcastListView::HandleLongTapEventL BEGIN");
-    if(!iStylusPopupMenu)
+    if(iStylusPopupMenu)
     {
-        iStylusPopupMenu = CAknStylusPopUpMenu::NewL( this , aPenEventLocation);
-        TResourceReader reader;
-        iCoeEnv->CreateResourceReaderLC(reader,R_FEEDVIEW_POPUP_MENU);
-        iStylusPopupMenu->ConstructFromResourceL(reader);
-        CleanupStack::PopAndDestroy();
+		iStylusPopupMenu->ShowMenu();
+		iStylusPopupMenu->SetPosition(aPenEventLocation);
     }
-    iStylusPopupMenu->ShowMenu();
-    iStylusPopupMenu->SetPosition(aPenEventLocation);
-    iLongTapUnderway=ETrue; // this will disable listbox events
 	DP("CPodcastListView::HandleLongTapEventL END");
 }
 

@@ -19,7 +19,7 @@
 RESOURCE AVKON_VIEW r_podcast_searchview
 {
 	menubar = r_podcast_feedview_menubar;
-	cba = r_podcast_cba;
+	cba = R_AVKON_SOFTKEYS_OPTIONS_BACK;
 	toolbar = r_searchview_toolbar;
 }
 

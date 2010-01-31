@@ -133,7 +133,7 @@ public MPointerListener, public MAknLongTapDetectorCallBack
 		 
 		void PointerEventL(const TPointerEvent& aPointerEvent);
 
-		virtual void UpdateToolbar();
+		virtual void UpdateToolbar() = 0;
 	protected:
 		 CPodcastListContainer* iListContainer;
 		 /** Previous activated view */
@@ -150,7 +150,6 @@ public MPointerListener, public MAknLongTapDetectorCallBack
 		 CAknToolbar *iToolbar;
 		 CAknStylusPopUpMenu* iStylusPopupMenu;
 		 CAknLongTapDetector* iLongTapDetector;
-		 TBool iLongTapUnderway;
     };
 #endif // PODCASTBASEVIEWH
 

@@ -36,6 +36,7 @@
 #include <BAUTILS.H> 
 #include <pathinfo.h> 
 #include <f32file.h>
+#include <aknstyluspopupmenu.h>
 
 const TInt KMaxFeedNameLength = 100;
 const TInt KMaxUnplayedFeedsLength =64;
@@ -111,6 +112,13 @@ void CPodcastFeedView::ConstructL()
 	CleanupStack::Pop(icons); // icons
 
 	iListContainer->Listbox()->SetListBoxObserver(this);
+	
+    iStylusPopupMenu = CAknStylusPopUpMenu::NewL( this , TPoint(0,0));
+    TResourceReader reader;
+    iCoeEnv->CreateResourceReaderLC(reader,R_FEEDVIEW_POPUP_MENU);
+    iStylusPopupMenu->ConstructFromResourceL(reader);
+    CleanupStack::PopAndDestroy();
+
 }
     
 CPodcastFeedView::~CPodcastFeedView()
@@ -118,6 +126,7 @@ CPodcastFeedView::~CPodcastFeedView()
 	iPodcastModel.FeedEngine().RemoveObserver(this);
 	delete iFeedsFormat;
 	delete iNeverUpdated;
+	delete iStylusPopupMenu;
     }
 
 TUid CPodcastFeedView::Id() const
@@ -144,16 +153,13 @@ void CPodcastFeedView::DoDeactivate()
 void CPodcastFeedView::HandleListBoxEventL(CEikListBox* /* aListBox */, TListBoxEvent aEventType)
 {
 	DP("CPodcastFeedView::HandleListBoxEventL BEGIN");
+
 	switch(aEventType)
 	{
 	case EEventEnterKeyPressed:
 	case EEventItemDoubleClicked:
 	case EEventItemActioned:
 		{
-			if (iLongTapUnderway) {
-				return;
-			}
-			
 			DP("EEventItemActioned");
 			const RFeedInfoArray* sortedItems = NULL;
 			TInt index = iListContainer->Listbox()->CurrentItemIndex();
