@@ -34,12 +34,8 @@ _LIT(KConfigFile, "config.db");
 
 // constants
 const TInt KSettingsUid = 1000;
-const TInt KMaxVolume = 100;
-const TInt KVolumeDelta = 10;
 const TInt KDefaultUpdateFeedInterval = 60;
-const TInt KDefaultMaxSimultaneousDownloads = 1;
-const TInt KDefaultMaxListItems = 200;
-const TInt KDefaultSeekTime = 15;
+const TInt KDefaultMaxListItems = 100;
 
 enum TAutoUpdateSetting
 	{
@@ -82,14 +78,7 @@ class CSettingsEngine : public CBase
 		IMPORT_C TInt SpecificIAP();
 		IMPORT_C void SetSpecificIAP(TInt aIap);
 			
-		IMPORT_C TInt SeekStepTime();
-		IMPORT_C void SetSeekStepTimek(TInt aSeekStepTime);
-
-		IMPORT_C void SetSelectUnplayedOnly(TBool aOnlyUnplayed);
-		IMPORT_C TBool SelectUnplayedOnly();
-
 		IMPORT_C void SaveSettingsL();
-
 
 	private:
 		CSettingsEngine(CPodcastModel& aPodcastModel);
@@ -105,17 +94,12 @@ class CSettingsEngine : public CBase
 		TInt iUpdateFeedInterval;
 		TAutoUpdateSetting iUpdateAutomatically;
 		TBool iDownloadAutomatically;
-		TInt iMaxSimultaneousDownloads;
 		TInt iIap;
-		TInt iVolume;
 		TInt iMaxListItems;
 		TTime iUpdateFeedTime;
-		TInt iSeekStepTime;
 
 		// Other member variables		
 		CPodcastModel &iPodcastModel; 	// reference to the model
-
-	    TBool iSelectOnlyUnplayed;
 	};
 
 #endif /*SETTINGSENGINE_H_*/

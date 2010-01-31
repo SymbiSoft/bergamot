@@ -18,11 +18,11 @@
 
 #include <bautils.h>
 #include <s32file.h>
-
 #include "SettingsEngine.h"
 #include "SoundEngine.h"
 #include "FeedEngine.h"
 #include "ShowEngine.h"
+
 const TUid KMainSettingsStoreUid = {0x1000};
 const TUid KMainSettingsUid = {0x1002};
 const TUid KExtraSettingsUid = {0x2001};
@@ -30,7 +30,6 @@ const TInt KMaxParseBuffer = 1024;
 
 CSettingsEngine::CSettingsEngine(CPodcastModel& aPodcastModel) : iPodcastModel(aPodcastModel)
 	{
-		iSelectOnlyUnplayed = EFalse;
 	}
 
 CSettingsEngine::~CSettingsEngine()
@@ -50,15 +49,11 @@ CSettingsEngine* CSettingsEngine::NewL(CPodcastModel& aPodcastModel)
 void CSettingsEngine::ConstructL()
 	{
 	// default values
-	iVolume = KMaxVolume;
 	iUpdateFeedInterval = KDefaultUpdateFeedInterval;
-	iMaxSimultaneousDownloads = KDefaultMaxSimultaneousDownloads;
 	iDownloadAutomatically = EFalse;
 	iUpdateAutomatically = EAutoUpdateOff;
 	iMaxListItems = KDefaultMaxListItems;
 	iIap = 0;
-	iSeekStepTime = KDefaultSeekTime;
-	// Connect to file system			
 	
 	// Check that our basedir exist. Create it otherwise;
 	GetDefaultBaseDirL(iBaseDir);
@@ -160,15 +155,16 @@ void CSettingsEngine::LoadSettingsL()
 		iUpdateAutomatically = static_cast<TAutoUpdateSetting>(stream.ReadInt32L());
 		iDownloadAutomatically = stream.ReadInt32L();
 		
-		iMaxSimultaneousDownloads = stream.ReadInt32L();
+		TInt dummy;
+		dummy = stream.ReadInt32L(); // was iMaxSimultaneousDownloads
 		iIap = stream.ReadInt32L();		
 		
 		TInt low = stream.ReadInt32L();
 		TInt high = stream.ReadInt32L();
 		iUpdateFeedTime = MAKE_TINT64(high, low);
 					
-		iSelectOnlyUnplayed = stream.ReadInt32L();
-		iSeekStepTime = stream.ReadInt32L();
+		dummy = stream.ReadInt32L(); // was iSelectOnlyUnplayed
+		dummy = stream.ReadInt32L(); // was iSeekStepTime
 				
 		CleanupStack::PopAndDestroy(1); // readStream and iniFile
 		DP("CSettingsEngine::LoadSettingsL\t Settings loaded OK");
@@ -194,13 +190,13 @@ EXPORT_C void CSettingsEngine::SaveSettingsL()
 	stream.WriteInt32L(iUpdateFeedInterval);
 	stream.WriteInt32L(iUpdateAutomatically);
 	stream.WriteInt32L(iDownloadAutomatically);
-	stream.WriteInt32L(iMaxSimultaneousDownloads);
+	stream.WriteInt32L(0); // was iMaxSimultaneousDownloads
 	stream.WriteInt32L(iIap);
 	
 	stream.WriteInt32L(I64LOW(iUpdateFeedTime.Int64()));
 	stream.WriteInt32L(I64HIGH(iUpdateFeedTime.Int64()));
-	stream.WriteInt32L(iSelectOnlyUnplayed);
-	stream.WriteInt32L(iSeekStepTime);
+	stream.WriteInt32L(0); // was iSelectOnlyUnplayed
+	stream.WriteInt32L(0); // was iSeekStepTime
 
 	stream.CommitL();
 	store->CommitL();
@@ -262,17 +258,15 @@ void CSettingsEngine::ImportSettingsL()
 				lex.Val((TInt &) iDownloadAutomatically);
 				DP1("Download automatically: %d", iDownloadAutomatically);
 				} 
-			else if (tag.CompareF(_L("MaxSimultaneousDownloads")) == 0) 
-				{
-				TLex lex(value);
-				lex.Val(iMaxSimultaneousDownloads);
-				DP1("Max simultaneous downloads: %d", iMaxSimultaneousDownloads);
-				}
 			else if (tag.CompareF(_L("MaxShowsPerFeed")) == 0) 
 				{
 				TLex lex(value);
 				lex.Val(iMaxListItems);
 				DP1("Max shows per feed: %d", iMaxListItems);
+				}
+			else 
+				{
+				DP1("Unknown tag '%S'", &tag);
 				}
 			}
 		
@@ -341,16 +335,6 @@ EXPORT_C void CSettingsEngine::SetUpdateFeedInterval(TInt aInterval)
 	iPodcastModel.FeedEngine().RunFeedTimer();
 	}
 
-EXPORT_C TInt CSettingsEngine::MaxSimultaneousDownloads() 
-	{
-	return iMaxSimultaneousDownloads;
-	}
-
-EXPORT_C void CSettingsEngine::SetMaxSimultaneousDownloads(TInt aMaxDownloads)
-	{
-	iMaxSimultaneousDownloads = aMaxDownloads;
-	}
-
 EXPORT_C TAutoUpdateSetting CSettingsEngine::UpdateAutomatically() 
 	{
 	return iUpdateAutomatically;
@@ -383,31 +367,17 @@ EXPORT_C void CSettingsEngine::SetUpdateFeedTime(TTime aUpdateTime)
 	}
 
 EXPORT_C TInt CSettingsEngine::SpecificIAP()
-	{
-	return iIap;
+	{	
+	for (int i=0;i<iPodcastModel.IAPIds().Count();i++) {
+		if (((TInt)iPodcastModel.IAPIds()[i].iIapId) == iIap) {
+			return iIap;
+		}
+
+	}
+	return iPodcastModel.IAPIds()[0].iIapId;
 	}
 
 EXPORT_C void CSettingsEngine::SetSpecificIAP(TInt aIap)
 	{
 	iIap = aIap;
-	}
-
-EXPORT_C void CSettingsEngine::SetSelectUnplayedOnly(TBool aOnlyUnplayed)
-	{
-	iSelectOnlyUnplayed = aOnlyUnplayed;
-	}
-
-EXPORT_C TBool CSettingsEngine::SelectUnplayedOnly()
-	{
-	return iSelectOnlyUnplayed;
-	}
-
-EXPORT_C TInt CSettingsEngine::SeekStepTime()
-	{
-	return iSeekStepTime;
-	}
-
-EXPORT_C void CSettingsEngine::SetSeekStepTimek(TInt aSeekStepTime)
-	{
-	iSeekStepTime = aSeekStepTime;
 	}

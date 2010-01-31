@@ -405,12 +405,12 @@ void CShowEngine::DBGetAllShowsL(RShowInfoArray& aShowArray)
 	_LIT(KSqlStatement, "select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows");
 	iSqlBuffer.Format(KSqlStatement);
 
-	if (iPodcastModel.SettingsEngine().SelectUnplayedOnly())
-		{
-		_LIT(KSqlUnplayedOnly, " where playstate=0");
-		iSqlBuffer.Append(KSqlUnplayedOnly);
-		}
-	//DP1("SQL: %S", &iSqlBuffer.Left(KSqlDPLen));
+//	if (iPodcastModel.SettingsEngine().SelectUnplayedOnly())
+//		{
+//		_LIT(KSqlUnplayedOnly, " where playstate=0");
+//		iSqlBuffer.Append(KSqlUnplayedOnly);
+//		}
+//	//DP1("SQL: %S", &iSqlBuffer.Left(KSqlDPLen));
 
 	sqlite3_stmt *st;
 
@@ -520,11 +520,11 @@ void CShowEngine::DBGetShowsByFeedL(RShowInfoArray& aShowArray, TUint aFeedUid)
 	_LIT(KSqlStatement, "select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows where feeduid=%u");
 	iSqlBuffer.Format(KSqlStatement, aFeedUid);
 
-	if (iPodcastModel.SettingsEngine().SelectUnplayedOnly())
-		{
-		_LIT(KSqlUnplayedOnly, " and playstate=0");
-		iSqlBuffer.Append(KSqlUnplayedOnly);
-		}
+//	if (iPodcastModel.SettingsEngine().SelectUnplayedOnly())
+//		{
+//		_LIT(KSqlUnplayedOnly, " and playstate=0");
+//		iSqlBuffer.Append(KSqlUnplayedOnly);
+//		}
 
 #ifndef DONT_SORT_SQL	
 	_LIT(KSqlOrderByDate, " order by pubdate desc");
@@ -588,11 +588,11 @@ void CShowEngine::DBGetDownloadedShowsL(RShowInfoArray& aShowArray)
 	_LIT(KSqlStatement, "select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows where downloadstate=%u");
 	iSqlBuffer.Format(KSqlStatement, EDownloaded);
 
-	if (iPodcastModel.SettingsEngine().SelectUnplayedOnly())
-		{
-		_LIT(KSqlUnplayedOnly, " and playstate=0");
-		iSqlBuffer.Append(KSqlUnplayedOnly);
-		}
+//	if (iPodcastModel.SettingsEngine().SelectUnplayedOnly())
+//		{
+//		_LIT(KSqlUnplayedOnly, " and playstate=0");
+//		iSqlBuffer.Append(KSqlUnplayedOnly);
+//		}
 
 #ifndef DONT_SORT_SQL
 	_LIT(KSqlSort, " order by title");

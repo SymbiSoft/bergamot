@@ -63,9 +63,7 @@ public:
 			// both arrays destroy themselves, so we need two copies to prevent USER 44
 			HBufC *buf2 = (*iapArray)[i].AllocL();
 			
-			DP("Enumerating text");
 			CAknEnumeratedText *enumerated = new CAknEnumeratedText(iPodcastModel.IAPIds()[i].iIapId, buf2);
-			DP("Adding text");
 			enumeratedArr->AppendL(enumerated);
 		}
 		
@@ -236,7 +234,7 @@ public:
 		iAutoUpdate = se.UpdateAutomatically();
 		iIntervalUpdate = se.UpdateFeedInterval();
 		iTimeUpdate = se.UpdateFeedTime();
-		iConnection = se.SpecificIAP() <= 0 ? -1 : 1;
+		iConnection = se.SpecificIAP() <= EConnectionDefault ? EConnectionAlwaysAsk : EConnectionUseSpecified;
 		iIap = se.SpecificIAP() <=0 ? iPodcastModel.IAPIds()[0].iIapId : se.SpecificIAP();
 		iAutoDownload = se.DownloadAutomatically();
 			

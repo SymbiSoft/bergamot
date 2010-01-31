@@ -576,20 +576,8 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 				CShowInfo *info = iPodcastModel.ActiveShowList()[index];
 				info->SetPlayState(EPlayed);
 				iPodcastModel.ShowEngine().UpdateShow(info);
-				if (iPodcastModel.SettingsEngine().SelectUnplayedOnly())
-					{
-					iItemArray->Delete(index);
-					iItemIdArray.Remove(index);
-					iPodcastModel.ActiveShowList().Remove(index);
-					delete info;
-					iListContainer->Listbox()->HandleItemRemovalL();
-					iListContainer->Listbox()->SetCurrentItemIndex(index - 1 > 0 ? index - 1 : 0);
-					iListContainer->Listbox()->DrawNow();
-					}
-				else {
-					UpdateShowItemDataL(iPodcastModel.ActiveShowList()[index], index, 0);
-					iListContainer->Listbox()->DrawItem(index);					
-				}
+				UpdateShowItemDataL(iPodcastModel.ActiveShowList()[index], index, 0);
+				iListContainer->Listbox()->DrawItem(index);					
 				}
 			}
 			break;
@@ -635,14 +623,6 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 					}
 				}
 			}
-			break;
-		case EPodcastShowUnplayedOnlyOn:
-			iPodcastModel.SettingsEngine().SetSelectUnplayedOnly(ETrue);
-			UpdateListboxItemsL();
-			break;
-		case EPodcastShowUnplayedOnlyOff:
-			iPodcastModel.SettingsEngine().SetSelectUnplayedOnly(EFalse);
-			UpdateListboxItemsL();
 			break;
 		case EPodcastMarkAllPlayed:
 			iPodcastModel.MarkSelectionPlayed();
