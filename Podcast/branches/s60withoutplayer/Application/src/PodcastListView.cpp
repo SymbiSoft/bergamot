@@ -25,6 +25,9 @@
 #include <aknnotedialog.h>
 #include <aknsbasicbackgroundcontrolcontext.h>
 #include <akntabgrp.h>
+#include <akntoolbarextension.h>
+#include<BARSREAD.H>
+
 
 const TInt KDefaultGran = 5;
 CPodcastListContainer::CPodcastListContainer()
@@ -173,6 +176,14 @@ void CPodcastListView::ConstructL()
 	iItemArray = new (ELeave)CDesCArrayFlat(KDefaultGran);
 	iListContainer->Listbox()->Model()->SetItemTextArray(iItemArray);
 	iListContainer->Listbox()->Model()->SetOwnershipType(ELbmDoesNotOwnItemArray);
+
+	if (Toolbar()) {
+		iToolbar = Toolbar();
+		iToolbar->SetToolbarObserver(this);
+	}
+	
+	iLongTapDetector = CAknLongTapDetector::NewL(this);
+	iListContainer->SetPointerListener(this);
 }
 
 void CPodcastListView::HandleViewRectChange()
@@ -302,5 +313,55 @@ void CPodcastListView::ShowErrorMessage(TDesC &aText)
 	dlg->SetTextL(aText);
 	CleanupStack::Pop(dlg);
 	dlg->ExecuteLD(R_ERRORDLG_OK);
+	}
+
+
+void CPodcastListView::CloseToolbarExtension()
+{
+	CAknToolbar* toolbar = Toolbar();
+	if (toolbar) {
+		CAknToolbarExtension* toolbarExtension = toolbar->ToolbarExtension();
+		if (toolbarExtension) {
+		toolbarExtension->SetShown( EFalse );
+		}
+	}
+}
+
+void CPodcastListView::PointerEventL(const TPointerEvent& aPointerEvent)
+	{
+	DP("CPodcastListView::PointerEventL");
+	// Pass the pointer event to Long tap detector component
+	iLongTapDetector->PointerEventL(aPointerEvent);
+	}
+
+
+void CPodcastListView::HandleLongTapEventL( const TPoint& aPenEventLocation, const TPoint& /* aPenEventScreenLocation */)
+{
+	DP("CPodcastListView::HandleLongTapEventL BEGIN");
+    if(!iStylusPopupMenu)
+    {
+        iStylusPopupMenu = CAknStylusPopUpMenu::NewL( this , aPenEventLocation);
+        TResourceReader reader;
+        iCoeEnv->CreateResourceReaderLC(reader,R_FEEDVIEW_POPUP_MENU);
+        iStylusPopupMenu->ConstructFromResourceL(reader);
+        CleanupStack::PopAndDestroy();
+    }
+    iStylusPopupMenu->ShowMenu();
+    iStylusPopupMenu->SetPosition(aPenEventLocation);
+    iLongTapUnderway=ETrue; // this will disable listbox events
+	DP("CPodcastListView::HandleLongTapEventL END");
+}
+
+
+void CPodcastListView::DynInitToolbarL (TInt /*aResourceId*/, CAknToolbar * /*aToolbar*/)
+	{
+	DP("CPodcastListView::DynInitToolbarL");
+	UpdateToolbar();
+	}
+
+
+void CPodcastListView::OfferToolbarEventL(TInt aCommand)
+	{
+	HandleCommandL(aCommand);
 	}
 

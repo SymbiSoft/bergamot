@@ -27,7 +27,7 @@
 #include "OpmlParser.h"
 
 const TInt KMaxUidBufLen = 20;
-const TInt KMaxDescriptionLength = 2048;
+const TInt KMaxDescriptionLength = 1024;
 const TInt KMaxURLLength = 512;
 const TInt KMaxLineLength = 4096;
 // Cleanup stack macro for SQLite3
@@ -1085,7 +1085,7 @@ EXPORT_C void CFeedEngine::SearchForFeedL(TDesC& aSearchString)
 	iPodcastModel.FsSession().PrivatePath(iSearchResultsFileName);
 	
 	iSearchResultsFileName.Append(KSearchResultsFileName);
-	
+	iSearchResults.ResetAndDestroy();
 	// run search
 	if(iFeedClient->GetL(*url, iSearchResultsFileName, iPodcastModel.SettingsEngine().SpecificIAP()))
 		{
@@ -1109,7 +1109,7 @@ EXPORT_C void CFeedEngine::AddSearchResultL(CFeedInfo *item)
 	iSearchResults.AppendL(item);
 	}
 
-IMPORT_C const RFeedInfoArray& CFeedEngine::GetSearchResults()
+EXPORT_C const RFeedInfoArray& CFeedEngine::GetSearchResults()
 	{
 	return iSearchResults;
 	}

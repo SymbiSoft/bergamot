@@ -103,17 +103,9 @@ void CPodcastShowsView::ConstructL()
 	CleanupStack::Pop(icons); // icons
 	iListContainer->Listbox()->SetListBoxObserver(this);
 	
-	
 	iListContainer->SetKeyEventListener(this);
 	iPodcastModel.FeedEngine().AddObserver(this);
 	iPodcastModel.ShowEngine().AddObserver(this);
-	
-    CAknToolbar *toolbar = Toolbar();
-	if (toolbar)
-		{
-		toolbar->SetToolbarObserver(this);
-		}
-
 	}
 
 TKeyResponse CPodcastShowsView::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType)
@@ -712,17 +704,6 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 	void CPodcastShowsView::DynInitMenuPaneL(TInt /*aResourceId*/,CEikMenuPane* /*aMenuPane*/)
 	{
 
-	}
-
-void CPodcastShowsView::OfferToolbarEventL(TInt aCommand)
-	{
-	HandleCommandL(aCommand);
-	}
-
-void CPodcastShowsView::DynInitToolbarL (TInt /*aResourceId*/, CAknToolbar * /*aToolbar*/)
-	{
-	DP("CPodcastShowsView::DynInitToolbarL");
-	UpdateToolbar();
 	}
 
 void CPodcastShowsView::UpdateToolbar()

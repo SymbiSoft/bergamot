@@ -30,7 +30,8 @@
 #include "Podcast.hrh"
 #include "PodcastListView.h"
 
-class CPodcastShowsView : public CPodcastListView, public MEikListBoxObserver, public MFeedEngineObserver, public MShowEngineObserver, public MKeyEventListener, public MAknToolbarObserver
+class CPodcastShowsView : public CPodcastListView, public MEikListBoxObserver, 
+	public MFeedEngineObserver, public MShowEngineObserver, public MKeyEventListener
 	{
 public: 
 	static CPodcastShowsView* NewL(CPodcastModel& aPodcastModel);
@@ -85,15 +86,12 @@ protected:
 	 * @param aCommand ID of the command to respond to. 
 	 */
 	void HandleCommandL(TInt aCommand);
-	
+	TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType);
+
 	void UpdateFeedUpdateStateL();
 	void UpdateShowItemL(TUint aUid, TInt aSizeDownloaded);
 	void UpdateShowItemDataL(CShowInfo* aShowInfo,TInt aIndex, TInt aSizeDownloaded = KErrNotFound);
 	void DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane);
-
-	TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType);
-	void OfferToolbarEventL(TInt aCommand);
-	void DynInitToolbarL (TInt aResourceId, CAknToolbar *aToolbar);
 
 private:
 	void GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex);

@@ -36,7 +36,8 @@ _LIT(KTagHtmlUrl, "htmlUrl");
 enum TOpmlState {
 	EStateOpmlRoot,
 	EStateOpmlBody,
-	EStateOpmlOutline
+	EStateOpmlOutline,
+	EStateOpmlOutlineOutline
 	};
 /*
 enum TEncoding {

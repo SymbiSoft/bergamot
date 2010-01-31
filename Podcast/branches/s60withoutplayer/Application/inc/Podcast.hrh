@@ -21,7 +21,7 @@
 
 #define KOneHundredPercent 100
 
-//#define SEARCH_ENABLED
+#define SEARCH_ENABLED
 
 enum TPodcastCommandIds
 	{

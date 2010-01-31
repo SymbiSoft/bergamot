@@ -36,7 +36,6 @@
 #include <BAUTILS.H> 
 #include <pathinfo.h> 
 #include <f32file.h>
-#include <akntoolbarextension.h>
 
 const TInt KMaxFeedNameLength = 100;
 const TInt KMaxUnplayedFeedsLength =64;
@@ -112,18 +111,6 @@ void CPodcastFeedView::ConstructL()
 	CleanupStack::Pop(icons); // icons
 
 	iListContainer->Listbox()->SetListBoxObserver(this);
-	iListContainer->SetKeyEventListener(this);
-	iListContainer->SetPointerListener(this);
-	
-    CAknToolbar *toolbar = Toolbar();
-	if (toolbar)
-		{
-		toolbar->SetToolbarObserver(this);
-		}
-	
-	iLongTapDetector = CAknLongTapDetector::NewL(this);
-	iListContainer->SetPointerListener(this);
-
 }
     
 CPodcastFeedView::~CPodcastFeedView()
@@ -131,13 +118,6 @@ CPodcastFeedView::~CPodcastFeedView()
 	iPodcastModel.FeedEngine().RemoveObserver(this);
 	delete iFeedsFormat;
 	delete iNeverUpdated;
- 
-    if(iLongTapDetector)
-        delete iLongTapDetector, iLongTapDetector = NULL;
-
-    if(iStylusPopupMenu)
-        delete iStylusPopupMenu, iStylusPopupMenu = NULL;
-
     }
 
 TUid CPodcastFeedView::Id() const
@@ -702,35 +682,6 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 		UpdateToolbar();
 	}
 
-void CPodcastFeedView::DynInitMenuPaneL(TInt /*aResourceId*/,CEikMenuPane* /*aMenuPane*/)
-{
-
-}
-
-TKeyResponse CPodcastFeedView::OfferKeyEventL(const TKeyEvent& aKeyEvent, TEventCode aType)
-	{
-	if (aType == EEventKey)
-		{
-			switch (aKeyEvent.iCode) {
-			case EKeyBackspace:
-			case EKeyDelete:
-				HandleCommandL(EPodcastDeleteFeedHardware);
-				break;
-			}
-		}
-	return EKeyWasNotConsumed;
-	}
-
-void CPodcastFeedView::OfferToolbarEventL(TInt aCommand)
-	{
-	HandleCommandL(aCommand);
-	}
-
-void CPodcastFeedView::DynInitToolbarL (TInt /*aResourceId*/, CAknToolbar * /*aToolbar*/)
-	{
-
-	}
-
 void CPodcastFeedView::UpdateToolbar()
 {
 	CAknToolbar* toolbar = Toolbar();
@@ -743,48 +694,4 @@ void CPodcastFeedView::UpdateToolbar()
 		//toolbar->SetItemDimmed(EPodcastFeedsToolbarExtension, iUpdatingAllRunning, ETrue );
 		toolbar->SetItemDimmed(EPodcastSettings, iUpdatingAllRunning, ETrue );
 		}
-}
-
-void CPodcastFeedView::CloseToolbarExtension()
-{
-	CAknToolbar* toolbar = Toolbar();
-	if (toolbar) {
-		CAknToolbarExtension* toolbarExtension = toolbar->ToolbarExtension();
-		if (toolbarExtension) {
-		toolbarExtension->SetShown( EFalse );
-		}
-	}
-}
-
-void CPodcastFeedView::PointerEventL(const TPointerEvent& aPointerEvent)
-	{
-	DP("CPodcastFeedView::PointerEventL");
-	// Pass the pointer event to Long tap detector component
-	iLongTapDetector->PointerEventL(aPointerEvent);
-	}
-
-
-void CPodcastFeedView::HandleLongTapEventL( const TPoint& aPenEventLocation, const TPoint& /* aPenEventScreenLocation */)
-{
-	DP("CPodcastFeedView::HandleLongTapEventL BEGIN");
-    if(!iStylusPopupMenu)
-    {
-        iStylusPopupMenu = CAknStylusPopUpMenu::NewL( this , aPenEventLocation);
-        TResourceReader reader;
-        iCoeEnv->CreateResourceReaderLC(reader,R_FEEDVIEW_POPUP_MENU);
-        iStylusPopupMenu->ConstructFromResourceL(reader);
-        CleanupStack::PopAndDestroy();
-    }
-    iStylusPopupMenu->ShowMenu();
-    iStylusPopupMenu->SetPosition(aPenEventLocation);
-    iLongTapUnderway=ETrue; // this will disable listbox events
-	DP("CPodcastFeedView::HandleLongTapEventL END");
-}
-
-void CPodcastFeedView::ProcessCommandL(TInt aCommand)
-{
-	iLongTapUnderway = EFalse; // re-enable listbox events
-	//HandleCommandL(aCommand);
-	CPodcastListView::ProcessCommandL(aCommand);
-	
 }

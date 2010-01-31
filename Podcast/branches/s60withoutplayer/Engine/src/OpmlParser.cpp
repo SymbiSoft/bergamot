@@ -26,8 +26,8 @@
 #include <utf.h>
 
 using namespace Xml;
-const TInt KMaxParseBuffer = 1024;
-const TInt KMaxStringBuffer = 100;
+const TInt KMaxParseBuffer = 2048;
+const TInt KMaxStringBuffer = 1024;
 COpmlParser::COpmlParser(CFeedEngine& aFeedEngine, RFs& aFs) : iFeedEngine(aFeedEngine),iFs(aFs)
 {	
 }
@@ -91,9 +91,15 @@ void COpmlParser::OnStartElementL(const RTagInfo& aElement, const RAttributeArra
 		break;
 	case EStateOpmlBody:
 		// <body> <outline>
+		
 		if(str.CompareF(KTagOutline) == 0) {
-			//DP("New item");
-			iOpmlState=EStateOpmlOutline;
+			iOpmlState = EStateOpmlOutline;
+		}
+		break;
+	case EStateOpmlOutline:
+		// <body> <outline> <outline...
+		if(str.CompareF(KTagOutline) == 0) {
+			iOpmlState=EStateOpmlOutlineOutline;
 			CFeedInfo* newFeed = CFeedInfo::NewL();
 			
 			TBool hasTitle = EFalse;
@@ -102,10 +108,10 @@ void COpmlParser::OnStartElementL(const RTagInfo& aElement, const RAttributeArra
 			for (int i=0;i<aAttributes.Count();i++) {
 				RAttribute attr = aAttributes[i];
 				TBuf<KMaxStringBuffer> attr16;
-				attr16.Copy(attr.Attribute().LocalName().DesC());
+				attr16.Copy(attr.Attribute().LocalName().DesC().Left(KMaxStringBuffer));
 				HBufC* val16 = HBufC::NewLC(KMaxParseBuffer);
 				
-				val16->Des().Copy(attr.Value().DesC());
+				val16->Des().Copy(attr.Value().DesC().Left(KMaxParseBuffer));
 				// xmlUrl=...
 				if (attr16.Compare(KTagXmlUrl) == 0 || attr16.Compare(KTagUrl) == 0) {
 					newFeed->SetUrlL(*val16);
@@ -144,10 +150,10 @@ void COpmlParser::OnStartElementL(const RTagInfo& aElement, const RAttributeArra
 		}
 		break;
 	default:
-		//DP2("Ignoring tag %S when in state %d", &str, iFeedState);
+		DP2("Ignoring tag %S when in state %d", &str, iOpmlState);
 		break;
 	}
-//	DP1("OnStartElementL END state=%d", iFeedState);
+	DP1("OnStartElementL END state=%d", iOpmlState);
 	}
 
 void COpmlParser::OnEndElementL(const RTagInfo& aElement, TInt /*aErrorCode*/)
@@ -157,9 +163,12 @@ void COpmlParser::OnEndElementL(const RTagInfo& aElement, TInt /*aErrorCode*/)
 	TBuf<KMaxStringBuffer> str;
 	str.Copy(aElement.LocalName().DesC());
 
-	//DP("OnEndElementL START state=%d, element=%S"), iFeedState, &str);
+	DP2("OnEndElementL START state=%d, element=%S", iOpmlState, &str);
 
 	switch (iOpmlState) {
+		case EStateOpmlOutlineOutline:
+			iOpmlState=EStateOpmlOutline;
+			break;
 		case EStateOpmlOutline:
 			iOpmlState=EStateOpmlBody;
 			break;
@@ -173,7 +182,7 @@ void COpmlParser::OnEndElementL(const RTagInfo& aElement, TInt /*aErrorCode*/)
 			break;
 	}
 
-	//DP("OnEndElementL END state=%d"), iFeedState);	
+	DP1("OnEndElementL END state=%d", iOpmlState);	
 	}
 
 void COpmlParser::OnContentL(const TDesC8& /*aBytes*/, TInt /*aErrorCode*/)

@@ -23,6 +23,11 @@
 #include <aknlists.h> 
 #include <eiklbo.h>
 #include <aknsbasicbackgroundcontrolcontext.h>
+#include <AknToolbarObserver.h>
+#include <AknToolbar.h>
+#include <aknlongtapdetector.h>
+#include <aknstyluspopupmenu.h>
+
 #include "PodcastModel.h"
 
 class CAknDoubleLargeStyleListBox;
@@ -69,7 +74,8 @@ class CPodcastListContainer : public CCoeControl
 	};
 
 
-class CPodcastListView : public CAknView 
+class CPodcastListView : public CAknView, public MAknToolbarObserver,
+public MPointerListener, public MAknLongTapDetectorCallBack 
     {
     public: 
         ~CPodcastListView();
@@ -111,14 +117,23 @@ class CPodcastListView : public CAknView
 		*/
 		void HandleCommandL(TInt aCommand);
 
+		void OfferToolbarEventL(TInt aCommand);
+		void DynInitToolbarL (TInt aResourceId, CAknToolbar *aToolbar);
+
 		virtual void UpdateListboxItemsL() = 0;
 		
         void RunAboutDialogL();
         void SetEmptyTextL(TInt aResourceId);
         void ShowOkMessage(TDesC &aText);
         void ShowErrorMessage(TDesC &aText);
-        
+		void CloseToolbarExtension();
 
+		// From MAknLongTapDetectorCallBack
+		virtual void HandleLongTapEventL( const TPoint& aPenEventLocation, const TPoint& aPenEventScreenLocation );
+		 
+		void PointerEventL(const TPointerEvent& aPointerEvent);
+
+		virtual void UpdateToolbar();
 	protected:
 		 CPodcastListContainer* iListContainer;
 		 /** Previous activated view */
@@ -131,6 +146,11 @@ class CPodcastListView : public CAknView
 		 RArray<TUint> iItemIdArray;
 		 
 		 TBuf<256> iListboxFormatbuffer;
+		 
+		 CAknToolbar *iToolbar;
+		 CAknStylusPopUpMenu* iStylusPopupMenu;
+		 CAknLongTapDetector* iLongTapDetector;
+		 TBool iLongTapUnderway;
     };
 #endif // PODCASTBASEVIEWH
 

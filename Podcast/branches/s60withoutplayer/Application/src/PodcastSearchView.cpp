@@ -109,17 +109,7 @@ void CPodcastSearchView::ConstructL()
 	CleanupStack::Pop(icons); // icons
 
 	iListContainer->Listbox()->SetListBoxObserver(this);
-	iListContainer->SetKeyEventListener(this);
-	iListContainer->SetPointerListener(this);
 	
-    CAknToolbar *toolbar = Toolbar();
-	if (toolbar)
-		{
-		toolbar->SetToolbarObserver(this);
-		}
-	
-	iLongTapDetector = CAknLongTapDetector::NewL(this);
-	iListContainer->SetPointerListener(this);
 	SetEmptyTextL(R_PODCAST_EMPTY_LIST);
 }
     
@@ -244,6 +234,10 @@ void CPodcastSearchView::HandleCommandL(TInt aCommand)
 				}
 			break;
 			}
+		case EPodcastCancelUpdateAllFeeds:
+			iPodcastModel.FeedEngine().CancelUpdateAllFeeds();
+			iSearchRunning = EFalse;
+			break;
 		case EPodcastAddSearchResult:
 			{
 			TInt index = iListContainer->Listbox()->CurrentItemIndex();
@@ -271,28 +265,11 @@ void CPodcastSearchView::HandleCommandL(TInt aCommand)
 		UpdateToolbar();
 	}
 
-TKeyResponse CPodcastSearchView::OfferKeyEventL(const TKeyEvent& aKeyEvent, TEventCode aType)
+void CPodcastSearchView::FeedSearchResultsUpdated()
 	{
-	if (aType == EEventKey)
-		{
-			switch (aKeyEvent.iCode) {
-			case EKeyBackspace:
-			case EKeyDelete:
-				HandleCommandL(EPodcastDeleteFeedHardware);
-				break;
-			}
-		}
-	return EKeyWasNotConsumed;
-	}
-
-void CPodcastSearchView::OfferToolbarEventL(TInt aCommand)
-	{
-	HandleCommandL(aCommand);
-	}
-
-void CPodcastSearchView::DynInitToolbarL (TInt /*aResourceId*/, CAknToolbar * /*aToolbar*/)
-	{
-
+	iSearchRunning = EFalse;
+	UpdateListboxItemsL();
+	UpdateToolbar();
 	}
 
 void CPodcastSearchView::UpdateToolbar()
@@ -309,54 +286,3 @@ void CPodcastSearchView::UpdateToolbar()
 		toolbar->HideItem(EPodcastCancelUpdateAllFeeds, !iSearchRunning, ETrue);
 		}
 }
-
-void CPodcastSearchView::CloseToolbarExtension()
-{
-	CAknToolbar* toolbar = Toolbar();
-	if (toolbar) {
-		CAknToolbarExtension* toolbarExtension = toolbar->ToolbarExtension();
-		if (toolbarExtension) {
-		toolbarExtension->SetShown( EFalse );
-		}
-	}
-}
-
-void CPodcastSearchView::PointerEventL(const TPointerEvent& aPointerEvent)
-	{
-	DP("CPodcastSearchView::PointerEventL");
-	// Pass the pointer event to Long tap detector component
-	iLongTapDetector->PointerEventL(aPointerEvent);
-	}
-
-
-void CPodcastSearchView::HandleLongTapEventL( const TPoint& aPenEventLocation, const TPoint& /* aPenEventScreenLocation */)
-{
-	DP("CPodcastSearchView::HandleLongTapEventL BEGIN");
-//    if(!iStylusPopupMenu)
-//    {
-//        iStylusPopupMenu = CAknStylusPopUpMenu::NewL( this , aPenEventLocation);
-//        TResourceReader reader;
-//        iCoeEnv->CreateResourceReaderLC(reader,R_SearchView_POPUP_MENU);
-//        iStylusPopupMenu->ConstructFromResourceL(reader);
-//        CleanupStack::PopAndDestroy();
-//    }
-//    iStylusPopupMenu->ShowMenu();
-//    iStylusPopupMenu->SetPosition(aPenEventLocation);
- //   iLongTapUnderway=ETrue; // this will disable listbox events
-	DP("CPodcastSearchView::HandleLongTapEventL END");
-}
-
-void CPodcastSearchView::ProcessCommandL(TInt aCommand)
-{
-	//iLongTapUnderway = EFalse; // re-enable listbox events
-	//HandleCommandL(aCommand);
-	CPodcastListView::ProcessCommandL(aCommand);
-	
-}
-
-void CPodcastSearchView::FeedSearchResultsUpdated()
-	{
-	iSearchRunning = EFalse;
-	UpdateListboxItemsL();
-	UpdateToolbar();
-	}

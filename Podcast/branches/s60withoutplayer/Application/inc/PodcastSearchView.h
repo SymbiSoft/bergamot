@@ -20,18 +20,13 @@
 #define PODCASTSEARCHVIEW_H 
 
 #include <aknview.h>
-#include <AknToolbarObserver.h>
-#include <AknToolbar.h>
-#include <aknlongtapdetector.h>
-#include <aknstyluspopupmenu.h>
 #include "FeedEngine.h"
 #include "PodcastModel.h"
 #include "PodcastListView.h"
 #include "Podcast.hrh"
 
 class CPodcastSearchView : public CPodcastListView, public MEikListBoxObserver, 
-	public MFeedEngineObserver, public MKeyEventListener, public MAknToolbarObserver,
-	public MPointerListener, public MAknLongTapDetectorCallBack
+	public MFeedEngineObserver
     {
     public: 
         static CPodcastSearchView* NewL(CPodcastModel& aPodcastModel);
@@ -65,23 +60,10 @@ class CPodcastSearchView : public CPodcastListView, public MEikListBoxObserver,
 		 * This function is called by @c AknViewDeactivated().
 		 */
 		void DoDeactivate();
-		
 
-		// From // MEikListBoxObserverClass
+		// from MEikListBoxObserverClass
 		void HandleListBoxEventL(CEikListBox* aListBox, TListBoxEvent aEventType);
 		void UpdateListboxItemsL();
-
-		// From MAknLongTapDetectorCallBack
-		virtual void HandleLongTapEventL( const TPoint& aPenEventLocation, const TPoint& aPenEventScreenLocation );
-		
-		//From MEikMenuObserver
-		void ProcessCommandL(TInt aCommandId);
-		void SetEmphasis(CCoeControl* /*aMenuControl*/,TBool /*aEmphasis*/)
-		{
-		}
-	 
-		void PointerEventL(const TPointerEvent& aPointerEvent);
-
 		
 		// from MFeedEngineObserver
 		void FeedInfoUpdated(TUint /* aFeedUid */) {}
@@ -96,19 +78,12 @@ class CPodcastSearchView : public CPodcastListView, public MEikListBoxObserver,
 		 * @param aCommand ID of the command to respond to. 
 		 */
 		void HandleCommandL(TInt aCommand);
-		void DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane) {}
-		TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType);
 
-		void OfferToolbarEventL(TInt aCommand);
-		void DynInitToolbarL (TInt aResourceId, CAknToolbar *aToolbar);
 		void UpdateToolbar();
-		void CloseToolbarExtension();
 		
 	private:
 		CPodcastModel& iPodcastModel;		
 		
-		CAknStylusPopUpMenu* iStylusPopupMenu;
-		CAknLongTapDetector* iLongTapDetector;
 		TBool iSearchRunning;
 };
 
