@@ -119,7 +119,7 @@ rls_string STRING_r_podcast_setting_minutes "minutes"
 
 rls_string STRING_r_podcast_setting_connection "Connection"
 rls_string STRING_r_podcast_setting_default "Use Default"
-rls_string STRING_r_podcast_setting_wlanonly "Always Ask"
+rls_string STRING_r_podcast_setting_alwaysask "Always Ask"
 rls_string STRING_r_podcast_setting_usespecified "Use Specified"
 rls_string STRING_r_podcast_setting_iaplist "Connections"
 rls_string STRING_r_podcast_setting_cancel_cmd "Cancel" // Cancel command in settings dialog

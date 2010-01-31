@@ -155,6 +155,7 @@ TBool CConnectionEngine::ConnectionSettingL()
 
 void CConnectionEngine::StartL(TConnectionType aConnectionType)
 	{
+	DP1("CConnectionEngine::StartL, aConnectionType=%d", aConnectionType);
 	iConnection.Close();
 	User::LeaveIfError( iConnection.Open( iSocketServer ) );
 	// Connect using UI Setting

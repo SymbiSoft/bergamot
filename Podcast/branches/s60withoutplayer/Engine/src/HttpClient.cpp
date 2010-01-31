@@ -77,11 +77,14 @@ TBool CHttpClient::ConnectHttpSessionL()
 	DP("ConnectHttpSessionL START");	
 	if(iPodcastModel.ConnectionEngine().ConnectionState() == CConnectionEngine::EConnected)
 		{
+		DP("ConnectionState == CConnectionEngine::EConnected");
 		// Session already connected, call connect complete directly
 		ConnectCompleteL(KErrNone);
 		return ETrue;
 		}
-	
+
+	DP1("SpecificIAP() == %d",iPodcastModel.SettingsEngine().SpecificIAP());
+
 	if(iPodcastModel.SettingsEngine().SpecificIAP() == -1)
 	{
 		iPodcastModel.ConnectionEngine().StartL(CConnectionEngine::EUserSelectConnection);	

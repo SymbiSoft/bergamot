@@ -30,8 +30,6 @@ enum TPodcastCommandIds
 	EPodcastViewPendingShows,
 	EPodcastViewFeeds,
 	EPodcastPlay,
-	EPodcastStop,
-	EPodcastPause,
 	// Feeds commands
 	EPodcastAddFeed,
 	EPodcastEditFeed,
@@ -56,15 +54,10 @@ enum TPodcastCommandIds
 	EPodcastMarkAllPlayed,
 	EPodcastMarkAsPlayed,
 	EPodcastMarkAsUnplayed,
-	EPodcastShowUnplayedOnly,
-	EPodcastShowUnplayedOnlyOn,
-	EPodcastShowUnplayedOnlyOff,
 	// Common commands
 	EPodcastBack,
-	EPodcastZoomSetting,
 	EPodcastSettings,
 	EPodcastSelectShowDir,
-	EPodcastSetVolume,
 	EPodcastAbout,
 	EPodcastHide,
 	EPodcastHelp
@@ -108,4 +101,9 @@ enum TShowsIconIndex
 	EFailedShowIcon
 	};
 
+enum TConnectionSetting {
+	EConnectionDefault = 0,
+	EConnectionAlwaysAsk = -1,
+	EConnectionUseSpecified = 1
+};
 #endif

@@ -22,8 +22,8 @@
 #include <e32base.h>
 #include "PodcastModel.h"
 
-_LIT(KPodcastDir1, "E:\\Podcasts\\");
-_LIT(KPodcastDir2, "C:\\Podcasts\\");
+_LIT(KPodcastDir1, "F:\\Podcasts\\"); // memory card on phone with flash disk
+_LIT(KPodcastDir2, "E:\\Podcasts\\"); // memory card on phone without flash disk
 _LIT(KPodcastDir3, "C:\\Podcasts\\");
 
 _LIT(KConfigImportFile, "config.cfg");

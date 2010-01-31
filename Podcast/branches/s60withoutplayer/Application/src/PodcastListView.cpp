@@ -257,8 +257,6 @@ void CPodcastListView::HandleCommandL(TInt aCommand)
 	case EPodcastSettings:
 		AppUi()->ActivateLocalViewL(KUidPodcastSettingsViewID);
 		break;
-	case EPodcastZoomSetting:
-		break;
 	case EPodcastAbout:
 		RunAboutDialogL();
 		break;

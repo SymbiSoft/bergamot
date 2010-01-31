@@ -202,6 +202,7 @@ void CFeedEngine::UpdateNextFeedL()
 
 EXPORT_C TBool CFeedEngine::UpdateFeedL(TUint aFeedUid)
 	{
+	DP("FeedEngine::UpdateFeedL BEGIN");
 	iActiveFeed = GetFeedInfoByUid(aFeedUid);
 	iCatchupCounter = 0;
 
@@ -222,11 +223,13 @@ EXPORT_C TBool CFeedEngine::UpdateFeedL(TUint aFeedUid)
 			{
 			TRAP_IGNORE(iObservers[i]->FeedDownloadUpdatedL(iActiveFeed->Uid(), 0));
 			}
-		DP("Update done");
+
+		DP("FeedEngine::UpdateFeedL END, return ETrue");
 		return ETrue;
 		}
 	else
 		{
+		DP("FeedEngine::UpdateFeedL END, return EFalse");
 		return EFalse;
 		}
 	}
@@ -948,9 +951,7 @@ void CFeedEngine::DBLoadFeedsL()
 			CleanupStack::Pop(feedInfo);
 				
 			rc = sqlite3_step(st);
-			DP1("step rc=%d", rc);
 		}
-
 	}
 
 	CleanupStack::PopAndDestroy();//st

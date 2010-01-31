@@ -44,6 +44,7 @@ public:
 
 	void CompleteConstructionL()
 		{
+		DP("CIapSetting::CompleteConstructionL BEGIN");
 		CAknEnumeratedTextPopupSettingItem::CompleteConstructionL();
 		
 		CArrayPtr< CAknEnumeratedText > * enumeratedArr = EnumeratedTextArray();
@@ -62,11 +63,19 @@ public:
 			// both arrays destroy themselves, so we need two copies to prevent USER 44
 			HBufC *buf2 = (*iapArray)[i].AllocL();
 			
+			DP("Enumerating text");
 			CAknEnumeratedText *enumerated = new CAknEnumeratedText(iPodcastModel.IAPIds()[i].iIapId, buf2);
+			DP("Adding text");
 			enumeratedArr->AppendL(enumerated);
 		}
 		
-		HandleTextArrayUpdateL();
+		TRAPD(err, HandleTextArrayUpdateL());
+		
+		if (err != KErrNone) {
+			DP1("Leave in HandleTextArrayUpdateL, err=%d", err);
+		}
+		
+		DP("CIapSetting::CompleteConstructionL END");
 		}
 
 	void EditItemL(TBool aCalledFromMenu)
@@ -148,7 +157,7 @@ public:
 		TBool dimAutoUpdateTime = iConnection == -1 || iAutoUpdate != EAutoUpdateAtTime;
 		TBool dimAutoUpdate = iConnection == -1;
 		TBool dimAutoDownload = EFalse; //iConnection == -1 || iAutoUpdate == EAutoUpdateOff;
-		TBool dimIAP = iConnection < 0;
+		TBool dimIAP = iConnection <= 0;
 	
 		iSettingAutoDownload->SetHidden(dimAutoDownload);
 		iSettingAutoUpdate->SetHidden(dimAutoUpdate);
@@ -252,7 +261,9 @@ public:
 				return new (ELeave) CAknEnumeratedTextPopupSettingItem (aSettingId, iConnection);
 				break;
 			case EPodcastSettingIAPList:
+				DP("Before CIapSetting");
 				iSettingIAP = new (ELeave) CIapSetting (aSettingId, iIap, iPodcastModel);
+				DP("After CIapSetting");
 				return iSettingIAP;
 				break;
 			case EPodcastSettingAutoDownload:
@@ -407,8 +418,6 @@ void CPodcastSettingsView::HandleCommandL(TInt aCommand)
 		iListbox->StoreSettings();
 		AppUi()->ActivateViewL(iPreviousView);
 		}break;	
-	case EPodcastZoomSetting:
-		break;
 	case EPodcastAbout:
 		break;
 	default:
