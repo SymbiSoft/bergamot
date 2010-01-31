@@ -80,7 +80,7 @@ void CFeedEngine::ConstructL()
 	}
 
 CFeedEngine::CFeedEngine(CPodcastModel& aPodcastModel)
-		: iClientState(ENotUpdating),
+		: iClientState(EIdle),
 		  iFeedTimer(this),
 		  iPodcastModel(aPodcastModel),
 		  iDB(*aPodcastModel.DB())
@@ -93,9 +93,11 @@ CFeedEngine::~CFeedEngine()
 	
 	iFeedsUpdating.Close();
 	iSortedFeeds.ResetAndDestroy();
+	iSearchResults.ResetAndDestroy();
 	
 	delete iParser;
 	delete iFeedClient;
+	delete iOpmlParser;
 	}
 
 /**
@@ -162,7 +164,7 @@ EXPORT_C void CFeedEngine::UpdateAllFeedsL()
 
 EXPORT_C void CFeedEngine::CancelUpdateAllFeeds()
 	{
-	if(iClientState != ENotUpdating)
+	if(iClientState != EIdle)
 		{
 		iFeedsUpdating.Reset();
 		iFeedClient->Stop();
@@ -192,7 +194,7 @@ void CFeedEngine::UpdateNextFeedL()
 		}
 	else
 		{
-		iClientState = ENotUpdating;
+		iClientState = EIdle;
 		for (TInt i=0;i<iObservers.Count();i++) 
 			{
 			TRAP_IGNORE(iObservers[i]->FeedUpdateAllCompleteL());
@@ -570,7 +572,8 @@ void CFeedEngine::Progress(CHttpClient* /*aHttpClient*/, TInt aBytes, TInt aTota
 
 void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TInt aError)
 	{
-	DP1("Complete, aSuccessful=%d", aError);
+	DP2("CFeedEngine::CompleteL BEGIN, iClientState=%d, aSuccessful=%d", iClientState, aError);
+	
 	if (iClientState == EUpdatingFeed) 
 		{
 		// Parse the feed. We need to trap this call since it could leave and then
@@ -586,7 +589,7 @@ void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TInt aError)
 		BaflUtils::DeleteFile(iPodcastModel.FsSession(),iUpdatingFeedFileName);
 
 		// change client state
-		iClientState = ENotUpdating;
+		iClientState = EIdle;
 
 		TTime time;
 		time.HomeTime();
@@ -617,14 +620,36 @@ void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TInt aError)
 
 		// we will wait until the image has been downloaded to start the next feed update.
 		}
-	else	// iClientState == EUpdatingImage
+	else if (iClientState == EUpdatingImage)
 		{
 		// change client state to not updating
-		iClientState = ENotUpdating;
+		iClientState = EIdle;
 		
 		NotifyFeedUpdateComplete();
 		UpdateNextFeedL();
 		}
+	else if (iClientState == ESearching) {
+	
+		iClientState = EIdle;
+		
+		DP1("Search complete, results in %S", &iSearchResultsFileName);
+		
+		if (!iOpmlParser) 
+			{
+			iOpmlParser = new COpmlParser(*this, iPodcastModel.FsSession());
+			}
+		
+		DP("Parsing OPML");
+		TRAPD(err, iOpmlParser->ParseOpmlL(iSearchResultsFileName, ETrue));
+		
+		if (err == KErrNone) {
+			NotifySearchComplete();
+		} else {
+			DP1("Parsing failed, err=%d", err);	
+		}
+	}
+	
+	DP("CFeedEngine::CompleteL END");
 	}
 
 void CFeedEngine::NotifyFeedUpdateComplete()
@@ -652,9 +677,12 @@ EXPORT_C void CFeedEngine::ImportFeedsL(const TDesC& aFile)
 	{
 	TFileName opmlPath;
 	opmlPath.Copy(aFile);
-	COpmlParser opmlParser(*this, iPodcastModel.FsSession());
 	
-	opmlParser.ParseOpmlL(opmlPath);
+	if (!iOpmlParser) {
+		iOpmlParser = new COpmlParser(*this, iPodcastModel.FsSession());
+	}
+	
+	iOpmlParser->ParseOpmlL(opmlPath, EFalse);
 	}
 
 EXPORT_C TBool CFeedEngine::ExportFeedsL(TFileName& aFile)
@@ -1036,3 +1064,61 @@ EXPORT_C void CFeedEngine::UpdateFeed(CFeedInfo *aItem)
 	DBUpdateFeed(aItem);
 	}
 
+EXPORT_C void CFeedEngine::SearchForFeedL(TDesC& aSearchString)
+	{
+	DP1("FeedEngine::SearchForFeedL BEGIN, aSearchString=%S", &aSearchString);
+	
+	if (iClientState != EIdle) {
+		User::Leave(KErrInUse);
+	}
+	
+	// prepare search URL
+	HBufC* templ = HBufC::NewLC(KMaxLineLength);
+	templ->Des().Copy(KSearchUrl());
+		
+	HBufC* url = HBufC::NewLC(KMaxURLLength);		
+	url->Des().Format(*templ, &aSearchString);
+
+	DP1("SearchURL: %S", url);
+	
+	// crate path to store OPML search results
+	iPodcastModel.FsSession().PrivatePath(iSearchResultsFileName);
+	
+	iSearchResultsFileName.Append(KSearchResultsFileName);
+	
+	// run search
+	if(iFeedClient->GetL(*url, iSearchResultsFileName, iPodcastModel.SettingsEngine().SpecificIAP()))
+		{
+		iClientState = ESearching;
+		}
+	else
+		{
+		iClientState = EIdle;
+		User::Leave(KErrAbort);
+		}
+	
+	CleanupStack::PopAndDestroy(url);
+	CleanupStack::PopAndDestroy(templ);
+		
+	DP("FeedEngine::SearchForFeedL END");
+	}
+
+EXPORT_C void CFeedEngine::AddSearchResultL(CFeedInfo *item)
+	{
+	DP1("CFeedEngine::AddSearchResultL, item->Title()=%S", &(item->Title()));
+	iSearchResults.AppendL(item);
+	}
+
+IMPORT_C const RFeedInfoArray& CFeedEngine::GetSearchResults()
+	{
+	return iSearchResults;
+	}
+
+
+void CFeedEngine::NotifySearchComplete()
+	{
+	for (TInt i=0;i<iObservers.Count();i++) 
+		{
+		iObservers[i]->FeedSearchResultsUpdated();
+		}
+	}

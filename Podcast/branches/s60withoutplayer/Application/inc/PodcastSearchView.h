@@ -16,8 +16,8 @@
 *
 */
 
-#ifndef PODCASTFEEDVIEWH
-#define PODCASTFEEDVIEWH 
+#ifndef PODCASTSEARCHVIEW_H
+#define PODCASTSEARCHVIEW_H 
 
 #include <aknview.h>
 #include <AknToolbarObserver.h>
@@ -29,18 +29,18 @@
 #include "PodcastListView.h"
 #include "Podcast.hrh"
 
-class CPodcastFeedView : public CPodcastListView, public MEikListBoxObserver, 
+class CPodcastSearchView : public CPodcastListView, public MEikListBoxObserver, 
 	public MFeedEngineObserver, public MKeyEventListener, public MAknToolbarObserver,
 	public MPointerListener, public MAknLongTapDetectorCallBack
     {
     public: 
-        static CPodcastFeedView* NewL(CPodcastModel& aPodcastModel);
-        static CPodcastFeedView* NewLC(CPodcastModel& aPodcastModel);
-        ~CPodcastFeedView();
+        static CPodcastSearchView* NewL(CPodcastModel& aPodcastModel);
+        static CPodcastSearchView* NewLC(CPodcastModel& aPodcastModel);
+        ~CPodcastSearchView();
         
 	protected:
 	    void ConstructL();
-		CPodcastFeedView(CPodcastModel& aPodcastModel);
+		CPodcastSearchView(CPodcastModel& aPodcastModel);
 
 		/**
 		 * Returns views id, intended for overriding by sub classes.
@@ -84,11 +84,11 @@ class CPodcastFeedView : public CPodcastListView, public MEikListBoxObserver,
 
 		
 		// from MFeedEngineObserver
-		void FeedInfoUpdated(TUint aFeedUid);
-		void FeedDownloadUpdatedL(TUint aFeedUid, TInt aPercentOfCurrentDownload);
-		void FeedUpdateCompleteL(TUint aFeeidUid);
-		void FeedUpdateAllCompleteL();
-		void FeedSearchResultsUpdated() {}
+		void FeedInfoUpdated(TUint /* aFeedUid */) {}
+		void FeedDownloadUpdatedL(TUint /* aFeedUid */, TInt /*aPercentOfCurrentDownload*/) {}
+		void FeedUpdateCompleteL(TUint /*aFeeidUid*/) {}
+		void FeedUpdateAllCompleteL() {}
+		void FeedSearchResultsUpdated();
 
 		/** 
 		 * Command handling function intended for overriding by sub classes. 
@@ -96,11 +96,7 @@ class CPodcastFeedView : public CPodcastListView, public MEikListBoxObserver,
 		 * @param aCommand ID of the command to respond to. 
 		 */
 		void HandleCommandL(TInt aCommand);
-		void FeedInfoUpdatedL(TUint aFeedUid);
-		void UpdateFeedInfoDataL(CFeedInfo* aFeedInfo, TInt aIndex, TBool aIsUpdating = EFalse);
-		void UpdateFeedInfoStatusL(TUint aFeedUid, TBool aIsUpdating = EFalse);
-
-		 void DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane);
+		void DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane) {}
 		TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType);
 
 		void OfferToolbarEventL(TInt aCommand);
@@ -110,13 +106,10 @@ class CPodcastFeedView : public CPodcastListView, public MEikListBoxObserver,
 		
 	private:
 		CPodcastModel& iPodcastModel;		
-		TBool iUpdatingAllRunning;
-		HBufC* iFeedsFormat;
-		HBufC* iNeverUpdated;
-		TBool iLongTapUnderway;
 		
 		CAknStylusPopUpMenu* iStylusPopupMenu;
 		CAknLongTapDetector* iLongTapDetector;
+		TBool iSearchRunning;
 };
 
-#endif // PODCASTFEEDVIEWH
+#endif // PODCASTSEARCHVIEW_H

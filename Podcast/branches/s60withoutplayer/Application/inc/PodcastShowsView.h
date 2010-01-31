@@ -77,6 +77,7 @@ protected:
 	void FeedUpdateCompleteL(TUint aFeedUid);
 	void FeedUpdateAllCompleteL();
 	void FeedDownloadUpdatedL(TUint /*aFeedUid*/, TInt /*aPercentOfCurrentDownload*/);
+	void FeedSearchResultsUpdated() {}
 
 	/** 
 	 * Command handling function intended for overriding by sub classes. 

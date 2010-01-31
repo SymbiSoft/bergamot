@@ -114,6 +114,10 @@ class CPodcastListView : public CAknView
 		virtual void UpdateListboxItemsL() = 0;
 		
         void RunAboutDialogL();
+        void SetEmptyTextL(TInt aResourceId);
+        void ShowOkMessage(TDesC &aText);
+        void ShowErrorMessage(TDesC &aText);
+        
 
 	protected:
 		 CPodcastListContainer* iListContainer;

@@ -30,17 +30,23 @@
 #include "FeedTimer.h"
 #include "sqlite3.h"
 
-
 class CPodcastModel;
+class COpmlParser;
 
 _LIT(KOpmlFeed, "    <outline title=\"%S\" description=\"%S\" xmlUrl=\"%S\" htmlUrl=\"%S\"/>");
 _LIT(KOpmlHeader, "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n<opml version=\"1.1\" xmlns:podcastSearch=\"http://digitalpodcast.com/podcastsearchservice/output_specs.html\">\n<head>\n  <title>Podcast Feed List</title>\n</head>\n<body>\n  <outline>");
 _LIT(KOpmlFooter, "  </outline>\n</body>\n</opml>");
 
+_LIT(KSearchUrl, "http://www.digitalpodcast.com/podcastsearchservice/v2b/search/?appid=SymbianPodcatcher&keywords=%S&format=rssopml&sort=rel&searchsource=all&contentfilter=noadult&start=0&results=20");
+_LIT(KSearchResultsFileName, "searchresults.opml");
+
+const int KMaxSearchString = 30;
+
 enum TClientState {
-	ENotUpdating,
+	EIdle,
 	EUpdatingFeed,
-	EUpdatingImage
+	EUpdatingImage,
+	ESearching
 };
 
 class CFeedEngine : public CBase, public MHttpClientObserver, public MFeedParserObserver
@@ -81,6 +87,11 @@ public:
 	 * @return TUint
 	 */
 	IMPORT_C TUint ActiveClientUid();
+	
+	IMPORT_C void SearchForFeedL(TDesC& aSearchString);
+	IMPORT_C void AddSearchResultL(CFeedInfo *item);
+	IMPORT_C const RFeedInfoArray& GetSearchResults();
+
 protected:
 	
 	static TInt CompareFeedsByTitle(const CFeedInfo &a, const CFeedInfo &b);
@@ -107,7 +118,8 @@ private:
 	
 	void UpdateNextFeedL();
 	void NotifyFeedUpdateComplete();
-
+	void NotifySearchComplete();
+	
 private:
 	void DBLoadFeedsL();
 	TBool DBRemoveFeed(TUint aUid);
@@ -133,7 +145,7 @@ private:
 
 	CFeedInfo *iActiveFeed;
 	TFileName iUpdatingFeedFileName;
-
+	TFileName iSearchResultsFileName;
 	RFeedInfoArray iFeedsUpdating;
 	
 	// observers that will receive callbacks, not owning
@@ -145,6 +157,9 @@ private:
     sqlite3& iDB;
     
     TBuf<KDefaultSQLDataBufferLength> iSqlBuffer;
+    
+    COpmlParser* iOpmlParser;
+	RFeedInfoArray iSearchResults;
 };
 #endif /*FEEDENGINE_H_*/
 

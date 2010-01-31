@@ -1,0 +1,86 @@
+/*
+ * Copyright (c) 2007-2010 Sebastian Brannstrom, Lars Persson, EmbedDev AB
+ *
+ * All rights reserved.
+ * This component and the accompanying materials are made available
+ * under the terms of the License "Eclipse Public License v1.0"
+ * which accompanies this distribution, and is available
+ * at the URL "http://www.eclipse.org/legal/epl-v10.html".
+ *
+ * Initial Contributors:
+ * EmbedDev AB - initial contribution.
+ *
+ * Contributors:
+ *
+ * Description:
+ *
+ */
+
+RESOURCE AVKON_VIEW r_podcast_searchview
+{
+	menubar = r_podcast_feedview_menubar;
+	cba = r_podcast_cba;
+	toolbar = r_searchview_toolbar;
+}
+
+RESOURCE AVKON_TOOLBAR r_searchview_toolbar
+    {
+    flags = KAknToolbarFixed;
+    items =
+        {
+        TBAR_CTRL
+            {
+            type = EAknCtButton;
+            id = EPodcastSearch;
+            control = AVKON_BUTTON
+                {
+                states =
+                    {
+                    AVKON_BUTTON_STATE
+                        {
+                        //bmpfile = AVKON_BITMAP_FILE;
+                        //bmpid = EMbmAvkonQgn_indi_find_goto;
+                        txt = STRING_r_search;
+                        helptxt = STRING_r_update_all_feeds_cmd;
+                        }  
+                    };
+                };
+            },
+		TBAR_CTRL
+			  {
+			  type = EAknCtButton;
+			  id = EPodcastCancelUpdateAllFeeds;
+			  control = AVKON_BUTTON
+				  {
+				  states =
+					  {
+					  AVKON_BUTTON_STATE
+						  {
+						  //bmpfile = AVKON_BITMAP_FILE;
+						  //bmpid = EMbmAvkonQgn_indi_find_goto;
+						  txt = STRING_r_cancel_update_all_feeds_short_cmd;
+						  helptxt = STRING_r_cancel_update_all_feeds_cmd;
+						  }  
+					  };
+				  };
+			  },
+		TBAR_CTRL
+			{
+			type = EAknCtButton;
+			id = EPodcastAddSearchResult;
+			control = AVKON_BUTTON
+				{
+				states =
+					{
+					AVKON_BUTTON_STATE
+						{
+						//bmpfile = AVKON_BITMAP_FILE;
+						//bmpid = EMbmAvkonQgn_indi_find_goto;
+						txt = STRING_r_view_add_feed_cmd_short;
+						helptxt = STRING_r_view_add_feed_cmd;
+					   }  
+					};
+				};
+			}
+			};// items
+    }

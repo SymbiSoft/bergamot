@@ -36,10 +36,11 @@ COpmlParser::~COpmlParser()
 {	
 }
 
-void COpmlParser::ParseOpmlL(const TFileName &feedFileName)
+void COpmlParser::ParseOpmlL(const TFileName &feedFileName, TBool aSearching)
 	{
 	DP1("ParseOpmlL BEGIN: %S", &feedFileName);
 	
+	iSearching = aSearching;
 	_LIT8(KXmlMimeType, "text/xml");
 	// Contruct the parser object
 	CParser* parser = CParser::NewLC(KXmlMimeType, *this);
@@ -115,7 +116,7 @@ void COpmlParser::OnStartElementL(const RTagInfo& aElement, const RAttributeArra
 					newFeed->SetCustomTitle();
 					hasTitle = ETrue;
 				// description=
-				} else if (attr16.Compare(KTagText) == 0) {
+				} else if (attr16.Compare(KTagDescription) == 0) {
 					newFeed->SetDescriptionL(*val16);
 				} else if (attr16.Compare(KTagText) == 0) {
 					if (!hasTitle) {
@@ -135,7 +136,11 @@ void COpmlParser::OnStartElementL(const RTagInfo& aElement, const RAttributeArra
 				newFeed->SetTitleL(newFeed->Url());
 			}
 			
-			iFeedEngine.AddFeedL(newFeed);
+			if (iSearching) {
+				iFeedEngine.AddSearchResultL(newFeed);
+			} else {
+				iFeedEngine.AddFeedL(newFeed);
+			}
 		}
 		break;
 	default:

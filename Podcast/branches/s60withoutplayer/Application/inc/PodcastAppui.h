@@ -28,12 +28,15 @@ class CPodcastMainView;
 class CPodcastFeedView;
 class CPodcastShowsView;
 class CPodcastSettingsView;
+class CPodcastSearchView;
 class CPodcastModel;
+
 const TUid KUidPodcastClientID          = {0xA00046AE};
 const TUid KUidPodcastBaseViewID = {0x00000001};
 const TUid KUidPodcastFeedViewID = {0x00000002};
 const TUid KUidPodcastShowsViewID = {0x00000003};
 const TUid KUidPodcastSettingsViewID = {0x00000005};
+const TUid KUidPodcastSearchViewID = {0x00000006};
 
 class CPodcastAppUi : public CAknViewAppUi, public MAknTabObserver
     {
@@ -55,6 +58,7 @@ class CPodcastAppUi : public CAknViewAppUi, public MAknTabObserver
     	CPodcastMainView *iMainView;
 		CPodcastFeedView* iFeedView;
 		CPodcastShowsView* iShowsView;		
+		CPodcastSearchView* iSearchView;
 		CPodcastSettingsView* iSettingsView;
 		CPodcastModel* iPodcastModel;
 

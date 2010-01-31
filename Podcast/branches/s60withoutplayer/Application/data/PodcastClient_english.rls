@@ -192,3 +192,11 @@ rls_string STRING_r_view_help "Help"
 rls_string STRING_r_view_mark_as_played_cmd_short "Mark old"
 rls_string STRING_r_view_mark_as_unplayed_cmd_short "Mark new"
 rls_string STRING_r_view_more_options "More actions"
+
+rls_string STRING_r_search "Search"
+rls_string STRING_r_search_help "Search for podcasts"
+rls_string STRING_r_search_title "Enter search terms"
+
+rls_string STRING_add_feed_title "Add feed"
+rls_string STRING_add_feed_success "Feed added"
+rls_string STRING_add_feed_error "Could not add feed"

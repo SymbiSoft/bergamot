@@ -367,7 +367,11 @@ EXPORT_C void CSettingsEngine::SetUpdateFeedTime(TTime aUpdateTime)
 	}
 
 EXPORT_C TInt CSettingsEngine::SpecificIAP()
-	{	
+	{
+	if (iIap == 0 || iIap == -1) {
+		return iIap;
+	}
+	
 	for (int i=0;i<iPodcastModel.IAPIds().Count();i++) {
 		if (((TInt)iPodcastModel.IAPIds()[i].iIapId) == iIap) {
 			return iIap;

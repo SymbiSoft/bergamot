@@ -24,5 +24,6 @@ public:
 	virtual void FeedDownloadUpdatedL(TUint aFeedUid, TInt aPercentOfCurrentDownload) = 0;
 	virtual void FeedUpdateCompleteL(TUint aFeedUid) = 0;
 	virtual void FeedUpdateAllCompleteL() = 0;
+	virtual void FeedSearchResultsUpdated() = 0;
 };
 #endif /*FEEDENGINEOBSERVER_H_*/

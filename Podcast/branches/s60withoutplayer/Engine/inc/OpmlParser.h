@@ -53,7 +53,7 @@ public:
 	virtual ~COpmlParser();
 	
 public:
-	void ParseOpmlL(const TFileName &feedFileName);
+	void ParseOpmlL(const TFileName &feedFileName, TBool aSearching);
 	
 public: // from MContentHandler
 	void OnStartDocumentL(const Xml::RDocumentParameters& aDocParam, TInt aErrorCode);
@@ -75,6 +75,7 @@ private:
 	TBuf<KBufferLength> iBuffer;
 	TEncoding iEncoding;
 	RFs& iFs;
+	TBool iSearching;
 };
 
 #endif

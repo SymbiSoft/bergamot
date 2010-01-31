@@ -176,7 +176,6 @@ void CPodcastShowsView::DoActivateL(const TVwsViewId& aPrevViewId,
 		TUid aCustomMessageId, const TDesC8& aCustomMessage)
 	{
 	DP("CPodcastShowsView::DoActivateL BEGIN");
-	HBufC* emptyText;
 	
 	switch (aCustomMessageId.iUid)
 		{
@@ -186,16 +185,13 @@ void CPodcastShowsView::DoActivateL(const TVwsViewId& aPrevViewId,
 		case EShowPendingShows:
 			iCurrentCategory
 					= (TPodcastClientShowCategory) aCustomMessageId.iUid;
-			emptyText =  iEikonEnv->AllocReadResourceLC(R_PODCAST_EMPTY_QUEUE);
+			SetEmptyTextL(R_PODCAST_EMPTY_QUEUE);
 			break;
 		case EShowFeedShows:
 			iCurrentCategory = EShowFeedShows;
-			emptyText =  iEikonEnv->AllocReadResourceLC(R_PODCAST_EMPTY_LIST);
+			SetEmptyTextL(R_PODCAST_EMPTY_LIST);
 			break;
 		}
-
-	iListContainer->Listbox()->View()->SetListEmptyTextL(*emptyText);
-	CleanupStack::PopAndDestroy(emptyText);	
 
 	CPodcastListView::DoActivateL(aPrevViewId, aCustomMessageId, aCustomMessage);
 	
@@ -370,7 +366,7 @@ void CPodcastShowsView::UpdateFeedUpdateStateL()
 	{
 	TBool listboxDimmed = EFalse;
 
-	if (iPodcastModel.FeedEngine().ClientState() != ENotUpdating && iPodcastModel.ActiveFeedInfo()
+	if (iPodcastModel.FeedEngine().ClientState() != EIdle && iPodcastModel.ActiveFeedInfo()
 			!= NULL && iPodcastModel.FeedEngine().ActiveClientUid() == iPodcastModel.ActiveFeedInfo()->Uid())
 		{
 		listboxDimmed = ETrue;
@@ -738,7 +734,9 @@ void CPodcastShowsView::UpdateToolbar()
 
 	TBool hideDownloadShowCmd = ETrue;
 	TBool hideSetPlayed = EFalse;
-	TBool updatingState = (iCurrentCategory != EShowDownloadedShows && iPodcastModel.FeedEngine().ClientState() != ENotUpdating && iPodcastModel.FeedEngine().ActiveClientUid() == iPodcastModel.ActiveFeedInfo()->Uid());
+	TBool updatingState = (iCurrentCategory == EShowFeedShows && 
+			iPodcastModel.FeedEngine().ClientState() != EIdle && 
+			iPodcastModel.FeedEngine().ActiveClientUid() == iPodcastModel.ActiveFeedInfo()->Uid());
 	
 	if(iListContainer->Listbox() != NULL)
 	{

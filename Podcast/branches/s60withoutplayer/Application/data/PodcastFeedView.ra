@@ -51,7 +51,7 @@ RESOURCE MENU_PANE r_podcast_feedview_menu
 			{
 			command = EPodcastHelp;
 			txt = STRING_r_view_help;
-			},		
+			},
 		MENU_ITEM
 			{
 			command = EAknSoftkeyExit;
@@ -257,6 +257,33 @@ RESOURCE DIALOG r_podcast_add_feed_dlg
 
 	flags = EGeneralQueryFlags;
 	title = STRING_r_add_feed_title;
+	items = 
+	{
+			DLG_LINE
+				{
+				type = EAknCtQuery;
+				id = EGeneralQuery;
+				control= AVKON_DATA_QUERY
+					{
+					layout = EDataLayout;
+					control = EDWIN
+						{
+						flags= EEikEdwinNoHorizScrolling | EEikEdwinResizable;
+						maxlength = 256;
+						width = 4;
+						lines = 5;
+						};
+					};	
+				}
+	};
+}
+
+RESOURCE DIALOG r_podcast_search_dlg
+{
+	buttons = R_AVKON_SOFTKEYS_OK_CANCEL;
+
+	flags = EGeneralQueryFlags;
+	title = STRING_r_search_title;
 	items = 
 	{
 			DLG_LINE

@@ -22,6 +22,7 @@
 #include "PodcastFeedView.h"
 #include "PodcastShowsView.h"
 #include "PodcastSettingsView.h"
+#include "PodcastSearchView.h"
 #include "ShowEngine.h"
 #include "PodcastModel.h"
 #include "debug.h"
@@ -49,6 +50,9 @@ void CPodcastAppUi::ConstructL()
 	iShowsView = CPodcastShowsView::NewL(*iPodcastModel);
 	this->AddViewL(iShowsView);
 
+	iSearchView = CPodcastSearchView::NewL(*iPodcastModel);
+	this->AddViewL(iSearchView);
+	
 	iSettingsView = CPodcastSettingsView::NewL(*iPodcastModel);
 	this->AddViewL(iSettingsView);
 	
@@ -127,13 +131,16 @@ void CPodcastAppUi::NaviShowTabGroupL()
 
 	HBufC *label1 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_FEEDS);
 	HBufC *label2 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_QUEUE);
-	//HBufC *label3 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_DOWNLOADED);			
 			
 	iTabGroup->AddTabL(0,*label1);
 	iTabGroup->AddTabL(1,*label2);
-	//iTabGroup->AddTabL(2,*label3);
 	
-	//CleanupStack::PopAndDestroy(label3);
+#ifdef SEARCH_ENABLED
+	iTabGroup->SetTabFixedWidthL(EAknTabWidthWithThreeTabs);
+	HBufC *label3 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_SEARCH);			
+	iTabGroup->AddTabL(2,*label3);
+	CleanupStack::PopAndDestroy(label3);
+#endif
 	CleanupStack::PopAndDestroy(label2);
 	CleanupStack::PopAndDestroy(label1);
 	
@@ -159,8 +166,8 @@ void CPodcastAppUi::TabChangedL (TInt /*aIndex*/)
 		newview = KUidPodcastShowsViewID;
 		messageUid = TUid::Uid(EShowPendingShows);
 	} else if (index == 2) {
-		newview = KUidPodcastShowsViewID;
-		messageUid = TUid::Uid(EShowDownloadedShows);	
+		newview = KUidPodcastSearchViewID;
+		messageUid = TUid::Uid(0);	
 	} else {
 		User::Leave(KErrTooBig);
 	}

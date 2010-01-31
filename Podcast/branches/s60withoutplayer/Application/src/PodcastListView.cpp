@@ -278,3 +278,29 @@ void CPodcastListView::RunAboutDialogL()
 	CleanupStack::Pop(dlg);
 	dlg->ExecuteLD(R_DLG_ABOUT);
 }
+
+void CPodcastListView::SetEmptyTextL(TInt aResourceId)
+	{
+	HBufC* emptyText =  iEikonEnv->AllocReadResourceLC(aResourceId);
+	iListContainer->Listbox()->View()->SetListEmptyTextL(*emptyText);
+	CleanupStack::PopAndDestroy(emptyText);	
+	}
+
+void CPodcastListView::ShowOkMessage(TDesC &aText)
+	{
+	CAknNoteDialog* dlg= new(ELeave) CAknNoteDialog();
+	CleanupStack::PushL(dlg);
+	dlg->SetTextL(aText);
+	CleanupStack::Pop(dlg);
+	dlg->ExecuteLD(R_MESSAGEDLG_OK);
+	}
+
+void CPodcastListView::ShowErrorMessage(TDesC &aText)
+	{
+	CAknNoteDialog* dlg= new(ELeave) CAknNoteDialog();
+	CleanupStack::PushL(dlg);
+	dlg->SetTextL(aText);
+	CleanupStack::Pop(dlg);
+	dlg->ExecuteLD(R_ERRORDLG_OK);
+	}
+

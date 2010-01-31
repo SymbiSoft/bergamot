@@ -50,35 +50,6 @@ const TInt KMimeBufLength = 100;
 _LIT(KUnknownUpdateDateString, "?/?");
 _LIT(KFeedFormat, "%d\t%S\t%S %S");
 
-
-class CPodcastFeedContainer : public CCoeControl
-    {
-    public: 
-		CPodcastFeedContainer();
-		~CPodcastFeedContainer();
-		void ConstructL( const TRect& aRect );
-	};
-
-CPodcastFeedContainer::CPodcastFeedContainer()
-{
-}
-
-void CPodcastFeedContainer::ConstructL( const TRect& aRect )
-{
-	CreateWindowL();
-
-	 // Set the windows size
-    SetRect( aRect );    
-    
-    // Activate the window, which makes it ready to be drawn
-    ActivateL();
-}
-
-CPodcastFeedContainer::~CPodcastFeedContainer()
-{
-}
-
-
 CPodcastFeedView* CPodcastFeedView::NewL(CPodcastModel& aPodcastModel)
     {
     CPodcastFeedView* self = CPodcastFeedView::NewLC(aPodcastModel);
