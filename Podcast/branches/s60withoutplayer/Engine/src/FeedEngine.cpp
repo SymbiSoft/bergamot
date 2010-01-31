@@ -29,7 +29,7 @@
 const TInt KMaxUidBufLen = 20;
 const TInt KMaxDescriptionLength = 2048;
 const TInt KMaxURLLength = 512;
-const TInt KMaxLineLength = 1024;
+const TInt KMaxLineLength = 4096;
 // Cleanup stack macro for SQLite3
 // TODO Move this to some common place.
 static void Cleanup_sqlite3_finalize_wrapper(TAny* handle)
@@ -677,25 +677,34 @@ EXPORT_C TBool CFeedEngine::ExportFeedsL(TFileName& aFile)
 	
 	HBufC* line = HBufC::NewLC(KMaxLineLength);
 	
-	HBufC* url = HBufC::NewLC(KMaxURLLength);		
+	HBufC* xmlUrl = HBufC::NewLC(KMaxURLLength);		
+	HBufC* htmlUrl = HBufC::NewLC(KMaxURLLength);		
 
+	HBufC* desc = HBufC::NewLC(KMaxDescriptionLength);
 
 	tft.Write(KOpmlHeader());
 	for (int i=0; i<iSortedFeeds.Count(); i++)
 		{
-		url->Des().Copy(iSortedFeeds[i]->Url());
-		TPtr ptr(url->Des());
+		DP1("Exporting feed '%S'", &iSortedFeeds[i]->Title());
+		
+		xmlUrl->Des().Copy(iSortedFeeds[i]->Url());
+		TPtr ptr(xmlUrl->Des());
 		_LIT(KAnd, "&");
 		_LIT(KAmp, "&amp;");
 		ReplaceString(ptr, KAnd, KAmp);
-
-		line->Des().Format(*templ, &iSortedFeeds[i]->Title(), &url);
+		
+		desc->Des().Zero();
+		if (iSortedFeeds[i]->Description() != KNullDesC) {
+			desc->Des().Copy(iSortedFeeds[i]->Description());
+		}
+		
+		line->Des().Format(*templ, &iSortedFeeds[i]->Title(), desc, xmlUrl, htmlUrl);
 		tft.Write(*line);
 		}
 
 	tft.Write(KOpmlFooter());
 		
-	CleanupStack::PopAndDestroy(4);//destroy 3 bufs & close rfile
+	CleanupStack::PopAndDestroy(6);//destroy 4 bufs & close rfile
 	
 	return ETrue;
 	}

@@ -33,9 +33,9 @@
 
 class CPodcastModel;
 
-_LIT(KOpmlFeed, "  <outline text=\"%S\" xmlUrl=\"%S\"/>");
-_LIT(KOpmlHeader, "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<opml version=\"1.1\"><head>\n  <title>Podcast Feed List</title>\n</head>\n<body>");
-_LIT(KOpmlFooter, "</body>\n</opml>");
+_LIT(KOpmlFeed, "    <outline title=\"%S\" description=\"%S\" xmlUrl=\"%S\" htmlUrl=\"%S\"/>");
+_LIT(KOpmlHeader, "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n<opml version=\"1.1\" xmlns:podcastSearch=\"http://digitalpodcast.com/podcastsearchservice/output_specs.html\">\n<head>\n  <title>Podcast Feed List</title>\n</head>\n<body>\n  <outline>");
+_LIT(KOpmlFooter, "  </outline>\n</body>\n</opml>");
 
 enum TClientState {
 	ENotUpdating,

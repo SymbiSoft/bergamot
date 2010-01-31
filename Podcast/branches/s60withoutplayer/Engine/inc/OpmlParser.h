@@ -29,6 +29,9 @@ _LIT(KTagBody, "body");
 _LIT(KTagOutline, "outline");
 _LIT(KTagXmlUrl, "xmlUrl");
 _LIT(KTagText, "text");
+//_LIT(KTagTitle, "title");
+_LIT(KTagHtmlUrl, "htmlUrl");
+//_LIT(KTagDescription, "description");
 
 enum TOpmlState {
 	EStateOpmlRoot,

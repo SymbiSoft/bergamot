@@ -110,11 +110,20 @@ void COpmlParser::OnStartElementL(const RTagInfo& aElement, const RAttributeArra
 					newFeed->SetUrlL(*val16);
 					hasUrl = ETrue;
 				// text=...
-				} else if (attr16.Compare(KTagText) == 0) {
+				} else if (attr16.Compare(KTagTitle) == 0) {
 					newFeed->SetTitleL(*val16);
 					newFeed->SetCustomTitle();
 					hasTitle = ETrue;
-				}
+				// description=
+				} else if (attr16.Compare(KTagText) == 0) {
+					newFeed->SetDescriptionL(*val16);
+				} else if (attr16.Compare(KTagText) == 0) {
+					if (!hasTitle) {
+						newFeed->SetTitleL(*val16);
+						newFeed->SetCustomTitle();
+						hasTitle = ETrue;
+					}
+				} 
 				CleanupStack::PopAndDestroy(val16);
 			}
 
