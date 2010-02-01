@@ -390,11 +390,11 @@ TBool CFeedEngine::DBAddFeedL(CFeedInfo *aItem)
 		return EFalse;
 	}
 
-	_LIT(KSqlStatement, "insert into feeds (url, title, description, imageurl, imagefile, link, built, lastupdated, uid, feedtype, customtitle)"
-			" values (\"%S\",\"%S\", \"%S\", \"%S\", \"%S\", \"%S\", \"%Ld\", \"%Ld\", \"%u\", \"%u\", \"%u\")");
+	_LIT(KSqlStatement, "insert into feeds (url, title, description, imageurl, imagefile, link, built, lastupdated, uid, feedtype, customtitle, lasterror)"
+			" values (\"%S\",\"%S\", \"%S\", \"%S\", \"%S\", \"%S\", \"%Ld\", \"%Ld\", \"%u\", \"%u\", \"%u\", \"%d\")");
 	iSqlBuffer.Format(KSqlStatement,
 			&aItem->Url(), &aItem->Title(), &aItem->Description(), &aItem->ImageUrl(), &aItem->ImageFileName(), &aItem->Link(),
-			aItem->BuildDate().Int64(), aItem->LastUpdated().Int64(), aItem->Uid(), EAudioPodcast, aItem->CustomTitle());
+			aItem->BuildDate().Int64(), aItem->LastUpdated().Int64(), aItem->Uid(), EAudioPodcast, aItem->CustomTitle(), aItem->LastError());
 
 	sqlite3_stmt *st;
 	 
@@ -488,10 +488,10 @@ TBool CFeedEngine::DBUpdateFeed(CFeedInfo *aItem)
 	{
 	DP2("CShowEngine::DBUpdateFeed, title=%S, URL=%S", &aItem->Title(), &aItem->Url());
 	_LIT(KSqlStatement, "update feeds set url=\"%S\", title=\"%S\", description=\"%S\", imageurl=\"%S\", imagefile=\"%S\"," \
-			"link=\"%S\", built=\"%Lu\", lastupdated=\"%Lu\", feedtype=\"%u\", customtitle=\"%u\" where uid=\"%u\"");
+			"link=\"%S\", built=\"%Lu\", lastupdated=\"%Lu\", feedtype=\"%u\", customtitle=\"%u\", lasterror=\"%d\" where uid=\"%u\"");
 	iSqlBuffer.Format(KSqlStatement,
 			&aItem->Url(), &aItem->Title(), &aItem->Description(), &aItem->ImageUrl(), &aItem->ImageFileName(), &aItem->Link(),
-			aItem->BuildDate().Int64(), aItem->LastUpdated().Int64(), EAudioPodcast, aItem->CustomTitle(), aItem->Uid());
+			aItem->BuildDate().Int64(), aItem->LastUpdated().Int64(), EAudioPodcast, aItem->CustomTitle(), aItem->LastError(), aItem->Uid());
 
 	sqlite3_stmt *st;
 	 
@@ -989,6 +989,9 @@ void CFeedEngine::DBLoadFeedsL()
 				feedInfo->SetCustomTitle();
 			}
 			
+			TInt lasterror = sqlite3_column_int(st, 11);
+			feedInfo->SetLastError(lasterror);
+			
 			TLinearOrder<CFeedInfo> sortOrder( CFeedEngine::CompareFeedsByTitle);
 
 			iSortedFeeds.InsertInOrder(feedInfo, sortOrder);
@@ -1008,7 +1011,7 @@ CFeedInfo* CFeedEngine::DBGetFeedInfoByUidL(TUint aFeedUid)
 	{
 	DP("CFeedEngine::DBGetFeedInfoByUid");
 	CFeedInfo *feedInfo = NULL;
-	_LIT(KSqlStatement, "select url, title, description, imageurl, imagefile, link, built, lastupdated, uid, feedtype, customtitle from feeds where uid=%u");
+	_LIT(KSqlStatement, "select url, title, description, imageurl, imagefile, link, built, lastupdated, uid, feedtype, customtitle, lasterror from feeds where uid=%u");
 	iSqlBuffer.Format(KSqlStatement, aFeedUid);
 
 	sqlite3_stmt *st;
@@ -1059,6 +1062,10 @@ CFeedInfo* CFeedEngine::DBGetFeedInfoByUidL(TUint aFeedUid)
 			if (customtitle) {
 				feedInfo->SetCustomTitle();
 			}
+			
+			TInt lasterror = sqlite3_column_int(st, 11);
+			feedInfo->SetLastError(lasterror);
+						
 			CleanupStack::Pop(feedInfo);
 		}
 		CleanupStack::PopAndDestroy();//st	

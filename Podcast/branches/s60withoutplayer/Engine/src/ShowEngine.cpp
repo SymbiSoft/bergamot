@@ -290,9 +290,9 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TInt aError)
 			{
 			iShowDownloading->SetShowType(EVideoPodcast);
 			}
-		
+
 		iShowDownloading->SetLastError(aError);
-		
+
 		if (aError == KErrNone)
 			{
 			iShowDownloading->SetDownloadState(EDownloaded);
@@ -321,7 +321,7 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TInt aError)
 				iShowDownloading->SetDownloadState(EQueued);
 				DBUpdateShow(iShowDownloading);
 				}
-			
+
 			iDownloadErrors++;
 			if (iDownloadErrors > KMaxDownloadErrors)
 				{
@@ -439,7 +439,7 @@ void CShowEngine::DBGetAllShowsL(RShowInfoArray& aShowArray)
 void CShowEngine::DBGetAllDownloadsL(RShowInfoArray& aShowArray)
 	{
 	DP("CShowEngine::DBGetAllDownloads");
-	_LIT(KSqlStatement, "select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, shows.uid, showsize, trackno, pubdate, showtype from downloads, shows where downloads.uid=shows.uid");
+	_LIT(KSqlStatement, "select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, shows.uid, showsize, trackno, pubdate, showtype, lasterror from downloads, shows where downloads.uid=shows.uid");
 	iSqlBuffer.Format(KSqlStatement);
 
 #ifndef DONT_SORT_SQL
@@ -484,7 +484,7 @@ CShowInfo* CShowEngine::DBGetNextDownloadL()
 	{
 	DP("CShowEngine::DBGetNextDownload");
 	CShowInfo *showInfo = NULL;
-	_LIT(KSqlStatement, "select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, shows.uid, showsize, trackno, pubdate, showtype from downloads, shows where downloads.uid=shows.uid");
+	_LIT(KSqlStatement, "select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, shows.uid, showsize, trackno, pubdate, showtype, lasterror from downloads, shows where downloads.uid=shows.uid");
 	iSqlBuffer.Format(KSqlStatement);
 
 #ifdef DONT_SORT_SQL
@@ -519,7 +519,7 @@ CShowInfo* CShowEngine::DBGetNextDownloadL()
 void CShowEngine::DBGetShowsByFeedL(RShowInfoArray& aShowArray, TUint aFeedUid)
 	{
 	DP1("CShowEngine::DBGetShowsByFeed, feedUid=%u", aFeedUid);
-	_LIT(KSqlStatement, "select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows where feeduid=%u");
+	_LIT(KSqlStatement, "select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype, lasterror from shows where feeduid=%u");
 	iSqlBuffer.Format(KSqlStatement, aFeedUid);
 
 //	if (iPodcastModel.SettingsEngine().SelectUnplayedOnly())
@@ -587,7 +587,7 @@ TUint CShowEngine::DBGetDownloadsCount()
 void CShowEngine::DBGetDownloadedShowsL(RShowInfoArray& aShowArray)
 	{
 	DP("CShowEngine::DBGetDownloadedShows");
-	_LIT(KSqlStatement, "select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows where downloadstate=%u");
+	_LIT(KSqlStatement, "select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype, lasterror from shows where downloadstate=%u");
 	iSqlBuffer.Format(KSqlStatement, EDownloaded);
 
 //	if (iPodcastModel.SettingsEngine().SelectUnplayedOnly())
@@ -625,7 +625,7 @@ void CShowEngine::DBGetDownloadedShowsL(RShowInfoArray& aShowArray)
 void CShowEngine::DBGetNewShowsL(RShowInfoArray& aShowArray)
 	{
 	DP("CShowEngine::DBGetNewShows");
-	_LIT(KSqlStatement, "select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows where playstate=%u");
+	_LIT(KSqlStatement, "select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype, lasterror from shows where playstate=%u");
 	iSqlBuffer.Format(KSqlStatement, ENeverPlayed);
 
 	sqlite3_stmt *st;
@@ -734,6 +734,9 @@ void CShowEngine::DBFillShowInfoFromStmtL(sqlite3_stmt *st, CShowInfo* showInfo)
 
 	TUint showtype = sqlite3_column_int(st, 13);
 	showInfo->SetShowType((TShowType) showtype);
+	
+	TInt lasterror = sqlite3_column_int(st, 14);
+	showInfo->SetLastError(lasterror);
 	}
 
 TBool CShowEngine::DBAddShow(CShowInfo *aItem)
@@ -741,7 +744,7 @@ TBool CShowEngine::DBAddShow(CShowInfo *aItem)
 	DP2("CShowEngine::DBAddShow, title=%S, URL=%S", &aItem->Title(), &aItem->Url());
 
 	_LIT(KSqlStatement, "insert into shows (url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype)"
-			" values (\"%S\",\"%S\", \"%S\", \"%S\", \"%Lu\", \"%u\", \"%u\", \"%u\", \"%u\", \"%u\", \"%u\", \"%u\", \"%Lu\", \"%u\")");
+			" values (\"%S\",\"%S\", \"%S\", \"%S\", \"%Lu\", \"%u\", \"%u\", \"%u\", \"%u\", \"%u\", \"%u\", \"%u\", \"%Lu\", \"%d\")");
 	iSqlBuffer.Format(KSqlStatement, &aItem->Url(), &aItem->Title(), &aItem->Description(),
 			&aItem->FileName(), aItem->Position().Int64(), aItem->PlayTime(),
 			aItem->PlayState(), aItem->DownloadState(), aItem->FeedUid(),
@@ -800,7 +803,7 @@ TBool CShowEngine::DBUpdateShow(CShowInfo *aItem)
 
 	_LIT(KSqlStatement, "update shows set url=\"%S\", title=\"%S\", description=\"%S\", filename=\"%S\", position=\"%Lu\","
 			"playtime=\"%u\", playstate=\"%u\", downloadstate=\"%u\", feeduid=\"%u\", showsize=\"%u\", trackno=\"%u\","
-			"pubdate=\"%Lu\", showtype=\"%u\" where uid=\"%u\"");
+			"pubdate=\"%Lu\", showtype=\"%d\" where uid=\"%u\"");
 	iSqlBuffer.Format(KSqlStatement, &aItem->Url(), &aItem->Title(), &aItem->Description(),
 			&aItem->FileName(), aItem->Position().Int64(), aItem->PlayTime(),
 			aItem->PlayState(), aItem->DownloadState(), aItem->FeedUid(),
