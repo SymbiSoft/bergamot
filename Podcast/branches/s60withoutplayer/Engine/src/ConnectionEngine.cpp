@@ -55,23 +55,14 @@ void CConnectionEngine::ConstructL()
 	}
 
 void CConnectionEngine::RunL()
-	{
-	switch(iConnectionType)
-		{
-		case EUserSelectConnection:
-			{
-
-			}break;
-		case ESNAPConnection:			
-		case EMobilityConnection:
-			{
-			if ( iStatus.Int() == KErrNone )
-				{				
-				iMobility = CActiveCommsMobilityApiExt::NewL( iConnection, *this );
-				}
-			
-			}break;
+	{		
+	if ( iStatus.Int() == KErrNone )
+		{		
+		delete iMobility;
+		iMobility = NULL;
+		iMobility = CActiveCommsMobilityApiExt::NewL( iConnection, *this );
 		}
+	
 	iConnectionState = iStatus.Int() == KErrNone?CConnectionEngine::EConnected:CConnectionEngine::ENotConnected;
 	ReportConnection( iStatus.Int() );
 	}
@@ -160,7 +151,12 @@ void CConnectionEngine::StartL(TConnectionType aConnectionType)
 	iConnection.Close();
 	User::LeaveIfError( iConnection.Open( iSocketServer ) );
 	// Connect using UI Setting
-	if(aConnectionType == EUserSelectConnection)
+	if(aConnectionType == EDefaultConnection)
+		{
+		iConnection.Start( iStatus );
+		SetActive();
+		}
+	else if(aConnectionType == EUserSelectConnection)
 		{				
 		TBool selected = ConnectionSettingL();
 
@@ -184,15 +180,8 @@ void CConnectionEngine::StartL(TConnectionType aConnectionType)
 				}
 			SetActive();
 			}
-		}
-	// Connect using SNAP
-	else if (aConnectionType == ESNAPConnection)
-		{	
-		iSnapPreference.SetSnap(iPodcastModel.SettingsEngine().SpecificIAP());
-		iConnection.Start( iSnapPreference, iStatus );
-		SetActive();
-		}
-	// Connect using mobility UI
+		}	
+	// Connect using SNAP 
 	else
 		{
 		iSnapPreference.SetSnap(iPodcastModel.SettingsEngine().SpecificIAP());

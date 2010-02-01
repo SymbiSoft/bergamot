@@ -85,10 +85,14 @@ TBool CHttpClient::ConnectHttpSessionL()
 
 	DP1("SpecificIAP() == %d",iPodcastModel.SettingsEngine().SpecificIAP());
 
-	if(iPodcastModel.SettingsEngine().SpecificIAP() == -1 || EFalse)
-	{
+	if(iPodcastModel.SettingsEngine().SpecificIAP() == -1)
+		{
 		iPodcastModel.ConnectionEngine().StartL(CConnectionEngine::EUserSelectConnection);	
-	}
+		}
+	else if ( iPodcastModel.SettingsEngine().SpecificIAP() == 0 )
+		{
+		iPodcastModel.ConnectionEngine().StartL(CConnectionEngine::EDefaultConnection);	
+		}
 	else
 		{
 		iPodcastModel.ConnectionEngine().StartL(CConnectionEngine::EMobilityConnection);

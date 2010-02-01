@@ -48,7 +48,8 @@ public:
 		{
 		EUserSelectConnection,
 		ESNAPConnection,
-		EMobilityConnection
+		EMobilityConnection,
+		EDefaultConnection
 		};
 	
 	enum TConnectionState

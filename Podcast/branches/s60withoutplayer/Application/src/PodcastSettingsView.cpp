@@ -127,13 +127,21 @@ public:
 		se.SetUpdateFeedTime(iTimeUpdate);
 		//DP1("Update feed time: %d", iTimeUpdate.Int64());
 		
-		if (iConnection == 1) {
-			DP1("Specific IAP: %d", iIap);
-			se.SetSpecificIAP(iIap);			
-		} else {
-			DP("Specific IAP: -1");
-			se.SetSpecificIAP(-1);			
-		}
+		if (iConnection == -1) 
+			{
+			DP("Specific IAP: -1 Ask user");
+			se.SetSpecificIAP(-1);				
+			}
+		else if (iConnection == 0) 
+			{		
+			DP("Specific IAP: 0 Use default");		
+			se.SetSpecificIAP(0);				
+			}
+		else 
+			{
+			DP1("Specific IAP: %d", iIap);			
+			se.SetSpecificIAP(iIap);		
+			}
 		
 		DP1("Download automatically: %d", iAutoDownload);
 		se.SetDownloadAutomatically(iAutoDownload);
@@ -234,7 +242,7 @@ public:
 		iAutoUpdate = se.UpdateAutomatically();
 		iIntervalUpdate = se.UpdateFeedInterval();
 		iTimeUpdate = se.UpdateFeedTime();
-		iConnection = se.SpecificIAP() <= EConnectionDefault ? EConnectionAlwaysAsk : EConnectionUseSpecified;
+		iConnection = se.SpecificIAP() <= EConnectionDefault ? se.SpecificIAP() : EConnectionUseSpecified;
 		iIap = se.SpecificIAP() <=0 ? iPodcastModel.IAPIds()[0].iIapId : se.SpecificIAP();
 		iAutoDownload = se.DownloadAutomatically();
 			

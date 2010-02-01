@@ -24,6 +24,8 @@
 #include "ShowEngine.h"
 #include "connectionengine.h"
 
+#include <cmdestination.h>
+#include <cmmanager.h>
 #include <bautils.h>
 
 const TInt KDefaultGranu = 5;
@@ -83,10 +85,36 @@ void CPodcastModel::UpdateIAPListL()
 {
 	iIapNameArray->Reset();
 	iIapIdArray.Reset();
-   
+	RCmManager cmManager;
+	RCmDestination destination;
+	TPodcastIAPItem IAPItem;
+	cmManager.OpenL();
+	RArray<TUint32> destArray;
+	CleanupClosePushL(destArray);
+	cmManager.AllDestinationsL(destArray);
+	
+	TInt cnt = destArray.Count();
+	for(TInt loop = 0;loop<cnt;loop++)
+		{
+		destination = cmManager.DestinationL (destArray[loop]);
+		if(!destination.IsHidden())
+			{
+			IAPItem.iIapId = destArray[loop];
+			HBufC* name = destination.NameLC();
+			iIapNameArray->AppendL(*name);
+			CleanupStack::PopAndDestroy(name);
+			iIapIdArray.Append(IAPItem);
+			}
+		}
+	CleanupStack::PopAndDestroy();// close destArray
+#ifndef __WINS__
+	cmManager.Close();
+#endif
+	//CleanupStack::PopAndDestroy();// close destArray, cmMangaer
+   /*
 	CCommsDbTableView* table = iCommDB->OpenTableLC (TPtrC (NETWORK)); 
 	TInt ret = table->GotoFirstRecord ();
-	TPodcastIAPItem IAPItem;
+	
 	TBuf <KCommsDbSvrMaxFieldLength> bufName;
 	while (ret == KErrNone) // There was a first record
 	{
@@ -97,7 +125,7 @@ void CPodcastModel::UpdateIAPListL()
 		iIapNameArray->AppendL(bufName); 		
 		ret = table->GotoNextRecord();
 	}
-	CleanupStack::PopAndDestroy(); // Close table
+	CleanupStack::PopAndDestroy(); // Close table*/
 }
 
 EXPORT_C CDesCArrayFlat* CPodcastModel::IAPNames()
