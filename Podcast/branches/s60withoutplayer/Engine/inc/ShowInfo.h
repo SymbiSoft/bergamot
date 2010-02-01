@@ -94,6 +94,9 @@ public:
 
 	IMPORT_C void SetTrackNo(TUint aTrackNo);
 	IMPORT_C TUint TrackNo() const;
+	
+	IMPORT_C void SetLastError(TInt aLastError);
+	IMPORT_C TInt LastError() const;
 private:
 	CShowInfo();
 	void ConstructL();
@@ -114,6 +117,7 @@ private:
 	TTime iPubDate;
 	TBool iDelete;
 	TShowType iShowType;
+	TInt  iLastError;
 };
 
 typedef RPointerArray<CShowInfo> RShowInfoArray;

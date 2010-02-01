@@ -98,7 +98,7 @@ private:
 	
 	// Connect using SNAP setting
 	TConnSnapPref iSnapPreference;
-	TCommDbConnPref iCommDBPreference;
+	
 	TConnectionType iConnectionType;
 	TConnectionState iConnectionState;
 	RPointerArray<MConnectionObserver> iObserverArray;

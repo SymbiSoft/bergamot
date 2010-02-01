@@ -106,7 +106,7 @@ void CMetaDataReader::MapcInitComplete(TInt aError, const TTimeIntervalMicroSeco
 			iShow->SetPlayTime((aDuration.Int64()/1000000));
 			
 			for (int i=0;i<numEntries;i++) {
-				CMMFMetaDataEntry * entry;
+				CMMFMetaDataEntry * entry = NULL;
 				TRAPD(error, entry = iPlayer->GetMetaDataEntryL(i));
 				
 				if (error != KErrNone) {

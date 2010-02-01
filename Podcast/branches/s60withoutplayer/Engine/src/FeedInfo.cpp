@@ -183,3 +183,13 @@ EXPORT_C void CFeedInfo::SetCustomTitle()
 	{
 	iCustomTitle = ETrue;
 	}
+
+EXPORT_C void CFeedInfo::SetLastError(TInt aLastError)
+	{
+	iLastError = aLastError;
+	}
+
+EXPORT_C TInt CFeedInfo::LastError() const
+	{
+	return iLastError;
+	}

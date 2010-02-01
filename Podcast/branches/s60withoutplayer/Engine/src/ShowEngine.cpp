@@ -26,6 +26,7 @@
 #include <httperr.h>
 #include "SoundEngine.h"
 #include "debug.h"
+
 //#include <mpxmedia.h>
 //#include <mpxattribute.h>
 //#include <mpxmediageneraldefs.h>
@@ -275,8 +276,7 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TInt aError)
 	{
 	if (iShowDownloading != NULL)
 		{
-		DP1("CShowEngine::Complete\tDownload of file: %S is complete", &iShowDownloading->FileName());
-
+		DP1("CShowEngine::Complete\tDownload of file: %S is complete", &iShowDownloading->FileName());		
 		// decide what kind of file this is
 		TBuf<KMimeBufLength> mimeType;
 		GetMimeType(iShowDownloading->FileName(), mimeType);
@@ -290,8 +290,10 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TInt aError)
 			{
 			iShowDownloading->SetShowType(EVideoPodcast);
 			}
-
-		if (aError == KErrNone || aError == HTTPStatus::EOk || aError == HTTPStatus::EAccepted)
+		
+		iShowDownloading->SetLastError(aError);
+		
+		if (aError == KErrNone)
 			{
 			iShowDownloading->SetDownloadState(EDownloaded);
 			DBUpdateShow(iShowDownloading);
@@ -325,7 +327,7 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TInt aError)
 				{
 				DP("Too many downloading errors, suspending downloads");
 				iDownloadsSuspended = ETrue;
-				NotifyShowDownloadUpdatedL(-1, -1, -1);
+				NotifyShowDownloadUpdatedL(100, -1, -1);
 				}
 			}
 		}

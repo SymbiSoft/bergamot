@@ -18,6 +18,7 @@
 
 // HttpEventHandler.cpp
 #include <e32debug.h>
+#include <httperr.h>
 
 #include "HttpEventHandler.h"
 #include "bautils.h"
@@ -194,6 +195,12 @@ void CHttpEventHandler::MHFRunL(RHTTPTransaction aTransaction, const THTTPEvent&
 			{
 			DP("Transaction Failed");
 			aTransaction.Close();
+			
+			if(iLastStatusCode == HTTPStatus::EOk || iLastStatusCode == HTTPStatus::ECreated || iLastStatusCode == HTTPStatus::EAccepted)
+				{
+				iLastStatusCode = KErrNone;
+				}
+			
 			iHttpClient->ClientRequestCompleteL(iLastStatusCode);
 			} break;
 		case THTTPEvent::ERedirectedPermanently:

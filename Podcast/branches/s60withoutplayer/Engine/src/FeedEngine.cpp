@@ -573,82 +573,90 @@ void CFeedEngine::Progress(CHttpClient* /*aHttpClient*/, TInt aBytes, TInt aTota
 void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TInt aError)
 	{
 	DP2("CFeedEngine::CompleteL BEGIN, iClientState=%d, aSuccessful=%d", iClientState, aError);
-	
+
 	if (iClientState == EUpdatingFeed) 
 		{
 		// Parse the feed. We need to trap this call since it could leave and then
 		// the whole update chain will be broken
-		TRAPD(parserErr, iParser->ParseFeedL(iUpdatingFeedFileName, iActiveFeed, iPodcastModel.SettingsEngine().MaxListItems()));
-		if(parserErr)
-			{
-			// we do not need to any special action on this error.
-			DP1("CFeedEngine::Complete()\t Failed to parse feed. Leave with error code=%d", parserErr);
-			}
-			
-		// delete the downloaded XML file as it is no longer needed
-		BaflUtils::DeleteFile(iPodcastModel.FsSession(),iUpdatingFeedFileName);
-
 		// change client state
 		iClientState = EIdle;
-
-		TTime time;
-		time.HomeTime();
-		iActiveFeed->SetLastUpdated(time);
-
-		iPodcastModel.ShowEngine().DeleteOldShowsByFeed(iActiveFeed->Uid());
-
-		//iPodcastModel.ShowEngine().SaveShowsL();
-
-		// if the feed has specified a image url. download it if we dont already have it
-		if ( iActiveFeed->ImageUrl().Length() > 0 && ((iActiveFeed->ImageFileName().Length() == 0) || (!BaflUtils::FileExists(iPodcastModel.FsSession(),iActiveFeed->ImageFileName()) )))
- 			{
-			TRAPD(error, GetFeedImageL(iActiveFeed));
-			if (error)
-				{
-				// we have failed in a very early stage to fetch the image.
-				// continue with next Feed update
-				NotifyFeedUpdateComplete();
-				UpdateNextFeedL();
-				}
-			}
-		else
+		iActiveFeed->SetLastError(aError);
+		
+		if( aError == KErrNone)
 			{
-			// we do not have an image file
-			NotifyFeedUpdateComplete();
-			UpdateNextFeedL();		
+			TTime time;
+			time.HomeTime();
+			iActiveFeed->SetLastUpdated(time);
+
+			TRAPD(parserErr, iParser->ParseFeedL(iUpdatingFeedFileName, iActiveFeed, iPodcastModel.SettingsEngine().MaxListItems()));
+
+			if(parserErr)
+				{
+				// we do not need to any special action on this error.
+				iActiveFeed->SetLastError(parserErr);
+				DP1("CFeedEngine::Complete()\t Failed to parse feed. Leave with error code=%d", parserErr);
+				}
+			else
+				{
+				iPodcastModel.ShowEngine().DeleteOldShowsByFeed(iActiveFeed->Uid());
+				}
+
+			// delete the downloaded XML file as it is no longer needed
+			BaflUtils::DeleteFile(iPodcastModel.FsSession(),iUpdatingFeedFileName);			
+
+			// if the feed has specified a image url. download it if we dont already have it
+			if ( iActiveFeed->ImageUrl().Length() > 0 && ((iActiveFeed->ImageFileName().Length() == 0) || (!BaflUtils::FileExists(iPodcastModel.FsSession(),iActiveFeed->ImageFileName()) )))
+				{
+				TRAPD(error, GetFeedImageL(iActiveFeed));
+				if (error)
+					{
+					// we have failed in a very early stage to fetch the image.
+					// continue with next Feed update	
+					iActiveFeed->SetLastError(parserErr);
+					iClientState = EIdle;							
+					}
+				}			
 			}
 
 		// we will wait until the image has been downloaded to start the next feed update.
+		if (iClientState == EIdle)
+			{
+			NotifyFeedUpdateComplete();
+			UpdateNextFeedL();	
+			}
 		}
 	else if (iClientState == EUpdatingImage)
 		{
 		// change client state to not updating
 		iClientState = EIdle;
-		
+
 		NotifyFeedUpdateComplete();
 		UpdateNextFeedL();
 		}
-	else if (iClientState == ESearching) {
-	
+	else if (iClientState == ESearching) 
+		{
 		iClientState = EIdle;
-		
+
 		DP1("Search complete, results in %S", &iSearchResultsFileName);
-		
+
 		if (!iOpmlParser) 
 			{
 			iOpmlParser = new COpmlParser(*this, iPodcastModel.FsSession());
 			}
-		
+
 		DP("Parsing OPML");
 		TRAPD(err, iOpmlParser->ParseOpmlL(iSearchResultsFileName, ETrue));
-		
-		if (err == KErrNone) {
+
+		if (err == KErrNone) 
+			{
 			NotifySearchComplete();
-		} else {
+			} 
+		else 
+			{
 			DP1("Parsing failed, err=%d", err);	
+			}
 		}
-	}
-	
+
 	DP("CFeedEngine::CompleteL END");
 	}
 

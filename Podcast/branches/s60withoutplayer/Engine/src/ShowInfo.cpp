@@ -231,5 +231,15 @@ EXPORT_C CShowInfo::CShowInfo(CShowInfo *aInfo)
 	iTrackNo = aInfo->TrackNo();
 	iPubDate = aInfo->PubDate();
 	iShowType = aInfo->ShowType();
+	iLastError = aInfo->LastError();
 	}
 
+EXPORT_C void CShowInfo::SetLastError(TInt aLastError)
+	{
+	iLastError = aLastError;
+	}
+
+EXPORT_C TInt CShowInfo::LastError() const
+	{
+	return iLastError;
+	}

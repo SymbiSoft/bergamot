@@ -123,6 +123,7 @@ void CHttpClient::ConnectCompleteL(TInt aErrorCode)
 			}
 		else
 			{
+			ClientRequestCompleteL(aErrorCode);
 			iSession.Close();
 			}
 		}			
@@ -130,7 +131,8 @@ void CHttpClient::ConnectCompleteL(TInt aErrorCode)
 
 void CHttpClient::Disconnected()
 	{
-	
+	iIsActive = EFalse;
+	iSession.Close();
 	}
 
 TBool CHttpClient::DoGetAfterConnectL()
@@ -203,6 +205,7 @@ TBool CHttpClient::GetL(const TDesC& aUrl, const TDesC& aFileName,  TBool aSilen
 	if (iTransactionCount == 0) 
 		{
 		DP("CHttpClient::GetL\t*** Opening HTTP session ***");
+		iSession.Close();
 		iSession.OpenL();
 		ConnectHttpSessionL();	
 		return ETrue;
@@ -242,13 +245,16 @@ void CHttpClient::ClientRequestCompleteL(TInt aErrorCode) {
 	iIsActive = EFalse;
 	iObserver.CompleteL(this, aErrorCode);
 	DP("CHttpClient::ClientRequestCompleteL");
-	iTransactionCount--;
-	
-	if(iTransactionCount == 0) 
+	if(iTransactionCount>0)
 		{
-		DP("CHttpClient::ClientRequestCompleteL\t*** Closing HTTP session ***");
-		delete iHandler;
-		iHandler = NULL;
-		iSession.Close();
-	}
+		iTransactionCount--;
+	
+		if(iTransactionCount == 0) 
+			{
+			DP("CHttpClient::ClientRequestCompleteL\t*** Closing HTTP session ***");
+			delete iHandler;
+			iHandler = NULL;
+			iSession.Close();
+			}
+		}
 }

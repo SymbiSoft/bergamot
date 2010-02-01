@@ -138,10 +138,9 @@ TBool CConnectionEngine::ConnectionSettingL()
 	CCmApplicationSettingsUi* settings = CCmApplicationSettingsUi::NewL();
 	CleanupStack::PushL( settings );
 
-	TUint listedItems = CMManager::EShowAlwaysAsk |
+	TUint listedItems = 
 	CMManager::EShowDefaultConnection |
-	CMManager::EShowDestinations |
-	CMManager::EShowConnectionMethods;
+	CMManager::EShowDestinations;
 
 	TBearerFilterArray filter;
 
@@ -175,24 +174,13 @@ void CConnectionEngine::StartL(TConnectionType aConnectionType)
 					iConnection.Start( iSnapPreference, iStatus );
 					aConnectionType = ESNAPConnection;
 					break;
-					}
-				case CMManager::EConnectionMethod:
-					{					
-					iCommDBPreference.SetIapId( iUserSelection.iId );
-					iCommDBPreference.SetDialogPreference( ECommDbDialogPrefDoNotPrompt );					
-					iConnection.Start( iCommDBPreference, iStatus );
-					break;
-					}
+					}				
+				default: // CMManager::EAlwaysAsk
 				case CMManager::EDefaultConnection:
 					{					
 					iConnection.Start( iStatus );
 					break;
-					}
-				default: // CMManager::EAlwaysAsk
-					{					
-					iCommDBPreference.SetDialogPreference( ECommDbDialogPrefPrompt );					
-					iConnection.Start( iCommDBPreference, iStatus );
-					}
+					}									
 				}
 			SetActive();
 			}
@@ -222,6 +210,16 @@ RConnection& CConnectionEngine::Connection()
 
 CConnectionEngine::TConnectionState CConnectionEngine::ConnectionState()
 	{
+	if( iPodcastModel.SettingsEngine().SpecificIAP()!= iSnapPreference.Snap() )
+		{
+		if(iConnection.SubSessionHandle() != 0)
+			{
+			iConnection.Stop();
+			}
+		
+		iConnectionState = CConnectionEngine::ENotConnected;
+		}
+	
 	return iConnectionState;
 	}
 

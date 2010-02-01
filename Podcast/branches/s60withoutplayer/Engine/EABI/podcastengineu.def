@@ -69,15 +69,15 @@ EXPORTS
 	_ZN13CPodcastModel14GetShowsByFeedEj @ 68 NONAME
 	_ZN13CPodcastModel14PlayingPodcastEv @ 69 NONAME
 	_ZN13CPodcastModel14SettingsEngineEv @ 70 NONAME
-	_ZN13CPodcastModel17PlayPausePodcastLEP9CShowInfoi @ 71 NONAME
-	_ZN13CPodcastModel17SetActiveFeedInfoEP9CFeedInfo @ 72 NONAME
-	_ZN13CPodcastModel17SetPlayingPodcastEP9CShowInfo @ 73 NONAME
-	_ZN13CPodcastModel18GetShowsDownloadedEv @ 74 NONAME
-	_ZN13CPodcastModel19GetShowsDownloadingEv @ 75 NONAME
-	_ZN13CPodcastModel19MarkSelectionPlayedEv @ 76 NONAME
-	_ZN13CPodcastModel4NewLEv @ 77 NONAME
-	_ZN13CPodcastModel6IAPIdsEv @ 78 NONAME
-	_ZN13CPodcastModel6SetIapEi @ 79 NONAME
+	_ZN13CPodcastModel16ConnectionEngineEv @ 71 NONAME
+	_ZN13CPodcastModel17PlayPausePodcastLEP9CShowInfoi @ 72 NONAME
+	_ZN13CPodcastModel17SetActiveFeedInfoEP9CFeedInfo @ 73 NONAME
+	_ZN13CPodcastModel17SetPlayingPodcastEP9CShowInfo @ 74 NONAME
+	_ZN13CPodcastModel18GetShowsDownloadedEv @ 75 NONAME
+	_ZN13CPodcastModel19GetShowsDownloadingEv @ 76 NONAME
+	_ZN13CPodcastModel19MarkSelectionPlayedEv @ 77 NONAME
+	_ZN13CPodcastModel4NewLEv @ 78 NONAME
+	_ZN13CPodcastModel6IAPIdsEv @ 79 NONAME
 	_ZN13CPodcastModel8IAPNamesEv @ 80 NONAME
 	_ZN15CSettingsEngine10SetBaseDirER4TBufILi256EE @ 81 NONAME
 	_ZN15CSettingsEngine11SpecificIAPEv @ 82 NONAME

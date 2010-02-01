@@ -62,6 +62,9 @@ class CFeedInfo : public CBase
 			
 		IMPORT_C void SetCustomTitle();
 		IMPORT_C TBool CustomTitle();
+		
+		IMPORT_C void SetLastError(TInt aLastError);
+		IMPORT_C TInt LastError() const;
 	private:
 		CFeedInfo();
 		void ConstructL();
@@ -77,6 +80,7 @@ class CFeedInfo : public CBase
 		TTime iLastUpdated;
 		TUint iUid;
 		TBool iCustomTitle;
+		TInt   iLastError;
 	};
 
 typedef RPointerArray<CFeedInfo> RFeedInfoArray;

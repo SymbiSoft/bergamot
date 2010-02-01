@@ -153,4 +153,8 @@ EXPORTS
 	?NotifyShowListUpdatedL@CShowEngine@@QAEXXZ @ 152 NONAME ; void CShowEngine::NotifyShowListUpdatedL(void)
 	?CancelUpdateAllFeeds@CFeedEngine@@QAEXXZ @ 153 NONAME ; void CFeedEngine::CancelUpdateAllFeeds(void)
 	?ConnectionEngine@CPodcastModel@@QAEAAVCConnectionEngine@@XZ @ 154 NONAME ; class CConnectionEngine & CPodcastModel::ConnectionEngine(void)
+	?SetLastError@CFeedInfo@@QAEXH@Z @ 155 NONAME ; void CFeedInfo::SetLastError(int)
+	?SetLastError@CShowInfo@@QAEXH@Z @ 156 NONAME ; void CShowInfo::SetLastError(int)
+	?LastError@CFeedInfo@@QBEHXZ @ 157 NONAME ; int CFeedInfo::LastError(void) const
+	?LastError@CShowInfo@@QBEHXZ @ 158 NONAME ; int CShowInfo::LastError(void) const
 
