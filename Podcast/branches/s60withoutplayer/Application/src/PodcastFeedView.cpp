@@ -386,7 +386,7 @@ void CPodcastFeedView::UpdateListboxItemsL()
 
 					if (fi->LastUpdated().Int64() == 0) 
 						{
-						updatedDate.Copy(*iNeverUpdated);					
+						updatedDate.Copy(*iNeverUpdated);									
 						unplayedShows.Copy(KUnknownUpdateDateString());
 						}
 					else 
@@ -403,6 +403,11 @@ void CPodcastFeedView::UpdateListboxItemsL()
 							{
 							fi->LastUpdated().FormatL(updatedDate, KDateFormatShort());
 							}
+						}
+					
+					if(fi->LastError() != KErrNone)
+						{
+						iEikonEnv->GetErrorText(unplayedShows, fi->LastError());
 						}
 					
 					if (unplayedCount > 0)

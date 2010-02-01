@@ -32,6 +32,7 @@ _LIT(KSizeDownloadingOf, "(%.1f/%.1f MB)");
 _LIT(KShowsSizeFormatS60, "(%.1f MB)");
 _LIT(KChapterFormatting, "%03d");
 _LIT(KShowFormat, "%d\t%S\t%S %S");
+_LIT(KShowErrorFormat, "%d\t%S\t%S");
 
 const TUint KIconArrayIds[] =
 	{
@@ -401,7 +402,17 @@ void CPodcastShowsView::UpdateShowItemDataL(CShowInfo* aShowInfo,TInt aIndex, TI
 		aShowInfo->PubDate().FormatL(showDate, KDateFormatShort());
 		}
 	
-	iListboxFormatbuffer.Format(KShowFormat(), iconIndex, &aShowInfo->Title(), &showDate, &infoSize);
+	if(aShowInfo->LastError() != KErrNone)
+		{
+		TBuf<KSizeBufLen> errorBuffer;
+		iEikonEnv->GetErrorText(errorBuffer, aShowInfo->LastError());
+		iListboxFormatbuffer.Format(KShowErrorFormat(), iconIndex, &aShowInfo->Title(), &errorBuffer);
+		}
+	else	
+		{
+		iListboxFormatbuffer.Format(KShowFormat(), iconIndex, &aShowInfo->Title(), &showDate, &infoSize);
+		}
+	
 	iItemArray->Delete(aIndex);
 	if(aIndex>= iItemArray->MdcaCount())
 		{
