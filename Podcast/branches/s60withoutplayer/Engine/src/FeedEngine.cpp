@@ -656,7 +656,7 @@ void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TInt aError)
 			DP1("Parsing failed, err=%d", err);	
 			}
 		}
-
+		BaflUtils::DeleteFile(iPodcastModel.FsSession(), iSearchResultsFileName);
 	DP("CFeedEngine::CompleteL END");
 	}
 
@@ -1086,13 +1086,15 @@ EXPORT_C void CFeedEngine::SearchForFeedL(TDesC& aSearchString)
 	if (iClientState != EIdle) {
 		User::Leave(KErrInUse);
 	}
-	
+	TBuf<KMaxURLLength> ssBuf;
+	ssBuf.Copy(aSearchString);
+	ReplaceString(ssBuf, _L(" "), _L("%20"));
 	// prepare search URL
 	HBufC* templ = HBufC::NewLC(KMaxLineLength);
 	templ->Des().Copy(KSearchUrl());
 		
 	HBufC* url = HBufC::NewLC(KMaxURLLength);		
-	url->Des().Format(*templ, &aSearchString);
+	url->Des().Format(*templ, &ssBuf);
 
 	DP1("SearchURL: %S", url);
 	

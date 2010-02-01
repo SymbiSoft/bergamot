@@ -187,23 +187,7 @@ void CPodcastShowsView::DoActivateL(const TVwsViewId& aPrevViewId,
 		}
 
 	CPodcastListView::DoActivateL(aPrevViewId, aCustomMessageId, aCustomMessage);
-	
-	if(aPrevViewId.iAppUid == KUidPodcast)
-		{
-		switch(aPrevViewId.iViewUid.iUid)
-			{
-			case 1: // BaseView
-				iPreviousView = TVwsViewId(KUidPodcast, KUidPodcastBaseViewID);
-			break;
-			default:
-				if (iCurrentCategory == EShowDownloadedShows) {
-					iPreviousView = TVwsViewId(KUidPodcast, KUidPodcastBaseViewID);
-				} else {
-					iPreviousView = TVwsViewId(KUidPodcast, KUidPodcastFeedViewID);
-				}
-				break;
-			}
-		}
+	iPreviousView = TVwsViewId(KUidPodcast, KUidPodcastFeedViewID);
 	
 	UpdateFeedUpdateStateL();
 	UpdateToolbar();

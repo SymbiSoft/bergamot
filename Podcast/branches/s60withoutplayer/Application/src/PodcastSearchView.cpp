@@ -137,7 +137,7 @@ void CPodcastSearchView::DoActivateL(const TVwsViewId& aPrevViewId,
 	UpdateToolbar();
 	
 	CPodcastListView::DoActivateL(aPrevViewId, aCustomMessageId, aCustomMessage);
-	iPreviousView = TVwsViewId(KUidPodcast, KUidPodcastBaseViewID);		
+	iPreviousView = TVwsViewId(KUidPodcast, KUidPodcastFeedViewID);
 }
 
 void CPodcastSearchView::DoDeactivate()
@@ -259,8 +259,10 @@ void CPodcastSearchView::HandleCommandL(TInt aCommand)
 					}
 				}
 			}
+			break;
 		default:
 			CPodcastListView::HandleCommandL(aCommand);
+			break;
 		}
 		UpdateToolbar();
 	}
