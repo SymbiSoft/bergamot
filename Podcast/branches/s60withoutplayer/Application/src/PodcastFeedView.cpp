@@ -49,6 +49,13 @@ const TInt KMimeBufLength = 100;
 
 _LIT(KUnknownUpdateDateString, "?/?");
 _LIT(KFeedFormat, "%d\t%S\t%S %S");
+enum 
+{
+ EEmptyFeedIcon,
+ EFeedIcon,
+ ENewFeedIcon,
+ EErrorFeedIcon
+};
 
 CPodcastFeedView* CPodcastFeedView::NewL(CPodcastModel& aPodcastModel)
     {
@@ -108,6 +115,15 @@ void CPodcastFeedView::ConstructL()
 	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );
 	CleanupStack::Pop(2); // bitmap, mask
 
+	bitmap = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastFeed_error_40x40);
+	CleanupStack::PushL( bitmap );		
+	// Load the mask
+	mask = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastFeed_error_40x40m );	
+	CleanupStack::PushL( mask );
+	// Append the feed icon to icon array
+	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );
+	CleanupStack::Pop(2); // bitmap, mask
+	
 	iListContainer->Listbox()->ItemDrawer()->FormattedCellData()->SetIconArrayL( icons );
 	CleanupStack::Pop(icons); // icons
 
@@ -267,7 +283,7 @@ void CPodcastFeedView::FormatFeedInfoListBoxItemL(CFeedInfo& aFeedInfo, TBool aI
 	TBuf<KMaxUnplayedFeedsLength> unplayedShows;
 	TUint unplayedCount = 0;
 	TUint showCount = 0;
-	TInt iconIndex = 0;
+	TInt iconIndex = EEmptyFeedIcon;
 	
 	if(aIsUpdating)
 		{
@@ -280,9 +296,9 @@ void CPodcastFeedView::FormatFeedInfoListBoxItemL(CFeedInfo& aFeedInfo, TBool aI
 		iPodcastModel.FeedEngine().GetStatsByFeed(aFeedInfo.Uid(), showCount, unplayedCount);
 
 		if (unplayedCount > 0) {
-		iconIndex = 2;
+		iconIndex = ENewFeedIcon;
 		} else {
-		iconIndex = 1;
+		iconIndex = EFeedIcon;
 		}			
 
 		unplayedShows.Format(*iFeedsFormat, unplayedCount, showCount);
@@ -311,6 +327,7 @@ void CPodcastFeedView::FormatFeedInfoListBoxItemL(CFeedInfo& aFeedInfo, TBool aI
 	
 	if(aFeedInfo.LastError() != KErrNone)
 		{
+		iconIndex = EErrorFeedIcon;
 		iEikonEnv->GetErrorText(unplayedShows, aFeedInfo.LastError());
 		}	
 	
