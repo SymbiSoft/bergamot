@@ -243,7 +243,7 @@ public:
 		iIntervalUpdate = se.UpdateFeedInterval();
 		iTimeUpdate = se.UpdateFeedTime();
 		iConnection = se.SpecificIAP() <= EConnectionDefault ? se.SpecificIAP() : EConnectionUseSpecified;
-		iIap = se.SpecificIAP() <=0 ? iPodcastModel.IAPIds()[0].iIapId : se.SpecificIAP();
+		iIap = se.SpecificIAP();
 		iAutoDownload = se.DownloadAutomatically();
 			
 		switch(aSettingId)

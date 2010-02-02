@@ -357,46 +357,50 @@ void CPodcastShowsView::UpdateFeedUpdateStateL()
 	UpdateToolbar();
 	}
 
-void CPodcastShowsView::UpdateShowItemDataL(CShowInfo* aShowInfo,TInt aIndex, TInt aSizeDownloaded)
-{
+void CPodcastShowsView::FormatFeedInfoListBoxItemL(CShowInfo& aShowInfo, TInt aSizeDownloaded)
+	{
 	TBuf<32> infoSize;
 	TInt iconIndex = 0;	
 	TBuf<KMaxShortDateFormatSpec*2> showDate;
+	GetShowIcons(&aShowInfo, iconIndex);	
 	
-	GetShowIcons(aShowInfo, iconIndex);		
 	if(aSizeDownloaded > 0)
-	{
+		{
 		infoSize.Format(KSizeDownloadingOf(), ((float) aSizeDownloaded / (float) KSizeMb),
-			((float)aShowInfo->ShowSize() / (float)KSizeMb));
-	}
-	else if (aShowInfo->ShowSize() > 0)
-	{
-		infoSize.Format(KShowsSizeFormatS60(), (float)aShowInfo->ShowSize() / (float)KSizeMb);
-	} 
+				((float)aShowInfo.ShowSize() / (float)KSizeMb));
+		}
+	else if (aShowInfo.ShowSize() > 0)
+		{
+		infoSize.Format(KShowsSizeFormatS60(), (float)aShowInfo.ShowSize() / (float)KSizeMb);
+		} 
 	else {
 		infoSize = KNullDesC();	
 	}
-	
-	if (aShowInfo->PubDate().Int64() == 0)
+
+	if (aShowInfo.PubDate().Int64() == 0)
 		{
 		showDate = KNullDesC();
 		}
 	else
 		{
-		aShowInfo->PubDate().FormatL(showDate, KDateFormatShort());
+		aShowInfo.PubDate().FormatL(showDate, KDateFormatShort());
 		}
-	
-	if(aShowInfo->LastError() != KErrNone)
+
+	if(aShowInfo.LastError() != KErrNone)
 		{
 		TBuf<KSizeBufLen> errorBuffer;
-		iEikonEnv->GetErrorText(errorBuffer, aShowInfo->LastError());
-		iListboxFormatbuffer.Format(KShowErrorFormat(), iconIndex, &aShowInfo->Title(), &errorBuffer);
+		iEikonEnv->GetErrorText(errorBuffer, aShowInfo.LastError());
+		iListboxFormatbuffer.Format(KShowErrorFormat(), iconIndex, &aShowInfo.Title(), &errorBuffer);
 		}
 	else	
 		{
-		iListboxFormatbuffer.Format(KShowFormat(), iconIndex, &aShowInfo->Title(), &showDate, &infoSize);
+		iListboxFormatbuffer.Format(KShowFormat(), iconIndex, &aShowInfo.Title(), &showDate, &infoSize);
 		}
-	
+	}
+
+void CPodcastShowsView::UpdateShowItemDataL(CShowInfo* aShowInfo,TInt aIndex, TInt aSizeDownloaded)
+{
+	FormatFeedInfoListBoxItemL(*aShowInfo);
 	iItemArray->Delete(aIndex);
 	if(aIndex>= iItemArray->MdcaCount())
 		{
@@ -428,9 +432,6 @@ void CPodcastShowsView::UpdateListboxItemsL()
 	if (iListContainer->IsVisible())
 		{
 		TListItemProperties itemProps;
-		TBuf<KSizeBufLen> showSize;
-		TBuf<KMaxShortDateFormatSpec*2> showDate;
-
 		TInt len = 0;
 
 		switch (iCurrentCategory)
@@ -498,36 +499,13 @@ void CPodcastShowsView::UpdateListboxItemsL()
 					for (TInt i=0; i<len; i++)
 						{
 						CShowInfo *si = fItems[i];
-						iItemIdArray.Append(si->Uid());
-
-						if (si->ShowSize() == 0)
-							{
-							showSize = KNullDesC();
-							}
-						else
-							{
-							showSize.Format(KShowsSizeFormatS60(),
-									(float)si->ShowSize()/ (float)KSizeMb);
-							}
-
-						if (si->PubDate().Int64() == 0)
-							{
-							showDate = KNullDesC();
-							}
-						else
-							{
-							si->PubDate().FormatL(showDate, KDateFormatShort());
-							}
-						TInt iconIndex = 0;						
-						GetShowIcons(si, iconIndex);
-						iListboxFormatbuffer.Format(KShowFormat(), iconIndex, &si->Title(), &showDate, &showSize);
+						FormatFeedInfoListBoxItemL(*si);
+						iItemIdArray.Append(si->Uid());						
 						iItemArray->AppendL(iListboxFormatbuffer);
 						}
 					}
 				else
-					{					
-					iEikonEnv->ReadResourceL(showSize,R_PODCAST_SHOWS_NO_ITEMS);
-					showSize.Insert(0, _L("0\t"));
+					{
 					iItemArray->Reset();
 					iItemIdArray.Reset();
 					
