@@ -46,10 +46,10 @@ private:
 	static CHttpClient* NewLC(CPodcastModel& aPodcastModel, MHttpClientObserver& aResObs);
 	void ConstructL();
 	void SetHeaderL(RHTTPHeaders aHeaders, TInt aHdrField, const TDesC8& aHdrValue);
-	TBool ConnectHttpSessionL();
+	void ConnectHttpSessionL();
 	void ConnectCompleteL(TInt aErrorCode);
 	void Disconnected();
-	TBool DoGetAfterConnectL();
+	void DoGetAfterConnectL();
 private:
 	RHTTPSession iSession;	
 	TBool iWaitingForGet;
@@ -61,6 +61,7 @@ private:
 	MHttpClientObserver& iObserver;
 	TInt iTransactionCount;
 	TBuf8<KDefaultURLBufferLength> iCurrentURL;
+	TUriParser8 iUriParser;
 	TBool iSilentGet;
 	TFileName iCurrentFileName;
 };

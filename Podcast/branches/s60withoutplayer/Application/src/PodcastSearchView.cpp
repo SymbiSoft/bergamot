@@ -245,7 +245,7 @@ void CPodcastSearchView::HandleCommandL(TInt aCommand)
 			if(index < iItemArray->MdcaCount() && index >= 0)
 				{
 				CFeedInfo *info = iPodcastModel.FeedEngine().GetSearchResults()[index];
-				if(iPodcastModel.FeedEngine().AddFeedL(info))
+				if(iPodcastModel.FeedEngine().AddFeedL(*info))
 					{
 					TBuf<KMaxMessageLength> message;
 					iEikonEnv->ReadResourceL(message, R_ADD_FEED_SUCCESS);

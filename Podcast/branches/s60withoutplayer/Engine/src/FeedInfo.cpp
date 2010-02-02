@@ -37,6 +37,27 @@ EXPORT_C CFeedInfo* CFeedInfo::NewLC()
 	return self;
 	}
 
+IMPORT_C CFeedInfo* CFeedInfo::CopyL() const
+	{
+	CFeedInfo* copy = CFeedInfo::NewLC();	
+	copy->SetUrlL(Url());
+	copy->SetTitleL(Title());
+	copy->SetDescriptionL(Description());
+	copy->SetImageUrlL(ImageUrl());
+	copy->SetLinkL(Link());
+	copy->SetBuildDate(BuildDate());
+	copy->SetLastUpdated(LastUpdated());
+	copy->SetImageFileNameL(ImageFileName());
+	
+	if(CustomTitle())
+		{
+		copy->SetCustomTitle();
+		}
+	
+	copy->SetLastError(LastError());
+	CleanupStack::Pop(copy);
+	return copy;
+	}
 CFeedInfo::CFeedInfo()
 	{
 	iCustomTitle = EFalse;
@@ -134,7 +155,7 @@ EXPORT_C void CFeedInfo::SetLinkL(const TDesC& aLink)
 	iLink = aLink.AllocL();
 	}
 
-EXPORT_C TTime CFeedInfo::BuildDate()
+EXPORT_C TTime CFeedInfo::BuildDate() const
 	{
 	return iBuildDate;
 	}
@@ -144,7 +165,7 @@ EXPORT_C void CFeedInfo::SetBuildDate(TTime aBuildDate)
 	iBuildDate = aBuildDate;
 	}
 
-EXPORT_C TTime CFeedInfo::LastUpdated()
+EXPORT_C TTime CFeedInfo::LastUpdated() const
 	{
 	return iLastUpdated;
 	}
@@ -154,7 +175,7 @@ EXPORT_C void CFeedInfo::SetLastUpdated(TTime aUpdated)
 	iLastUpdated = aUpdated;
 	}
 
-EXPORT_C TUint CFeedInfo::Uid()
+EXPORT_C TUint CFeedInfo::Uid() const
 	{
 	return iUid;
 	}
@@ -174,7 +195,7 @@ EXPORT_C void CFeedInfo::SetImageFileNameL(const TDesC& aFileName)
 	iImageFileName = aFileName.AllocL();
 	}
 
-EXPORT_C TBool CFeedInfo::CustomTitle()
+EXPORT_C TBool CFeedInfo::CustomTitle() const
 	{
 	return iCustomTitle;
 	}

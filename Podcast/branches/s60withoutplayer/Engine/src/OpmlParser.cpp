@@ -100,7 +100,7 @@ void COpmlParser::OnStartElementL(const RTagInfo& aElement, const RAttributeArra
 		// <body> <outline> <outline...
 		if(str.CompareF(KTagOutline) == 0) {
 			iOpmlState=EStateOpmlOutlineOutline;
-			CFeedInfo* newFeed = CFeedInfo::NewL();
+			CFeedInfo* newFeed = CFeedInfo::NewLC();
 			
 			TBool hasTitle = EFalse;
 			TBool hasUrl = EFalse;
@@ -144,8 +144,10 @@ void COpmlParser::OnStartElementL(const RTagInfo& aElement, const RAttributeArra
 			
 			if (iSearching) {
 				iFeedEngine.AddSearchResultL(newFeed);
+				CleanupStack::Pop(newFeed);
 			} else {
-				iFeedEngine.AddFeedL(newFeed);
+				iFeedEngine.AddFeedL(*newFeed);
+				CleanupStack::PopAndDestroy(newFeed);
 			}
 		}
 		break;

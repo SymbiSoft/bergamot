@@ -25,4 +25,6 @@
 
 "..\help\podcatcher.hlp"-"c:\resource\help\podcatcher.hlp"
 ; application UI - note that FR,RI does not work when SIS is self signed
-"\epoc32\release\gcce\udeb\Podcast.exe"-"c:\sys\bin\Podcast.exe",FR,RI
+"\epoc32\release\gcce\urel\Podcast.exe"-"c:\sys\bin\Podcast.exe",FR,RI
+"\epoc32\release\gcce\urel\podcastengine.dll"-"c:\sys\bin\podcastengine.dll",FR,RI
+

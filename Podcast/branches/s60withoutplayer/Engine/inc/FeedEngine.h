@@ -56,7 +56,7 @@ public:
 	virtual ~CFeedEngine();
 	
 public:
-	IMPORT_C TBool AddFeedL(CFeedInfo *item);
+	IMPORT_C TBool AddFeedL(const CFeedInfo& item);
 	IMPORT_C void ImportFeedsL(const TDesC& aFile);
 	IMPORT_C TBool ExportFeedsL(TFileName& aFile);
 	IMPORT_C void RemoveFeedL(TUint aUid);
@@ -123,7 +123,7 @@ private:
 private:
 	void DBLoadFeedsL();
 	TBool DBRemoveFeed(TUint aUid);
-	TBool DBAddFeedL(CFeedInfo *item);
+	TBool DBAddFeedL(const CFeedInfo& aTtem);
 	CFeedInfo* DBGetFeedInfoByUidL(TUint aFeedUid);	
 	TUint DBGetFeedCount();
 	TBool DBUpdateFeed(CFeedInfo *aItem);

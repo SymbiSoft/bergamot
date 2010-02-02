@@ -72,15 +72,15 @@ void CHttpClient::SetResumeEnabled(TBool aEnabled)
 	}
 
 
-TBool CHttpClient::ConnectHttpSessionL()
+void CHttpClient::ConnectHttpSessionL()
 {
 	DP("ConnectHttpSessionL START");	
 	if(iPodcastModel.ConnectionEngine().ConnectionState() == CConnectionEngine::EConnected)
 		{
 		DP("ConnectionState == CConnectionEngine::EConnected");
-		// Session already connected, call connect complete directly
-		ConnectCompleteL(KErrNone);
-		return ETrue;
+		// Session already connected, call connect complete directly but return status since URLs or so might be faulty
+		ConnectCompleteL(KErrNone);		
+		return;
 		}
 
 	DP1("SpecificIAP() == %d",iPodcastModel.SettingsEngine().SpecificIAP());
@@ -98,8 +98,7 @@ TBool CHttpClient::ConnectHttpSessionL()
 		iPodcastModel.ConnectionEngine().StartL(CConnectionEngine::EMobilityConnection);
 		}
 		
-	DP("ConnectHttpSessionL END");
-	return EFalse;
+	DP("ConnectHttpSessionL END");	
 }
 
 void CHttpClient::ConnectCompleteL(TInt aErrorCode)
@@ -119,18 +118,14 @@ void CHttpClient::ConnectCompleteL(TInt aErrorCode)
 
 
 			iPodcastModel.SetProxyUsageIfNeededL(iSession);
-			
-			if(!DoGetAfterConnectL())
-				{
-				iObserver.CompleteL(this, KErrBadName);
-				}
+			DoGetAfterConnectL();		
 			}
 		else
 			{
 			ClientRequestCompleteL(aErrorCode);
-			iSession.Close();
+			iSession.Close();			
 			}
-		}			
+		}				
 	}
 
 void CHttpClient::Disconnected()
@@ -139,17 +134,8 @@ void CHttpClient::Disconnected()
 	iSession.Close();
 	}
 
-TBool CHttpClient::DoGetAfterConnectL()
-	{
-	TUriParser8 uri; 
-	TInt urlError = uri.Parse(iCurrentURL);
-	
-	if(urlError != KErrNone ||!uri.IsSchemeValid())
-		{		
-		iSession.Close();		
-		return EFalse;		
-		}
-
+void  CHttpClient::DoGetAfterConnectL()
+	{	
 	// since nothing should be downloading now. Delete the handler
 	if (iHandler)
 		{
@@ -177,8 +163,8 @@ TBool CHttpClient::DoGetAfterConnectL()
 	RStringPool strP = iSession.StringPool();
 	RStringF method;
 	method = strP.StringF(HTTP::EGET, RHTTPSession::GetTable());
-
-	iTrans = iSession.OpenTransactionL(uri, *iHandler, method);
+	
+	iTrans = iSession.OpenTransactionL(iUriParser, *iHandler, method);
 	RHTTPHeaders hdr = iTrans.Request().GetHeaderCollection();
 	// Add headers appropriate to all methods
 	SetHeaderL(hdr, HTTP::EUserAgent, KUserAgent);
@@ -193,15 +179,25 @@ TBool CHttpClient::DoGetAfterConnectL()
 	// submit the transaction
 	iTrans.SubmitL();
 	iIsActive = ETrue;	
-	DP("CHttpClient::Get END");	
-	return ETrue;
+	DP("CHttpClient::Get END");		
 	}
 
 TBool CHttpClient::GetL(const TDesC& aUrl, const TDesC& aFileName,  TBool aSilent) {
 	DP("CHttpClient::Get START");
 	DP2("Getting '%S' to '%S'", &aUrl, &aFileName);	
 	__ASSERT_DEBUG((iIsActive==EFalse), User::Panic(_L("Already active"), -2));
-	iCurrentURL.Copy(aUrl);				
+	iCurrentURL.Copy(aUrl);	
+		
+	TInt urlError = iUriParser.Parse(iCurrentURL);
+
+	if(urlError != KErrNone ||!iUriParser.IsSchemeValid())
+		{		
+		iCurrentURL = KNullDesC8;
+		iSession.Close();		
+		iObserver.CompleteL(this, KErrHttpInvalidUri);
+		return EFalse;		
+		}	
+	
 	iSilentGet = aSilent;
 	iCurrentFileName.Copy(aFileName);
 	iWaitingForGet = ETrue;
@@ -211,13 +207,13 @@ TBool CHttpClient::GetL(const TDesC& aUrl, const TDesC& aFileName,  TBool aSilen
 		DP("CHttpClient::GetL\t*** Opening HTTP session ***");
 		iSession.Close();
 		iSession.OpenL();
-		ConnectHttpSessionL();	
-		return ETrue;
+		ConnectHttpSessionL();			
 		}
 	else
 		{
-		return DoGetAfterConnectL();
-		}		
+		DoGetAfterConnectL();		
+		}
+	return ETrue;
 }
 
 void CHttpClient::Stop()

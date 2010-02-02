@@ -51,7 +51,7 @@ CConnectionEngine::CConnectionEngine(CPodcastModel& aPodcastModel):
 void CConnectionEngine::ConstructL()
 	{
 	User::LeaveIfError(iSocketServer.Connect());
-
+	User::LeaveIfError( iConnection.Open( iSocketServer ) );
 	}
 
 void CConnectionEngine::RunL()
@@ -199,6 +199,7 @@ RConnection& CConnectionEngine::Connection()
 
 CConnectionEngine::TConnectionState CConnectionEngine::ConnectionState()
 	{
+	
 	if( iPodcastModel.SettingsEngine().SpecificIAP()!= iSnapPreference.Snap() )
 		{
 		if(iConnection.SubSessionHandle() != 0)
@@ -207,6 +208,25 @@ CConnectionEngine::TConnectionState CConnectionEngine::ConnectionState()
 			}
 		
 		iConnectionState = CConnectionEngine::ENotConnected;
+		}
+	else
+		{
+		TNifProgress progress;
+		if(iConnection.Progress(progress) == KErrNone)
+			{
+			if(progress.iError == KErrNone && progress.iStage != 0)
+				{
+				iConnectionState = CConnectionEngine::EConnected;
+				}
+			else
+				{
+				iConnectionState = CConnectionEngine::ENotConnected;
+				}
+			}
+		else
+			{
+			iConnectionState = CConnectionEngine::ENotConnected;
+			}
 		}
 	
 	return iConnectionState;

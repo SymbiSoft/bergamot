@@ -261,57 +261,67 @@ void CPodcastFeedView::UpdateFeedInfoStatusL(TUint aFeedUid, TBool aIsUpdating)
 	UpdateToolbar();
 	}
 
-void CPodcastFeedView::UpdateFeedInfoDataL(CFeedInfo* aFeedInfo, TInt aIndex, TBool aIsUpdating )
+void CPodcastFeedView::FormatFeedInfoListBoxItemL(CFeedInfo& aFeedInfo, TBool aIsUpdating)
 	{
 	TBuf<KMaxShortDateFormatSpec*2> updatedDate;
-	
+	TBuf<KMaxUnplayedFeedsLength> unplayedShows;
 	TUint unplayedCount = 0;
 	TUint showCount = 0;
-	TBuf<KMaxUnplayedFeedsLength> unplayedShows;
-	TListItemProperties itemProps;	
 	TInt iconIndex = 0;
+	
 	if(aIsUpdating)
 		{
-			iconIndex = 1;
-			iEikonEnv->ReadResourceL(updatedDate, R_PODCAST_FEEDS_IS_UPDATING);
-			unplayedShows = KNullDesC();			
+		iconIndex = 1;
+		iEikonEnv->ReadResourceL(updatedDate, R_PODCAST_FEEDS_IS_UPDATING);
+		unplayedShows = KNullDesC();			
 		}
 	else
-	{
-		iPodcastModel.FeedEngine().GetStatsByFeed(aFeedInfo->Uid(), showCount, unplayedCount);
-		
+		{
+		iPodcastModel.FeedEngine().GetStatsByFeed(aFeedInfo.Uid(), showCount, unplayedCount);
+
 		if (unplayedCount > 0) {
-		    iconIndex = 2;
+		iconIndex = 2;
 		} else {
-			iconIndex = 1;
+		iconIndex = 1;
 		}			
 
 		unplayedShows.Format(*iFeedsFormat, unplayedCount, showCount);
-		
-		if (aFeedInfo->LastUpdated().Int64() == 0) 
-		{
+
+		if (aFeedInfo.LastUpdated().Int64() == 0) 
+			{
 			updatedDate.Copy(*iNeverUpdated);					
 			unplayedShows.Copy(KUnknownUpdateDateString());
-		}
+			}
 		else 
-		{
+			{
 			TTime now;
 			TTimeIntervalHours interval;
 			now.HomeTime();
-			now.HoursFrom(aFeedInfo->LastUpdated(), interval);
+			now.HoursFrom(aFeedInfo.LastUpdated(), interval);
 			if (interval.Int() < KADayInHours) 
-			{
-				aFeedInfo->LastUpdated().FormatL(updatedDate, KTimeFormat());
-			}
+				{
+				aFeedInfo.LastUpdated().FormatL(updatedDate, KTimeFormat());
+				}
 			else 
-			{
-				aFeedInfo->LastUpdated().FormatL(updatedDate, KDateFormatShort());
+				{
+				aFeedInfo.LastUpdated().FormatL(updatedDate, KDateFormatShort());
+				}
 			}
 		}
-	}
-	itemProps.SetDimmed(aIsUpdating);
 	
-	iListboxFormatbuffer.Format(KFeedFormat(), iconIndex, &aFeedInfo->Title(), &updatedDate,  &unplayedShows);
+	if(aFeedInfo.LastError() != KErrNone)
+		{
+		iEikonEnv->GetErrorText(unplayedShows, aFeedInfo.LastError());
+		}	
+	
+	iListboxFormatbuffer.Format(KFeedFormat(), iconIndex, &(aFeedInfo.Title()), &updatedDate,  &unplayedShows);
+	}
+
+void CPodcastFeedView::UpdateFeedInfoDataL(CFeedInfo* aFeedInfo, TInt aIndex, TBool aIsUpdating )
+	{			
+	TListItemProperties itemProps;			
+	itemProps.SetDimmed(aIsUpdating);	
+	FormatFeedInfoListBoxItemL(*aFeedInfo, aIsUpdating);
 	
 	TPtrC compareTo((*iItemArray)[aIndex]);
 	
@@ -367,58 +377,16 @@ void CPodcastFeedView::UpdateListboxItemsL()
 			iListContainer->Listbox()->Reset();
 			iListContainer->Listbox()->ItemDrawer()->ClearAllPropertiesL();
 			iItemIdArray.Reset();
-			iItemArray->Reset();
-			TBuf<KMaxShortDateFormatSpec*2> updatedDate;
-			TBuf<KMaxUnplayedFeedsLength> unplayedShows;
+			iItemArray->Reset();					
 			
 			if (len > 0) 
 				{
 				for (int i=0;i<len;i++) 
 					{				
 					
-					CFeedInfo *fi = (*sortedItems)[i];
+					CFeedInfo *fi = (*sortedItems)[i];									
+					FormatFeedInfoListBoxItemL(*fi);
 					iItemIdArray.Append(fi->Uid());
-					TInt iconIndex = 0;
-					TUint unplayedCount = 0;
-					TUint showCount = 0;
-					iPodcastModel.FeedEngine().GetStatsByFeed(fi->Uid(), showCount, unplayedCount);
-					unplayedShows.Format(*iFeedsFormat, unplayedCount, showCount);
-
-					if (fi->LastUpdated().Int64() == 0) 
-						{
-						updatedDate.Copy(*iNeverUpdated);									
-						unplayedShows.Copy(KUnknownUpdateDateString());
-						}
-					else 
-						{
-						TTime now;
-						TTimeIntervalHours interval;
-						now.UniversalTime();
-						now.HoursFrom(fi->LastUpdated(), interval);
-						if (interval.Int() < 24) 
-							{
-							fi->LastUpdated().FormatL(updatedDate, KTimeFormat());
-							}
-						else 
-							{
-							fi->LastUpdated().FormatL(updatedDate, KDateFormatShort());
-							}
-						}
-					
-					if(fi->LastError() != KErrNone)
-						{
-						iEikonEnv->GetErrorText(unplayedShows, fi->LastError());
-						}
-					
-					if (unplayedCount > 0)
-						{
-						iconIndex = 2;						
-						}
-					else
-						{
-						iconIndex = 1;						
-						}
-					iListboxFormatbuffer.Format(KFeedFormat(), iconIndex, &fi->Title(), &updatedDate, &unplayedShows);
 					iItemArray->AppendL(iListboxFormatbuffer);
 					
 					iListContainer->Listbox()->ItemDrawer()->SetPropertiesL(i, itemProps);
@@ -474,9 +442,9 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 				CleanupStack::PushL(newFeedInfo);
 				newFeedInfo->SetUrlL(url);
 				newFeedInfo->SetTitleL(newFeedInfo->Url());
-				CleanupStack::Pop(newFeedInfo);
+				
 
-				TBool added = iPodcastModel.FeedEngine().AddFeedL(newFeedInfo); // takes ownership
+				TBool added = iPodcastModel.FeedEngine().AddFeedL(*newFeedInfo); // takes ownership
 				if (!added)
 					{
 					TBuf<KMaxMessageLength> message;
@@ -484,7 +452,8 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 					iEikonEnv->ReadResourceL(message, R_ADD_FEED_EXISTS);
 					iEikonEnv->ReadResourceL(title, R_ADD_FEED_EXISTS_TITLE);
 					iEikonEnv->InfoWinL(title, message);				
-					}								
+					}				
+				CleanupStack::PopAndDestroy(newFeedInfo);
 				UpdateListboxItemsL();
 				}
 			break;
@@ -601,9 +570,9 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 							PodcastUtils::FixProtocolsL(url);
 							
 							//----- HACK ---- //
-							CFeedInfo* temp = CFeedInfo::NewL();
+							CFeedInfo* temp = CFeedInfo::NewLC();
 							temp->SetUrlL(url);
-							TBool added = iPodcastModel.FeedEngine().AddFeedL(temp);
+							TBool added = iPodcastModel.FeedEngine().AddFeedL(*temp);
 							if (added) {
 								// The Feed URL did not exist
 								// Remove the temp entry so that the correct entry could be changed
@@ -630,6 +599,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 								iEikonEnv->ReadResourceL(dlgTitle, R_ADD_FEED_EXISTS_TITLE);
 								iEikonEnv->InfoWinL(dlgTitle, dlgMessage);		
 							}
+							CleanupStack::PopAndDestroy(temp);
 						}
 					} else { // no url change, maybe title?
 						// Update the title

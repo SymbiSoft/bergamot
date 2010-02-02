@@ -30,10 +30,9 @@ class CFeedInfo : public CBase
 	{
 	public:
 		IMPORT_C static CFeedInfo* NewL();
-		IMPORT_C static CFeedInfo* NewLC();
-	
+		IMPORT_C static CFeedInfo* NewLC();		
 		~CFeedInfo();
-		
+		IMPORT_C CFeedInfo* CopyL() const;
 		IMPORT_C const TDesC& Url() const;
 		IMPORT_C void SetUrlL(const TDesC &aUrl);
 
@@ -49,19 +48,19 @@ class CFeedInfo : public CBase
 		IMPORT_C const TDesC& Link() const;
 		IMPORT_C void SetLinkL(const TDesC &aLink);
 
-		IMPORT_C TTime BuildDate();
+		IMPORT_C TTime BuildDate() const;
 		IMPORT_C void SetBuildDate(TTime aBuildDate);
 
-		IMPORT_C TTime LastUpdated();
+		IMPORT_C TTime LastUpdated() const;
 		IMPORT_C void SetLastUpdated(TTime aUpdated);
 
-		IMPORT_C TUint Uid();
+		IMPORT_C TUint Uid() const;
 
 		IMPORT_C const TDesC& ImageFileName() const;
 		IMPORT_C void SetImageFileNameL(const TDesC &aFileName);
 			
 		IMPORT_C void SetCustomTitle();
-		IMPORT_C TBool CustomTitle();
+		IMPORT_C TBool CustomTitle() const;
 		
 		IMPORT_C void SetLastError(TInt aLastError);
 		IMPORT_C TInt LastError() const;

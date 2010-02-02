@@ -357,33 +357,35 @@ void CFeedEngine::ReplaceString(TDes & aString, const TDesC& aStringToReplace, c
 		}
 	}
 
-EXPORT_C TBool CFeedEngine::AddFeedL(CFeedInfo *aItem) 
+EXPORT_C TBool CFeedEngine::AddFeedL(const CFeedInfo&aItem) 
 	{
-	DP2("CFeedEngine::AddFeed, title=%S, URL=%S", &aItem->Title(), &aItem->Url());
+	DP2("CFeedEngine::AddFeed, title=%S, URL=%S", &aItem.Title(), &aItem.Url());
 	for (TInt i=0;i<iSortedFeeds.Count();i++) 
 		{
-		if (iSortedFeeds[i]->Uid() == aItem->Uid()) 
+		if (iSortedFeeds[i]->Uid() == aItem.Uid()) 
 			{
-			DP1("Already have feed %S, discarding", &aItem->Url());
-			delete aItem;
-			aItem = NULL;
+			DP1("Already have feed %S, discarding", &aItem.Url());			
 			return EFalse;
 			}
 		}
 	
 	TLinearOrder<CFeedInfo> sortOrder( CFeedEngine::CompareFeedsByTitle);
-	iSortedFeeds.InsertInOrder(aItem, sortOrder);
+	CFeedInfo* newItem = aItem.CopyL();
+	CleanupStack::PushL(newItem);
+	User::LeaveIfError(iSortedFeeds.InsertInOrder(newItem, sortOrder));
+	CleanupStack::Pop(newItem);
+	
 
 	// Save the feeds into DB
 	DBAddFeedL(aItem);
 	return ETrue;
 	}
 
-TBool CFeedEngine::DBAddFeedL(CFeedInfo *aItem)
+TBool CFeedEngine::DBAddFeedL(const CFeedInfo& aItem)
 	{
-	DP2("CFeedEngine::DBAddFeed, title=%S, URL=%S", &aItem->Title(), &aItem->Url());
+	DP2("CFeedEngine::DBAddFeed, title=%S, URL=%S", &aItem.Title(), &aItem.Url());
 	
-	CFeedInfo *info = DBGetFeedInfoByUidL(aItem->Uid());
+	CFeedInfo *info = DBGetFeedInfoByUidL(aItem.Uid());
 	if (info) {
 		DP("Feed already exists!");
 		delete info;
@@ -393,8 +395,8 @@ TBool CFeedEngine::DBAddFeedL(CFeedInfo *aItem)
 	_LIT(KSqlStatement, "insert into feeds (url, title, description, imageurl, imagefile, link, built, lastupdated, uid, feedtype, customtitle, lasterror)"
 			" values (\"%S\",\"%S\", \"%S\", \"%S\", \"%S\", \"%S\", \"%Ld\", \"%Ld\", \"%u\", \"%u\", \"%u\", \"%d\")");
 	iSqlBuffer.Format(KSqlStatement,
-			&aItem->Url(), &aItem->Title(), &aItem->Description(), &aItem->ImageUrl(), &aItem->ImageFileName(), &aItem->Link(),
-			aItem->BuildDate().Int64(), aItem->LastUpdated().Int64(), aItem->Uid(), EAudioPodcast, aItem->CustomTitle(), aItem->LastError());
+			&aItem.Url(), &aItem.Title(), &aItem.Description(), &aItem.ImageUrl(), &aItem.ImageFileName(), &aItem.Link(),
+			aItem.BuildDate().Int64(), aItem.LastUpdated().Int64(), aItem.Uid(), EAudioPodcast, aItem.CustomTitle(), aItem.LastError());
 
 	sqlite3_stmt *st;
 	 
@@ -557,9 +559,12 @@ void CFeedEngine::Progress(CHttpClient* /*aHttpClient*/, TInt aBytes, TInt aTota
 		percent = (aBytes*100)/aTotalBytes;		
 		}
 	
-	for (TInt i=0;i<iObservers.Count();i++) 
+	if(iClientState != ESearching  && iActiveFeed != NULL)
 		{
-		TRAP_IGNORE(iObservers[i]->FeedDownloadUpdatedL(iActiveFeed->Uid(), percent));
+		for (TInt i=0;i<iObservers.Count();i++) 
+			{
+			TRAP_IGNORE(iObservers[i]->FeedDownloadUpdatedL(iActiveFeed->Uid(), percent));
+			}
 		}
 	/*if (iClientState == EFeed) {
 		int percent = -1;
@@ -574,20 +579,31 @@ void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TInt aError)
 	{
 	DP2("CFeedEngine::CompleteL BEGIN, iClientState=%d, aSuccessful=%d", iClientState, aError);
 
-	if (iClientState == EUpdatingFeed) 
+	switch(iClientState)
+		{		
+		default:
+			if(iActiveFeed != NULL)
+				{
+				TTime time;
+				time.HomeTime();
+				iActiveFeed->SetLastUpdated(time);
+				iActiveFeed->SetLastError(aError);
+				NotifyFeedUpdateComplete();
+				}
+			break;
+		case EUpdatingFeed: 
 		{
 		// Parse the feed. We need to trap this call since it could leave and then
 		// the whole update chain will be broken
 		// change client state
 		iClientState = EIdle;
 		iActiveFeed->SetLastError(aError);
+		TTime time;
+		time.HomeTime();
+		iActiveFeed->SetLastUpdated(time);
 		
 		if( aError == KErrNone)
-			{
-			TTime time;
-			time.HomeTime();
-			iActiveFeed->SetLastUpdated(time);
-
+			{			
 			TRAPD(parserErr, iParser->ParseFeedL(iUpdatingFeedFileName, iActiveFeed, iPodcastModel.SettingsEngine().MaxListItems()));
 
 			if(parserErr)
@@ -624,16 +640,16 @@ void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TInt aError)
 			NotifyFeedUpdateComplete();
 			UpdateNextFeedL();	
 			}
-		}
-	else if (iClientState == EUpdatingImage)
+		}break;
+	case EUpdatingImage:
 		{
 		// change client state to not updating
 		iClientState = EIdle;
 
 		NotifyFeedUpdateComplete();
 		UpdateNextFeedL();
-		}
-	else if (iClientState == ESearching) 
+		}break;
+	case ESearching: 
 		{
 		iClientState = EIdle;
 
@@ -655,8 +671,9 @@ void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TInt aError)
 			{
 			DP1("Parsing failed, err=%d", err);	
 			}
-		}
 		BaflUtils::DeleteFile(iPodcastModel.FsSession(), iSearchResultsFileName);
+		}break;
+		}
 	DP("CFeedEngine::CompleteL END");
 	}
 
