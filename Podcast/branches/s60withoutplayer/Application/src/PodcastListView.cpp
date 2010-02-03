@@ -208,7 +208,12 @@ void CPodcastListView::HandleStatusPaneSizeChange()
     
 CPodcastListView::~CPodcastListView()
     {
-    delete iListContainer;  
+    if(iListContainer)
+    	{
+    	AppUi()->RemoveFromStack(iListContainer);
+    	delete iListContainer;
+    	}
+         
     delete iItemArray;
     delete iLongTapDetector;
     iItemIdArray.Close();
