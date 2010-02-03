@@ -36,7 +36,7 @@ public:
 	IMPORT_C virtual ~CShowEngine();
 	
 public:
-	IMPORT_C void AddDownloadL(CShowInfo *info);
+	IMPORT_C void AddDownloadL(CShowInfo& info);
 	IMPORT_C TBool RemoveDownloadL(TUint aUid);
 	IMPORT_C void RemoveAllDownloads();
 
@@ -57,7 +57,7 @@ public:
 	IMPORT_C void GetShowsDownloadingL(RShowInfoArray &aArray);
 	IMPORT_C CShowInfo* DBGetShowByFileNameL(TFileName aFileName);
 	
-	IMPORT_C TBool AddShowL(CShowInfo *item);
+	IMPORT_C TBool AddShowL(const CShowInfo& item);
 	IMPORT_C void DeletePlayedShows(RShowInfoArray &aShowInfoArray);
 	IMPORT_C void DeleteAllShowsByFeedL(TUint aFeedUid,TBool aDeleteFiles=ETrue);
 	IMPORT_C void DeleteShowL(TUint aShowUid, TBool aRemoveFile=ETrue);
@@ -107,7 +107,7 @@ private:
 	// DB methods
 	CShowInfo* DBGetShowByUidL(TUint aUid);
 	void DBFillShowInfoFromStmtL(sqlite3_stmt *st, CShowInfo* showInfo);
-	TBool DBAddShow(CShowInfo *aItem);
+	TBool DBAddShow(const CShowInfo& aItem);
 	TBool DBUpdateShow(CShowInfo *aItem);
 	void DBGetShowsByFeedL(RShowInfoArray& aShowArray, TUint aFeedUid);
 	void DBGetAllShowsL(RShowInfoArray& aShowArray);

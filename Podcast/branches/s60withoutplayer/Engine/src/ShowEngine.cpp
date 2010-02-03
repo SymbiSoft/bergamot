@@ -229,21 +229,20 @@ TBool CShowEngine::GetShowL(CShowInfo *info)
 	return iShowClient->GetL(info->Url(), filePath);
 	}
 
-EXPORT_C TBool CShowEngine::AddShowL(CShowInfo *item)
+EXPORT_C TBool CShowEngine::AddShowL(const CShowInfo& aItem)
 	{
-	CShowInfo *showInfo = DBGetShowByUidL(item->Uid());
+	CShowInfo *showInfo = DBGetShowByUidL(aItem.Uid());
 
 	if (showInfo == NULL)
 		{
-		DBAddShow(item);
+		DBAddShow(aItem);
+		return ETrue;
 		}
 	else
 		{
-		delete showInfo;
+		delete showInfo;	
 		return EFalse;
-		}
-
-	return ETrue;
+		}	
 	}
 
 EXPORT_C void CShowEngine::AddObserver(MShowEngineObserver *observer)
@@ -739,17 +738,17 @@ void CShowEngine::DBFillShowInfoFromStmtL(sqlite3_stmt *st, CShowInfo* showInfo)
 	showInfo->SetLastError(lasterror);
 	}
 
-TBool CShowEngine::DBAddShow(CShowInfo *aItem)
+TBool CShowEngine::DBAddShow(const CShowInfo& aItem)
 	{
-	DP2("CShowEngine::DBAddShow, title=%S, URL=%S", &aItem->Title(), &aItem->Url());
+	DP2("CShowEngine::DBAddShow, title=%S, URL=%S", &aItem.Title(), &aItem.Url());
 
 	_LIT(KSqlStatement, "insert into shows (url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype)"
 			" values (\"%S\",\"%S\", \"%S\", \"%S\", \"%Lu\", \"%u\", \"%u\", \"%u\", \"%u\", \"%u\", \"%u\", \"%u\", \"%Lu\", \"%d\")");
-	iSqlBuffer.Format(KSqlStatement, &aItem->Url(), &aItem->Title(), &aItem->Description(),
-			&aItem->FileName(), aItem->Position().Int64(), aItem->PlayTime(),
-			aItem->PlayState(), aItem->DownloadState(), aItem->FeedUid(),
-			aItem->Uid(), aItem->ShowSize(), aItem->TrackNo(),
-			aItem->PubDate().Int64(), aItem->ShowType());
+	iSqlBuffer.Format(KSqlStatement, &aItem.Url(), &aItem.Title(), &aItem.Description(),
+			&aItem.FileName(), aItem.Position().Int64(), aItem.PlayTime(),
+			aItem.PlayState(), aItem.DownloadState(), aItem.FeedUid(),
+			aItem.Uid(), aItem.ShowSize(), aItem.TrackNo(),
+			aItem.PubDate().Int64(), aItem.ShowType());
 
 	sqlite3_stmt *st;
 
@@ -1139,11 +1138,11 @@ EXPORT_C TInt CShowEngine::GetNumDownloadingShows()
 	return (const TInt) DBGetDownloadsCount();
 	}
 
-EXPORT_C void CShowEngine::AddDownloadL(CShowInfo *info)
+EXPORT_C void CShowEngine::AddDownloadL(CShowInfo& aInfo)
 	{
-	info->SetDownloadState(EQueued);
-	DBUpdateShow(info);
-	DBAddDownload(info->Uid());
+	aInfo.SetDownloadState(EQueued);
+	DBUpdateShow(&aInfo);
+	DBAddDownload(aInfo.Uid());
 	DownloadNextShowL();
 	}
 

@@ -68,19 +68,19 @@ public:
 	IMPORT_C TUint PlayTime() const;
 	IMPORT_C void SetPlayTime(TUint aPlayTime);
 
-	IMPORT_C TPlayState PlayState();
+	IMPORT_C TPlayState PlayState() const;
 	IMPORT_C void SetPlayState(TPlayState aPlayState);
 
-	IMPORT_C TDownloadState DownloadState();
+	IMPORT_C TDownloadState DownloadState() const;
 	IMPORT_C void SetDownloadState(TDownloadState aDownloadState);
 
-	IMPORT_C TUint FeedUid();
+	IMPORT_C TUint FeedUid() const;
 	IMPORT_C void SetFeedUid(TUint aFeedUid);
 
 	IMPORT_C void SetUid(TUint aUid);
 	IMPORT_C TUint Uid() const;
 	
-	IMPORT_C TUint ShowSize();
+	IMPORT_C TUint ShowSize() const;
 	IMPORT_C void SetShowSize(TUint aShowSize);
 	
 	IMPORT_C const TTime PubDate() const;
@@ -90,7 +90,7 @@ public:
 	IMPORT_C void SetFileNameL(const TDesC &aFileName);
 	
 	IMPORT_C void SetShowType(TShowType aShowType);
-	IMPORT_C TShowType ShowType();
+	IMPORT_C TShowType ShowType() const;
 
 	IMPORT_C void SetTrackNo(TUint aTrackNo);
 	IMPORT_C TUint TrackNo() const;

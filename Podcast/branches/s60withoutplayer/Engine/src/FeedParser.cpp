@@ -253,12 +253,10 @@ void CFeedParser::OnEndElementL(const RTagInfo& aElement, TInt /*aErrorCode*/)
 			break;
 		case EStateItem:
 			if (str.CompareF(KTagItem) == 0) 
-				{
-				TBool isShowAdded = iCallbacks.NewShowL(iActiveShow);
-				if (!isShowAdded)
-					{
-					delete iActiveShow;
-					}
+				{				
+				iCallbacks.NewShowL(*iActiveShow);
+				
+				delete iActiveShow;				
 				
 				// We should now be finished with the show.
 				iActiveShow = NULL;

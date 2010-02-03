@@ -120,7 +120,7 @@ EXPORT_C void CShowInfo::SetPlayTime(TUint aPlayTime)
 	iPlayTime = aPlayTime;
 	}
 
-EXPORT_C TPlayState CShowInfo::PlayState()
+EXPORT_C TPlayState CShowInfo::PlayState() const
 	{
 	return iPlayState;
 	}
@@ -130,7 +130,7 @@ EXPORT_C void CShowInfo::SetPlayState(TPlayState aPlayState)
 	iPlayState = aPlayState;
 	}
 
-EXPORT_C TDownloadState CShowInfo::DownloadState()
+EXPORT_C TDownloadState CShowInfo::DownloadState() const
 	{
 	return iDownloadState;
 	}
@@ -140,7 +140,7 @@ EXPORT_C void CShowInfo::SetDownloadState(TDownloadState aDownloadState)
 	iDownloadState = aDownloadState;
 	}
 
-EXPORT_C TUint CShowInfo::FeedUid()
+EXPORT_C TUint CShowInfo::FeedUid() const
 	{
 	return iFeedUid;
 	}
@@ -160,7 +160,7 @@ EXPORT_C TUint CShowInfo::Uid() const
 	return iUid;
 	}
 
-EXPORT_C TUint CShowInfo::ShowSize()
+EXPORT_C TUint CShowInfo::ShowSize() const
 	{
 	return iShowSize;
 	}
@@ -200,7 +200,7 @@ EXPORT_C void CShowInfo::SetShowType(TShowType aShowType)
 	iShowType = aShowType;
 	}
 
-EXPORT_C TShowType CShowInfo::ShowType()
+EXPORT_C TShowType CShowInfo::ShowType() const
 	{
 	return iShowType;
 	}

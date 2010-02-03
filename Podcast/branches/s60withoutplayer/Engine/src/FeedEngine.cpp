@@ -236,33 +236,32 @@ EXPORT_C TBool CFeedEngine::UpdateFeedL(TUint aFeedUid)
 		}
 	}
 
-TBool CFeedEngine::NewShowL(CShowInfo *item)
+void CFeedEngine::NewShowL(CShowInfo& aItem)
 	{
 	//DP4("\nTitle: %S\nURL: %S\nDescription length: %d\nFeed: %d", &(item->Title()), &(item->Url()), item->Description().Length(), item->FeedUid());
 	
 	HBufC* description = HBufC::NewLC(KMaxDescriptionLength);
 	TPtr ptr(description->Des());
-	ptr.Copy(item->Description());
+	ptr.Copy(aItem.Description());
 	CleanHtmlL(ptr);
 	//DP1("New show has feed ID: %u") item->FeedUid());
-	TRAP_IGNORE(item->SetDescriptionL(*description));
+	TRAP_IGNORE(aItem.SetDescriptionL(*description));
 	CleanupStack::PopAndDestroy(description);
 	//DP1("Description: %S", &description);
 
 	if (iCatchupMode) {
 		// in catchup mode, we let one show be unplayed
 		if (++iCatchupCounter > 1) {
-			item->SetPlayState(EPlayed);
+			aItem.SetPlayState(EPlayed);
 		}
 	}
 	
-	TBool isShowAdded = iPodcastModel.ShowEngine().AddShowL(item);
+	TBool isShowAdded = iPodcastModel.ShowEngine().AddShowL(aItem);
 
 	if (!iCatchupMode && isShowAdded && iPodcastModel.SettingsEngine().DownloadAutomatically()) 
 		{
-		iPodcastModel.ShowEngine().AddDownloadL(item);
+		iPodcastModel.ShowEngine().AddDownloadL(aItem);
 		}	
-	return isShowAdded;
 	}
 
 void CFeedEngine::GetFeedImageL(CFeedInfo *aFeedInfo)

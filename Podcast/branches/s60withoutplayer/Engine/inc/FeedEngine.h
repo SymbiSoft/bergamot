@@ -108,8 +108,8 @@ private:
 	void CompleteL(CHttpClient* aClient, TInt aError);
 	void FileError(TUint /*aError*/) { }
 	// from FeedParser
-	TBool NewShowL(CShowInfo *item);
-	void ParsingCompleteL(CFeedInfo *item);
+	void NewShowL(CShowInfo& aItem);
+	void ParsingCompleteL(CFeedInfo *aItem);
 
 	void GetFeedImageL(CFeedInfo *aFeedInfo);
 	static void ReplaceChar(TDes & aString, TUint aCharToReplace, TUint aReplacement);
