@@ -37,7 +37,7 @@ EXPORT_C CFeedInfo* CFeedInfo::NewLC()
 	return self;
 	}
 
-IMPORT_C CFeedInfo* CFeedInfo::CopyL() const
+EXPORT_C CFeedInfo* CFeedInfo::CopyL() const
 	{
 	CFeedInfo* copy = CFeedInfo::NewLC();	
 	copy->SetUrlL(Url());

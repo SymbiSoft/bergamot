@@ -84,10 +84,7 @@ enum TPodcastControl
 
 enum TPodcastClientShowCategory
 	{
-	EShowAllShows = 0x4000,
-	EShowNewShows,
-	EShowFeedShows,
-	EShowDownloadedShows,
+	EShowFeedShows =0x4000,
 	EShowPendingShows
 	};
 

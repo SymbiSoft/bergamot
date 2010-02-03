@@ -172,9 +172,6 @@ void CPodcastShowsView::DoActivateL(const TVwsViewId& aPrevViewId,
 	
 	switch (aCustomMessageId.iUid)
 		{
-		case EShowNewShows:
-		case EShowAllShows:
-		case EShowDownloadedShows:
 		case EShowPendingShows:
 			iCurrentCategory
 					= (TPodcastClientShowCategory) aCustomMessageId.iUid;
@@ -436,20 +433,7 @@ void CPodcastShowsView::UpdateListboxItemsL()
 
 		switch (iCurrentCategory)
 			{
-			case EShowAllShows:
-
-				iPodcastModel.GetAllShows();
-				break;
-			case EShowNewShows:
-
-				iPodcastModel.GetNewShows();
-				break;
-			case EShowDownloadedShows:
-
-				iPodcastModel.GetShowsDownloaded();
-				break;
 			case EShowPendingShows:
-
 				iPodcastModel.GetShowsDownloading();
 				break;
 			default:
@@ -710,21 +694,34 @@ void CPodcastShowsView::UpdateToolbar()
 	}
 	
 	switch(iCurrentCategory) {
-	case EShowAllShows:
-	case EShowNewShows:
 	case EShowFeedShows:
-	case EShowDownloadedShows:
 		toolbar->HideItem(EPodcastUpdateFeed, updatingState, ETrue ); 
 		toolbar->HideItem(EPodcastCancelUpdateAllFeeds, !updatingState, ETrue );
-		toolbar->HideItem(EPodcastDownloadShow, hideDownloadShowCmd, ETrue );
-		toolbar->HideItem(EPodcastDeleteShow, !hideDownloadShowCmd, ETrue);
-		toolbar->HideItem(EPodcastMarkAsPlayed, hideSetPlayed, ETrue );
-		toolbar->HideItem(EPodcastMarkAsUnplayed, !hideSetPlayed, ETrue );
+		
+		if (hideDownloadShowCmd) {
+			toolbar->HideItem(EPodcastDownloadShow, ETrue, ETrue );
+			toolbar->HideItem(EPodcastDeleteShow, EFalse, ETrue);
+			toolbar->SetItemDimmed(EPodcastDeleteShow, updatingState, ETrue);
+		} else {
+			toolbar->HideItem(EPodcastDownloadShow, EFalse, ETrue );
+			toolbar->HideItem(EPodcastDeleteShow, ETrue, ETrue);
+			toolbar->SetItemDimmed(EPodcastDownloadShow, updatingState, ETrue);	
+		}
+		if (hideSetPlayed) {
+			toolbar->HideItem(EPodcastMarkAsPlayed, ETrue, ETrue );
+			toolbar->HideItem(EPodcastMarkAsUnplayed, EFalse, ETrue );
+			toolbar->SetItemDimmed(EPodcastMarkAsUnplayed, updatingState, ETrue);
+		} else {
+			toolbar->HideItem(EPodcastMarkAsPlayed, EFalse, ETrue );
+			toolbar->HideItem(EPodcastMarkAsUnplayed, ETrue, ETrue );
+			toolbar->SetItemDimmed(EPodcastMarkAsPlayed, updatingState, ETrue);
+		}
 		
 		toolbar->HideItem(EPodcastRemoveDownload, ETrue, ETrue);
 		toolbar->HideItem(EPodcastRemoveAllDownloads, ETrue, ETrue);
 		toolbar->HideItem(EPodcastStopDownloads,ETrue, ETrue);
 		toolbar->HideItem(EPodcastResumeDownloads,ETrue, ETrue);
+
 
 		break;
 	case EShowPendingShows:
