@@ -36,13 +36,11 @@ CPodcastAppUi::CPodcastAppUi(CPodcastModel* aPodcastModel):iPodcastModel(aPodcas
 	{
 	
 	}
+
 void CPodcastAppUi::ConstructL()
     {
     DP("CPodcastAppUi::ConstructL() BEGIN");
     BaseConstructL(CAknAppUi::EAknEnableSkin); 
-    
-//    iMainView = CPodcastMainView::NewL(*iPodcastModel);
-//	this->AddViewL(iMainView);
 
 	iFeedView = CPodcastFeedView::NewL(*iPodcastModel);
 	this->AddViewL(iFeedView);

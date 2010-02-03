@@ -64,6 +64,7 @@ CPodcastModel::CPodcastModel()
 
 void CPodcastModel::ConstructL()
 {
+	DP("CPodcastModel::ConstructL BEGIN");
 	User::LeaveIfError(iFsSession.Connect());
 	
 	iCommDB = CCommsDatabase::NewL (EDatabaseTypeUnspecified);
@@ -79,10 +80,12 @@ void CPodcastModel::ConstructL()
 	iShowEngine = CShowEngine::NewL(*this);
 
 	iSoundEngine = CSoundEngine::NewL(*this);	
+	DP("CPodcastModel::ConstructL END");
 }
 
 void CPodcastModel::UpdateIAPListL()
 {
+	DP("CPodcastModel::UpdateIAPListL BEGIN");
 	iIapNameArray->Reset();
 	iIapIdArray.Reset();
 	RCmManager cmManager;
@@ -94,6 +97,7 @@ void CPodcastModel::UpdateIAPListL()
 	cmManager.AllDestinationsL(destArray);
 	
 	TInt cnt = destArray.Count();
+	DP1("destArray.Count==%d", cnt);
 	for(TInt loop = 0;loop<cnt;loop++)
 		{
 		destination = cmManager.DestinationL (destArray[loop]);
@@ -101,31 +105,16 @@ void CPodcastModel::UpdateIAPListL()
 			{
 			IAPItem.iIapId = destArray[loop];
 			HBufC* name = destination.NameLC();
+			DP1(" destination.NameLC==%S", name);
 			iIapNameArray->AppendL(*name);
 			CleanupStack::PopAndDestroy(name);
 			iIapIdArray.Append(IAPItem);
 			}
 		}
 	CleanupStack::PopAndDestroy();// close destArray
-#ifndef __WINS__
-	cmManager.Close();
-#endif
-	//CleanupStack::PopAndDestroy();// close destArray, cmMangaer
-   /*
-	CCommsDbTableView* table = iCommDB->OpenTableLC (TPtrC (NETWORK)); 
-	TInt ret = table->GotoFirstRecord ();
-	
-	TBuf <KCommsDbSvrMaxFieldLength> bufName;
-	while (ret == KErrNone) // There was a first record
-	{
-		table->ReadUintL(TPtrC(COMMDB_ID), IAPItem.iIapId);
-		table->ReadTextL (TPtrC(COMMDB_NAME), bufName);		
+	//	cmManager.Close(); // crash on both emulator and target
 
-		iIapIdArray.Append(IAPItem);
-		iIapNameArray->AppendL(bufName); 		
-		ret = table->GotoNextRecord();
-	}
-	CleanupStack::PopAndDestroy(); // Close table*/
+	DP("CPodcastModel::UpdateIAPListL END");
 }
 
 EXPORT_C CDesCArrayFlat* CPodcastModel::IAPNames()

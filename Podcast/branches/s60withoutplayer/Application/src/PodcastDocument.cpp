@@ -19,6 +19,7 @@
 #include "PodcastDocument.h"
 #include "PodcastAppui.h"
 #include "PodcastModel.h"
+
 CPodcastDocument::CPodcastDocument( CEikApplication& aApp )
     : CAknDocument( aApp )    
     {
@@ -31,7 +32,9 @@ CPodcastDocument::~CPodcastDocument()
 
 void CPodcastDocument::ConstructL()
     {
+    DP("CPodcastDocument::ConstructL BEGIN");
     iPodcastModel = CPodcastModel::NewL();
+    DP("CPodcastDocument::ConstructL END");
     }
 
 CPodcastDocument* CPodcastDocument::NewL(CEikApplication& aApp )
@@ -40,7 +43,6 @@ CPodcastDocument* CPodcastDocument::NewL(CEikApplication& aApp )
     CleanupStack::PushL( self );
     self->ConstructL();
     CleanupStack::Pop( self );
-
     return self;
     }
     
