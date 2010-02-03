@@ -61,6 +61,7 @@ void CPodcastAppUi::ConstructL()
 
 CPodcastAppUi::~CPodcastAppUi()
     {
+    iNaviPane->Pop(iNaviDecorator);
 	delete iNaviDecorator;
     }
 
