@@ -148,7 +148,7 @@ void CMetaDataReader::MapcInitComplete(TInt aError, const TTimeIntervalMicroSeco
 		buf = NULL;
 	}
 
-	iObserver.ReadMetaData(iShow);
+	iObserver.ReadMetaData(*iShow);
 	iPlayer->Stop();
 	iShow = NULL;
 	TRAP_IGNORE(ParseNextShowL());

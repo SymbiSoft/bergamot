@@ -520,7 +520,7 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 				{
 				CShowInfo *info = iPodcastModel.ActiveShowList()[index];
 				info->SetPlayState(EPlayed);
-				iPodcastModel.ShowEngine().UpdateShow(info);
+				iPodcastModel.ShowEngine().UpdateShow(*info);
 				UpdateShowItemDataL(iPodcastModel.ActiveShowList()[index], index, 0);
 				iListContainer->Listbox()->DrawItem(index);					
 				}
@@ -533,7 +533,7 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 				{
 				CShowInfo *info = iPodcastModel.ActiveShowList()[index];
 				info->SetPlayState(ENeverPlayed);
-				iPodcastModel.ShowEngine().UpdateShow(info);
+				iPodcastModel.ShowEngine().UpdateShow(*info);
 
 				UpdateShowItemDataL(iPodcastModel.ActiveShowList()[index], index, 0);
 				iListContainer->Listbox()->DrawItem(index);					
@@ -561,7 +561,7 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 					CShowInfo *info = iPodcastModel.ActiveShowList()[index];
 					info->SetDownloadState(ENotDownloaded);
 					info->SetPlayState(EPlayed);
-					iPodcastModel.ShowEngine().UpdateShow(info);
+					iPodcastModel.ShowEngine().UpdateShow(*info);
 					
 					UpdateShowItemDataL(iPodcastModel.ActiveShowList()[index], index, 0);
 					iListContainer->Listbox()->DrawItem(index);					

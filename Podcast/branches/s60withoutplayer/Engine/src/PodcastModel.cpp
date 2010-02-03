@@ -376,7 +376,7 @@ EXPORT_C void CPodcastModel::MarkSelectionPlayed()
 	for (int i=0;i<iActiveShowList.Count();i++) {
 		if(iActiveShowList[i]->PlayState() != EPlayed) {
 			iActiveShowList[i]->SetPlayState(EPlayed);
-			iShowEngine->UpdateShow(iActiveShowList[i]);
+			iShowEngine->UpdateShow(*iActiveShowList[i]);
 		}
 	}
 	}

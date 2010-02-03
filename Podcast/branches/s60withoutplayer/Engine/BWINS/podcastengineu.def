@@ -107,7 +107,7 @@ EXPORTS
 	?UpdateFeedInterval@CSettingsEngine@@QAEHXZ @ 106 NONAME ; int CSettingsEngine::UpdateFeedInterval(void)
 	?UpdateFeedL@CFeedEngine@@QAEHI@Z @ 107 NONAME ; int CFeedEngine::UpdateFeedL(unsigned int)
 	?UpdateFeedTime@CSettingsEngine@@QAE?AVTTime@@XZ @ 108 NONAME ; class TTime CSettingsEngine::UpdateFeedTime(void)
-	?UpdateShow@CShowEngine@@QAEXPAVCShowInfo@@@Z @ 109 NONAME ; void CShowEngine::UpdateShow(class CShowInfo *)
+	?AddDownloadL@CShowEngine@@QAEXAAVCShowInfo@@@Z @ 109 NONAME ; void CShowEngine::AddDownloadL(class CShowInfo &)	
 	?Url@CFeedInfo@@QBEABVTDesC16@@XZ @ 110 NONAME ; class TDesC16 const & CFeedInfo::Url(void) const
 	?Url@CShowInfo@@QBEABVTDesC16@@XZ @ 111 NONAME ; class TDesC16 const & CShowInfo::Url(void) const
 	?RemoveFeedL@CFeedEngine@@QAEXI@Z @ 112 NONAME ; void CFeedEngine::RemoveFeedL(unsigned int)
@@ -147,5 +147,5 @@ EXPORTS
 	?PlayState@CShowInfo@@QBE?AW4TPlayState@@XZ @ 146 NONAME ; enum TPlayState CShowInfo::PlayState(void) const
 	?ShowSize@CShowInfo@@QBEIXZ @ 147 NONAME ; unsigned int CShowInfo::ShowSize(void) const
 	?ShowType@CShowInfo@@QBE?AW4TShowType@@XZ @ 148 NONAME ; enum TShowType CShowInfo::ShowType(void) const
-	?AddDownloadL@CShowEngine@@QAEXAAVCShowInfo@@@Z @ 149 NONAME ; void CShowEngine::AddDownloadL(class CShowInfo &)
+	?UpdateShow@CShowEngine@@QAEXAAVCShowInfo@@@Z @ 149 NONAME ; void CShowEngine::UpdateShow(class CShowInfo &)
 

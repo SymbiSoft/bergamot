@@ -67,7 +67,7 @@ public:
 	IMPORT_C void RemoveObserver(MShowEngineObserver *observer);
 
 	IMPORT_C void NotifyShowListUpdatedL();
-	IMPORT_C void UpdateShow(CShowInfo *aInfo);
+	IMPORT_C void UpdateShow(CShowInfo& aInfo);
 
 	IMPORT_C void GetMimeType(const TDesC& aFileName, TDes& aMimeType);
 
@@ -82,7 +82,7 @@ private:
 	void DownloadInfo(CHttpClient* aClient, int aSize);
 	void FileError(TUint aError);
 	// from MetaDataReaderObserver
-	void ReadMetaData(CShowInfo *aShowInfo);
+	void ReadMetaData(CShowInfo& aShowInfo);
 	void ReadMetaDataCompleteL();
 	
 private:
@@ -108,7 +108,7 @@ private:
 	CShowInfo* DBGetShowByUidL(TUint aUid);
 	void DBFillShowInfoFromStmtL(sqlite3_stmt *st, CShowInfo* showInfo);
 	TBool DBAddShow(const CShowInfo& aItem);
-	TBool DBUpdateShow(CShowInfo *aItem);
+	TBool DBUpdateShow(CShowInfo& aItem);
 	void DBGetShowsByFeedL(RShowInfoArray& aShowArray, TUint aFeedUid);
 	void DBGetAllShowsL(RShowInfoArray& aShowArray);
 	void DBGetNewShowsL(RShowInfoArray& aShowArray);
