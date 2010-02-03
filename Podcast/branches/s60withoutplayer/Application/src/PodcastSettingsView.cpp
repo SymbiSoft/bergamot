@@ -62,7 +62,7 @@ public:
 			TInt iapId = iPodcastModel.IAPIds()[i].iIapId;
 			DP2("IAP name='%S', id=%d", buf, iapId);
 			
-			if (iapId == InternalValue()) {
+			if (iapId == ExternalValue()) {
 				valueExists = ETrue;
 			}
 			// both arrays destroy themselves, so we need two copies to prevent USER 44
