@@ -135,12 +135,7 @@ public:
 		se.SetBaseDir(iShowDir);
 		DP1("Base Dir: %S", &iShowDir);
 		se.SetUpdateAutomatically((TAutoUpdateSetting)iAutoUpdate);
-		DP1("Update automatically: %d", iAutoUpdate);
-		se.SetUpdateFeedInterval(iIntervalUpdate);
-		DP1("Update feed interval: %d", iIntervalUpdate);
-		se.SetUpdateFeedTime(iTimeUpdate);
-		//DP1("Update feed time: %d", iTimeUpdate.Int64());
-		
+		DP1("Update automatically: %d", iAutoUpdate);		
 		if (iConnection == -1) 
 			{
 			DP("Specific IAP: -1 Ask user");
@@ -173,16 +168,10 @@ public:
 		{
 		DP("UpdateSettingVisibility BEGIN");
 		LoadSettingsL();
-		TBool dimAutoUpdateInterval = iConnection == -1 || iAutoUpdate != EAutoUpdatePeriodically;
-		TBool dimAutoUpdateTime = iConnection == -1 || iAutoUpdate != EAutoUpdateAtTime;
 		TBool dimAutoUpdate = iConnection == -1;
-		TBool dimAutoDownload = EFalse; //iConnection == -1 || iAutoUpdate == EAutoUpdateOff;
 		TBool dimIAP = iConnection <= 0;
 	
-		iSettingAutoDownload->SetHidden(dimAutoDownload);
 		iSettingAutoUpdate->SetHidden(dimAutoUpdate);
-		iSettingAutoUpdateTime->SetHidden(dimAutoUpdateTime);
-		iSettingAutoUpdateInterval->SetHidden(dimAutoUpdateInterval);
 		iSettingIAP->SetHidden(dimIAP);
 		ListBox()->ScrollToMakeItemVisible(0);
 		
@@ -254,8 +243,6 @@ public:
 		CSettingsEngine &se = iPodcastModel.SettingsEngine();
 		iShowDir.Copy(se.BaseDir());
 		iAutoUpdate = se.UpdateAutomatically();
-		iIntervalUpdate = se.UpdateFeedInterval();
-		iTimeUpdate = se.UpdateFeedTime();
 		iConnection = se.SpecificIAP() <= EConnectionDefault ? se.SpecificIAP() : EConnectionUseSpecified;
 		iIap = se.SpecificIAP();
 		iAutoDownload = se.DownloadAutomatically();
@@ -268,14 +255,6 @@ public:
 			case EPodcastSettingAutoUpdate:
 				iSettingAutoUpdate = new (ELeave) CAknEnumeratedTextPopupSettingItem(aSettingId, iAutoUpdate);
 				return iSettingAutoUpdate;
-				break;
-			case EPodcastSettingUpdateInterval:
-				iSettingAutoUpdateInterval = new (ELeave) CAknIntegerEdwinSettingItem(aSettingId, iIntervalUpdate);
-				return iSettingAutoUpdateInterval; 
-				break;
-			case EPodcastSettingUpdateTime:
-				iSettingAutoUpdateTime = new (ELeave) CAknTimeOrDateSettingItem(aSettingId, CAknTimeOrDateSettingItem::ETime, iTimeUpdate);
-				return iSettingAutoUpdateTime;
 				break;
 			case EPodcastSettingConnection:
 				return new (ELeave) CAknEnumeratedTextPopupSettingItem (aSettingId, iConnection);
@@ -299,12 +278,6 @@ public:
 		}
 	
 	TFileName iShowDir;
-	
-	TInt iIntervalUpdate;
-	CAknSettingItem *iSettingAutoUpdateInterval;
-	
-	TTime iTimeUpdate;
-	CAknSettingItem *iSettingAutoUpdateTime; 
 	
 	TInt iAutoUpdate;
 	CAknSettingItem *iSettingAutoUpdate;

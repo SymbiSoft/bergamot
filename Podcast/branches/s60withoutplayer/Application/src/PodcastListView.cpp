@@ -26,7 +26,8 @@
 #include <aknsbasicbackgroundcontrolcontext.h>
 #include <akntabgrp.h>
 #include <akntoolbarextension.h>
-#include<BARSREAD.H>
+#include <aknquerydialog.h>
+#include <barsread.h>
 
 
 const TInt KDefaultGran = 5;
@@ -321,6 +322,15 @@ void CPodcastListView::ShowErrorMessage(TDesC &aText)
 	dlg->ExecuteLD(R_ERRORDLG_OK);
 	}
 
+TInt CPodcastListView::ShowQueryMessage(TDesC &aText)
+	{
+	CAknQueryDialog* dlg= new(ELeave) CAknQueryDialog();
+	
+	CleanupStack::PushL(dlg);
+	dlg->SetPromptL(aText);
+	CleanupStack::Pop(dlg);
+	return dlg->ExecuteLD(R_QUERYDLG);
+	}
 
 void CPodcastListView::CloseToolbarExtension()
 {

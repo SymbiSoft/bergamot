@@ -126,12 +126,7 @@ void CFeedEngine::RunFeedTimer()
 	{
 	iFeedTimer.Cancel();
 
-	if (iPodcastModel.SettingsEngine().UpdateAutomatically() == EAutoUpdateAtTime)
-		{
-		iFeedTimer.SetPeriod(24*60);
-		iFeedTimer.SetSyncTime(iPodcastModel.SettingsEngine().UpdateFeedTime());
-		}
-	else if (iPodcastModel.SettingsEngine().UpdateAutomatically() == EAutoUpdatePeriodically)
+	if (iPodcastModel.SettingsEngine().UpdateAutomatically() != EAutoUpdateOff)
 		{
 		TInt interval = iPodcastModel.SettingsEngine().UpdateFeedInterval();
 	
@@ -258,7 +253,7 @@ void CFeedEngine::NewShowL(CShowInfo& aItem)
 	
 	TBool isShowAdded = iPodcastModel.ShowEngine().AddShowL(aItem);
 
-	if (!iCatchupMode && isShowAdded && iPodcastModel.SettingsEngine().DownloadAutomatically()) 
+	if (aItem.PlayState() == ENeverPlayed && isShowAdded && iPodcastModel.SettingsEngine().DownloadAutomatically()) 
 		{
 		iPodcastModel.ShowEngine().AddDownloadL(aItem);
 		}	

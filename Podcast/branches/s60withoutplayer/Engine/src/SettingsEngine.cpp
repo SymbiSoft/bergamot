@@ -343,6 +343,10 @@ EXPORT_C TAutoUpdateSetting CSettingsEngine::UpdateAutomatically()
 EXPORT_C void CSettingsEngine::SetUpdateAutomatically(TAutoUpdateSetting aAutoSetting)
 	{
 	iUpdateAutomatically = aAutoSetting;
+	
+	if (aAutoSetting > 0) {
+		SetUpdateFeedInterval(aAutoSetting);
+	}
 	}
 
 EXPORT_C TBool CSettingsEngine::DownloadAutomatically() 

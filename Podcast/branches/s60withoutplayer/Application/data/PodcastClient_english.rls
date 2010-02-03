@@ -113,7 +113,7 @@ rls_string STRING_r_podcast_settings_title "Settings"
 rls_string STRING_r_podcast_setting_showdir "Podcast Directory"
 rls_string STRING_r_podcast_setting_autoupdate "Automatic Update"
 rls_string STRING_r_podcast_setting_autodownload "Automatic Download"
-rls_string STRING_r_podcast_setting_checkevery "Update Interval (min)"
+rls_string STRING_r_podcast_setting_checkevery "Update Period"
 rls_string STRING_r_podcast_setting_updateat "Update Daily At"
 rls_string STRING_r_podcast_setting_minutes "minutes"
 
@@ -128,9 +128,11 @@ rls_string STRING_r_podcast_setting_showdir_cmd "Select" // Use to select show d
 rls_string STRING_r_podcast_setting_volume "Volume" 
 
 // Choicelist for autodownload
-rls_string STRING_podcast_autoupdate_off "Off"
-rls_string STRING_podcast_autoupdate_perodical "Periodical" 
-rls_string STRING_podcast_autoupdate_attime "At"
+rls_string STRING_podcast_autoupdate_option1 "Off"
+rls_string STRING_podcast_autoupdate_option2 "Every hour"
+rls_string STRING_podcast_autoupdate_option3 "Four times a day"
+rls_string STRING_podcast_autoupdate_option4 "Twice a day"
+rls_string STRING_podcast_autoupdate_option5 "Daily"
 
 rls_string STRING_r_podcast_iap_dlg_title "Select Internet Connection"
 

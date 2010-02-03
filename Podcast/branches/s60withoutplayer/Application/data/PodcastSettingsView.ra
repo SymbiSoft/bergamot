@@ -20,7 +20,7 @@ RESOURCE MENU_BAR r_podcast_settingsview_menubar
     {
     titles =
         {
-        MENU_TITLE { menu_pane = r_podcast_settingsview_menu; txt = "Settings"; }
+        MENU_TITLE { menu_pane = r_podcast_settingsview_menu; txt = ""; }
         };
     }
 
@@ -62,18 +62,6 @@ items =
 				name = STRING_r_podcast_setting_autoupdate;
 			},
 			AVKON_SETTING_ITEM
-			{
-				identifier= EPodcastSettingUpdateInterval;			
-				name= STRING_r_podcast_setting_checkevery;
-				setting_page_resource = r_podcast_updateinterval_page;
-			},
-			AVKON_SETTING_ITEM
-			{
-				identifier= EPodcastSettingUpdateTime;			
-				name= STRING_r_podcast_setting_updateat;
-				setting_page_resource = r_podcast_updatetime_page;
-			},
-			AVKON_SETTING_ITEM
 				{
 				identifier = EPodcastSettingAutoDownload;
 				setting_page_resource = r_podcast_autodownload_page_resource;
@@ -97,54 +85,18 @@ items =
 	};
 }
 
-RESOURCE AVKON_SETTING_PAGE r_podcast_updateinterval_page
-{
-label=STRING_r_podcast_setting_checkevery;
-type = EAknCtIntegerEdwin;
-editor_resource_id = r_podcast_updateinterval;
-}
-
-RESOURCE AVKON_INTEGER_EDWIN r_podcast_updateinterval
-	{
-	min = 0;
-	max = 1440;
-	}
-
-RESOURCE AVKON_SETTING_PAGE r_podcast_updatetime_page
-{
-label=STRING_r_podcast_setting_updateat;
-type = EEikCtTimeEditor;
-editor_resource_id = r_podcast_updatetime;
-}
-
-RESOURCE TIME_EDITOR r_podcast_updatetime
-	{
-	minTime = TIME
-	{
-	second = 0;
-	minute = 0;
-	hour = 0;
-	};
-	maxTime = TIME
-	{
-	second = 59;
-	minute = 59;
-	hour = 23;
-	};
-	}
-
 RESOURCE AVKON_SETTING_PAGE r_podcast_showdir_page
 {
-label=STRING_r_podcast_setting_showdir;
-type = EEikCtEdwin;
-editor_resource_id = r_podcast_showdir;
+	label=STRING_r_podcast_setting_showdir;
+	type = EEikCtEdwin;
+	editor_resource_id = r_podcast_showdir;
 }
 
 RESOURCE EDWIN r_podcast_showdir
 {
-lines = 3;
-maxlength = 256;
-default_input_mode = EAknEditorTextInputMode;
+	lines = 3;
+	maxlength = 256;
+	default_input_mode = EAknEditorTextInputMode;
 }
 
 RESOURCE AVKON_SETTING_PAGE r_podcast_connection_page_resource
@@ -238,9 +190,11 @@ RESOURCE ARRAY r_podcast_autoupdate_closed
 {
     items =
     {
-	AVKON_ENUMERATED_TEXT { value=0; text=STRING_podcast_autoupdate_off; },
-    AVKON_ENUMERATED_TEXT { value=1; text=STRING_podcast_autoupdate_perodical; },
-    AVKON_ENUMERATED_TEXT { value=2; text=STRING_podcast_autoupdate_attime; }    
+	AVKON_ENUMERATED_TEXT { value=0; text=STRING_podcast_autoupdate_option1; },
+    AVKON_ENUMERATED_TEXT { value=60; text=STRING_podcast_autoupdate_option2; },
+    AVKON_ENUMERATED_TEXT { value=360; text=STRING_podcast_autoupdate_option3; },    
+    AVKON_ENUMERATED_TEXT { value=720; text=STRING_podcast_autoupdate_option4; },    
+    AVKON_ENUMERATED_TEXT { value=1440; text=STRING_podcast_autoupdate_option5; }    
     };
 }
 
@@ -248,9 +202,11 @@ RESOURCE ARRAY r_podcast_autoupdate_opened
 {
     items =
     {
-        LBUF { txt=STRING_podcast_autoupdate_off; },
-        LBUF { txt=STRING_podcast_autoupdate_perodical; },
-        LBUF { txt=STRING_podcast_autoupdate_attime; }
+        LBUF { txt=STRING_podcast_autoupdate_option1; },
+        LBUF { txt=STRING_podcast_autoupdate_option2; },
+        LBUF { txt=STRING_podcast_autoupdate_option3; },
+        LBUF { txt=STRING_podcast_autoupdate_option4; },
+        LBUF { txt=STRING_podcast_autoupdate_option5; }
     };
 }
 
@@ -271,6 +227,7 @@ RESOURCE FILESELECTIONDIALOG r_podcast_showdir_selector
 
 RESOURCE TBUF r_podcast_softkey_select { buf = STRING_r_view_export_feeds_softkey; }
 RESOURCE TBUF r_settings_title { buf = STRING_r_podcast_settings_title; }
+
 RESOURCE AVKON_SETTING_PAGE r_setting_iap_page_resource
 {
     label= STRING_r_podcast_setting_iaplist;
@@ -292,7 +249,7 @@ RESOURCE ARRAY r_setting_iap_closed
 {
     items = 
     {
-    AVKON_ENUMERATED_TEXT{value=0; text = "Dummy";}
+    AVKON_ENUMERATED_TEXT{value=0; text = "";}
     };
 }
 
@@ -300,6 +257,6 @@ RESOURCE ARRAY r_setting_iap_opened
 {
     items = 
     {
-    LBUF { txt="Dummy"; }
+    LBUF { txt=""; }
     };
 }

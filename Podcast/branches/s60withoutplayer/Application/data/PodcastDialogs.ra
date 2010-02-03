@@ -57,3 +57,23 @@ RESOURCE DIALOG r_errordlg_ok
         }
     };
 }
+
+
+RESOURCE DIALOG r_querydlg
+  {
+  flags = EGeneralQueryFlags;
+  buttons = R_AVKON_SOFTKEYS_YES_NO;
+  items =
+    {
+    DLG_LINE
+      {
+      type = EAknCtQuery;
+      id = EQueryControl;
+      control = AVKON_CONFIRMATION_QUERY
+        {
+        layout = EConfirmationQueryLayout;
+        label = "";
+        };
+      }
+    };
+  }

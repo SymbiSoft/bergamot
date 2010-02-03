@@ -126,6 +126,7 @@ public MPointerListener, public MAknLongTapDetectorCallBack
         void SetEmptyTextL(TInt aResourceId);
         void ShowOkMessage(TDesC &aText);
         void ShowErrorMessage(TDesC &aText);
+        TInt ShowQueryMessage(TDesC &aText);
 		void CloseToolbarExtension();
 
 		// From MAknLongTapDetectorCallBack

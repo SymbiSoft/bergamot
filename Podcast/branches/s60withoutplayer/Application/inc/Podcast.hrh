@@ -73,13 +73,12 @@ enum TPodcastControl
 	EPodcastSettingShowDir,
 	EPodcastSettingAutoDownload,
 	EPodcastSettingAutoUpdate,
-	EPodcastSettingUpdateInterval,
-	EPodcastSettingUpdateTime,
 	EPodcastSettingMaxsimdls,
 	EPodcastSettingConnection,
 	EPodcastSettingIAPList,
 	EPodcastAboutDlg,
-	EPodcastFeedsToolbarExtension
+	EPodcastFeedsToolbarExtension,
+	EQueryControl
 	};
 
 enum TPodcastClientShowCategory

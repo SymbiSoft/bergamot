@@ -466,234 +466,32 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			AppUi()->HandleCommandL(EEikCmdExit);
 			break;
 		case EPodcastAddFeed:
-			{
-			TBuf<KFeedUrlLength> url;
-			url.Copy(_L("http://"));
-			CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(url);
-			dlg->PrepareLC(R_PODCAST_ADD_FEED_DLG);
-			HBufC* prompt = iEikonEnv->AllocReadResourceLC(R_PODCAST_ADDFEED_PROMPT);
-			dlg->SetPromptL(*prompt);
-			CleanupStack::PopAndDestroy(prompt);
-			
-			if(dlg->RunLD())
-				{
-				PodcastUtils::FixProtocolsL(url);
-
-				CFeedInfo* newFeedInfo = CFeedInfo::NewL();
-				CleanupStack::PushL(newFeedInfo);
-				newFeedInfo->SetUrlL(url);
-				newFeedInfo->SetTitleL(newFeedInfo->Url());
-				
-
-				TBool added = iPodcastModel.FeedEngine().AddFeedL(*newFeedInfo); // takes ownership
-				if (!added)
-					{
-					TBuf<KMaxMessageLength> message;
-					TBuf<KMaxTitleLength> title;
-					iEikonEnv->ReadResourceL(message, R_ADD_FEED_EXISTS);
-					iEikonEnv->ReadResourceL(title, R_ADD_FEED_EXISTS_TITLE);
-					iEikonEnv->InfoWinL(title, message);				
-					}				
-				CleanupStack::PopAndDestroy(newFeedInfo);
-				UpdateListboxItemsL();
-				}
+			HandleAddFeedL();
 			break;
-			}
 		case EPodcastImportFeeds:
-			{
-			CAknMemorySelectionDialog* memDlg = 
-				CAknMemorySelectionDialog::NewL(ECFDDialogTypeNormal, ETrue);
-			CleanupStack::PushL(memDlg);
-			CAknMemorySelectionDialog::TMemory memory = 
-				CAknMemorySelectionDialog::EPhoneMemory;
-
-			if (memDlg->ExecuteL(memory))
-				{
-				TFileName importName;
-			
-				if (memory==CAknMemorySelectionDialog::EMemoryCard)
-				{
-					importName = PathInfo:: MemoryCardRootPath();
-				}
-				else
-				{
-					importName = PathInfo:: PhoneMemoryRootPath();
-				}
-
-				CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeNormal, R_PODCAST_IMPORT_PODCAST);
-				CleanupStack::PushL(dlg);
-
-				dlg->SetDefaultFolderL(importName);
-				
-				if(dlg->ExecuteL(importName))
-					{
-					if(importName.Length()>0)
-						{
-						iPodcastModel.FeedEngine().ImportFeedsL(importName);
-						UpdateListboxItemsL();
-						}
-					}
-				CleanupStack::PopAndDestroy(dlg);
-				}
-			CleanupStack::PopAndDestroy(memDlg);								
-			}break;
-		case EPodcastExportFeeds:
-			{
-			CAknMemorySelectionDialog* memDlg = 
-				CAknMemorySelectionDialog::NewL(ECFDDialogTypeSave, ETrue);
-			CleanupStack::PushL(memDlg);
-			CAknMemorySelectionDialog::TMemory memory = 
-				CAknMemorySelectionDialog::EPhoneMemory;
-
-			if (memDlg->ExecuteL(memory))
-				{
-				TFileName pathName;
-				
-				if (memory==CAknMemorySelectionDialog::EMemoryCard)
-				{
-					pathName = PathInfo::MemoryCardRootPath();
-				}
-				else
-				{
-					pathName = PathInfo::PhoneMemoryRootPath();
-				}
-
-				CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeSave, R_PODCAST_EXPORT_FEEDS);
-				CleanupStack::PushL(dlg);
-										
-				if(dlg->ExecuteL(pathName))
-					{
-					CAknFileNamePromptDialog *fileDlg = CAknFileNamePromptDialog::NewL(R_PODCAST_FILENAME_PROMPT_DIALOG);
-					CleanupStack::PushL(fileDlg);
-					fileDlg->SetPathL(pathName);
-					TFileName fileName;
-					if (fileDlg->ExecuteL(fileName) && fileName.Length() > 0)
-						{
-						pathName.Append(fileName);
-						TFileName temp;
-						iPodcastModel.FeedEngine().ExportFeedsL(temp);						
-						BaflUtils::CopyFile(iEikonEnv->FsSession(), temp, pathName);
-						BaflUtils::DeleteFile(iEikonEnv->FsSession(),temp);						
-						}
-					CleanupStack::PopAndDestroy(fileDlg);
-					}
-				CleanupStack::PopAndDestroy(dlg);
-			}
-			CleanupStack::PopAndDestroy(memDlg);									
-			} break;
-		case EPodcastEditFeed:
-			{			
-			TInt index = iListContainer->Listbox()->CurrentItemIndex();
-		
-			if(index < iItemArray->MdcaCount() && index >= 0)
-				{
-				CFeedInfo *info = iPodcastModel.FeedEngine().GetSortedFeeds()[index];
-
-				TBuf<KFeedTitleLength> title;
-				title.Copy(info->Title());
-				TBuf<KFeedUrlLength> url;
-				url.Copy(info->Url());
-				CAknMultiLineDataQueryDialog  *dlg = CAknMultiLineDataQueryDialog ::NewL(title, url);
-			
-				if (dlg->ExecuteLD(R_PODCAST_EDIT_FEED_DLG)) 
-					{
-					
-					if(info->Url().Compare(url) != 0)
-						{
-						TBuf<KMaxMessageLength> dlgMessage;
-						TBuf<KMaxTitleLength> dlgTitle;
-						iEikonEnv->ReadResourceL(dlgMessage, R_ADD_FEED_REPLACE);
-						iEikonEnv->ReadResourceL(dlgTitle, R_ADD_FEED_REPLACE_TITLE);
-
-						// Ask the user if it is OK to remove all shows
-						if ( iEikonEnv->QueryWinL(dlgTitle, dlgMessage))
-							{
-							PodcastUtils::FixProtocolsL(url);
-							
-							//----- HACK ---- //
-							CFeedInfo* temp = CFeedInfo::NewLC();
-							temp->SetUrlL(url);
-							TBool added = iPodcastModel.FeedEngine().AddFeedL(*temp);
-							if (added) {
-								// The Feed URL did not exist
-								// Remove the temp entry so that the correct entry could be changed
-								iPodcastModel.FeedEngine().RemoveFeedL(temp->Uid());	
-								
-								// user has accepted that shows will be deleted
-								iPodcastModel.ShowEngine().DeleteAllShowsByFeedL(info->Uid());
-
-								// update URL
-								info->SetUrlL(url);	
-							
-								if (info->Title().Compare(title) != 0)
-									{
-									info->SetTitleL(title);
-									info->SetCustomTitle();	
-									}
-								iPodcastModel.FeedEngine().UpdateFeed(info);
-								UpdateListboxItemsL();
-							} else {
-								// the feed existed. Object deleted in AddFeed.	
-								TBuf<KMaxMessageLength> dlgMessage;
-								TBuf<KMaxTitleLength> dlgTitle;
-								iEikonEnv->ReadResourceL(dlgMessage, R_ADD_FEED_EXISTS);
-								iEikonEnv->ReadResourceL(dlgTitle, R_ADD_FEED_EXISTS_TITLE);
-								iEikonEnv->InfoWinL(dlgTitle, dlgMessage);		
-							}
-							CleanupStack::PopAndDestroy(temp);
-						}
-					} else { // no url change, maybe title?
-						// Update the title
-						if (info->Title().Compare(title) != 0)
-						{
-							info->SetTitleL(title);
-							info->SetCustomTitle();	
-							iPodcastModel.FeedEngine().UpdateFeed(info);
-							UpdateListboxItemsL();
-						}
-					}
-				}
-				}
+			HandleImportFeedsL();
 			break;
-			}
+		case EPodcastExportFeeds:
+			HandleExportFeedsL();
+			break;
+		case EPodcastEditFeed:
+			HandleEditFeedL();
+			break;
 		case EPodcastDeleteFeedHardware:
 		case EPodcastDeleteFeed:
-			{
-			if(iListContainer->Listbox() != NULL)
-				{
-				TInt index = iListContainer->Listbox()->CurrentItemIndex();
-			
-				if(index < iItemArray->MdcaCount() && index >= 0)
-					{
-					if(iEikonEnv->QueryWinL(R_PODCAST_REMOVE_FEED_TITLE, R_PODCAST_REMOVE_FEED_PROMPT))
-						{
-						CFeedInfo *info = iPodcastModel.FeedEngine().GetFeedInfoByUid(iItemIdArray[index]);
-						
-						DP1("Removing feed '%S'", &info->Title());
-						iPodcastModel.FeedEngine().RemoveFeedL(iItemIdArray[index]);
-						iItemArray->Delete(index);
-						iItemIdArray.Remove(index);
-						iListContainer->Listbox()->HandleItemRemovalL();
-						iListContainer->Listbox()->DrawNow();
-						}					
-					}
-				UpdateListboxItemsL();
-				}
-			break;	
-			}
+			HandleRemoveFeedL();
+			break;
 		case EPodcastUpdateAllFeeds:
 			{
 			iUpdatingAllRunning = ETrue;			
 			iPodcastModel.FeedEngine().UpdateAllFeedsL();
 			}
 			break;
-
 		case EPodcastCancelUpdateAllFeeds:
 			{
 			if(iUpdatingAllRunning)
 				{
 				iUpdatingAllRunning = EFalse;
-
 				iPodcastModel.FeedEngine().CancelUpdateAllFeeds();
 				}
 			}break;
@@ -716,3 +514,219 @@ void CPodcastFeedView::UpdateToolbar()
 		toolbar->SetItemDimmed(EPodcastSettings, iUpdatingAllRunning, ETrue );
 		}
 }
+
+void CPodcastFeedView::HandleAddFeedL()
+	{
+	TBuf<KFeedUrlLength> url;
+	url.Copy(_L("http://"));
+	CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(url);
+	dlg->PrepareLC(R_PODCAST_ADD_FEED_DLG);
+	HBufC* prompt = iEikonEnv->AllocReadResourceLC(R_PODCAST_ADDFEED_PROMPT);
+	dlg->SetPromptL(*prompt);
+	CleanupStack::PopAndDestroy(prompt);
+	
+	if(dlg->RunLD())
+		{
+		PodcastUtils::FixProtocolsL(url);
+
+		CFeedInfo* newFeedInfo = CFeedInfo::NewL();
+		CleanupStack::PushL(newFeedInfo);
+		newFeedInfo->SetUrlL(url);
+		newFeedInfo->SetTitleL(newFeedInfo->Url());
+		
+
+		TBool added = iPodcastModel.FeedEngine().AddFeedL(*newFeedInfo); // takes ownership
+		if (!added)
+			{
+			TBuf<KMaxMessageLength> message;
+			iEikonEnv->ReadResourceL(message, R_ADD_FEED_EXISTS);
+			ShowErrorMessage(message);
+			}				
+		CleanupStack::PopAndDestroy(newFeedInfo);
+		UpdateListboxItemsL();
+		}
+	}
+
+void CPodcastFeedView::HandleEditFeedL()
+	{
+	TInt index = iListContainer->Listbox()->CurrentItemIndex();
+	
+	if(index < iItemArray->MdcaCount() && index >= 0)
+		{
+		CFeedInfo *info = iPodcastModel.FeedEngine().GetSortedFeeds()[index];
+
+		TBuf<KFeedTitleLength> title;
+		title.Copy(info->Title());
+		TBuf<KFeedUrlLength> url;
+		url.Copy(info->Url());
+		CAknMultiLineDataQueryDialog  *dlg = CAknMultiLineDataQueryDialog ::NewL(title, url);
+	
+		if (dlg->ExecuteLD(R_PODCAST_EDIT_FEED_DLG)) 
+			{
+			
+			if(info->Url().Compare(url) != 0)
+				{
+				TBuf<KMaxMessageLength> dlgMessage;
+				TBuf<KMaxTitleLength> dlgTitle;
+				iEikonEnv->ReadResourceL(dlgMessage, R_ADD_FEED_REPLACE);
+				iEikonEnv->ReadResourceL(dlgTitle, R_ADD_FEED_REPLACE_TITLE);
+
+				// Ask the user if it is OK to remove all shows
+				if ( iEikonEnv->QueryWinL(dlgTitle, dlgMessage))
+					{
+					PodcastUtils::FixProtocolsL(url);
+					
+					//----- HACK ---- //
+					CFeedInfo* temp = CFeedInfo::NewLC();
+					temp->SetUrlL(url);
+					TBool added = iPodcastModel.FeedEngine().AddFeedL(*temp);
+					if (added) {
+						// The Feed URL did not exist
+						// Remove the temp entry so that the correct entry could be changed
+						iPodcastModel.FeedEngine().RemoveFeedL(temp->Uid());	
+						
+						// user has accepted that shows will be deleted
+						iPodcastModel.ShowEngine().DeleteAllShowsByFeedL(info->Uid());
+
+						// update URL
+						info->SetUrlL(url);	
+					
+						if (info->Title().Compare(title) != 0)
+							{
+							info->SetTitleL(title);
+							info->SetCustomTitle();	
+							}
+						iPodcastModel.FeedEngine().UpdateFeed(info);
+						UpdateListboxItemsL();
+					} else {
+						// the feed existed. Object deleted in AddFeed.	
+						TBuf<KMaxMessageLength> dlgMessage;
+						iEikonEnv->ReadResourceL(dlgMessage, R_ADD_FEED_EXISTS);
+						ShowErrorMessage(dlgMessage);
+					}
+					CleanupStack::PopAndDestroy(temp);
+				}
+			} else { // no url change, maybe title?
+				// Update the title
+				if (info->Title().Compare(title) != 0)
+				{
+					info->SetTitleL(title);
+					info->SetCustomTitle();	
+					iPodcastModel.FeedEngine().UpdateFeed(info);
+					UpdateListboxItemsL();
+				}
+			}
+		}
+		}
+	}
+
+void CPodcastFeedView::HandleRemoveFeedL()
+	{
+	if(iListContainer->Listbox() != NULL)
+		{
+		TInt index = iListContainer->Listbox()->CurrentItemIndex();
+	
+		if(index < iItemArray->MdcaCount() && index >= 0)
+			{
+			TBuf<KMaxMessageLength> msg;
+			iEikonEnv->ReadResourceL(msg, R_PODCAST_REMOVE_FEED_PROMPT);
+									
+			if(ShowQueryMessage(msg))
+				{
+				CFeedInfo *info = iPodcastModel.FeedEngine().GetFeedInfoByUid(iItemIdArray[index]);
+				
+				DP1("Removing feed '%S'", &info->Title());
+				iPodcastModel.FeedEngine().RemoveFeedL(iItemIdArray[index]);
+				iItemArray->Delete(index);
+				iItemIdArray.Remove(index);
+				iListContainer->Listbox()->HandleItemRemovalL();
+				iListContainer->Listbox()->DrawNow();
+				}					
+			}
+		UpdateListboxItemsL();
+		}
+	}
+
+void CPodcastFeedView::HandleImportFeedsL()
+	{
+	CAknMemorySelectionDialog* memDlg = 
+		CAknMemorySelectionDialog::NewL(ECFDDialogTypeNormal, ETrue);
+	CleanupStack::PushL(memDlg);
+	CAknMemorySelectionDialog::TMemory memory = 
+		CAknMemorySelectionDialog::EPhoneMemory;
+
+	if (memDlg->ExecuteL(memory))
+		{
+		TFileName importName;
+	
+		if (memory==CAknMemorySelectionDialog::EMemoryCard)
+		{
+			importName = PathInfo:: MemoryCardRootPath();
+		}
+		else
+		{
+			importName = PathInfo:: PhoneMemoryRootPath();
+		}
+
+		CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeNormal, R_PODCAST_IMPORT_PODCAST);
+		CleanupStack::PushL(dlg);
+
+		dlg->SetDefaultFolderL(importName);
+		
+		if(dlg->ExecuteL(importName))
+			{
+			if(importName.Length()>0)
+				{
+				iPodcastModel.FeedEngine().ImportFeedsL(importName);
+				UpdateListboxItemsL();
+				}
+			}
+		CleanupStack::PopAndDestroy(dlg);
+		}
+	CleanupStack::PopAndDestroy(memDlg);
+	}
+
+void CPodcastFeedView::HandleExportFeedsL()
+	{
+	CAknMemorySelectionDialog* memDlg = 
+		CAknMemorySelectionDialog::NewL(ECFDDialogTypeSave, ETrue);
+	CleanupStack::PushL(memDlg);
+	CAknMemorySelectionDialog::TMemory memory = 
+		CAknMemorySelectionDialog::EPhoneMemory;
+
+	if (memDlg->ExecuteL(memory))
+		{
+		TFileName pathName;
+		
+		if (memory==CAknMemorySelectionDialog::EMemoryCard)
+		{
+			pathName = PathInfo::MemoryCardRootPath();
+		}
+		else
+		{
+			pathName = PathInfo::PhoneMemoryRootPath();
+		}
+
+		CAknFileSelectionDialog* dlg = CAknFileSelectionDialog::NewL(ECFDDialogTypeSave, R_PODCAST_EXPORT_FEEDS);
+		CleanupStack::PushL(dlg);
+								
+		if(dlg->ExecuteL(pathName))
+			{
+			CAknFileNamePromptDialog *fileDlg = CAknFileNamePromptDialog::NewL(R_PODCAST_FILENAME_PROMPT_DIALOG);
+			CleanupStack::PushL(fileDlg);
+			fileDlg->SetPathL(pathName);
+			TFileName fileName;
+			if (fileDlg->ExecuteL(fileName) && fileName.Length() > 0)
+				{
+				pathName.Append(fileName);
+				TFileName temp;
+				iPodcastModel.FeedEngine().ExportFeedsL(temp);						
+				BaflUtils::CopyFile(iEikonEnv->FsSession(), temp, pathName);
+				BaflUtils::DeleteFile(iEikonEnv->FsSession(),temp);						
+				}
+			CleanupStack::PopAndDestroy(fileDlg);
+			}
+		CleanupStack::PopAndDestroy(dlg);
+	}
+	CleanupStack::PopAndDestroy(memDlg);									
+	}

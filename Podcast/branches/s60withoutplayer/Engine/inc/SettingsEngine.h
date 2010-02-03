@@ -40,8 +40,10 @@ const TInt KDefaultMaxListItems = 100;
 enum TAutoUpdateSetting
 	{
 	EAutoUpdateOff,
-	EAutoUpdatePeriodically,
-	EAutoUpdateAtTime
+	EAutoUpdatePeriod1=60,
+	EAutoUpdatePeriod2=360,
+	EAutoUpdatePeriod3=720,
+	EAutoUpdatePeriod4=1440
 	};
 
 class CSettingsEngine : public CBase

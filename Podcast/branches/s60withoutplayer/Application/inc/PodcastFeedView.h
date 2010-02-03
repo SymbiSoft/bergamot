@@ -85,7 +85,11 @@ class CPodcastFeedView : public CPodcastListView, public MEikListBoxObserver,
 		void UpdateToolbar();
 	private:
 		void FormatFeedInfoListBoxItemL(CFeedInfo& aFeedInfo, TBool aIsUpdating = EFalse);
-
+		void HandleAddFeedL();
+		void HandleEditFeedL();
+		void HandleRemoveFeedL();
+		void HandleImportFeedsL();
+		void HandleExportFeedsL();
 	private:
 		CPodcastModel& iPodcastModel;		
 		TBool iUpdatingAllRunning;
