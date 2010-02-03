@@ -24,6 +24,8 @@
 #include <CommDbConnPref.h>
 #include <es_sock.h>
 #include <http/rhttpsession.h>
+#include <cmmanager.h>
+
 #include "FeedInfo.h"
 #include "ShowInfo.h"
 #include "debug.h"
@@ -31,7 +33,7 @@
 
 // SQLite leaks memory when sorting, so to test our own memory leaks we need to disable this
 //#define DONT_SORT_SQL
-
+class RCmManager;
 class CFeedEngine;
 class CSoundEngine;
 class CShowEngine;
@@ -110,7 +112,8 @@ private:
    CDesCArrayFlat* iIapNameArray;
    CCommsDatabase* iCommDB;  
    
-   sqlite3* iDB;   
+   sqlite3* iDB;
+   RCmManager iCmManager;
 };
 
 #endif // PODCASTMODEL_H

@@ -43,7 +43,7 @@ EXPORT_C CPodcastModel* CPodcastModel::NewL()
 
 CPodcastModel::~CPodcastModel()
 {
-	iActiveShowList.ResetAndDestroy();
+	
 	delete iFeedEngine;
 	delete iSoundEngine;
 	delete iSettingsEngine;
@@ -55,7 +55,9 @@ CPodcastModel::~CPodcastModel()
 	delete iCommDB;	
 	sqlite3_close(iDB);
 	iFsSession.Close();
+	iActiveShowList.ResetAndDestroy();
 	delete iConnectionEngine;
+	iCmManager.Close();
 }
 
 CPodcastModel::CPodcastModel()
@@ -70,7 +72,7 @@ void CPodcastModel::ConstructL()
 	iCommDB = CCommsDatabase::NewL (EDatabaseTypeUnspecified);
 	//iCommDB ->ShowHiddenRecords(); // magic
 	iIapNameArray = new (ELeave) CDesCArrayFlat(KDefaultGranu);
-
+	iCmManager.OpenL();
 	UpdateIAPListL();
 	
 	iSettingsEngine = CSettingsEngine::NewL(*this);
@@ -88,19 +90,20 @@ void CPodcastModel::UpdateIAPListL()
 	DP("CPodcastModel::UpdateIAPListL BEGIN");
 	iIapNameArray->Reset();
 	iIapIdArray.Reset();
-	RCmManager cmManager;
+	
 	RCmDestination destination;
 	TPodcastIAPItem IAPItem;
-	cmManager.OpenL();
+	
 	RArray<TUint32> destArray;
 	CleanupClosePushL(destArray);
-	cmManager.AllDestinationsL(destArray);
+	iCmManager.AllDestinationsL(destArray);
 	
 	TInt cnt = destArray.Count();
 	DP1("destArray.Count==%d", cnt);
 	for(TInt loop = 0;loop<cnt;loop++)
 		{
-		destination = cmManager.DestinationL (destArray[loop]);
+		destination = iCmManager.DestinationL (destArray[loop]);
+		CleanupClosePushL(destination);
 		if(!destination.IsHidden())
 			{
 			IAPItem.iIapId = destArray[loop];
@@ -110,9 +113,9 @@ void CPodcastModel::UpdateIAPListL()
 			CleanupStack::PopAndDestroy(name);
 			iIapIdArray.Append(IAPItem);
 			}
+		CleanupStack::PopAndDestroy();//close destination
 		}
 	CleanupStack::PopAndDestroy();// close destArray
-	//	cmManager.Close(); // crash on both emulator and target
 
 	DP("CPodcastModel::UpdateIAPListL END");
 }
