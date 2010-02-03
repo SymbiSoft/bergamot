@@ -19,11 +19,9 @@
 #ifndef PODCASTFEEDVIEWH
 #define PODCASTFEEDVIEWH 
 
-#include <aknview.h>
 #include "FeedEngine.h"
-#include "PodcastModel.h"
 #include "PodcastListView.h"
-#include "Podcast.hrh"
+class CPodcastFeedViewUpdater;
 
 class CPodcastFeedView : public CPodcastListView, public MEikListBoxObserver, 
 	public MFeedEngineObserver
@@ -32,6 +30,7 @@ class CPodcastFeedView : public CPodcastListView, public MEikListBoxObserver,
         static CPodcastFeedView* NewL(CPodcastModel& aPodcastModel);
         static CPodcastFeedView* NewLC(CPodcastModel& aPodcastModel);
         ~CPodcastFeedView();
+        void UpdateItemL(TInt aIndex);
         
 	protected:
 	    void ConstructL();
@@ -86,11 +85,13 @@ class CPodcastFeedView : public CPodcastListView, public MEikListBoxObserver,
 		void UpdateToolbar();
 	private:
 		void FormatFeedInfoListBoxItemL(CFeedInfo& aFeedInfo, TBool aIsUpdating = EFalse);
+
 	private:
 		CPodcastModel& iPodcastModel;		
 		TBool iUpdatingAllRunning;
 		HBufC* iFeedsFormat;
 		HBufC* iNeverUpdated;
+		CPodcastFeedViewUpdater* iUpdater;
 };
 
 #endif // PODCASTFEEDVIEWH
