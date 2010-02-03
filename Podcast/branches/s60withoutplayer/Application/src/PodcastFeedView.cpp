@@ -146,7 +146,7 @@ CPodcastFeedView::~CPodcastFeedView()
 void CPodcastFeedView::UpdateItemL(TInt aIndex)
 	{
 	_LIT(KPanicCategory, "CPodcastFeedView::UpdateItemL");
-	__ASSERT_ALWAYS(iListContainer->IsVisible(), User::Panic(KPanicCategory, 0));
+	__ASSERT_DEBUG(iListContainer->IsVisible(), User::Panic(KPanicCategory, 0));
 	__ASSERT_ALWAYS(iItemIdArray.Count() > aIndex, User::Panic(KPanicCategory, 1));
 
 	const RFeedInfoArray& sortedItems = iPodcastModel.FeedEngine().GetSortedFeeds();
@@ -195,6 +195,7 @@ void CPodcastFeedView::DoActivateL(const TVwsViewId& aPrevViewId,
 
 void CPodcastFeedView::DoDeactivate()
 	{
+	iUpdater->StopUpdate();
 	CPodcastListView::DoDeactivate();
 	}
 
