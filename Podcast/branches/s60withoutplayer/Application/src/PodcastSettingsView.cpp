@@ -34,7 +34,7 @@ class CIapSetting: public CAknEnumeratedTextPopupSettingItem
 { 
 public:
 	CIapSetting(TInt aResourceId, TInt& aValue, CPodcastModel &aPodcastModel) :
-		CAknEnumeratedTextPopupSettingItem(aResourceId, aValue), iPodcastModel(aPodcastModel)
+		CAknEnumeratedTextPopupSettingItem(aResourceId, aValue), iPodcastModel(aPodcastModel), iIap(aValue)
 		{
 		}
 	
@@ -52,19 +52,32 @@ public:
 		enumeratedArr->ResetAndDestroy();
 		poppedUpTextArray->ResetAndDestroy();
 		CDesCArrayFlat *iapArray = iPodcastModel.IAPNames();
-
+		
+		TBool valueExists = EFalse;
 		DP2("InternalValue=%d, ExternalValue=%d", InternalValue(), ExternalValue());
 		for (int i=0;i<iapArray->Count();i++) {
 			HBufC *buf = (*iapArray)[i].AllocL();
 			poppedUpTextArray->AppendL(buf);
 
-			DP2("IAP name='%S', id=%d", buf, iPodcastModel.IAPIds()[i].iIapId);
+			TInt iapId = iPodcastModel.IAPIds()[i].iIapId;
+			DP2("IAP name='%S', id=%d", buf, iapId);
 			
+			if (iapId == InternalValue()) {
+				valueExists = ETrue;
+			}
 			// both arrays destroy themselves, so we need two copies to prevent USER 44
 			HBufC *buf2 = (*iapArray)[i].AllocL();
 			
-			CAknEnumeratedText *enumerated = new CAknEnumeratedText(iPodcastModel.IAPIds()[i].iIapId, buf2);
+			CAknEnumeratedText *enumerated = new CAknEnumeratedText(iapId, buf2);
 			enumeratedArr->AppendL(enumerated);
+		}
+		
+		DP1("valueExists=%d", valueExists);
+		if (!valueExists && iPodcastModel.IAPIds().Count() > 0 ) {
+			DP1("Setting iIap=%d", iPodcastModel.IAPIds()[0].iIapId);
+			iIap = iPodcastModel.IAPIds()[0].iIapId;
+			LoadL();
+			DP2("InternalValue=%d, ExternalValue=%d", InternalValue(), ExternalValue());
 		}
 		
 		TRAPD(err, HandleTextArrayUpdateL());
@@ -100,6 +113,7 @@ public:
 
 protected:
   	CPodcastModel& iPodcastModel;
+  	TInt& iIap;
 };
 
 class CPodcastSettingItemList:public CAknSettingItemList
