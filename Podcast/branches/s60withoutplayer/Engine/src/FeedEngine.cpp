@@ -485,14 +485,14 @@ TBool CFeedEngine::DBRemoveFeed(TUint aUid)
 	return EFalse;	
 	}
 
-TBool CFeedEngine::DBUpdateFeed(CFeedInfo *aItem)
+TBool CFeedEngine::DBUpdateFeed(const CFeedInfo &aItem)
 	{
-	DP2("CShowEngine::DBUpdateFeed, title=%S, URL=%S", &aItem->Title(), &aItem->Url());
+	DP2("CShowEngine::DBUpdateFeed, title=%S, URL=%S", &aItem.Title(), &aItem.Url());
 	_LIT(KSqlStatement, "update feeds set url=\"%S\", title=\"%S\", description=\"%S\", imageurl=\"%S\", imagefile=\"%S\"," \
 			"link=\"%S\", built=\"%Lu\", lastupdated=\"%Lu\", feedtype=\"%u\", customtitle=\"%u\", lasterror=\"%d\" where uid=\"%u\"");
 	iSqlBuffer.Format(KSqlStatement,
-			&aItem->Url(), &aItem->Title(), &aItem->Description(), &aItem->ImageUrl(), &aItem->ImageFileName(), &aItem->Link(),
-			aItem->BuildDate().Int64(), aItem->LastUpdated().Int64(), EAudioPodcast, aItem->CustomTitle(), aItem->LastError(), aItem->Uid());
+			&aItem.Url(), &aItem.Title(), &aItem.Description(), &aItem.ImageUrl(), &aItem.ImageFileName(), &aItem.Link(),
+			aItem.BuildDate().Int64(), aItem.LastUpdated().Int64(), EAudioPodcast, aItem.CustomTitle(), aItem.LastError(), aItem.Uid());
 
 	sqlite3_stmt *st;
 	 
@@ -523,7 +523,7 @@ void CFeedEngine::ParsingCompleteL(CFeedInfo *item)
 	title.Copy(item->Title());
 	TRAP_IGNORE(CleanHtmlL(title));
 	TRAP_IGNORE(item->SetTitleL(title));
-	DBUpdateFeed(item);
+	DBUpdateFeed(*item);
 	for (int i=0;i<iObservers.Count();i++)
 		{
 		iObservers[i]->FeedInfoUpdated(item->Uid());
@@ -620,17 +620,24 @@ void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TInt aError)
 			BaflUtils::DeleteFile(iPodcastModel.FsSession(),iUpdatingFeedFileName);			
 
 			// if the feed has specified a image url. download it if we dont already have it
-			if ( iActiveFeed->ImageUrl().Length() > 0 && ((iActiveFeed->ImageFileName().Length() == 0) || (!BaflUtils::FileExists(iPodcastModel.FsSession(),iActiveFeed->ImageFileName()) )))
+			if((iActiveFeed->ImageUrl().Length() > 0))
 				{
-				TRAPD(error, GetFeedImageL(iActiveFeed));
-				if (error)
+				if ( (iActiveFeed->ImageFileName().Length() == 0) || 
+						(iActiveFeed->ImageFileName().Length() > 0 && 
+								!BaflUtils::FileExists(iPodcastModel.FsSession(), 
+										iActiveFeed->ImageFileName()) )
+				   )
 					{
-					// we have failed in a very early stage to fetch the image.
-					// continue with next Feed update	
-					iActiveFeed->SetLastError(parserErr);
-					iClientState = EIdle;							
-					}
-				}			
+					TRAPD(error, GetFeedImageL(iActiveFeed));
+					if (error)
+						{
+						// we have failed in a very early stage to fetch the image.
+						// continue with next Feed update	
+						iActiveFeed->SetLastError(parserErr);
+						iClientState = EIdle;							
+						}
+					}	
+				}
 			}
 
 		// we will wait until the image has been downloaded to start the next feed update.
@@ -678,7 +685,7 @@ void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TInt aError)
 
 void CFeedEngine::NotifyFeedUpdateComplete()
 	{
-	DBUpdateFeed(iActiveFeed);
+	DBUpdateFeed(*iActiveFeed);
 	for (TInt i=0;i<iObservers.Count();i++) 
 		{
 		TRAP_IGNORE(iObservers[i]->FeedUpdateCompleteL(iActiveFeed->Uid()));
@@ -1092,7 +1099,7 @@ CFeedInfo* CFeedEngine::DBGetFeedInfoByUidL(TUint aFeedUid)
 
 EXPORT_C void CFeedEngine::UpdateFeed(CFeedInfo *aItem)
 	{
-	DBUpdateFeed(aItem);
+	DBUpdateFeed(*aItem);
 	}
 
 EXPORT_C void CFeedEngine::SearchForFeedL(TDesC& aSearchString)

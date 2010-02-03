@@ -126,7 +126,7 @@ private:
 	TBool DBAddFeedL(const CFeedInfo& aTtem);
 	CFeedInfo* DBGetFeedInfoByUidL(TUint aFeedUid);	
 	TUint DBGetFeedCount();
-	TBool DBUpdateFeed(CFeedInfo *aItem);
+	TBool DBUpdateFeed(const CFeedInfo& aItem);
 	void DBGetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed);
 
 		
