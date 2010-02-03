@@ -155,3 +155,6 @@ LIBRARY PlatformEnv.lib // for PathInfo
 LIBRARY form.lib 
 LIBRARY ws32.lib 
 LIBRARY hlplch.lib
+
+SOURCEPATH ..\src
+SOURCE PodcastFeedViewUpdater.cpp
