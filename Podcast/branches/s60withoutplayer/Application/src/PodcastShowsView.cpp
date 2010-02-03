@@ -363,8 +363,15 @@ void CPodcastShowsView::FormatFeedInfoListBoxItemL(CShowInfo& aShowInfo, TInt aS
 	
 	if(aSizeDownloaded > 0)
 		{
-		infoSize.Format(KSizeDownloadingOf(), ((float) aSizeDownloaded / (float) KSizeMb),
-				((float)aShowInfo.ShowSize() / (float)KSizeMb));
+		if (aShowInfo.ShowSize() > 0)
+			{
+				infoSize.Format(KSizeDownloadingOf(), ((float) aSizeDownloaded / (float) KSizeMb),
+						((float)aShowInfo.ShowSize() / (float)KSizeMb));
+			}
+		else
+			{
+			infoSize.Format(KShowsSizeFormatS60(), (float)aSizeDownloaded / (float)KSizeMb);
+			}
 		}
 	else if (aShowInfo.ShowSize() > 0)
 		{
