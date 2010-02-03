@@ -372,14 +372,14 @@ void CPodcastFeedView::FormatFeedInfoListBoxItemL(CFeedInfo& aFeedInfo, TBool aI
 				aFeedInfo.LastUpdated().FormatL(updatedDate, KDateFormatShort());
 				}
 			}
+
+		if(aFeedInfo.LastError() != KErrNone)
+			{
+			iconIndex = EErrorFeedIcon;
+			iEikonEnv->GetErrorText(unplayedShows, aFeedInfo.LastError());
+			}	
 		}
-	
-	if(aFeedInfo.LastError() != KErrNone)
-		{
-		iconIndex = EErrorFeedIcon;
-		iEikonEnv->GetErrorText(unplayedShows, aFeedInfo.LastError());
-		}	
-	
+		
 	iListboxFormatbuffer.Format(KFeedFormat(), iconIndex, &(aFeedInfo.Title()), &updatedDate,  &unplayedShows);
 	}
 
