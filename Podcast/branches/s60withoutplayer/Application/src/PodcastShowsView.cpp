@@ -397,7 +397,7 @@ void CPodcastShowsView::FormatFeedInfoListBoxItemL(CShowInfo& aShowInfo, TInt aS
 
 void CPodcastShowsView::UpdateShowItemDataL(CShowInfo* aShowInfo,TInt aIndex, TInt aSizeDownloaded)
 {
-	FormatFeedInfoListBoxItemL(*aShowInfo);
+	FormatFeedInfoListBoxItemL(*aShowInfo, aSizeDownloaded);
 	iItemArray->Delete(aIndex);
 	if(aIndex>= iItemArray->MdcaCount())
 		{
