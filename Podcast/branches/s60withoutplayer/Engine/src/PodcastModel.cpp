@@ -47,7 +47,6 @@ CPodcastModel::~CPodcastModel()
 	delete iFeedEngine;
 	delete iSoundEngine;
 	delete iSettingsEngine;
-	iActiveShowList.Close();
 	delete iShowEngine;
 
 	delete iIapNameArray;
@@ -56,6 +55,7 @@ CPodcastModel::~CPodcastModel()
 	sqlite3_close(iDB);
 	iFsSession.Close();
 	iActiveShowList.ResetAndDestroy();
+	iActiveShowList.Close();
 	delete iConnectionEngine;
 	iCmManager.Close();
 }

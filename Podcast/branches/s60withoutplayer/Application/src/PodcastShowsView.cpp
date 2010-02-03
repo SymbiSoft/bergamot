@@ -350,11 +350,11 @@ void CPodcastShowsView::UpdateFeedUpdateStateL()
 		{
 		iListContainer->Listbox()->SetDimmed(listboxDimmed);
 		}
-	
+	UpdateListboxItemsL();
 	UpdateToolbar();
 	}
 
-void CPodcastShowsView::FormatFeedInfoListBoxItemL(CShowInfo& aShowInfo, TInt aSizeDownloaded)
+void CPodcastShowsView::FormatShowInfoListBoxItemL(CShowInfo& aShowInfo, TInt aSizeDownloaded)
 	{
 	TBuf<32> infoSize;
 	TInt iconIndex = 0;	
@@ -404,7 +404,7 @@ void CPodcastShowsView::FormatFeedInfoListBoxItemL(CShowInfo& aShowInfo, TInt aS
 
 void CPodcastShowsView::UpdateShowItemDataL(CShowInfo* aShowInfo,TInt aIndex, TInt aSizeDownloaded)
 {
-	FormatFeedInfoListBoxItemL(*aShowInfo, aSizeDownloaded);
+	FormatShowInfoListBoxItemL(*aShowInfo, aSizeDownloaded);
 	iItemArray->Delete(aIndex);
 	if(aIndex>= iItemArray->MdcaCount())
 		{
@@ -433,6 +433,8 @@ void CPodcastShowsView::UpdateShowItemL(TUint aUid, TInt aSizeDownloaded)
 
 void CPodcastShowsView::UpdateListboxItemsL()
 	{
+	_LIT(KPanicCategory, "CPodcastShowsView::UpdateListboxItemsL");
+
 	if (iListContainer->IsVisible())
 		{
 		TListItemProperties itemProps;
@@ -443,8 +445,12 @@ void CPodcastShowsView::UpdateListboxItemsL()
 			case EShowPendingShows:
 				iPodcastModel.GetShowsDownloading();
 				break;
-			default:
+			case EShowFeedShows:
 				iPodcastModel.GetShowsByFeed(iPodcastModel.ActiveFeedInfo()->Uid());
+				break;
+			default:
+				// how did we end up here?
+				User::Panic(KPanicCategory, 1);
 				break;
 			}
 
@@ -475,7 +481,6 @@ void CPodcastShowsView::UpdateListboxItemsL()
 				for (TInt loop = 0; loop< len; loop++)
 					{					
 					UpdateShowItemDataL(fItems[loop], loop);	
-					//iListContainer->Listbox()->DrawItem(loop);					
 					}
 				}
 			else
@@ -490,7 +495,7 @@ void CPodcastShowsView::UpdateListboxItemsL()
 					for (TInt i=0; i<len; i++)
 						{
 						CShowInfo *si = fItems[i];
-						FormatFeedInfoListBoxItemL(*si);
+						FormatShowInfoListBoxItemL(*si);
 						iItemIdArray.Append(si->Uid());						
 						iItemArray->AppendL(iListboxFormatbuffer);
 						}

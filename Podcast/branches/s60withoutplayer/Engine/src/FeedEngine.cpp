@@ -487,7 +487,7 @@ TBool CFeedEngine::DBRemoveFeed(TUint aUid)
 
 TBool CFeedEngine::DBUpdateFeed(const CFeedInfo &aItem)
 	{
-	DP2("CShowEngine::DBUpdateFeed, title=%S, URL=%S", &aItem.Title(), &aItem.Url());
+	DP2("CFeedEngine::DBUpdateFeed, title=%S, URL=%S", &aItem.Title(), &aItem.Url());
 	_LIT(KSqlStatement, "update feeds set url=\"%S\", title=\"%S\", description=\"%S\", imageurl=\"%S\", imagefile=\"%S\"," \
 			"link=\"%S\", built=\"%Lu\", lastupdated=\"%Lu\", feedtype=\"%u\", customtitle=\"%u\", lasterror=\"%d\" where uid=\"%u\"");
 	iSqlBuffer.Format(KSqlStatement,
@@ -639,11 +639,11 @@ void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TInt aError)
 					}	
 				}
 			}
+		NotifyFeedUpdateComplete();
 
 		// we will wait until the image has been downloaded to start the next feed update.
 		if (iClientState == EIdle)
 			{
-			NotifyFeedUpdateComplete();
 			UpdateNextFeedL();	
 			}
 		}break;
@@ -685,6 +685,7 @@ void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TInt aError)
 
 void CFeedEngine::NotifyFeedUpdateComplete()
 	{
+	DP("CFeedEngine::NotifyFeedUpdateComplete");
 	DBUpdateFeed(*iActiveFeed);
 	for (TInt i=0;i<iObservers.Count();i++) 
 		{

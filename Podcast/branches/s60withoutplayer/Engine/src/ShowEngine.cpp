@@ -231,6 +231,7 @@ TBool CShowEngine::GetShowL(CShowInfo *info)
 
 EXPORT_C TBool CShowEngine::AddShowL(const CShowInfo& aItem)
 	{
+	DP1("CShowEngine::AddShowL, title=%S", &aItem.Title());
 	CShowInfo *showInfo = DBGetShowByUidL(aItem.Uid());
 
 	if (showInfo == NULL)
@@ -406,13 +407,6 @@ void CShowEngine::DBGetAllShowsL(RShowInfoArray& aShowArray)
 	_LIT(KSqlStatement, "select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype from shows");
 	iSqlBuffer.Format(KSqlStatement);
 
-//	if (iPodcastModel.SettingsEngine().SelectUnplayedOnly())
-//		{
-//		_LIT(KSqlUnplayedOnly, " where playstate=0");
-//		iSqlBuffer.Append(KSqlUnplayedOnly);
-//		}
-//	//DP1("SQL: %S", &iSqlBuffer.Left(KSqlDPLen));
-
 	sqlite3_stmt *st;
 
 	int rc = sqlite3_prepare16_v2(&iDB, (const void*) iSqlBuffer.PtrZ(), -1,
@@ -517,25 +511,15 @@ CShowInfo* CShowEngine::DBGetNextDownloadL()
 
 void CShowEngine::DBGetShowsByFeedL(RShowInfoArray& aShowArray, TUint aFeedUid)
 	{
-	DP1("CShowEngine::DBGetShowsByFeed, feedUid=%u", aFeedUid);
+	DP1("CShowEngine::DBGetShowsByFeed BEGIN, feedUid=%u", aFeedUid);
 	_LIT(KSqlStatement, "select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype, lasterror from shows where feeduid=%u");
 	iSqlBuffer.Format(KSqlStatement, aFeedUid);
-
-//	if (iPodcastModel.SettingsEngine().SelectUnplayedOnly())
-//		{
-//		_LIT(KSqlUnplayedOnly, " and playstate=0");
-//		iSqlBuffer.Append(KSqlUnplayedOnly);
-//		}
 
 #ifndef DONT_SORT_SQL	
 	_LIT(KSqlOrderByDate, " order by pubdate desc");
 	iSqlBuffer.Append(KSqlOrderByDate);
 #endif
 
-/*	TBuf<100> limit;
-	limit.Format(_L(" limit %u"), iPodcastModel.SettingsEngine().MaxListItems());
-	iSqlBuffer.Append(limit);
-*/
 	sqlite3_stmt *st;
 
 	int rc = sqlite3_prepare16_v2(&iDB, (const void*) iSqlBuffer.PtrZ(), -1,
@@ -555,6 +539,7 @@ void CShowEngine::DBGetShowsByFeedL(RShowInfoArray& aShowArray, TUint aFeedUid)
 			}
 		CleanupStack::PopAndDestroy();//st
 		}
+	DP("CShowEngine::DBGetShowsByFeed END");
 	}
 
 TUint CShowEngine::DBGetDownloadsCount()
@@ -588,12 +573,6 @@ void CShowEngine::DBGetDownloadedShowsL(RShowInfoArray& aShowArray)
 	DP("CShowEngine::DBGetDownloadedShows");
 	_LIT(KSqlStatement, "select url, title, description, filename, position, playtime, playstate, downloadstate, feeduid, uid, showsize, trackno, pubdate, showtype, lasterror from shows where downloadstate=%u");
 	iSqlBuffer.Format(KSqlStatement, EDownloaded);
-
-//	if (iPodcastModel.SettingsEngine().SelectUnplayedOnly())
-//		{
-//		_LIT(KSqlUnplayedOnly, " and playstate=0");
-//		iSqlBuffer.Append(KSqlUnplayedOnly);
-//		}
 
 #ifndef DONT_SORT_SQL
 	_LIT(KSqlSort, " order by title");
@@ -773,7 +752,6 @@ TBool CShowEngine::DBAddShow(const CShowInfo& aItem)
 		}
 
 	return EFalse;
-
 	}
 
 void CShowEngine::DBAddDownload(TUint aUid)
@@ -793,7 +771,6 @@ void CShowEngine::DBAddDownload(TUint aUid)
 		}
 
 	sqlite3_finalize(st);
-
 	}
 
 TBool CShowEngine::DBUpdateShow(CShowInfo& aItem)
@@ -811,7 +788,6 @@ TBool CShowEngine::DBUpdateShow(CShowInfo& aItem)
 
 	sqlite3_stmt *st;
 
-	//DP1("SQL: %S", &iSqlBuffer.Left(KSqlDPLen));
 	int rc = sqlite3_prepare16_v2(&iDB, (const void*) iSqlBuffer.PtrZ(), -1,
 			&st, (const void**) NULL);
 
@@ -835,7 +811,6 @@ TBool CShowEngine::DBUpdateShow(CShowInfo& aItem)
 		}
 
 	return EFalse;
-
 	}
 
 TBool CShowEngine::DBDeleteShow(TUint aUid)
@@ -906,7 +881,6 @@ TBool CShowEngine::DBDeleteAllShowsByFeed(TUint aFeedUid)
 		}
 
 	return EFalse;
-
 	}
 
 void CShowEngine::DBRemoveAllDownloads()

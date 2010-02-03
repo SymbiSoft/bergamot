@@ -92,7 +92,7 @@ protected:
 	void UpdateShowItemL(TUint aUid, TInt aSizeDownloaded);
 	void UpdateShowItemDataL(CShowInfo* aShowInfo,TInt aIndex, TInt aSizeDownloaded = KErrNotFound);
 	void DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane);
-	void FormatFeedInfoListBoxItemL(CShowInfo& aShowInfo, TInt aSizeDownloaded = 0);
+	void FormatShowInfoListBoxItemL(CShowInfo& aShowInfo, TInt aSizeDownloaded = 0);
 private:
 	void GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex);
 	void UpdateToolbar();

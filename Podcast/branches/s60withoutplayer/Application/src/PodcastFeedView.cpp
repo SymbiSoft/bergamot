@@ -210,7 +210,6 @@ void CPodcastFeedView::HandleListBoxEventL(CEikListBox* /* aListBox */, TListBox
 	case EEventItemDoubleClicked:
 	case EEventItemActioned:
 			{
-			DP("EEventItemActioned");
 			const RFeedInfoArray* sortedItems = NULL;
 			TInt index = iListContainer->Listbox()->CurrentItemIndex();
 			sortedItems = &iPodcastModel.FeedEngine().GetSortedFeeds();
@@ -284,11 +283,7 @@ void CPodcastFeedView::FeedDownloadUpdatedL(TUint aFeedUid, TInt /*aPercentOfCur
 	iUpdatingAllRunning = ETrue;		
 
 	// Update status text
-	UpdateFeedInfoStatusL(aFeedUid, ETrue);
-
-//	if(aPercentOfCurrentDownload>=0 && aPercentOfCurrentDownload<100)
-//		{
-//		}		
+	UpdateFeedInfoStatusL(aFeedUid, ETrue);	
 	}
 
 void CPodcastFeedView::UpdateFeedInfoStatusL(TUint aFeedUid, TBool aIsUpdating)
@@ -706,7 +701,7 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			CPodcastListView::HandleCommandL(aCommand);
 			break;
 		}
-		UpdateToolbar();
+	UpdateToolbar();
 	}
 
 void CPodcastFeedView::UpdateToolbar()
@@ -718,7 +713,6 @@ void CPodcastFeedView::UpdateToolbar()
 		toolbar->HideItem(EPodcastUpdateAllFeeds, iUpdatingAllRunning, ETrue);
 		toolbar->HideItem(EPodcastCancelUpdateAllFeeds, !iUpdatingAllRunning, ETrue );
 		toolbar->SetItemDimmed(EPodcastAddFeed, iUpdatingAllRunning, ETrue );
-		//toolbar->SetItemDimmed(EPodcastFeedsToolbarExtension, iUpdatingAllRunning, ETrue );
 		toolbar->SetItemDimmed(EPodcastSettings, iUpdatingAllRunning, ETrue );
 		}
 }
