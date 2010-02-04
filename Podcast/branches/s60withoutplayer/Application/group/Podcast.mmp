@@ -92,6 +92,7 @@ SOURCE  PodcastFeedView.cpp
 SOURCE  PodcastSettingsView.cpp
 SOURCE  PodcastShowsView.cpp
 SOURCE  PodcastSearchView.cpp
+SOURCE  ImageHandler.cpp
 
 SOURCEPATH ..\data
 

@@ -146,7 +146,7 @@ public MPointerListener, public MAknLongTapDetectorCallBack
 		 CDesCArray* iItemArray;
 		 RArray<TUint> iItemIdArray;
 		 
-		 TBuf<256> iListboxFormatbuffer;
+		 TBuf<1024> iListboxFormatbuffer;
 		 
 		 CAknToolbar *iToolbar;
 		 CAknStylusPopUpMenu* iStylusPopupMenu;

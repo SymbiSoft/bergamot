@@ -97,6 +97,9 @@ private:
 	// Using connection manager settings UI
 	TCmSettingSelection   iUserSelection;
 	
+	// Connect using Commdb
+	TCommDbConnPref iCommdbPreference;
+	
 	// Connect using SNAP setting
 	TConnSnapPref iSnapPreference;
 	

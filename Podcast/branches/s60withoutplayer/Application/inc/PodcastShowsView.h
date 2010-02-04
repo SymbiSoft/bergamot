@@ -29,9 +29,12 @@
 #include "PodcastModel.h"
 #include "Podcast.hrh"
 #include "PodcastListView.h"
+#include "Imagehandler.h"
+
+class CImageHandler;
 
 class CPodcastShowsView : public CPodcastListView, public MEikListBoxObserver, 
-	public MFeedEngineObserver, public MShowEngineObserver, public MKeyEventListener
+	public MFeedEngineObserver, public MShowEngineObserver, public MKeyEventListener, public MImageHandlerCallback
 	{
 public: 
 	static CPodcastShowsView* NewL(CPodcastModel& aPodcastModel);
@@ -96,11 +99,20 @@ protected:
 private:
 	void GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex);
 	void UpdateToolbar();
+	void DisplayShowInfoDialogL();
+	/*
+	 * Called by CImageHandler when an image has been loaded.
+	 * @param aError Error code given by the CImageHandler or 0 (zero) if the
+	 *   image was loaded successfully.
+	 */
+	virtual void ImageOperationCompleteL(TInt aError);
 private:
 	
 	TPodcastClientShowCategory iCurrentCategory;
 	CPodcastModel& iPodcastModel;
 	TBool iProgressAdded;
+	CImageHandler* iImageHandler;
+	TInt iLastImageHandlerError;
 	};
 
 #endif // PODCASTSHOWSVIEWH

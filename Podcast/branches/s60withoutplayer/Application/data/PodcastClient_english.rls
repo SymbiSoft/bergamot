@@ -59,7 +59,8 @@ rls_string STRING_r_view_stop_downloads_cmd "Suspend Downloading"
 rls_string STRING_r_view_resume_downloads_cmd "Resume Downloading"
 rls_string STRING_r_view_mark_all_played_cmd "Mark All as Played"
 rls_string STRING_r_view_show_unplayed_cmd "Show Unplayed Only"
-
+rls_string STRING_r_view_show_info_cmd "Info"
+rls_string STRING_r_view_show_play_cmd "Play"
 // Common actions
 rls_string STRING_r_settings_cmd "Settings"
 

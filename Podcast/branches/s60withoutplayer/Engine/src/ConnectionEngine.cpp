@@ -177,9 +177,15 @@ void CConnectionEngine::StartL(TConnectionType aConnectionType)
 					iConnection.Start( iStatus );
 					break;
 					}									
-				}
-			SetActive();
+				}						
 			}
+		else
+			{
+			TRequestStatus& status = iStatus;
+			User::RequestComplete(&status, KErrCancel);
+			}
+		
+			SetActive();
 		}	
 	// Connect using SNAP 
 	else

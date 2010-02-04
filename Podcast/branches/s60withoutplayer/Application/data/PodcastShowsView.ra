@@ -89,7 +89,7 @@ RESOURCE AVKON_TOOLBAR r_showsview_toolbar
 						}  
 					};
 				};
-			},
+			},		
 		TBAR_CTRL
 			{
 			type = EAknCtButton;
@@ -218,3 +218,84 @@ RESOURCE AVKON_TOOLBAR r_showsview_toolbar
 				}
         };
     }
+
+RESOURCE STYLUS_POPUP_MENU r_showview_popup_menu
+	{
+		items =
+		{
+			STYLUS_POPUP_MENU_ITEM
+				{
+					txt = STRING_r_view_show_play_cmd;
+					command = EPodcastPlay; 
+				},
+			STYLUS_POPUP_MENU_ITEM
+				{
+					txt = STRING_r_view_show_info_cmd;
+					command = EPodcastShowInfo;
+				}
+		};
+	}
+
+/*
+RESOURCE DIALOG r_show_info_note
+    {
+    flags = EEikDialogFlagNoDrag |
+            EEikDialogFlagNoTitleBar |
+            EEikDialogFlagCbaButtons |
+            EEikDialogFlagFillAppClientRect;
+
+    buttons = R_AVKON_SOFTKEYS_OK_EMPTY ;
+    items =
+		{    	
+        DLG_LINE
+            {
+            type = EAknCtNote;
+            id = EGeneralNote;
+            control = AVKON_NOTE
+                {
+                layout = ENotificationWithGraphicsLayout;                                
+                };
+            }        
+        };
+
+    }*/
+
+RESOURCE DIALOG r_show_info_note
+{
+   flags = EAknDialogGenericQueryFlags | EEikDialogFlagNoBorder | EEikDialogFlagNoShadow;
+   buttons = R_AVKON_SOFTKEYS_OK_EMPTY;
+   items=
+   {
+  
+      DLG_LINE 
+      {
+      	 type = EAknCtPopupHeadingPane;
+      	 id = EAknMessageQueryHeaderId;
+         itemflags = EEikDlgItemNonFocusing;
+         control = AVKON_HEADING
+         {
+		headinglayout=R_AVKON_LIST_HEADING_PANE_POPUPS;		
+         };
+      },  
+      DLG_LINE
+      {
+         type = EAknCtMessageQuery;
+         id = EAknMessageQueryContentId;
+         control = AVKON_MESSAGE_QUERY
+         {
+          
+         };
+      }  ,      
+      DLG_LINE
+    	  {
+    	  itemflags = EEikDlgItemNonFocusing;
+    	  type = EEikCtImage;
+    	  id = EPodcastShowInfoImage;
+    	  control = IMAGE
+    		  {
+    		  
+    		  };
+    	  }
+   };
+}
+

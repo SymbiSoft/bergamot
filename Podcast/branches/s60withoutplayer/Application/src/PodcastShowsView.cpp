@@ -22,17 +22,22 @@
 #include "SettingsEngine.h"
 #include "PodcastApp.h"
 #include "Constants.h"
+#include "imagehandler.h"
+
 #include <podcast.rsg>
 #include <podcast.mbg>
 #include <gulicon.h>
+#include <barsread.h>
+#include <aknnotedialog.h>
+#include <aknmessagequerydialog.h>
 
 const TInt KSizeBufLen = 64;
 const TInt KDefaultGran = 5;
 _LIT(KSizeDownloadingOf, "(%.1f/%.1f MB)");
 _LIT(KShowsSizeFormatS60, "(%.1f MB)");
 _LIT(KChapterFormatting, "%03d");
-_LIT(KShowFormat, "%d\t%S\t%S %S");
-_LIT(KShowErrorFormat, "%d\t%S\t%S");
+_LIT(KShowFormat, "%d\t%S\t%S %S\t");
+_LIT(KShowErrorFormat, "%d\t%S\t%S\t");
 #define KMaxMessageLength 200
 
 const TUint KIconArrayIds[] =
@@ -59,6 +64,49 @@ const TUint KIconArrayIds[] =
 			EMbmPodcastShowwarning_40x40m,
 			0,
 			0
+	};
+
+#define KPodcastImageWidth 160
+#define KPodcastImageHeight 120
+#define KPodcastDialogOffset 2
+
+/** 
+ *  This is an interal class to display a message query dialog with an image at the bottm
+ */
+class CPodcastImageMessageQueryDialog:public CAknMessageQueryDialog
+	{
+	public:
+		/**
+		 * C++ default constructor.
+		 *
+		 * @param aMessage Dialog box text.
+		 * @param aHeader Header for the dialog.
+		 * @deprecated 
+		 */ 
+		CPodcastImageMessageQueryDialog(TDesC* aMessage, TDesC* aHeader):CAknMessageQueryDialog(aMessage, aHeader)
+    		{
+
+    		}    
+
+		~CPodcastImageMessageQueryDialog()
+			{
+
+			}
+
+		void SetSizeAndPosition(const TSize& aSize)
+			{
+			CAknMessageQueryDialog::SetSizeAndPosition(aSize);
+
+			TPoint pos = Position();		 
+			TSize size = Size();
+
+			CAknDialog::SetSizeAndPosition(aSize);		 		 
+
+			pos.iY-=((aSize.iHeight-size.iHeight)-KPodcastDialogOffset);
+			SetPosition(pos);	
+			SetSize(aSize);
+			}
+
 	};
 
 CPodcastShowsView* CPodcastShowsView::NewL(CPodcastModel& aPodcastModel)
@@ -108,6 +156,13 @@ void CPodcastShowsView::ConstructL()
 	iListContainer->SetKeyEventListener(this);
 	iPodcastModel.FeedEngine().AddObserver(this);
 	iPodcastModel.ShowEngine().AddObserver(this);
+	
+	iStylusPopupMenu = CAknStylusPopUpMenu::NewL( this , TPoint(0,0));
+	TResourceReader reader;
+	iCoeEnv->CreateResourceReaderLC(reader,R_SHOWVIEW_POPUP_MENU);
+	iStylusPopupMenu->ConstructFromResourceL(reader);
+	CleanupStack::PopAndDestroy();
+	iImageHandler = CImageHandler::NewL(iEikonEnv->FsSession(), *this);
 	}
 
 TKeyResponse CPodcastShowsView::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType)
@@ -159,6 +214,8 @@ CPodcastShowsView::~CPodcastShowsView()
 	{
 	iPodcastModel.ShowEngine().RemoveObserver(this);
 	iPodcastModel.FeedEngine().RemoveObserver(this);
+    if(iStylusPopupMenu)
+        delete iStylusPopupMenu, iStylusPopupMenu = NULL;
 	}
 
 TUid CPodcastShowsView::Id() const
@@ -263,9 +320,9 @@ void CPodcastShowsView::HandleListBoxEventL(CEikListBox* /*aListBox*/,
 	{
 	switch (aEventType)
 		{
-		case EEventEnterKeyPressed:
-		case EEventItemDoubleClicked:
+		case EEventEnterKeyPressed:		
 		case EEventItemActioned:
+		case EEventItemClicked:
 			{
 			RShowInfoArray &fItems = iPodcastModel.ActiveShowList();
 			TInt index = iListContainer->Listbox()->CurrentItemIndex();
@@ -399,7 +456,14 @@ void CPodcastShowsView::FormatShowInfoListBoxItemL(CShowInfo& aShowInfo, TInt aS
 		}
 	else	
 		{
-		iListboxFormatbuffer.Format(KShowFormat(), iconIndex, &aShowInfo.Title(), &showDate, &infoSize);
+		if(aShowInfo.DownloadState() == EDownloaded)
+			{
+			iListboxFormatbuffer.Format(KShowFormat(), iconIndex, &aShowInfo.Title(), &showDate, &aShowInfo.Description());
+			}
+		else
+			{
+			iListboxFormatbuffer.Format(KShowFormat(), iconIndex, &aShowInfo.Title(), &showDate, &infoSize);
+			}
 		}
 	}
 
@@ -670,6 +734,10 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 			UpdateListboxItemsL();
 			}
 			break;
+		case EPodcastShowInfo:
+			{
+			DisplayShowInfoDialogL();
+			}break;
 		default:
 			CPodcastListView::HandleCommandL(aCommand);
 			break;
@@ -680,6 +748,59 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 	void CPodcastShowsView::DynInitMenuPaneL(TInt /*aResourceId*/,CEikMenuPane* /*aMenuPane*/)
 	{
 
+	}
+	
+void CPodcastShowsView::ImageOperationCompleteL(TInt aError)
+	{
+	iLastImageHandlerError = aError;
+	CActiveScheduler::Stop();
+	}
+	
+void CPodcastShowsView::DisplayShowInfoDialogL()
+	{
+	TInt index = iListContainer->Listbox()->CurrentItemIndex();
+	if (index >= 0 && index < iPodcastModel.ActiveShowList().Count())
+		{
+		CShowInfo* info = iPodcastModel.ActiveShowList()[index];
+		TUint32 feedUid = info->FeedUid();							
+		CFeedInfo* feedInfo = iPodcastModel.FeedEngine().GetFeedInfoByUid(feedUid);
+		
+		CPodcastImageMessageQueryDialog* note = new ( ELeave ) CPodcastImageMessageQueryDialog( (TDesC*)&info->Description(), (TDesC*)&info->Title() );
+							
+		note->PrepareLC( R_SHOW_INFO_NOTE ); // Adds to CleanupStack
+		
+		if(feedInfo && feedInfo->ImageFileName().Length()>0)
+			{
+			CFbsBitmap * bitmap = new (ELeave) CFbsBitmap;
+			CleanupStack::PushL(bitmap);
+			
+			TRAPD(loaderror, iImageHandler->LoadFileAndScaleL(bitmap, feedInfo->ImageFileName(), TSize(KPodcastImageWidth, KPodcastImageHeight)));
+			
+			if(loaderror == KErrNone)
+				{
+				CActiveScheduler::Start();
+				if(iLastImageHandlerError == KErrNone)
+					{	
+					CEikImage* image = static_cast<CEikImage*>(note->ControlOrNull(EPodcastShowInfoImage));
+					image->SetBitmap(bitmap);
+					CleanupStack::Pop(bitmap);
+					bitmap = NULL;
+					}
+				else
+					{				
+					CleanupStack::PopAndDestroy(bitmap);
+					bitmap = NULL;
+					}
+				}
+			else
+				{
+				CleanupStack::PopAndDestroy(bitmap);
+				bitmap = NULL;
+				}
+			}												
+		
+		note->RunLD(); 
+		}
 	}
 
 void CPodcastShowsView::UpdateToolbar()
@@ -735,7 +856,7 @@ void CPodcastShowsView::UpdateToolbar()
 			toolbar->HideItem(EPodcastMarkAsUnplayed, ETrue, ETrue );
 			toolbar->SetItemDimmed(EPodcastMarkAsPlayed, updatingState, ETrue);
 		}
-		
+		toolbar->HideItem(EPodcastShowInfo, ETrue, ETrue );
 		toolbar->HideItem(EPodcastRemoveDownload, ETrue, ETrue);
 		toolbar->HideItem(EPodcastRemoveAllDownloads, ETrue, ETrue);
 		toolbar->HideItem(EPodcastStopDownloads,ETrue, ETrue);
@@ -750,6 +871,7 @@ void CPodcastShowsView::UpdateToolbar()
 		toolbar->HideItem(EPodcastDeleteShow, ETrue, ETrue);
 		toolbar->HideItem(EPodcastMarkAsPlayed, ETrue, ETrue );
 		toolbar->HideItem(EPodcastMarkAsUnplayed, ETrue, ETrue );
+		toolbar->HideItem(EPodcastShowInfo, ETrue, ETrue );
 		
 		toolbar->HideItem(EPodcastRemoveDownload, EFalse, ETrue);
 		toolbar->HideItem(EPodcastRemoveAllDownloads, EFalse, ETrue);
