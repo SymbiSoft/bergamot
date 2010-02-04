@@ -46,10 +46,11 @@ class CConnectionEngine:public CActive, public MMobilityProtocolResp
 public:
 	enum TConnectionType
 		{
-		EUserSelectConnection,
-		ESNAPConnection,
+		EUserSelectConnection,		
+		ESNAPConnection,		
 		EMobilityConnection,
-		EDefaultConnection
+		EDefaultConnection,
+		EIAPConnection
 		};
 	
 	enum TConnectionState

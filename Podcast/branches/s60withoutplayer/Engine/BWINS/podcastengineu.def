@@ -148,4 +148,6 @@ EXPORTS
 	?ShowSize@CShowInfo@@QBEIXZ @ 147 NONAME ; unsigned int CShowInfo::ShowSize(void) const
 	?ShowType@CShowInfo@@QBE?AW4TShowType@@XZ @ 148 NONAME ; enum TShowType CShowInfo::ShowType(void) const
 	?UpdateShow@CShowEngine@@QAEXAAVCShowInfo@@@Z @ 149 NONAME ; void CShowEngine::UpdateShow(class CShowInfo &)
+	?UpdateIAPListL@CPodcastModel@@QAEXXZ @ 150 NONAME ; void CPodcastModel::UpdateIAPListL(void)
+	?UpdateSNAPListL@CPodcastModel@@QAEXXZ @ 151 NONAME ; void CPodcastModel::UpdateSNAPListL(void)
 

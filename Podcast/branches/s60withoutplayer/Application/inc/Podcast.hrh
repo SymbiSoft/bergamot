@@ -105,7 +105,8 @@ enum TShowsIconIndex
 
 enum TConnectionSetting {
 	EConnectionDefault = 0,
-	EConnectionAlwaysAsk = -1,
-	EConnectionUseSpecified = 1
+	EConnectionAlwaysAsk = 1,
+	EConnectionUseNetwork = 2,
+	EConnectionUseIap = 3
 };
 #endif

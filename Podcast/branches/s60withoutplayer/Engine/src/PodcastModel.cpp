@@ -85,9 +85,34 @@ void CPodcastModel::ConstructL()
 	DP("CPodcastModel::ConstructL END");
 }
 
-void CPodcastModel::UpdateIAPListL()
+
+
+EXPORT_C void CPodcastModel::UpdateIAPListL()
+	{
+	iIapNameArray->Reset();
+	iIapIdArray.Reset();	   
+
+	CCommsDbTableView* table = iCommDB->OpenTableLC (TPtrC (IAP)); 
+	TInt ret = table->GotoFirstRecord ();
+	TPodcastIAPItem IAPItem;
+	TBuf <KCommsDbSvrMaxFieldLength> bufName;
+	while (ret == KErrNone) // There was a first record
+		{
+		table->ReadUintL(TPtrC(COMMDB_ID), IAPItem.iIapId);
+		table->ReadTextL (TPtrC(COMMDB_NAME), bufName);
+		table->ReadTextL (TPtrC(IAP_BEARER_TYPE), IAPItem.iBearerType);
+		table->ReadTextL (TPtrC(IAP_SERVICE_TYPE), IAPItem.iServiceType);
+
+		iIapIdArray.Append(IAPItem);
+		iIapNameArray->AppendL(bufName); 		 
+		ret = table->GotoNextRecord();
+		}
+	CleanupStack::PopAndDestroy(); // Close table
+	}
+
+EXPORT_C void CPodcastModel::UpdateSNAPListL()
 {
-	DP("CPodcastModel::UpdateIAPListL BEGIN");
+	DP("CPodcastModel::UpdateSNAPListL BEGIN");
 	iIapNameArray->Reset();
 	iIapIdArray.Reset();
 	

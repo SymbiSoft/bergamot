@@ -93,6 +93,10 @@ void CHttpClient::ConnectHttpSessionL()
 		{
 		iPodcastModel.ConnectionEngine().StartL(CConnectionEngine::EDefaultConnection);	
 		}
+	else if( (iPodcastModel.SettingsEngine().SpecificIAP()&KUseIAPFlag))
+		{
+		iPodcastModel.ConnectionEngine().StartL(CConnectionEngine::EIAPConnection);
+		}
 	else
 		{
 		iPodcastModel.ConnectionEngine().StartL(CConnectionEngine::EMobilityConnection);

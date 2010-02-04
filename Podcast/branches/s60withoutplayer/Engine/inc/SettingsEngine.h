@@ -36,6 +36,8 @@ _LIT(KConfigFile, "config.db");
 const TInt KSettingsUid = 1000;
 const TInt KDefaultUpdateFeedInterval = 60;
 const TInt KDefaultMaxListItems = 100;
+const TInt32 KUseIAPFlag =0x01000000;
+const TInt32 KUseIAPMask =0x00FFFFFF;
 
 enum TAutoUpdateSetting
 	{

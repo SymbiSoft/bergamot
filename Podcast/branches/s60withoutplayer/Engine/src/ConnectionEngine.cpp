@@ -187,6 +187,14 @@ void CConnectionEngine::StartL(TConnectionType aConnectionType)
 		
 			SetActive();
 		}	
+	else if (aConnectionType == EIAPConnection)
+		{
+		iCommdbPreference.SetIapId((iPodcastModel.SettingsEngine().SpecificIAP()& KUseIAPMask));
+		iCommdbPreference.SetDialogPreference(ECommDbDialogPrefDoNotPrompt);
+		iCommdbPreference.SetDirection(ECommDbConnectionDirectionOutgoing);
+		iConnection.Start( iCommdbPreference, iStatus );
+		SetActive();
+		}
 	// Connect using SNAP 
 	else
 		{

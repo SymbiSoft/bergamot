@@ -74,7 +74,8 @@ public:
 	
 	void SetActiveShowList(RShowInfoArray& aShowArray);
 	
-	void UpdateIAPListL();
+	IMPORT_C void UpdateIAPListL();
+	IMPORT_C void UpdateSNAPListL();
 	IMPORT_C CDesCArrayFlat* IAPNames();
 	IMPORT_C RArray<TPodcastIAPItem>& IAPIds();
 

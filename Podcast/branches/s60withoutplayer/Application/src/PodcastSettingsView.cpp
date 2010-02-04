@@ -37,55 +37,78 @@ public:
 		CAknEnumeratedTextPopupSettingItem(aResourceId, aValue), iPodcastModel(aPodcastModel), iIap(aValue)
 		{
 		}
-	
+
 	~CIapSetting()
 		{
+		}
+
+	void RefreshConnectionListL(TInt aConnectionType = -1)
+		{	
+		CArrayPtr< CAknEnumeratedText > * enumeratedArr = EnumeratedTextArray();
+		CArrayPtr< HBufC > * poppedUpTextArray = PoppedUpTextArray();
+		enumeratedArr->ResetAndDestroy();
+		poppedUpTextArray->ResetAndDestroy();
+		if(aConnectionType == KErrNotFound)
+			{
+			if(iPodcastModel.SettingsEngine().SpecificIAP() & KUseIAPFlag)
+				{
+				iPodcastModel.UpdateIAPListL();
+				}
+			else
+				{
+				iPodcastModel.UpdateSNAPListL();
+				}
+			}
+		else if(aConnectionType)
+			{
+			iPodcastModel.UpdateIAPListL();
+			}
+		else
+			{
+			iPodcastModel.UpdateSNAPListL();
+			}
+			
+		CDesCArrayFlat *iapArray = iPodcastModel.IAPNames();
+
+		TBool valueExists = EFalse;
+		DP2("InternalValue=%d, ExternalValue=%d", InternalValue(), ExternalValue());
+		for (int i=0;i<iapArray->Count();i++) {
+		HBufC *buf = (*iapArray)[i].AllocL();
+		poppedUpTextArray->AppendL(buf);
+
+		TInt iapId = iPodcastModel.IAPIds()[i].iIapId;
+		DP2("IAP name='%S', id=%d", buf, iapId);
+
+		if (iapId == ExternalValue()) {
+		valueExists = ETrue;
+		}
+		// both arrays destroy themselves, so we need two copies to prevent USER 44
+		HBufC *buf2 = (*iapArray)[i].AllocL();
+
+		CAknEnumeratedText *enumerated = new CAknEnumeratedText(iapId, buf2);
+		enumeratedArr->AppendL(enumerated);
+		}
+
+		DP1("valueExists=%d", valueExists);
+		if (!valueExists && iPodcastModel.IAPIds().Count() > 0 ) {
+		DP1("Setting iIap=%d", iPodcastModel.IAPIds()[0].iIapId);
+		iIap = iPodcastModel.IAPIds()[0].iIapId;
+		LoadL();
+		DP2("InternalValue=%d, ExternalValue=%d", InternalValue(), ExternalValue());
+		}
+
+		TRAPD(err, HandleTextArrayUpdateL());
+
+		if (err != KErrNone) {
+		DP1("Leave in HandleTextArrayUpdateL, err=%d", err);
+		}
 		}
 
 	void CompleteConstructionL()
 		{
 		DP("CIapSetting::CompleteConstructionL BEGIN");
 		CAknEnumeratedTextPopupSettingItem::CompleteConstructionL();
-		
-		CArrayPtr< CAknEnumeratedText > * enumeratedArr = EnumeratedTextArray();
-		CArrayPtr< HBufC > * poppedUpTextArray = PoppedUpTextArray();
-		enumeratedArr->ResetAndDestroy();
-		poppedUpTextArray->ResetAndDestroy();
-		CDesCArrayFlat *iapArray = iPodcastModel.IAPNames();
-		
-		TBool valueExists = EFalse;
-		DP2("InternalValue=%d, ExternalValue=%d", InternalValue(), ExternalValue());
-		for (int i=0;i<iapArray->Count();i++) {
-			HBufC *buf = (*iapArray)[i].AllocL();
-			poppedUpTextArray->AppendL(buf);
-
-			TInt iapId = iPodcastModel.IAPIds()[i].iIapId;
-			DP2("IAP name='%S', id=%d", buf, iapId);
-			
-			if (iapId == ExternalValue()) {
-				valueExists = ETrue;
-			}
-			// both arrays destroy themselves, so we need two copies to prevent USER 44
-			HBufC *buf2 = (*iapArray)[i].AllocL();
-			
-			CAknEnumeratedText *enumerated = new CAknEnumeratedText(iapId, buf2);
-			enumeratedArr->AppendL(enumerated);
-		}
-		
-		DP1("valueExists=%d", valueExists);
-		if (!valueExists && iPodcastModel.IAPIds().Count() > 0 ) {
-			DP1("Setting iIap=%d", iPodcastModel.IAPIds()[0].iIapId);
-			iIap = iPodcastModel.IAPIds()[0].iIapId;
-			LoadL();
-			DP2("InternalValue=%d, ExternalValue=%d", InternalValue(), ExternalValue());
-		}
-		
-		TRAPD(err, HandleTextArrayUpdateL());
-		
-		if (err != KErrNone) {
-			DP1("Leave in HandleTextArrayUpdateL, err=%d", err);
-		}
-		
+		RefreshConnectionListL();
 		DP("CIapSetting::CompleteConstructionL END");
 		}
 
@@ -136,21 +159,29 @@ public:
 		DP1("Base Dir: %S", &iShowDir);
 		se.SetUpdateAutomatically((TAutoUpdateSetting)iAutoUpdate);
 		DP1("Update automatically: %d", iAutoUpdate);		
-		if (iConnection == -1) 
+		switch(iConnection)
 			{
-			DP("Specific IAP: -1 Ask user");
-			se.SetSpecificIAP(-1);				
-			}
-		else if (iConnection == 0) 
-			{		
-			DP("Specific IAP: 0 Use default");		
-			se.SetSpecificIAP(0);				
-			}
-		else 
-			{
-			DP1("Specific IAP: %d", iIap);			
-			se.SetSpecificIAP(iIap);		
-			}
+			case EConnectionDefault:
+				{
+				DP("Specific IAP: 0 Ask user");
+				se.SetSpecificIAP(0);	
+				}break;
+			case EConnectionAlwaysAsk:
+				{
+				DP("Specific IAP: -1 Ask user");
+				se.SetSpecificIAP(-1);		
+				}break;
+			case EConnectionUseNetwork:
+				{
+				DP1("Specific IAP: %d", iIap);		
+				se.SetSpecificIAP(iIap);	
+				}break;
+			case EConnectionUseIap:
+				{		
+				DP1("Specific NETWORK: %d", iIap);		
+				se.SetSpecificIAP((iIap|KUseIAPFlag));	
+				}break;
+			}		
 		
 		DP1("Download automatically: %d", iAutoDownload);
 		se.SetDownloadAutomatically(iAutoDownload);
@@ -168,11 +199,15 @@ public:
 		{
 		DP("UpdateSettingVisibility BEGIN");
 		LoadSettingsL();
-		TBool dimAutoUpdate = iConnection == -1;
-		TBool dimIAP = iConnection <= 0;
+		TBool dimAutoUpdate = iConnection == EConnectionAlwaysAsk;
+		TBool dimIAP = iConnection <= EConnectionAlwaysAsk;
 	
 		iSettingAutoUpdate->SetHidden(dimAutoUpdate);
 		iSettingIAP->SetHidden(dimIAP);
+		if(!dimIAP)
+			{
+			iSettingIAP->RefreshConnectionListL(iConnection == EConnectionUseIap ? 1:0);
+			}
 		ListBox()->ScrollToMakeItemVisible(0);
 		
 		TRAP_IGNORE(HandleChangeInItemArrayOrVisibilityL());
@@ -243,8 +278,26 @@ public:
 		CSettingsEngine &se = iPodcastModel.SettingsEngine();
 		iShowDir.Copy(se.BaseDir());
 		iAutoUpdate = se.UpdateAutomatically();
-		iConnection = se.SpecificIAP() <= EConnectionDefault ? se.SpecificIAP() : EConnectionUseSpecified;
 		iIap = se.SpecificIAP();
+		
+		if( iIap == 0)
+			{
+			iConnection = EConnectionDefault;
+			}
+		else if ( iIap == -1)
+			{
+			iConnection = EConnectionAlwaysAsk;	
+			}
+		else if ( (iIap & KUseIAPFlag))
+			{
+			iConnection = EConnectionUseIap;
+			iIap = iIap& KUseIAPMask;
+			}
+		else
+			{
+			iConnection = EConnectionUseNetwork;
+			}
+									
 		iAutoDownload = se.DownloadAutomatically();
 			
 		switch(aSettingId)
@@ -291,7 +344,7 @@ public:
 	TInt iConnection;
 	
 	TInt iIap;
-	CAknSettingItem *iSettingIAP; 
+	CIapSetting *iSettingIAP; 
 		
 	
 	CPodcastModel &iPodcastModel;
