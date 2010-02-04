@@ -80,7 +80,8 @@ enum TPodcastControl
 	EPodcastAboutDlg,
 	EPodcastFeedsToolbarExtension,
 	EQueryControl,
-	EPodcastShowInfoImage
+	EPodcastShowInfoImage,
+	EWaitDlg
 	};
 
 enum TPodcastClientShowCategory

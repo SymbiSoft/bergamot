@@ -122,3 +122,29 @@ RESOURCE DIALOG r_podcast_search_dlg
 				}
 	};
 }
+
+
+RESOURCE DIALOG r_waitdlg
+{
+    flags = EAknWaitNoteFlags;
+    buttons = R_AVKON_SOFTKEYS_CANCEL;
+    items =
+        {
+        DLG_LINE
+            {
+            type = EAknCtNote;
+            id = EWaitDlg;
+            control= AVKON_NOTE 
+                { 
+                layout = EWaitLayout;
+				flags= EAknWaitNoteFlags;
+                singular_label = STRING_r_searching;
+                imagefile = APPICON;
+                imageid = 	EMbmPodcastsvgPodcast;
+                imagemask = EMbmPodcastsvgPodcast_mask;
+                animation = R_QGN_GRAF_WAIT_BAR_ANIM;
+                };
+            }
+        };
+}
+

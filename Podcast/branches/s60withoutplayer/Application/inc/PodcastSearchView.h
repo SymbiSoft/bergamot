@@ -20,13 +20,15 @@
 #define PODCASTSEARCHVIEW_H 
 
 #include <aknview.h>
+#include <aknwaitdialog.h> 
+#include <aknprogressdialog.h> 
 #include "FeedEngine.h"
 #include "PodcastModel.h"
 #include "PodcastListView.h"
 #include "Podcast.hrh"
 
 class CPodcastSearchView : public CPodcastListView, public MEikListBoxObserver, 
-	public MFeedEngineObserver
+	public MFeedEngineObserver, public MProgressDialogCallback
     {
     public: 
         static CPodcastSearchView* NewL(CPodcastModel& aPodcastModel);
@@ -78,12 +80,19 @@ class CPodcastSearchView : public CPodcastListView, public MEikListBoxObserver,
 		 * @param aCommand ID of the command to respond to. 
 		 */
 		void HandleCommandL(TInt aCommand);
+		
+		// from MProgressDialogCallback
+		void DialogDismissedL(TInt aButtonId); 
 
 		void UpdateToolbar();
+		void ShowWaitDialogL();
+		
+		void SearchL();
+		void CancelSearch();
 		
 	private:
 		CPodcastModel& iPodcastModel;		
-		
+		CAknWaitDialog *iWaitDialog;
 		TBool iSearchRunning;
 };
 

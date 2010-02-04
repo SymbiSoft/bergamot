@@ -33,6 +33,7 @@ NAME    PODC // 4 letter ID
 #include "Podcast.hrh"
 #include "languages.rss"
 
+#define APPICON "\\resource\\apps\\Podcastsvg.mif"
 RESOURCE RSS_SIGNATURE { }
 
 RESOURCE TBUF { buf = "Podcatcher"; }
@@ -49,7 +50,7 @@ RESOURCE LOCALISABLE_APP_INFO r_podcast_localisable_app_info
         {
         caption = STRING_r_caption;
         number_of_icons = 1;
-        icon_file = "\\resource\\apps\\Podcastsvg.mif";
+        icon_file = APPICON;
 	};
     }
 
@@ -67,7 +68,7 @@ RESOURCE DIALOG r_dlg_about
 				{
 				layout = ENoteWithImageLayout;
 				singular_label = STRING_r_about_text_s60; 
-				imagefile = "\\resource\\apps\\Podcastsvg.mif"; 
+				imagefile = APPICON;
 				imageid = EMbmPodcastsvgPodcast;
 				imagemask = EMbmPodcastsvgPodcast_mask;
 				};

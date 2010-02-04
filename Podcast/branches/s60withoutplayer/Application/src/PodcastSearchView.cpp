@@ -219,24 +219,10 @@ void CPodcastSearchView::HandleCommandL(TInt aCommand)
 	switch(aCommand)
 		{
 		case EPodcastSearch:
-			{
-			TBuf<KMaxSearchString> searchString;
-			CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(searchString);
-			dlg->PrepareLC(R_PODCAST_SEARCH_DLG);
-			HBufC* prompt = iEikonEnv->AllocReadResourceLC(R_SEARCH_PROMPT);
-			dlg->SetPromptL(*prompt);
-			CleanupStack::PopAndDestroy(prompt);
-			
-			if(dlg->RunLD())
-				{
-				iSearchRunning = ETrue;
-				iPodcastModel.FeedEngine().SearchForFeedL(searchString);
-				}
+			SearchL();
 			break;
-			}
 		case EPodcastCancelUpdateAllFeeds:
-			iPodcastModel.FeedEngine().CancelUpdateAllFeeds();
-			iSearchRunning = EFalse;
+			CancelSearch();
 			break;
 		case EPodcastAddSearchResult:
 			{
@@ -273,6 +259,7 @@ void CPodcastSearchView::FeedSearchResultsUpdated()
 	UpdateListboxItemsL();
 	UpdateToolbar();
 	
+	delete iWaitDialog;
 	if (iPodcastModel.FeedEngine().GetSearchResults().Count() == 0)
 		{
 		TBuf<KMaxMessageLength> message;
@@ -295,3 +282,51 @@ void CPodcastSearchView::UpdateToolbar()
 		toolbar->HideItem(EPodcastCancelUpdateAllFeeds, !iSearchRunning, ETrue);
 		}
 }
+
+void CPodcastSearchView::ShowWaitDialogL()
+	{
+	DP("CPodcastSearchView::ShowWaitDialogL BEGIN");
+	if (!iWaitDialog)
+		{
+		iWaitDialog=new(ELeave) CAknWaitDialog(reinterpret_cast<CEikDialog**>(&iWaitDialog), EFalse);
+		iWaitDialog->SetCallback(this);
+		HBufC *waitText = iEikonEnv->AllocReadResourceLC(R_SEARCHING);
+		iWaitDialog->ExecuteLD(R_WAITDLG);
+		iWaitDialog->SetTextL(*waitText);
+		CleanupStack::PopAndDestroy(waitText);	
+		}
+	DP("CPodcastSearchView::ShowWaitDialogL END");
+	}
+
+void CPodcastSearchView::DialogDismissedL (TInt aButtonId)
+	{
+	DP("CPodcastSearchView::DialogDismissedL BEGIN");
+	CancelSearch();
+	DP("CPodcastSearchView::DialogDismissedL END");
+	}
+
+void CPodcastSearchView::SearchL()
+	{
+	TBuf<KMaxSearchString> searchString;
+	CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(searchString);
+	dlg->PrepareLC(R_PODCAST_SEARCH_DLG);
+	HBufC* prompt = iEikonEnv->AllocReadResourceLC(R_SEARCH_PROMPT);
+	dlg->SetPromptL(*prompt);
+	CleanupStack::PopAndDestroy(prompt);
+	
+	if(dlg->RunLD())
+		{
+		ShowWaitDialogL();
+		iSearchRunning = ETrue;
+		iPodcastModel.FeedEngine().SearchForFeedL(searchString);
+		}
+	}
+
+void CPodcastSearchView::CancelSearch()
+	{
+	if (iSearchRunning) {
+		iPodcastModel.FeedEngine().CancelUpdateAllFeeds();
+		iSearchRunning = EFalse;
+	}
+	}
+

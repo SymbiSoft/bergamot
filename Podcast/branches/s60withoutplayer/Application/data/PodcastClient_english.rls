@@ -213,4 +213,6 @@ rls_string STRING_export_feed_failure "Feed export failed"
 rls_string STRING_r_clear_query "Clear download queue?"
 rls_string STRING_r_search_noresults "No search results"
 rls_string STRING_r_cba_search "Search"
+rls_string STRING_r_searching "Searching"
+
 rls_string STRING_r_cba_cancel "Cancel"
