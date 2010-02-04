@@ -156,79 +156,6 @@ RESOURCE AVKON_TOOLBAR r_feedview_toolbar
 					};
 				};
 			},
-/*        TBAR_CTRL
-            {
-            type = EAknCtToolbarExtension;
-            id = EPodcastFeedsToolbarExtension;
-                                    
-            control = AVKON_TOOLBAR_EXTENSION 
-                {
-                flags = 0;
-                helptxt = STRING_r_view_more_options;
-                items =
-                    {
-						TBAR_CTRL
-							{
-							type = EAknCtButton;
-							id = EPodcastImportFeeds;
-							control = AVKON_BUTTON
-								{
-								flags = KAknButtonTextInsideFrame;
-								states =
-									{
-									AVKON_BUTTON_STATE
-										{
-										bmpfile = AVKON_BITMAP_FILE;
-										bmpid = EMbmAvkonQgn_indi_find_goto;
-										press_bmpid = EMbmAvkonQgn_indi_find_goto;
-										helptxt = STRING_r_view_import_feeds_cmd;
-										txt=STRING_r_view_import_feeds_cmd_short;
-										} 
-									};
-								};
-							},
-						TBAR_CTRL
-							{
-							type = EAknCtButton;
-							id = EPodcastExportFeeds;
-							control = AVKON_BUTTON
-								{
-								flags = KAknButtonTextInsideFrame;
-								states =
-									{
-									AVKON_BUTTON_STATE
-										{
-										bmpfile = AVKON_BITMAP_FILE;
-										bmpid = EMbmAvkonQgn_indi_find_goto;
-										press_bmpid = EMbmAvkonQgn_indi_find_goto;
-										helptxt = STRING_r_view_export_feeds_cmd;
-										txt=STRING_r_view_export_feeds_cmd_short;
-										} 
-									};
-								};
-							},
-							TBAR_CTRL
-								{
-								type = EAknCtButton;
-								id = EPodcastSettings;
-								control = AVKON_BUTTON
-									{
-									states =
-										{
-										AVKON_BUTTON_STATE
-											{
-											bmpfile = AVKON_BITMAP_FILE;
-											bmpid = EMbmAvkonQgn_indi_find_goto;
-											press_bmpid = EMbmAvkonQgn_indi_find_goto;
-											txt = STRING_r_settings_cmd;
-											helptxt = STRING_r_settings_cmd;
-										   }  
-										};
-									};
-							}
-                    };
-                };
-            }*/
 			TBAR_CTRL
 				{
 				type = EAknCtButton;
@@ -268,34 +195,7 @@ RESOURCE DIALOG r_podcast_add_feed_dlg
 					layout = EDataLayout;
 					control = EDWIN
 						{
-						flags= EEikEdwinNoHorizScrolling | EEikEdwinResizable;
-						maxlength = 256;
-						width = 4;
-						lines = 5;
-						};
-					};	
-				}
-	};
-}
-
-RESOURCE DIALOG r_podcast_search_dlg
-{
-	buttons = R_AVKON_SOFTKEYS_OK_CANCEL;
-
-	flags = EGeneralQueryFlags;
-	title = STRING_r_search_title;
-	items = 
-	{
-			DLG_LINE
-				{
-				type = EAknCtQuery;
-				id = EGeneralQuery;
-				control= AVKON_DATA_QUERY
-					{
-					layout = EDataLayout;
-					control = EDWIN
-						{
-						flags= EEikEdwinNoHorizScrolling | EEikEdwinResizable;
+						flags= EEikEdwinNoHorizScrolling | EEikEdwinResizable | EEikEdwinNoAutoSelection;
 						maxlength = 256;
 						width = 4;
 						lines = 5;

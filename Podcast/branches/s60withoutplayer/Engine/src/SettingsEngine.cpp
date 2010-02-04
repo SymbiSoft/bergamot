@@ -337,7 +337,14 @@ EXPORT_C void CSettingsEngine::SetUpdateFeedInterval(TInt aInterval)
 
 EXPORT_C TAutoUpdateSetting CSettingsEngine::UpdateAutomatically() 
 	{
-	return iUpdateAutomatically;
+	if (iUpdateAutomatically == EAutoUpdateOff || 
+		iUpdateAutomatically == EAutoUpdatePeriod1 ||
+		iUpdateAutomatically == EAutoUpdatePeriod2 ||
+		iUpdateAutomatically == EAutoUpdatePeriod3 ||
+		iUpdateAutomatically == EAutoUpdatePeriod4)
+		return iUpdateAutomatically;
+	else
+		return EAutoUpdateOff;
 	}
 
 EXPORT_C void CSettingsEngine::SetUpdateAutomatically(TAutoUpdateSetting aAutoSetting)

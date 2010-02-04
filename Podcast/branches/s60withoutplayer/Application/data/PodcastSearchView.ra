@@ -84,3 +84,41 @@ RESOURCE AVKON_TOOLBAR r_searchview_toolbar
 			}
 			};// items
     }
+
+
+RESOURCE CBA r_podcast_search_cba
+	{
+	buttons =
+		{
+		CBA_BUTTON
+			{id=EAknSoftkeyOk; txt = STRING_r_cba_search;},
+		CBA_BUTTON
+			{id=EAknSoftkeyCancel; txt = STRING_r_cba_cancel;}
+		};
+	}
+RESOURCE DIALOG r_podcast_search_dlg
+{
+	buttons = r_podcast_search_cba;
+
+	flags = EGeneralQueryFlags;
+	title = STRING_r_search_title;
+	items = 
+	{
+			DLG_LINE
+				{
+				type = EAknCtQuery;
+				id = EGeneralQuery;
+				control= AVKON_DATA_QUERY
+					{
+					layout = EDataLayout;
+					control = EDWIN
+						{
+						flags= EEikEdwinNoHorizScrolling | EEikEdwinResizable;
+						maxlength = 256;
+						width = 4;
+						lines = 5;
+						};
+					};	
+				}
+	};
+}

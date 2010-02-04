@@ -250,22 +250,25 @@ public:
 		switch(aSettingId)
 			{
 			case EPodcastSettingShowDir:
+				DP("EPodcastSettingShowDir");
 				return new (ELeave) CAknTextSettingItem(aSettingId, iShowDir);
 				break;
 			case EPodcastSettingAutoUpdate:
+				DP("EPodcastSettingAutoUpdate");
 				iSettingAutoUpdate = new (ELeave) CAknEnumeratedTextPopupSettingItem(aSettingId, iAutoUpdate);
 				return iSettingAutoUpdate;
 				break;
 			case EPodcastSettingConnection:
+				DP("EPodcastSettingConnection");
 				return new (ELeave) CAknEnumeratedTextPopupSettingItem (aSettingId, iConnection);
 				break;
 			case EPodcastSettingIAPList:
-				DP("Before CIapSetting");
+				DP("EPodcastSettingIAPList");
 				iSettingIAP = new (ELeave) CIapSetting (aSettingId, iIap, iPodcastModel);
-				DP("After CIapSetting");
 				return iSettingIAP;
 				break;
 			case EPodcastSettingAutoDownload:
+				DP("EPodcastSettingAutoDownload");
 				iSettingAutoDownload = new (ELeave) CAknBinaryPopupSettingItem (aSettingId, iAutoDownload);
 				return iSettingAutoDownload;
 				break;
