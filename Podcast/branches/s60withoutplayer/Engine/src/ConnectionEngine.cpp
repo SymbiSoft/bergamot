@@ -181,8 +181,8 @@ void CConnectionEngine::StartL(TConnectionType aConnectionType)
 			}
 		else
 			{
-			TRequestStatus& status = iStatus;
-			User::RequestComplete(&status, KErrCancel);
+			TRequestStatus* status = &iStatus;
+			User::RequestComplete(status, KErrCancel);
 			}
 		
 			SetActive();
