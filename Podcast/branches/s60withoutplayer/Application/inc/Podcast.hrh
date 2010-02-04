@@ -107,6 +107,6 @@ enum TConnectionSetting {
 	EConnectionDefault = 0,
 	EConnectionAlwaysAsk = 1,
 	EConnectionUseNetwork = 2,
-	EConnectionUseIap = 3
+	EConnectionUseIap = 0x7FFF
 };
 #endif

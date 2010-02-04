@@ -51,6 +51,9 @@ CPodcastModel::~CPodcastModel()
 
 	delete iIapNameArray;
 	iIapIdArray.Close();
+	
+	delete iSNAPNameArray;
+	iSNAPIdArray.Close();
 	delete iCommDB;	
 	sqlite3_close(iDB);
 	iFsSession.Close();
@@ -72,8 +75,10 @@ void CPodcastModel::ConstructL()
 	iCommDB = CCommsDatabase::NewL (EDatabaseTypeUnspecified);
 	//iCommDB ->ShowHiddenRecords(); // magic
 	iIapNameArray = new (ELeave) CDesCArrayFlat(KDefaultGranu);
+	iSNAPNameArray = new (ELeave) CDesCArrayFlat(KDefaultGranu);
 	iCmManager.OpenL();
 	UpdateIAPListL();
+	UpdateSNAPListL();
 	
 	iSettingsEngine = CSettingsEngine::NewL(*this);
 	iConnectionEngine = CConnectionEngine::NewL(*this);	
@@ -113,8 +118,8 @@ EXPORT_C void CPodcastModel::UpdateIAPListL()
 EXPORT_C void CPodcastModel::UpdateSNAPListL()
 {
 	DP("CPodcastModel::UpdateSNAPListL BEGIN");
-	iIapNameArray->Reset();
-	iIapIdArray.Reset();
+	iSNAPNameArray->Reset();
+	iSNAPIdArray.Reset();
 	
 	RCmDestination destination;
 	TPodcastIAPItem IAPItem;
@@ -134,15 +139,15 @@ EXPORT_C void CPodcastModel::UpdateSNAPListL()
 			IAPItem.iIapId = destArray[loop];
 			HBufC* name = destination.NameLC();
 			DP1(" destination.NameLC==%S", name);
-			iIapNameArray->AppendL(*name);
+			iSNAPNameArray->AppendL(*name);
 			CleanupStack::PopAndDestroy(name);
-			iIapIdArray.Append(IAPItem);
+			iSNAPIdArray.Append(IAPItem);
 			}
 		CleanupStack::PopAndDestroy();//close destination
 		}
 	CleanupStack::PopAndDestroy();// close destArray
 
-	DP("CPodcastModel::UpdateIAPListL END");
+	DP("CPodcastModel::UpdateSNAPListL END");
 }
 
 EXPORT_C CDesCArrayFlat* CPodcastModel::IAPNames()
@@ -153,6 +158,16 @@ EXPORT_C CDesCArrayFlat* CPodcastModel::IAPNames()
 EXPORT_C RArray<TPodcastIAPItem>& CPodcastModel::IAPIds()
 {
 	return iIapIdArray;
+}
+
+EXPORT_C CDesCArrayFlat* CPodcastModel::SNAPNames()
+{
+	return iSNAPNameArray;
+}
+
+EXPORT_C RArray<TPodcastIAPItem>& CPodcastModel::SNAPIds()
+{
+	return iSNAPIdArray;
 }
 
 

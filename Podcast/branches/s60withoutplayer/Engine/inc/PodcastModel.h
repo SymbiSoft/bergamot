@@ -78,6 +78,8 @@ public:
 	IMPORT_C void UpdateSNAPListL();
 	IMPORT_C CDesCArrayFlat* IAPNames();
 	IMPORT_C RArray<TPodcastIAPItem>& IAPIds();
+	IMPORT_C CDesCArrayFlat* SNAPNames();
+	IMPORT_C RArray<TPodcastIAPItem>& SNAPIds();
 
 	void SetProxyUsageIfNeededL(RHTTPSession& aSession);
 	void GetProxyInformationForConnectionL(TBool& aIsUsed, HBufC*& aServerName, TUint32& aPort);
@@ -111,6 +113,9 @@ private:
    RFs iFsSession;
    RArray<TPodcastIAPItem> iIapIdArray;
    CDesCArrayFlat* iIapNameArray;
+   
+   RArray<TPodcastIAPItem> iSNAPIdArray;
+   CDesCArrayFlat* iSNAPNameArray;
    CCommsDatabase* iCommDB;  
    
    sqlite3* iDB;

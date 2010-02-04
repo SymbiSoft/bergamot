@@ -42,31 +42,12 @@ public:
 		{
 		}
 
-	void RefreshConnectionListL(TInt aConnectionType = -1)
+	void RefreshConnectionListL()
 		{	
 		CArrayPtr< CAknEnumeratedText > * enumeratedArr = EnumeratedTextArray();
 		CArrayPtr< HBufC > * poppedUpTextArray = PoppedUpTextArray();
 		enumeratedArr->ResetAndDestroy();
-		poppedUpTextArray->ResetAndDestroy();
-		if(aConnectionType == KErrNotFound)
-			{
-			if(iPodcastModel.SettingsEngine().SpecificIAP() & KUseIAPFlag)
-				{
-				iPodcastModel.UpdateIAPListL();
-				}
-			else
-				{
-				iPodcastModel.UpdateSNAPListL();
-				}
-			}
-		else if(aConnectionType)
-			{
-			iPodcastModel.UpdateIAPListL();
-			}
-		else
-			{
-			iPodcastModel.UpdateSNAPListL();
-			}
+		poppedUpTextArray->ResetAndDestroy();		
 			
 		CDesCArrayFlat *iapArray = iPodcastModel.IAPNames();
 
@@ -139,6 +120,93 @@ protected:
   	TInt& iIap;
 };
 
+
+class CConnectionSetting: public CAknEnumeratedTextPopupSettingItem 
+{ 
+public:
+	CConnectionSetting(TInt aResourceId, TInt& aValue, CPodcastModel &aPodcastModel) :
+		CAknEnumeratedTextPopupSettingItem(aResourceId, aValue), iPodcastModel(aPodcastModel)
+		{
+		}
+
+	~CConnectionSetting()
+		{
+		}
+
+	void RefreshConnectionListL()
+		{	
+		CArrayPtr< CAknEnumeratedText > * enumeratedArr = EnumeratedTextArray();
+		CArrayPtr< HBufC > * poppedUpTextArray = PoppedUpTextArray();						
+			
+		CDesCArrayFlat *snapArray = iPodcastModel.SNAPNames();
+
+		TBool valueExists = EFalse;
+		DP2("InternalValue=%d, ExternalValue=%d", InternalValue(), ExternalValue());
+		for (int i=0;i<snapArray->Count();i++) {
+			HBufC *buf = (*snapArray)[i].AllocL();
+			poppedUpTextArray->InsertL(EConnectionUseNetwork+i,buf);
+
+			TInt snapId = iPodcastModel.SNAPIds()[i].iIapId;
+			DP2("SNAP name='%S', id=%d", buf, snapId);
+	
+			if (snapId == ExternalValue()) {
+			valueExists = ETrue;
+		}
+		// both arrays destroy themselves, so we need two copies to prevent USER 44
+		HBufC *buf2 = (*snapArray)[i].AllocL();
+
+		CAknEnumeratedText *enumerated = new CAknEnumeratedText(EConnectionUseNetwork+i, buf2);
+		enumeratedArr->InsertL(EConnectionUseNetwork+i, enumerated);
+		}
+
+		DP1("valueExists=%d", valueExists);
+		if (!valueExists && iPodcastModel.SNAPIds().Count() > 0 ) {
+		DP1("Setting i=%d", iPodcastModel.SNAPIds()[0].iIapId);	
+		LoadL();
+		DP2("InternalValue=%d, ExternalValue=%d", InternalValue(), ExternalValue());
+		}
+
+		TRAPD(err, HandleTextArrayUpdateL());
+
+		if (err != KErrNone) {
+		DP1("Leave in HandleTextArrayUpdateL, err=%d", err);
+		}
+		}
+
+	void CompleteConstructionL()
+		{
+		DP("CIapSetting::CompleteConstructionL BEGIN");
+		CAknEnumeratedTextPopupSettingItem::CompleteConstructionL();
+		RefreshConnectionListL();
+		DP("CIapSetting::CompleteConstructionL END");
+		}
+
+	void EditItemL(TBool aCalledFromMenu)
+		{
+		DP("CIapSetting::EditItemL BEGIN");
+		LoadL();
+		CAknEnumeratedTextPopupSettingItem::EditItemL(aCalledFromMenu);
+		StoreL();		
+		DP2("InternalValue=%d, ExternalValue=%d", InternalValue(), ExternalValue());
+		DP("CIapSetting::EditItemL END");
+		}
+
+	void HandleSettingPageEventL(CAknSettingPage* aSettingPage, TAknSettingPageEvent aEventType)
+		{
+		DP("CIapSetting::HandleSettingPageEventL BEGIN");
+		CAknSettingItem::HandleSettingPageEventL(aSettingPage, aEventType);
+		/*if (aEventType == EEventSettingOked) 
+			{
+			DP2("InternalValue=%d, ExternalValue=%d", InternalValue(), ExternalValue());
+			StoreL();
+			}*/
+		DP("CIapSetting::HandleSettingPageEventL END");
+		}
+
+protected:
+  	CPodcastModel& iPodcastModel;  
+};
+
 class CPodcastSettingItemList:public CAknSettingItemList
 	{
 public:
@@ -171,15 +239,18 @@ public:
 				DP("Specific IAP: -1 Ask user");
 				se.SetSpecificIAP(-1);		
 				}break;
-			case EConnectionUseNetwork:
-				{
-				DP1("Specific IAP: %d", iIap);		
-				se.SetSpecificIAP(iIap);	
-				}break;
+			
 			case EConnectionUseIap:
 				{		
 				DP1("Specific NETWORK: %d", iIap);		
 				se.SetSpecificIAP((iIap|KUseIAPFlag));	
+				}break;
+			default:
+			case EConnectionUseNetwork:
+				{
+				DP1("Specific IAP: %d", iIap);		
+				TInt snapIndex = iConnection-EConnectionUseNetwork;
+				se.SetSpecificIAP(iPodcastModel.SNAPIds()[snapIndex].iIapId);	
 				}break;
 			}		
 		
@@ -200,13 +271,13 @@ public:
 		DP("UpdateSettingVisibility BEGIN");
 		LoadSettingsL();
 		TBool dimAutoUpdate = iConnection == EConnectionAlwaysAsk;
-		TBool dimIAP = iConnection <= EConnectionAlwaysAsk;
+		TBool dimIAP = iConnection < EConnectionUseIap;
 	
 		iSettingAutoUpdate->SetHidden(dimAutoUpdate);
 		iSettingIAP->SetHidden(dimIAP);
 		if(!dimIAP)
 			{
-			iSettingIAP->RefreshConnectionListL(iConnection == EConnectionUseIap ? 1:0);
+			iSettingIAP->RefreshConnectionListL();
 			}
 		ListBox()->ScrollToMakeItemVisible(0);
 		
@@ -295,7 +366,21 @@ public:
 			}
 		else
 			{
-			iConnection = EConnectionUseNetwork;
+			TInt snapIndex = 0;
+			TInt cnt = iPodcastModel.SNAPIds().Count();
+			while(snapIndex < cnt && iPodcastModel.SNAPIds()[snapIndex].iIapId != iIap)
+				{
+				snapIndex++;
+				}
+			
+			if(snapIndex != cnt)
+				{
+				iConnection = EConnectionUseNetwork+snapIndex;
+				}
+			else
+				{
+				iConnection = EConnectionAlwaysAsk;
+				}
 			}
 									
 		iAutoDownload = se.DownloadAutomatically();
@@ -313,7 +398,7 @@ public:
 				break;
 			case EPodcastSettingConnection:
 				DP("EPodcastSettingConnection");
-				return new (ELeave) CAknEnumeratedTextPopupSettingItem (aSettingId, iConnection);
+				return new (ELeave) CConnectionSetting (aSettingId, iConnection, iPodcastModel);
 				break;
 			case EPodcastSettingIAPList:
 				DP("EPodcastSettingIAPList");
@@ -399,6 +484,9 @@ void CPodcastSettingsView::DoActivateL(const TVwsViewId& aPrevViewId,
 	}
 	
 	DP("Creating listbox");
+	iPodcastModel.UpdateSNAPListL();
+	iPodcastModel.UpdateIAPListL();
+	
 	iListbox =new (ELeave) CPodcastSettingItemList(iPodcastModel);
 	iListbox->SetMopParent( this );
 	iListbox->ConstructFromResourceL(R_PODCAST_SETTINGS);

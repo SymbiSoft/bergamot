@@ -121,8 +121,7 @@ RESOURCE ARRAY r_podcast_connection_closed
     items = 
     {
     AVKON_ENUMERATED_TEXT{value=EConnectionDefault; text = STRING_r_podcast_setting_default;},
-    AVKON_ENUMERATED_TEXT{value=EConnectionAlwaysAsk; text = STRING_r_podcast_setting_alwaysask;},
-    AVKON_ENUMERATED_TEXT{value=EConnectionUseNetwork; text = STRING_r_podcast_setting_usenetwork;},
+    AVKON_ENUMERATED_TEXT{value=EConnectionAlwaysAsk; text = STRING_r_podcast_setting_alwaysask;},    
     AVKON_ENUMERATED_TEXT{value=EConnectionUseIap; text = STRING_r_podcast_setting_useiap;}
     };
 }
@@ -132,8 +131,7 @@ RESOURCE ARRAY r_podcast_connection_opened
     items = 
     {
     LBUF { txt=STRING_r_podcast_setting_default; },
-    LBUF { txt=STRING_r_podcast_setting_alwaysask; },	
-    LBUF { txt=STRING_r_podcast_setting_usenetwork; },
+    LBUF { txt=STRING_r_podcast_setting_alwaysask; },	   
     LBUF { txt=STRING_r_podcast_setting_useiap; }
     };
 }

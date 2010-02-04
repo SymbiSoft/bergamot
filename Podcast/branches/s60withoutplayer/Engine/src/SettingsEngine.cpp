@@ -389,6 +389,14 @@ EXPORT_C TInt CSettingsEngine::SpecificIAP()
 		}
 
 	}
+	
+	for (int i=0;i<iPodcastModel.SNAPIds().Count();i++) {
+			if (((TInt)iPodcastModel.SNAPIds()[i].iIapId) == (iIap&KUseIAPMask)) {
+				return iIap;
+			}
+
+		}
+	
 	return iPodcastModel.IAPIds()[0].iIapId;
 	}
 

@@ -150,4 +150,6 @@ EXPORTS
 	?UpdateShow@CShowEngine@@QAEXAAVCShowInfo@@@Z @ 149 NONAME ; void CShowEngine::UpdateShow(class CShowInfo &)
 	?UpdateIAPListL@CPodcastModel@@QAEXXZ @ 150 NONAME ; void CPodcastModel::UpdateIAPListL(void)
 	?UpdateSNAPListL@CPodcastModel@@QAEXXZ @ 151 NONAME ; void CPodcastModel::UpdateSNAPListL(void)
+	?SNAPIds@CPodcastModel@@QAEAAV?$RArray@VTPodcastIAPItem@@@@XZ @ 152 NONAME ; class RArray<class TPodcastIAPItem> & CPodcastModel::SNAPIds(void)
+	?SNAPNames@CPodcastModel@@QAEPAVCDesC16ArrayFlat@@XZ @ 153 NONAME ; class CDesC16ArrayFlat * CPodcastModel::SNAPNames(void)
 
