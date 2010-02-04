@@ -101,3 +101,10 @@ RESOURCE TBUF r_podcast_no_search_results {buf = STRING_r_podcast_empty_list;}
 RESOURCE TBUF r_add_feed_title {buf=STRING_add_feed_title;}
 RESOURCE TBUF r_add_feed_success {buf=STRING_add_feed_success;}
 RESOURCE TBUF r_add_feed_failure {buf=STRING_add_feed_error;}
+
+RESOURCE TBUF r_import_feed_success {buf=STRING_import_feed_success;}
+RESOURCE TBUF r_import_feed_failure {buf=STRING_import_feed_failure;}
+RESOURCE TBUF r_export_feed_success {buf=STRING_export_feed_success;}
+RESOURCE TBUF r_export_feed_failure {buf=STRING_export_feed_failure;}
+RESOURCE TBUF r_clear_query {buf=STRING_r_clear_query;}
+RESOURCE TBUF r_search_noresults {buf=STRING_r_search_noresults;}

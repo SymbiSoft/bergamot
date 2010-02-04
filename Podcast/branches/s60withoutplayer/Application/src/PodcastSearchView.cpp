@@ -272,6 +272,13 @@ void CPodcastSearchView::FeedSearchResultsUpdated()
 	iSearchRunning = EFalse;
 	UpdateListboxItemsL();
 	UpdateToolbar();
+	
+	if (iPodcastModel.FeedEngine().GetSearchResults().Count() == 0)
+		{
+		TBuf<KMaxMessageLength> message;
+		iEikonEnv->ReadResourceL(message, R_SEARCH_NORESULTS);
+		ShowErrorMessage(message);
+		}
 	}
 
 void CPodcastSearchView::UpdateToolbar()

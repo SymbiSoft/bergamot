@@ -33,6 +33,7 @@ _LIT(KShowsSizeFormatS60, "(%.1f MB)");
 _LIT(KChapterFormatting, "%03d");
 _LIT(KShowFormat, "%d\t%S\t%S %S");
 _LIT(KShowErrorFormat, "%d\t%S\t%S");
+#define KMaxMessageLength 200
 
 const TUint KIconArrayIds[] =
 	{
@@ -627,8 +628,14 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 			break;
 		case EPodcastRemoveAllDownloads:
 			{
-			iPodcastModel.ShowEngine().RemoveAllDownloads();
-			UpdateListboxItemsL();
+			TBuf<KMaxMessageLength> msg;
+			iEikonEnv->ReadResourceL(msg, R_CLEAR_QUERY);
+												
+			if(ShowQueryMessage(msg))
+				{
+				iPodcastModel.ShowEngine().RemoveAllDownloads();
+				UpdateListboxItemsL();
+				}
 			}
 			break;
 		case EPodcastRemoveDownloadHardware:

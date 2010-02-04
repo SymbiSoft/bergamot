@@ -202,3 +202,11 @@ rls_string STRING_r_search_title "Enter search terms"
 rls_string STRING_add_feed_title "Add feed"
 rls_string STRING_add_feed_success "Feed added"
 rls_string STRING_add_feed_error "Could not add feed"
+
+rls_string STRING_import_feed_success "%d feeds imported"
+rls_string STRING_import_feed_failure "Feed import failed"
+rls_string STRING_export_feed_success "%d feeds exported"
+rls_string STRING_export_feed_failure "Feed export failed"
+
+rls_string STRING_r_clear_query "Clear download queue?"
+rls_string STRING_r_search_noresults "No search results"

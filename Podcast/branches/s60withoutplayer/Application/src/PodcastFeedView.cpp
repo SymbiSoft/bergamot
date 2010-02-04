@@ -677,9 +677,29 @@ void CPodcastFeedView::HandleImportFeedsL()
 			{
 			if(importName.Length()>0)
 				{
-				iPodcastModel.FeedEngine().ImportFeedsL(importName);
-				UpdateListboxItemsL();
+				TInt numFeedsBefore = iPodcastModel.FeedEngine().GetSortedFeeds().Count();
+				
+				TRAPD(err, iPodcastModel.FeedEngine().ImportFeedsL(importName));
+				
+				if (err == KErrNone) 
+					{
+					UpdateListboxItemsL();
+					TInt numFeedsAfter = iPodcastModel.FeedEngine().GetSortedFeeds().Count();
+									
+					TBuf<KMaxMessageLength> message;
+					TBuf<KMaxMessageLength> templ;
+					iEikonEnv->ReadResourceL(templ, R_IMPORT_FEED_SUCCESS);
+					message.Format(templ, numFeedsAfter-numFeedsBefore);
+					ShowOkMessage(message);
+					} 
+				else 
+					{
+					TBuf<KMaxMessageLength> message;
+					iEikonEnv->ReadResourceL(message, R_IMPORT_FEED_FAILURE);
+					ShowErrorMessage(message);
+					}
 				}
+				
 			}
 		CleanupStack::PopAndDestroy(dlg);
 		}
@@ -720,9 +740,26 @@ void CPodcastFeedView::HandleExportFeedsL()
 				{
 				pathName.Append(fileName);
 				TFileName temp;
-				iPodcastModel.FeedEngine().ExportFeedsL(temp);						
+				TRAPD(err, iPodcastModel.FeedEngine().ExportFeedsL(temp));						
 				BaflUtils::CopyFile(iEikonEnv->FsSession(), temp, pathName);
-				BaflUtils::DeleteFile(iEikonEnv->FsSession(),temp);						
+				BaflUtils::DeleteFile(iEikonEnv->FsSession(),temp);	
+				if (err == KErrNone) 
+					{
+					UpdateListboxItemsL();
+					TInt numFeeds = iPodcastModel.FeedEngine().GetSortedFeeds().Count();
+									
+					TBuf<KMaxMessageLength> message;
+					TBuf<KMaxMessageLength> templ;
+					iEikonEnv->ReadResourceL(templ, R_EXPORT_FEED_SUCCESS);
+					message.Format(templ, numFeeds);
+					ShowOkMessage(message);
+					} 
+				else 
+					{
+					TBuf<KMaxMessageLength> message;
+					iEikonEnv->ReadResourceL(message, R_EXPORT_FEED_FAILURE);
+					ShowErrorMessage(message);
+					}
 				}
 			CleanupStack::PopAndDestroy(fileDlg);
 			}
