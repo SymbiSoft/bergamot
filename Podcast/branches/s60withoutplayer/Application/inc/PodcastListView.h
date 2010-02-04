@@ -65,7 +65,7 @@ class CPodcastListContainer : public CCoeControl
 
 	protected:
 		TTypeUid::Ptr MopSupplyObject( TTypeUid aId );
-		void HandlePointerEventL(const TPointerEvent& aPointerEvent);
+		virtual void HandlePointerEventL(const TPointerEvent& aPointerEvent);
 
 	private:
 		MKeyEventListener* iKeyEventListener;

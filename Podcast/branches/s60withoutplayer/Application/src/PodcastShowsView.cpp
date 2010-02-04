@@ -882,3 +882,19 @@ void CPodcastShowsView::UpdateToolbar()
 		break;
 	}
 }
+
+void CPodcastShowsView::HandleLongTapEventL( const TPoint& aPenEventLocation, const TPoint& /* aPenEventScreenLocation */)
+{
+	DP("CPodcastShowsView::HandleLongTapEventL BEGIN");
+	if (iCurrentCategory == EShowPendingShows) {
+		DP("CPodcastShowsView::HandleLongTapEventL END");
+		return;
+	}
+	
+    if(iStylusPopupMenu)
+    {
+		iStylusPopupMenu->ShowMenu();
+		iStylusPopupMenu->SetPosition(aPenEventLocation);
+    }
+	DP("CPodcastShowsView::HandleLongTapEventL END");
+}

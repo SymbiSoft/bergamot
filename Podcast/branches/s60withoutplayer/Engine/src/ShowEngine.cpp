@@ -136,35 +136,41 @@ EXPORT_C TBool CShowEngine::RemoveDownloadL(TUint aUid)
 	DP("CShowEngine::RemoveDownload\t Trying to remove download");
 
 	TBool retVal = EFalse;
+	TBool resumeAfterRemove = EFalse;
 	// if trying to remove the present download, we first stop it
 	if (!iDownloadsSuspended && iShowDownloading != NULL
 			&& iShowDownloading->Uid() == aUid)
 		{
 		DP("CShowEngine::RemoveDownload\t This is the active download, we suspend downloading");
 		StopDownloads();
+		resumeAfterRemove = ETrue;
 		}
-	else
+
+	CShowInfo *info = DBGetShowByUidL(aUid);
+	if (info != NULL)
 		{
-		CShowInfo *info = DBGetShowByUidL(aUid);
-		if (info != NULL)
-			{
-			info->SetDownloadState(ENotDownloaded);
-			DBUpdateShow(*info);
-			delete info;
-			}
-		DBRemoveDownload(aUid);
-
-		// partial downloads should be removed
-		if (iShowDownloading)
-			{
-			BaflUtils::DeleteFile(iPodcastModel.FsSession(), iShowDownloading->FileName());
-			}
-
-		NotifyShowDownloadUpdatedL(-1, -1, -1);
-		NotifyDownloadQueueUpdatedL();
-		DownloadNextShowL();
-		retVal = ETrue;
+		info->SetDownloadState(ENotDownloaded);
+		DBUpdateShow(*info);
+		delete info;
 		}
+	DBRemoveDownload(aUid);
+
+	// partial downloads should be removed
+	if (iShowDownloading)
+		{
+		BaflUtils::DeleteFile(iPodcastModel.FsSession(), iShowDownloading->FileName());
+		}
+
+	NotifyShowDownloadUpdatedL(-1, -1, -1);
+	NotifyDownloadQueueUpdatedL();
+	
+	if (resumeAfterRemove) {
+		ResumeDownloadsL();
+	}
+	
+	DownloadNextShowL();
+	retVal = ETrue;
+
 	return retVal;
 	}
 
