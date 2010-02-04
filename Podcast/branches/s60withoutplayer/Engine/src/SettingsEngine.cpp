@@ -384,7 +384,7 @@ EXPORT_C TInt CSettingsEngine::SpecificIAP()
 	}
 	
 	for (int i=0;i<iPodcastModel.IAPIds().Count();i++) {
-		if (((TInt)iPodcastModel.IAPIds()[i].iIapId) == iIap) {
+		if (((TInt)iPodcastModel.IAPIds()[i].iIapId) == (iIap&KUseIAPMask)) {
 			return iIap;
 		}
 

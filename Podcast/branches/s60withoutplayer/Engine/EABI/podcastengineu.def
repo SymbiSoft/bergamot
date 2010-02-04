@@ -182,4 +182,6 @@ EXPORTS
 	_ZTV17CHttpEventHandler @ 181 NONAME
 	_ZTV9CFeedInfo @ 182 NONAME
 	_ZTV9CShowInfo @ 183 NONAME
+	_ZN13CPodcastModel14UpdateIAPListLEv @ 184 NONAME
+	_ZN13CPodcastModel15UpdateSNAPListLEv @ 185 NONAME
 
