@@ -66,8 +66,7 @@ class CPodcastFeedView : public CPodcastListView, public MEikListBoxObserver,
 		void UpdateListboxItemsL();
 	
 		// from MFeedEngineObserver
-		void FeedDownloadStartedL(TUint aFeedUid);
-		void FeedDownloadProgressL(TUint aFeedUid);
+		void FeedDownloadStartedL(TUint aFeedUid);		
 		void FeedDownloadFinishedL(TUint aFeeidUid, TInt aError);
 		void FeedUpdateAllCompleteL();
 		void FeedSearchResultsUpdated() {}
