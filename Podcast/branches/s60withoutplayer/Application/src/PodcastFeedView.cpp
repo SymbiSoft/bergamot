@@ -604,14 +604,13 @@ void CPodcastFeedView::HandleRemoveFeedL()
 	
 		if(index < iItemArray->MdcaCount() && index >= 0)
 			{
-			TBuf<KMaxMessageLength> msg;
-			iEikonEnv->ReadResourceL(msg, R_PODCAST_REMOVE_FEED_PROMPT);
-									
-			if(ShowQueryMessage(msg))
+			CFeedInfo *info = iPodcastModel.FeedEngine().GetFeedInfoByUid(iItemIdArray[index]);
+			TBuf<KMaxMessageLength> templ;
+			TBuf<KMaxMessageLength> message;
+			iEikonEnv->ReadResourceL(templ, R_PODCAST_REMOVE_FEED_PROMPT);
+			message.Format(templ, &info->Title());					
+			if(ShowQueryMessage(message))
 				{
-				CFeedInfo *info = iPodcastModel.FeedEngine().GetFeedInfoByUid(iItemIdArray[index]);
-				
-				DP1("Removing feed '%S'", &info->Title());
 				iPodcastModel.FeedEngine().RemoveFeedL(iItemIdArray[index]);
 				iItemArray->Delete(index);
 				iItemIdArray.Remove(index);
