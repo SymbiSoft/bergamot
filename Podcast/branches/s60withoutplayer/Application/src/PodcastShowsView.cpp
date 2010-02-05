@@ -277,6 +277,7 @@ void CPodcastShowsView::ShowDownloadFinishedL(TUint aFeedUid, TInt aError)
 		{
 		iPodcastModel.GetShowsDownloading();
 		UpdateListboxItemsL();
+		UpdateToolbar();
 		}
 	
 	switch(aError)
