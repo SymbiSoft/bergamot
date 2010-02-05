@@ -22,6 +22,7 @@ class MShowEngineObserver {
 public:
 	virtual void ShowListUpdatedL() = 0;
 	virtual void DownloadQueueUpdatedL(TInt aDownloadingShows, TInt aQueuedShows) = 0;
-	virtual void ShowDownloadUpdatedL(TInt aPercentOfCurrentDownload, TInt aBytesOfCurrentDownload, TInt aBytesTotal) = 0;
+	virtual void ShowDownloadUpdatedL(TInt aBytesOfCurrentDownload, TInt aBytesTotal) = 0;
+	virtual void ShowDownloadFinishedL(TUint aShowUid, TInt aError) = 0;
 };
 #endif /*SHOWENGINEOBSERVER_H_*/

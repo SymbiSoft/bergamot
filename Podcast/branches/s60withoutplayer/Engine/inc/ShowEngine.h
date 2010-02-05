@@ -92,8 +92,8 @@ private:
 	TBool GetShowL(CShowInfo *info);
 
 	void NotifyDownloadQueueUpdatedL();
-	void NotifyShowDownloadUpdatedL(TInt aPercentOfCurrentDownload, TInt aBytesOfCurrentDownload, TInt aBytesTotal);
-
+	void NotifyShowDownloadUpdatedL(TInt aBytesOfCurrentDownload, TInt aBytesTotal);
+	void NotifyShowFinishedL(TInt aError);
 	void DownloadNextShowL();
 
 	static TInt CompareShowsByDate(const CShowInfo &a, const CShowInfo &b);

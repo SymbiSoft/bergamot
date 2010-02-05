@@ -73,9 +73,10 @@ protected:
 	// From // MEikListBoxObserverClass
 	void HandleListBoxEventL(CEikListBox* aListBox, TListBoxEvent aEventType);
 	// From showengine observer
-	void ShowListUpdatedL();  
-	void ShowDownloadUpdatedL(TInt aPercentOfCurrentDownload, TInt aBytesOfCurrentDownload, TInt aBytesTotal);
+	void ShowListUpdatedL();  	
+	void ShowDownloadUpdatedL(TInt aBytesOfCurrentDownload, TInt aBytesTotal);	
 	void DownloadQueueUpdatedL(TInt /*aDownloadingShows*/, TInt /*aQueuedShows*/) {};
+	void ShowDownloadFinishedL(TUint aShowUid, TInt aError) ;
 	// from MFeedEngineObserver
 	void FeedDownloadStartedL(TUint aFeedUid);
 	void FeedDownloadFinishedL(TUint aFeedUid, TInt aError);

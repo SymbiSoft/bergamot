@@ -260,26 +260,36 @@ void CPodcastShowsView::ShowListUpdatedL()
 	UpdateListboxItemsL();
 	}
 
-void CPodcastShowsView::ShowDownloadUpdatedL(TInt aPercentOfCurrentDownload,
-		TInt aBytesOfCurrentDownload, TInt /*aBytesTotal*/)
-	{
-	if (aPercentOfCurrentDownload == KOneHundredPercent)
-		{
-		iProgressAdded = EFalse;
-
-		if (iCurrentCategory == EShowPendingShows)
-			{
-			iPodcastModel.GetShowsDownloading();
-			UpdateListboxItemsL();
-			}
-		}
-	else 
-		{
+void CPodcastShowsView::ShowDownloadUpdatedL(TInt aBytesOfCurrentDownload, TInt /*aBytesTotal*/)
+	{	
 		CShowInfo *info = iPodcastModel.ShowEngine().ShowDownloading();
 		if (info) 
 			{
 			UpdateShowItemL(info->Uid(), aBytesOfCurrentDownload);
+			}		
+	}
+
+void CPodcastShowsView::ShowDownloadFinishedL(TUint aFeedUid, TInt aError)
+	{
+	iProgressAdded = EFalse;
+
+	if (iCurrentCategory == EShowPendingShows)
+		{
+		iPodcastModel.GetShowsDownloading();
+		UpdateListboxItemsL();
+		}
+	
+	switch(aError)
+		{
+		case KErrCouldNotConnect:
+			{
+			TBuf<KMaxMessageLength> message;
+			iEikonEnv->ReadResourceL(message, R_PODCAST_CONNECTION_ERROR);
+			ShowErrorMessage(message);
 			}
+			break;
+		default: // Do nothing
+			break;
 		}
 	}
 
