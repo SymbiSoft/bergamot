@@ -197,7 +197,10 @@ void CPodcastFeedView::DoActivateL(const TVwsViewId& aPrevViewId,
 		{
 		iFirstActivateAfterLaunch = EFalse;
 		
-		if (iPodcastModel.ShowEngine().DownloadsStopped())
+		RShowInfoArray showsDownloading;
+		iPodcastModel.ShowEngine().GetShowsDownloadingL(showsDownloading);
+		
+		if (iPodcastModel.ShowEngine().DownloadsStopped() && showsDownloading.Count() > 0)
 			{
 			TBuf<KMaxMessageLength> msg;
 			iEikonEnv->ReadResourceL(msg, R_PODCAST_ENABLE_DOWNLOADS_PROMPT);
