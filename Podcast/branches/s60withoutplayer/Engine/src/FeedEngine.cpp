@@ -218,7 +218,7 @@ EXPORT_C TBool CFeedEngine::UpdateFeedL(TUint aFeedUid)
 		
 		for (TInt i=0;i<iObservers.Count();i++)
 			{
-			TRAP_IGNORE(iObservers[i]->FeedDownloadUpdatedL(iActiveFeed->Uid(), 0));
+			TRAP_IGNORE(iObservers[i]->FeedDownloadStartedL(iActiveFeed->Uid()));
 			}
 
 		DP("FeedEngine::UpdateFeedL END, return ETrue");
@@ -519,10 +519,6 @@ void CFeedEngine::ParsingCompleteL(CFeedInfo *item)
 	TRAP_IGNORE(CleanHtmlL(title));
 	TRAP_IGNORE(item->SetTitleL(title));
 	DBUpdateFeed(*item);
-	for (int i=0;i<iObservers.Count();i++)
-		{
-		iObservers[i]->FeedInfoUpdated(item->Uid());
-		}
 	}
 
 
@@ -557,7 +553,7 @@ void CFeedEngine::Progress(CHttpClient* /*aHttpClient*/, TInt aBytes, TInt aTota
 		{
 		for (TInt i=0;i<iObservers.Count();i++) 
 			{
-			TRAP_IGNORE(iObservers[i]->FeedDownloadUpdatedL(iActiveFeed->Uid(), percent));
+			TRAP_IGNORE(iObservers[i]->FeedDownloadProgressL(iActiveFeed->Uid(), percent));
 			}
 		}
 	/*if (iClientState == EFeed) {
@@ -691,7 +687,7 @@ void CFeedEngine::NotifyFeedUpdateComplete()
 	DBUpdateFeed(*iActiveFeed);
 	for (TInt i=0;i<iObservers.Count();i++) 
 		{
-		TRAP_IGNORE(iObservers[i]->FeedUpdateCompleteL(iActiveFeed->Uid()));
+		TRAP_IGNORE(iObservers[i]->FeedDownloadFinishedL(iActiveFeed->Uid()));
 		}
 	}
 
