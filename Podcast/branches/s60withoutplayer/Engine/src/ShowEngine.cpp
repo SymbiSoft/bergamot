@@ -339,6 +339,7 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TInt aError)
 	else
 		{
 		// Connection error
+		NotifyShowFinishedL(aError);
 		}
 	}
 
