@@ -108,5 +108,5 @@ RESOURCE TBUF r_export_feed_success {buf=STRING_export_feed_success;}
 RESOURCE TBUF r_export_feed_failure {buf=STRING_export_feed_failure;}
 RESOURCE TBUF r_clear_query {buf=STRING_r_clear_query;}
 RESOURCE TBUF r_search_noresults {buf=STRING_r_search_noresults;}
-
+RESOURCE TBUF r_podcast_connection_error {buf = STRING_r_podcast_connection_error;}
 RESOURCE TBUF r_searching {buf=STRING_r_searching;}

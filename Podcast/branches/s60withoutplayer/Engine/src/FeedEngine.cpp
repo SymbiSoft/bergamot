@@ -138,7 +138,7 @@ void CFeedEngine::RunFeedTimer()
 		}
 	}
 
-EXPORT_C void CFeedEngine::UpdateAllFeedsL()
+EXPORT_C void CFeedEngine::UpdateAllFeedsL(TBool aAutoUpdate)
 	{
 	if (iFeedsUpdating.Count() > 0)
 		{
@@ -541,28 +541,8 @@ void CFeedEngine::Connected(CHttpClient* /*aClient*/)
 	{
 	}
 
-void CFeedEngine::Progress(CHttpClient* /*aHttpClient*/, TInt aBytes, TInt aTotalBytes)
+void CFeedEngine::Progress(CHttpClient* /*aHttpClient*/, TInt /*aBytes*/, TInt /*aTotalBytes*/)
 	{	
-	TInt percent = 0;
-	if (aTotalBytes > 0)
-		{
-		percent = (aBytes*100)/aTotalBytes;		
-		}
-	
-	if(iClientState != ESearching  && iActiveFeed != NULL)
-		{
-		for (TInt i=0;i<iObservers.Count();i++) 
-			{
-			TRAP_IGNORE(iObservers[i]->FeedDownloadProgressL(iActiveFeed->Uid(), percent));
-			}
-		}
-	/*if (iClientState == EFeed) {
-		int percent = -1;
-		if (aTotalBytes != -1) {
-			percent = (int) ((float)aBytes * 100.0 / (float)aTotalBytes) ;
-		}
-
-	}*/
 }
 
 void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TInt aError)
@@ -578,7 +558,7 @@ void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TInt aError)
 				time.HomeTime();
 				iActiveFeed->SetLastUpdated(time);
 				iActiveFeed->SetLastError(aError);
-				NotifyFeedUpdateComplete();
+				NotifyFeedUpdateComplete(aError);
 				}
 			break;
 		case EUpdatingFeed: 
@@ -587,57 +567,65 @@ void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TInt aError)
 		// the whole update chain will be broken
 		// change client state
 		iClientState = EIdle;
-		if(aError == KErrCancel)
+		switch (aError)
 			{
-			iFeedsUpdating.Reset();
-			}
-		else
-			{
-			iActiveFeed->SetLastError(aError);
-			TTime time;
-			time.HomeTime();
-			iActiveFeed->SetLastUpdated(time);
-
-			if( aError == KErrNone)
-				{			
-				TRAPD(parserErr, iParser->ParseFeedL(iUpdatingFeedFileName, iActiveFeed, iPodcastModel.SettingsEngine().MaxListItems()));
-
-				if(parserErr)
-					{
-					// we do not need to any special action on this error.
-					iActiveFeed->SetLastError(parserErr);
-					DP1("CFeedEngine::Complete()\t Failed to parse feed. Leave with error code=%d", parserErr);
-					}
-				else
-					{
-					iPodcastModel.ShowEngine().DeleteOldShowsByFeed(iActiveFeed->Uid());
-					}
-
-				// delete the downloaded XML file as it is no longer needed
-				BaflUtils::DeleteFile(iPodcastModel.FsSession(),iUpdatingFeedFileName);			
-
-				// if the feed has specified a image url. download it if we dont already have it
-				if((iActiveFeed->ImageUrl().Length() > 0))
-					{
-					if ( (iActiveFeed->ImageFileName().Length() == 0) || 
-							(iActiveFeed->ImageFileName().Length() > 0 && 
-									!BaflUtils::FileExists(iPodcastModel.FsSession(), 
-											iActiveFeed->ImageFileName()) )
-					)
-						{
-						TRAPD(error, GetFeedImageL(iActiveFeed));
-						if (error)
-							{
-							// we have failed in a very early stage to fetch the image.
-							// continue with next Feed update	
-							iActiveFeed->SetLastError(parserErr);
-							iClientState = EIdle;							
-							}
-						}	
-					}
+			case KErrCancel:						
+				{
+				iFeedsUpdating.Reset();
 				}
+				break;
+			case KErrCouldNotConnect:
+				iFeedsUpdating.Reset();
+				break;
+			default:
+				{
+				iActiveFeed->SetLastError(aError);
+				TTime time;
+				time.HomeTime();
+				iActiveFeed->SetLastUpdated(time);
+
+				if( aError == KErrNone)
+					{			
+					TRAPD(parserErr, iParser->ParseFeedL(iUpdatingFeedFileName, iActiveFeed, iPodcastModel.SettingsEngine().MaxListItems()));
+
+					if(parserErr)
+						{
+						// we do not need to any special action on this error.
+						iActiveFeed->SetLastError(parserErr);
+						DP1("CFeedEngine::Complete()\t Failed to parse feed. Leave with error code=%d", parserErr);
+						}
+					else
+						{
+						iPodcastModel.ShowEngine().DeleteOldShowsByFeed(iActiveFeed->Uid());
+						}
+
+					// delete the downloaded XML file as it is no longer needed
+					BaflUtils::DeleteFile(iPodcastModel.FsSession(),iUpdatingFeedFileName);			
+
+					// if the feed has specified a image url. download it if we dont already have it
+					if((iActiveFeed->ImageUrl().Length() > 0))
+						{
+						if ( (iActiveFeed->ImageFileName().Length() == 0) || 
+								(iActiveFeed->ImageFileName().Length() > 0 && 
+										!BaflUtils::FileExists(iPodcastModel.FsSession(), 
+												iActiveFeed->ImageFileName()) )
+						)
+							{
+							TRAPD(error, GetFeedImageL(iActiveFeed));
+							if (error)
+								{
+								// we have failed in a very early stage to fetch the image.
+								// continue with next Feed update	
+								iActiveFeed->SetLastError(parserErr);
+								iClientState = EIdle;							
+								}
+							}	
+						}
+					}
+				}break;
 			}
-		NotifyFeedUpdateComplete();
+		
+		NotifyFeedUpdateComplete(aError);
 
 		// we will wait until the image has been downloaded to start the next feed update.
 		if (iClientState == EIdle)
@@ -650,30 +638,36 @@ void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TInt aError)
 		// change client state to not updating
 		iClientState = EIdle;
 
-		NotifyFeedUpdateComplete();
+		NotifyFeedUpdateComplete(aError);
 		UpdateNextFeedL();
 		}break;
 	case ESearching: 
 		{
 		iClientState = EIdle;
 
-		DP1("Search complete, results in %S", &iSearchResultsFileName);
-
-		if (!iOpmlParser) 
+		DP2("Search complete, results in %S with error %d", &iSearchResultsFileName, aError);
+		if(aError == KErrNone)
 			{
-			iOpmlParser = new COpmlParser(*this, iPodcastModel.FsSession());
+			if (!iOpmlParser) 
+				{
+				iOpmlParser = new COpmlParser(*this, iPodcastModel.FsSession());
+				}
+
+			DP("Parsing OPML");
+			TRAPD(err, iOpmlParser->ParseOpmlL(iSearchResultsFileName, ETrue));
+
+			if (err == KErrNone) 
+				{
+				NotifySearchComplete();
+				} 
+			else 
+				{
+				DP1("Parsing failed, err=%d", err);	
+				}
 			}
-
-		DP("Parsing OPML");
-		TRAPD(err, iOpmlParser->ParseOpmlL(iSearchResultsFileName, ETrue));
-
-		if (err == KErrNone) 
+		else
 			{
-			NotifySearchComplete();
-			} 
-		else 
-			{
-			DP1("Parsing failed, err=%d", err);	
+
 			}
 		BaflUtils::DeleteFile(iPodcastModel.FsSession(), iSearchResultsFileName);
 		}break;
@@ -681,13 +675,13 @@ void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TInt aError)
 	DP("CFeedEngine::CompleteL END");
 	}
 
-void CFeedEngine::NotifyFeedUpdateComplete()
+void CFeedEngine::NotifyFeedUpdateComplete(TInt aError)
 	{
 	DP("CFeedEngine::NotifyFeedUpdateComplete");
 	DBUpdateFeed(*iActiveFeed);
 	for (TInt i=0;i<iObservers.Count();i++) 
 		{
-		TRAP_IGNORE(iObservers[i]->FeedDownloadFinishedL(iActiveFeed->Uid()));
+		TRAP_IGNORE(iObservers[i]->FeedDownloadFinishedL(iActiveFeed->Uid(), aError));
 		}
 	}
 

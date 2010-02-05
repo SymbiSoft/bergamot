@@ -78,8 +78,7 @@ protected:
 	void DownloadQueueUpdatedL(TInt /*aDownloadingShows*/, TInt /*aQueuedShows*/) {};
 	// from MFeedEngineObserver
 	void FeedDownloadStartedL(TUint aFeedUid);
-	void FeedDownloadProgressL(TUint /*aFeedUid*/, TInt /*aPercent*/) {}
-	void FeedDownloadFinishedL(TUint aFeedUid);
+	void FeedDownloadFinishedL(TUint aFeedUid, TInt aError);
 	void FeedUpdateAllCompleteL() {}
 	void FeedSearchResultsUpdated() {}
 

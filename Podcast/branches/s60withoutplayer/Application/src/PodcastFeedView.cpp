@@ -236,16 +236,26 @@ void CPodcastFeedView::FeedUpdateAllCompleteL()
 
 void CPodcastFeedView::FeedDownloadStartedL(TUint aFeedUid)
 	{
+	iUpdatingAllRunning = ETrue;		
+
+	// Update status text
 	UpdateFeedInfoStatusL(aFeedUid, ETrue);
 	}
 
-void CPodcastFeedView::FeedDownloadProgressL(TUint /*aFeedUid*/, TInt /*aPercent*/)
+void CPodcastFeedView::FeedDownloadFinishedL(TUint aFeedUid, TInt aError)
 	{
-	// For future use...
-	}
-
-void CPodcastFeedView::FeedDownloadFinishedL(TUint aFeedUid)
-	{
+	switch(aError)
+		{
+		case KErrCouldNotConnect:
+			{
+			TBuf<KMaxMessageLength> message;
+			iEikonEnv->ReadResourceL(message, R_PODCAST_CONNECTION_ERROR);
+			ShowErrorMessage(message);
+			}
+			break;
+		default: // Do nothing
+			break;
+		}
 	UpdateFeedInfoStatusL(aFeedUid, EFalse);
 	}
 

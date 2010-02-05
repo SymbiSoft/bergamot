@@ -126,7 +126,7 @@ void CHttpClient::ConnectCompleteL(TInt aErrorCode)
 			}
 		else
 			{
-			ClientRequestCompleteL(aErrorCode);
+			ClientRequestCompleteL(KErrCouldNotConnect);
 			iSession.Close();			
 			}
 		}				

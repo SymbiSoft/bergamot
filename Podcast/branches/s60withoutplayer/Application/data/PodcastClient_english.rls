@@ -216,3 +216,6 @@ rls_string STRING_r_cba_search "Search"
 rls_string STRING_r_searching "Searching"
 
 rls_string STRING_r_cba_cancel "Cancel"
+
+
+rls_string STRING_r_podcast_connection_error "Connection failed!"

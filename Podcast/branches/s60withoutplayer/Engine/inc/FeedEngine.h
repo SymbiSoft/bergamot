@@ -61,7 +61,7 @@ public:
 	IMPORT_C TBool ExportFeedsL(TFileName& aFile);
 	IMPORT_C void RemoveFeedL(TUint aUid);
 	IMPORT_C TBool UpdateFeedL(TUint aFeedUid);
-	IMPORT_C void UpdateAllFeedsL();
+	IMPORT_C void UpdateAllFeedsL(TBool aAutoUpdate = EFalse);
 	IMPORT_C void CancelUpdateAllFeeds();
 	IMPORT_C const RFeedInfoArray& GetSortedFeeds();
 	IMPORT_C CFeedInfo* GetFeedInfoByUid(TUint aFeedUid);	
@@ -117,7 +117,7 @@ private:
 	void CleanHtmlL(TDes &str);
 	
 	void UpdateNextFeedL();
-	void NotifyFeedUpdateComplete();
+	void NotifyFeedUpdateComplete(TInt aError);
 	void NotifySearchComplete();
 	
 private:

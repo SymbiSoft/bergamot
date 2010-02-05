@@ -38,7 +38,7 @@ void CFeedTimer::RunL()
 	DP("CFeedTimer::RunL");
 
 	// We need to trap this, otherwise we will not reschedule the timer
-	TRAP_IGNORE(iFeedEngine->UpdateAllFeedsL());
+	TRAP_IGNORE(iFeedEngine->UpdateAllFeedsL(ETrue));
 
 	// run again
 	RunPeriodically();

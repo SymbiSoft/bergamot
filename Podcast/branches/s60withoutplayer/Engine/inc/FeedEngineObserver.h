@@ -21,8 +21,7 @@
 class MFeedEngineObserver {
 public:
 	virtual void FeedDownloadStartedL(TUint aFeedUid) = 0;
-	virtual void FeedDownloadProgressL(TUint aFeedUid, TInt aPercent) = 0;
-	virtual void FeedDownloadFinishedL(TUint aFeedUid) = 0;
+	virtual void FeedDownloadFinishedL(TUint aFeedUid, TInt aError) = 0;
 	virtual void FeedUpdateAllCompleteL() = 0;
 	virtual void FeedSearchResultsUpdated() = 0;
 };

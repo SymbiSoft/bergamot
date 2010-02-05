@@ -11,7 +11,7 @@ EXPORTS
 	_ZN11CFeedEngine14RemoveObserverEP19MFeedEngineObserver @ 10 NONAME
 	_ZN11CFeedEngine14SearchForFeedLER7TDesC16 @ 11 NONAME
 	_ZN11CFeedEngine15ActiveClientUidEv @ 12 NONAME
-	_ZN11CFeedEngine15UpdateAllFeedsLEv @ 13 NONAME
+	_ZN13CPodcastModel9SNAPNamesEv @ 13 NONAME
 	_ZN11CFeedEngine16AddSearchResultLEP9CFeedInfo @ 14 NONAME
 	_ZN11CFeedEngine16GetFeedInfoByUidEj @ 15 NONAME
 	_ZN11CFeedEngine16GetSearchResultsEv @ 16 NONAME
@@ -185,5 +185,5 @@ EXPORTS
 	_ZN13CPodcastModel14UpdateIAPListLEv @ 184 NONAME
 	_ZN13CPodcastModel15UpdateSNAPListLEv @ 185 NONAME
 	_ZN13CPodcastModel7SNAPIdsEv @ 186 NONAME
-	_ZN13CPodcastModel9SNAPNamesEv @ 187 NONAME
+
 

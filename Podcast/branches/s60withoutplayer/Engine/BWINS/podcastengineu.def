@@ -101,7 +101,7 @@ EXPORTS
 	?Title@CShowInfo@@QBEABVTDesC16@@XZ @ 100 NONAME ; class TDesC16 const & CShowInfo::Title(void) const
 	?TrackNo@CShowInfo@@QBEIXZ @ 101 NONAME ; unsigned int CShowInfo::TrackNo(void) const
 	?Uid@CShowInfo@@QBEIXZ @ 102 NONAME ; unsigned int CShowInfo::Uid(void) const
-	?UpdateAllFeedsL@CFeedEngine@@QAEXXZ @ 103 NONAME ; void CFeedEngine::UpdateAllFeedsL(void)
+	?SNAPNames@CPodcastModel@@QAEPAVCDesC16ArrayFlat@@XZ @ 103 NONAME ; class CDesC16ArrayFlat * CPodcastModel::SNAPNames(void)
 	?UpdateAutomatically@CSettingsEngine@@QAE?AW4TAutoUpdateSetting@@XZ @ 104 NONAME ; enum TAutoUpdateSetting CSettingsEngine::UpdateAutomatically(void)
 	?UpdateFeed@CFeedEngine@@QAEXPAVCFeedInfo@@@Z @ 105 NONAME ; void CFeedEngine::UpdateFeed(class CFeedInfo *)
 	?UpdateFeedInterval@CSettingsEngine@@QAEHXZ @ 106 NONAME ; int CSettingsEngine::UpdateFeedInterval(void)
@@ -151,5 +151,5 @@ EXPORTS
 	?UpdateIAPListL@CPodcastModel@@QAEXXZ @ 150 NONAME ; void CPodcastModel::UpdateIAPListL(void)
 	?UpdateSNAPListL@CPodcastModel@@QAEXXZ @ 151 NONAME ; void CPodcastModel::UpdateSNAPListL(void)
 	?SNAPIds@CPodcastModel@@QAEAAV?$RArray@VTPodcastIAPItem@@@@XZ @ 152 NONAME ; class RArray<class TPodcastIAPItem> & CPodcastModel::SNAPIds(void)
-	?SNAPNames@CPodcastModel@@QAEPAVCDesC16ArrayFlat@@XZ @ 153 NONAME ; class CDesC16ArrayFlat * CPodcastModel::SNAPNames(void)
+	?UpdateAllFeedsL@CFeedEngine@@QAEXH@Z @ 153 NONAME ; void CFeedEngine::UpdateAllFeedsL(int)
 

@@ -283,61 +283,68 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TInt aError)
 	if (iShowDownloading != NULL)
 		{
 		DP1("CShowEngine::Complete\tDownload of file: %S is complete", &iShowDownloading->FileName());		
-		// decide what kind of file this is
-		TBuf<KMimeBufLength> mimeType;
-		GetMimeType(iShowDownloading->FileName(), mimeType);
-		_LIT(KMimeAudio,"audio");
-		_LIT(KMimeVideo,"video");
-		if (mimeType.Left(5) == KMimeAudio)
+		// decide what kind of file this is		
+		if(aError != KErrCouldNotConnect)
 			{
-			iShowDownloading->SetShowType(EAudioPodcast);
-			}
-		else if (mimeType.Left(5) == KMimeVideo)
-			{
-			iShowDownloading->SetShowType(EVideoPodcast);
-			}
+			iShowDownloading->SetLastError(aError);
 
-		iShowDownloading->SetLastError(aError);
-
-		if (aError == KErrNone)
-			{
-			iShowDownloading->SetDownloadState(EDownloaded);
-			DBUpdateShow(*iShowDownloading);
-			DBRemoveDownload(iShowDownloading->Uid());
-			AddShowToMpxCollection(*iShowDownloading);
-			NotifyShowDownloadUpdatedL(100, 0, 1);
-
-			delete iShowDownloading;
-			iShowDownloading = NULL;
-			}
-		else
-			{
-			// 400 and 500 series errors are serious errors on which probably another download will fail
-			if(aError >= HTTPStatus::EBadRequest && aError <= HTTPStatus::EBadRequest+200)
+			if (aError == KErrNone)
 				{
-				iShowDownloading->SetDownloadState(EFailedDownload);
+				TBuf<KMimeBufLength> mimeType;
+				GetMimeType(iShowDownloading->FileName(), mimeType);
+				_LIT(KMimeAudio,"audio");
+				_LIT(KMimeVideo,"video");
+				if (mimeType.Left(5) == KMimeAudio)
+					{
+					iShowDownloading->SetShowType(EAudioPodcast);
+					}
+				else if (mimeType.Left(5) == KMimeVideo)
+					{
+					iShowDownloading->SetShowType(EVideoPodcast);
+					}
+
+				iShowDownloading->SetDownloadState(EDownloaded);
 				DBUpdateShow(*iShowDownloading);
 				DBRemoveDownload(iShowDownloading->Uid());
-				NotifyShowDownloadUpdatedL(100, 0, 1);	
+				AddShowToMpxCollection(*iShowDownloading);
+				NotifyShowDownloadUpdatedL(100, 0, 1);
+
 				delete iShowDownloading;
 				iShowDownloading = NULL;
 				}
-			else // other kind of error, missing network etc, reque this show
+			else
 				{
-				iShowDownloading->SetDownloadState(EQueued);
-				DBUpdateShow(*iShowDownloading);
-				}
+				// 400 and 500 series errors are serious errors on which probably another download will fail
+				if(aError >= HTTPStatus::EBadRequest && aError <= HTTPStatus::EBadRequest+200)
+					{
+					iShowDownloading->SetDownloadState(EFailedDownload);
+					DBUpdateShow(*iShowDownloading);
+					DBRemoveDownload(iShowDownloading->Uid());
+					NotifyShowDownloadUpdatedL(100, 0, 1);	
+					delete iShowDownloading;
+					iShowDownloading = NULL;
+					}
+				else // other kind of error, missing network etc, reque this show
+					{
+					iShowDownloading->SetDownloadState(EQueued);
+					DBUpdateShow(*iShowDownloading);
+					}
 
-			iDownloadErrors++;
-			if (iDownloadErrors > KMaxDownloadErrors)
-				{
-				DP("Too many downloading errors, suspending downloads");
-				iDownloadsSuspended = ETrue;
-				NotifyShowDownloadUpdatedL(100, -1, -1);
+				iDownloadErrors++;
+				if (iDownloadErrors > KMaxDownloadErrors)
+					{
+					DP("Too many downloading errors, suspending downloads");
+					iDownloadsSuspended = ETrue;
+					NotifyShowDownloadUpdatedL(100, -1, -1);
+					}
 				}
-			}
+				DownloadNextShowL();
+			}		
 		}
-	DownloadNextShowL();
+	else
+		{
+		// Connection error
+		}
 	}
 
 EXPORT_C CShowInfo* CShowEngine::ShowDownloading()
