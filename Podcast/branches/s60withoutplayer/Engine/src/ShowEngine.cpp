@@ -333,14 +333,15 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TInt aError)
 					NotifyShowFinishedL(aError);
 					}
 				}
-				DownloadNextShowL();
+			DownloadNextShowL();
 			}		
-		}
-	else
-		{
-		// Connection error
-		iDownloadsSuspended = ETrue;		
-		NotifyShowFinishedL(aError);
+
+		else
+			{
+			// Connection error
+			iDownloadsSuspended = ETrue;		
+			NotifyShowFinishedL(aError);
+			}
 		}
 	}
 
