@@ -95,6 +95,7 @@ class CPodcastFeedView : public CPodcastListView, public MEikListBoxObserver,
 		HBufC* iFeedsFormat;
 		HBufC* iNeverUpdated;
 		CPodcastFeedViewUpdater* iUpdater;
+		TBool iFirstActivateAfterLaunch;
 };
 
 #endif // PODCASTFEEDVIEWH

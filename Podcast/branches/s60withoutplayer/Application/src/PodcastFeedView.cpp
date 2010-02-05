@@ -69,6 +69,7 @@ CPodcastFeedView* CPodcastFeedView::NewLC(CPodcastModel& aPodcastModel)
 
 CPodcastFeedView::CPodcastFeedView(CPodcastModel& aPodcastModel):iPodcastModel(aPodcastModel)
 	{
+	iFirstActivateAfterLaunch = ETrue;
 	}
 
 void CPodcastFeedView::ConstructL()
@@ -190,7 +191,24 @@ void CPodcastFeedView::DoActivateL(const TVwsViewId& aPrevViewId,
 	UpdateToolbar();
 	
 	CPodcastListView::DoActivateL(aPrevViewId, aCustomMessageId, aCustomMessage);
-	iPreviousView = TVwsViewId(KUidPodcast, KUidPodcastBaseViewID);		
+	iPreviousView = TVwsViewId(KUidPodcast, KUidPodcastBaseViewID);
+	
+	if (iFirstActivateAfterLaunch)
+		{
+		iFirstActivateAfterLaunch = EFalse;
+		
+		if (iPodcastModel.ShowEngine().DownloadsStopped())
+			{
+			TBuf<KMaxMessageLength> msg;
+			iEikonEnv->ReadResourceL(msg, R_PODCAST_ENABLE_DOWNLOADS_PROMPT);
+			
+			if (ShowQueryMessage(msg))
+				{
+				iPodcastModel.ShowEngine().ResumeDownloadsL();
+				}
+			}
+		
+	}
 	}
 
 void CPodcastFeedView::DoDeactivate()
@@ -543,12 +561,10 @@ void CPodcastFeedView::HandleEditFeedL()
 			if(info->Url().Compare(url) != 0)
 				{
 				TBuf<KMaxMessageLength> dlgMessage;
-				TBuf<KMaxTitleLength> dlgTitle;
 				iEikonEnv->ReadResourceL(dlgMessage, R_ADD_FEED_REPLACE);
-				iEikonEnv->ReadResourceL(dlgTitle, R_ADD_FEED_REPLACE_TITLE);
 
 				// Ask the user if it is OK to remove all shows
-				if ( iEikonEnv->QueryWinL(dlgTitle, dlgMessage))
+				if ( ShowQueryMessage(dlgMessage))
 					{
 					PodcastUtils::FixProtocolsL(url);
 					
