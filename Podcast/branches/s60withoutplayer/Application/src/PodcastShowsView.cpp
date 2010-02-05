@@ -328,20 +328,23 @@ void CPodcastShowsView::HandleListBoxEventL(CEikListBox* /*aListBox*/,
 		{
 		case EEventEnterKeyPressed:		
 		case EEventItemActioned:
-		case EEventItemClicked:
+		case EEventItemDoubleClicked:
 			{
 			RShowInfoArray &fItems = iPodcastModel.ActiveShowList();
 			TInt index = iListContainer->Listbox()->CurrentItemIndex();
 			if (index>=0 && index< fItems.Count())
 				{
-				DP2("Handle event for podcast %S, downloadState is %d", &(fItems[index]->Title()), fItems[index]->DownloadState())
-				;
-
-				TPckgBuf<TInt> showUid;
-				showUid() = fItems[index]->Uid();
-#pragma message("LAPER Replace activate playview with activate playback in mpx")
-			/*	AppUi()->ActivateLocalViewL(KUidPodcastPlayViewID,
-						TUid::Uid(KActiveShowUIDCmd), showUid);*/
+				DP2("Handle event for podcast %S, downloadState is %d", &(fItems[index]->Title()), fItems[index]->DownloadState());
+				CShowInfo *showInfo = fItems[index];
+				
+				if (showInfo->DownloadState() == ENotDownloaded)
+					{
+					HandleCommandL(EPodcastDownloadShow);
+					}
+				else
+					{
+					#pragma message("LAPER Replace activate playview with activate playback in mpx")
+					}
 				}
 			}
 			break;
@@ -353,7 +356,7 @@ void CPodcastShowsView::HandleListBoxEventL(CEikListBox* /*aListBox*/,
 
 void CPodcastShowsView::GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex)
 	{
-	TBool dlStop = iPodcastModel.ShowEngine().DownloadsStopped();
+	TBool dlStop = iPodcastModel.SettingsEngine().DownloadSuspended();
 	TUint showDownloadingUid = iPodcastModel.ShowEngine().ShowDownloading() ? iPodcastModel.ShowEngine().ShowDownloading()->Uid() : 0;
 	TUint showPlayingUid = iPodcastModel.PlayingPodcast() ? iPodcastModel.PlayingPodcast()->Uid() : 0;
 	TBool playingOrPaused = EFalse;/*iPodcastModel.SoundEngine().State() == ESoundEnginePlaying || 
@@ -596,65 +599,13 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 	switch (aCommand)
 		{
 		case EPodcastMarkAsPlayed:
-			{
-			TInt index = iListContainer->Listbox()->CurrentItemIndex();
-			
-			if (index >= 0 && index < iPodcastModel.ActiveShowList().Count())
-				{
-				CShowInfo *info = iPodcastModel.ActiveShowList()[index];
-				info->SetPlayState(EPlayed);
-				iPodcastModel.ShowEngine().UpdateShow(*info);
-				UpdateShowItemDataL(iPodcastModel.ActiveShowList()[index], index, 0);
-				iListContainer->Listbox()->DrawItem(index);					
-				}
-			}
+			SetShowPlayed(ETrue);
 			break;
 		case EPodcastMarkAsUnplayed:
-			{
-			TInt index = iListContainer->Listbox()->CurrentItemIndex();
-			if (index >= 0 && index < iPodcastModel.ActiveShowList().Count())
-				{
-				CShowInfo *info = iPodcastModel.ActiveShowList()[index];
-				info->SetPlayState(ENeverPlayed);
-				iPodcastModel.ShowEngine().UpdateShow(*info);
-
-				UpdateShowItemDataL(iPodcastModel.ActiveShowList()[index], index, 0);
-				iListContainer->Listbox()->DrawItem(index);					
-				}
-			}
+			SetShowPlayed(ETrue);
 			break;
-		case EPodcastDeleteShowHardware:
 		case EPodcastDeleteShow:
-			{
-			TInt index = iListContainer->Listbox()->CurrentItemIndex();
-
-			if (index >= 0 && index < iPodcastModel.ActiveShowList().Count())
-				{
-			/*	if (iPodcastModel.PlayingPodcast()
-						== iPodcastModel.ActiveShowList()[index] && iPodcastModel.SoundEngine().State() != ESoundEngineNotInitialized)
-					{
-					iPodcastModel.SoundEngine().Stop();
-					}*/
-
-				if (iEikonEnv->QueryWinL(R_PODCAST_DELETE_SHOW_TITLE, R_PODCAST_DELETE_SHOW_PROMPT))
-					{
-					iPodcastModel.ShowEngine().DeleteShowL(iPodcastModel.ActiveShowList()[index]->Uid());
-					
-					// and mark as played, and not downloaded
-					CShowInfo *info = iPodcastModel.ActiveShowList()[index];
-					info->SetDownloadState(ENotDownloaded);
-					info->SetPlayState(EPlayed);
-					iPodcastModel.ShowEngine().UpdateShow(*info);
-					
-					UpdateShowItemDataL(iPodcastModel.ActiveShowList()[index], index, 0);
-					iListContainer->Listbox()->DrawItem(index);					
-					}
-				}
-			}
-			break;
-		case EPodcastMarkAllPlayed:
-			iPodcastModel.MarkSelectionPlayed();
-			UpdateListboxItemsL();
+			DeleteShow();
 			break;
 		case EPodcastDownloadShow:
 			{
@@ -663,15 +614,6 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 				{
 				iPodcastModel.ShowEngine().AddDownloadL(*iPodcastModel.ActiveShowList()[index]);
 				UpdateShowItemL(iPodcastModel.ActiveShowList()[index]->Uid(),-1);
-				}
-			}
-			break;
-		case EPodcastDeleteAllPlayed:
-			{
-			if (iEikonEnv->QueryWinL(R_PODCAST_DELETE_PLAYED_TITLE, R_PODCAST_DELETE_PLAYED_PROMPT))
-				{
-				iPodcastModel.ShowEngine().DeletePlayedShows(iPodcastModel.ActiveShowList());
-				UpdateListboxItemsL();
 				}
 			}
 			break;
@@ -728,9 +670,9 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 				}
 			}
 			break;
-		case EPodcastStopDownloads:
+		case EPodcastSuspendDownloads:
 			{
-			iPodcastModel.ShowEngine().StopDownloads();
+			iPodcastModel.ShowEngine().SuspendDownloads();
 			UpdateListboxItemsL();
 			}
 			break;
@@ -865,7 +807,7 @@ void CPodcastShowsView::UpdateToolbar()
 		toolbar->HideItem(EPodcastShowInfo, ETrue, ETrue );
 		toolbar->HideItem(EPodcastRemoveDownload, ETrue, ETrue);
 		toolbar->HideItem(EPodcastRemoveAllDownloads, ETrue, ETrue);
-		toolbar->HideItem(EPodcastStopDownloads,ETrue, ETrue);
+		toolbar->HideItem(EPodcastSuspendDownloads,ETrue, ETrue);
 		toolbar->HideItem(EPodcastResumeDownloads,ETrue, ETrue);
 
 
@@ -883,8 +825,8 @@ void CPodcastShowsView::UpdateToolbar()
 		toolbar->HideItem(EPodcastRemoveAllDownloads, EFalse, ETrue);
 		toolbar->SetItemDimmed(EPodcastRemoveDownload, itemCnt == 0, ETrue);
 		toolbar->SetItemDimmed(EPodcastRemoveAllDownloads, itemCnt == 0, ETrue);
-		toolbar->HideItem(EPodcastStopDownloads,iPodcastModel.ShowEngine().DownloadsStopped(), ETrue);
-		toolbar->HideItem(EPodcastResumeDownloads,!iPodcastModel.ShowEngine().DownloadsStopped(), ETrue);
+		toolbar->HideItem(EPodcastSuspendDownloads,iPodcastModel.SettingsEngine().DownloadSuspended(), ETrue);
+		toolbar->HideItem(EPodcastResumeDownloads,!iPodcastModel.SettingsEngine().DownloadSuspended(), ETrue);
 		break;
 	}
 }
@@ -904,3 +846,41 @@ void CPodcastShowsView::HandleLongTapEventL( const TPoint& aPenEventLocation, co
     }
 	DP("CPodcastShowsView::HandleLongTapEventL END");
 }
+
+void CPodcastShowsView::SetShowPlayed(TBool aPlayed)
+	{
+
+	TInt index = iListContainer->Listbox()->CurrentItemIndex();
+				
+	if (index >= 0 && index < iPodcastModel.ActiveShowList().Count())
+		{
+		CShowInfo *info = iPodcastModel.ActiveShowList()[index];
+		info->SetPlayState(aPlayed ? EPlayed : ENeverPlayed);
+		iPodcastModel.ShowEngine().UpdateShow(*info);
+		UpdateShowItemDataL(iPodcastModel.ActiveShowList()[index], index, 0);
+		iListContainer->Listbox()->DrawItem(index);					
+		}
+	}
+
+void CPodcastShowsView::DeleteShow()
+	{
+	TInt index = iListContainer->Listbox()->CurrentItemIndex();
+
+	if (index >= 0 && index < iPodcastModel.ActiveShowList().Count())
+		{
+		if (iEikonEnv->QueryWinL(R_PODCAST_DELETE_SHOW_TITLE, R_PODCAST_DELETE_SHOW_PROMPT))
+			{
+			iPodcastModel.ShowEngine().DeleteShowL(iPodcastModel.ActiveShowList()[index]->Uid());
+			
+			// and mark as played, and not downloaded
+			CShowInfo *info = iPodcastModel.ActiveShowList()[index];
+			info->SetDownloadState(ENotDownloaded);
+			info->SetPlayState(EPlayed);
+			iPodcastModel.ShowEngine().UpdateShow(*info);
+			
+			UpdateShowItemDataL(iPodcastModel.ActiveShowList()[index], index, 0);
+			iListContainer->Listbox()->DrawItem(index);					
+			}
+		}
+	}
+

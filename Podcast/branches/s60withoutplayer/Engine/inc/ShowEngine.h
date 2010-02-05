@@ -40,9 +40,8 @@ public:
 	IMPORT_C TBool RemoveDownloadL(TUint aUid);
 	IMPORT_C void RemoveAllDownloads();
 
-	IMPORT_C void StopDownloads();
+	IMPORT_C void SuspendDownloads();
 	IMPORT_C void ResumeDownloadsL();
-	IMPORT_C TBool DownloadsStopped();
 
 	IMPORT_C TInt GetNumDownloadingShows();
 	IMPORT_C CShowInfo* ShowDownloading();
@@ -133,7 +132,6 @@ private:
 
 	// The show we are currently downloading
 	CShowInfo* iShowDownloading;
-    TBool iDownloadsSuspended;
     TUint iDownloadErrors;
     
     CMetaDataReader* iMetaDataReader;

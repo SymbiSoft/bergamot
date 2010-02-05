@@ -51,7 +51,7 @@ enum TPodcastCommandIds
 	EPodcastRemoveDownload,
 	EPodcastRemoveDownloadHardware,
 	EPodcastRemoveAllDownloads,
-	EPodcastStopDownloads,
+	EPodcastSuspendDownloads,
 	EPodcastResumeDownloads,
 	EPodcastMarkAllPlayed,
 	EPodcastMarkAsPlayed,

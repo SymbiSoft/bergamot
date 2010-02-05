@@ -147,7 +147,7 @@ RESOURCE AVKON_TOOLBAR r_showsview_toolbar
 			TBAR_CTRL
 				{
 				type = EAknCtButton;
-				id =EPodcastStopDownloads;
+				id =EPodcastSuspendDownloads;
 				control = AVKON_BUTTON
 					{
 					states =

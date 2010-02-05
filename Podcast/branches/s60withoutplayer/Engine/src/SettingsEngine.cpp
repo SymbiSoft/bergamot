@@ -155,14 +155,14 @@ void CSettingsEngine::LoadSettingsL()
 		iUpdateAutomatically = static_cast<TAutoUpdateSetting>(stream.ReadInt32L());
 		iDownloadAutomatically = stream.ReadInt32L();
 		
-		TInt dummy;
-		dummy = stream.ReadInt32L(); // was iMaxSimultaneousDownloads
+		
+		iDownloadSuspended = stream.ReadInt32L(); // was iMaxSimultaneousDownloads
 		iIap = stream.ReadInt32L();		
 		
 		TInt low = stream.ReadInt32L();
 		TInt high = stream.ReadInt32L();
 		iUpdateFeedTime = MAKE_TINT64(high, low);
-					
+		TInt dummy;		
 		dummy = stream.ReadInt32L(); // was iSelectOnlyUnplayed
 		dummy = stream.ReadInt32L(); // was iSeekStepTime
 				
@@ -190,7 +190,7 @@ EXPORT_C void CSettingsEngine::SaveSettingsL()
 	stream.WriteInt32L(iUpdateFeedInterval);
 	stream.WriteInt32L(iUpdateAutomatically);
 	stream.WriteInt32L(iDownloadAutomatically);
-	stream.WriteInt32L(0); // was iMaxSimultaneousDownloads
+	stream.WriteInt32L(iDownloadSuspended);
 	stream.WriteInt32L(iIap);
 	
 	stream.WriteInt32L(I64LOW(iUpdateFeedTime.Int64()));
@@ -403,4 +403,14 @@ EXPORT_C TInt CSettingsEngine::SpecificIAP()
 EXPORT_C void CSettingsEngine::SetSpecificIAP(TInt aIap)
 	{
 	iIap = aIap;
+	}
+
+EXPORT_C TBool CSettingsEngine::DownloadSuspended()
+	{
+	return iDownloadSuspended;
+	}
+
+EXPORT_C void CSettingsEngine::SetDownloadSuspended(TBool aSuspended)
+	{
+	iDownloadSuspended = aSuspended;
 	}

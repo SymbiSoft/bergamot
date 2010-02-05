@@ -76,6 +76,9 @@ class CSettingsEngine : public CBase
 		IMPORT_C TBool DownloadAutomatically();
 		IMPORT_C void SetDownloadAutomatically(TBool aAutoDownloadOn);
 		
+		IMPORT_C TBool DownloadSuspended();
+		IMPORT_C void SetDownloadSuspended(TBool aSuspended);
+
 		IMPORT_C TTime UpdateFeedTime();
 		IMPORT_C void SetUpdateFeedTime(TTime aTime);
 		
@@ -101,6 +104,7 @@ class CSettingsEngine : public CBase
 		TInt iIap;
 		TInt iMaxListItems;
 		TTime iUpdateFeedTime;
+		TBool iDownloadSuspended;
 
 		// Other member variables		
 		CPodcastModel &iPodcastModel; 	// reference to the model

@@ -109,6 +109,9 @@ private:
 	 *   image was loaded successfully.
 	 */
 	virtual void ImageOperationCompleteL(TInt aError);
+	void SetShowPlayed(TBool aPlayed);
+	void DeleteShow();
+	
 private:
 	
 	TPodcastClientShowCategory iCurrentCategory;

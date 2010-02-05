@@ -19,6 +19,7 @@
 #include "PodcastFeedView.h"
 #include "PodcastAppUi.h"
 #include "ShowEngine.h"
+#include "SettingsEngine.h"
 #include "PodcastApp.h"
 #include "PodcastUtils.h"
 #include "PodcastFeedViewUpdater.h"
@@ -200,7 +201,7 @@ void CPodcastFeedView::DoActivateL(const TVwsViewId& aPrevViewId,
 		RShowInfoArray showsDownloading;
 		iPodcastModel.ShowEngine().GetShowsDownloadingL(showsDownloading);
 		
-		if (iPodcastModel.ShowEngine().DownloadsStopped() && showsDownloading.Count() > 0)
+		if (iPodcastModel.SettingsEngine().DownloadSuspended() && showsDownloading.Count() > 0)
 			{
 			TBuf<KMaxMessageLength> msg;
 			iEikonEnv->ReadResourceL(msg, R_PODCAST_ENABLE_DOWNLOADS_PROMPT);
@@ -210,6 +211,7 @@ void CPodcastFeedView::DoActivateL(const TVwsViewId& aPrevViewId,
 				iPodcastModel.ShowEngine().ResumeDownloadsL();
 				}
 			}
+		showsDownloading.ResetAndDestroy();
 		
 	}
 	}
@@ -686,11 +688,12 @@ void CPodcastFeedView::HandleImportFeedsL()
 				TInt numFeedsBefore = iPodcastModel.FeedEngine().GetSortedFeeds().Count();
 				
 				TRAPD(err, iPodcastModel.FeedEngine().ImportFeedsL(importName));
-				
-				if (err == KErrNone) 
+			
+				TInt numFeedsAfter = iPodcastModel.FeedEngine().GetSortedFeeds().Count();
+					
+				if (err == KErrNone && numFeedsAfter-numFeedsBefore > 0) 
 					{
 					UpdateListboxItemsL();
-					TInt numFeedsAfter = iPodcastModel.FeedEngine().GetSortedFeeds().Count();
 									
 					TBuf<KMaxMessageLength> message;
 					TBuf<KMaxMessageLength> templ;

@@ -45,7 +45,6 @@ static void Cleanup_sqlite3_finalize_wrapper(TAny* handle)
 
 CShowEngine::CShowEngine(CPodcastModel& aPodcastModel) :
 	iPodcastModel(aPodcastModel),
-	iDownloadsSuspended(ETrue),
 	iDB(*aPodcastModel.DB())
 	{
 	}
@@ -98,34 +97,28 @@ void CShowEngine::ConstructL()
 	DownloadNextShowL();
 	}
 
-EXPORT_C void CShowEngine::StopDownloads()
+EXPORT_C void CShowEngine::SuspendDownloads()
 	{
-	DP("StopDownloads");
-	iDownloadsSuspended = ETrue;
+	iPodcastModel.SettingsEngine().SetDownloadSuspended(ETrue);
 	iShowClient->Stop();
 	}
 
 EXPORT_C void CShowEngine::ResumeDownloadsL()
 	{
-	DP("ResumeDownloads");
-	if (iDownloadsSuspended)
+	DP("CShowEngine::ResumeDownloadsL");
+	if (iPodcastModel.SettingsEngine().DownloadSuspended())
 		{
-		iDownloadsSuspended = EFalse;
+		iPodcastModel.SettingsEngine().SetDownloadSuspended(EFalse);
 		iDownloadErrors = 0;
 		DownloadNextShowL();
 		}
 	}
 
-EXPORT_C TBool CShowEngine::DownloadsStopped()
-	{
-	return iDownloadsSuspended;
-	}
-
 EXPORT_C void CShowEngine::RemoveAllDownloads()
 	{
-	if (!iDownloadsSuspended)
+	if (!iPodcastModel.SettingsEngine().DownloadSuspended())
 		{
-		return;
+		SuspendDownloads();
 		}
 
 	DBRemoveAllDownloads();
@@ -138,11 +131,11 @@ EXPORT_C TBool CShowEngine::RemoveDownloadL(TUint aUid)
 	TBool retVal = EFalse;
 	TBool resumeAfterRemove = EFalse;
 	// if trying to remove the present download, we first stop it
-	if (!iDownloadsSuspended && iShowDownloading != NULL
+	if (!iPodcastModel.SettingsEngine().DownloadSuspended() && iShowDownloading != NULL
 			&& iShowDownloading->Uid() == aUid)
 		{
 		DP("CShowEngine::RemoveDownload\t This is the active download, we suspend downloading");
-		StopDownloads();
+		SuspendDownloads();
 		resumeAfterRemove = ETrue;
 		}
 
@@ -329,7 +322,7 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TInt aError)
 				if (iDownloadErrors > KMaxDownloadErrors)
 					{
 					DP("Too many downloading errors, suspending downloads");
-					iDownloadsSuspended = ETrue;					
+					iPodcastModel.SettingsEngine().SetDownloadSuspended(ETrue);
 					NotifyShowFinishedL(aError);
 					}
 				}
@@ -339,7 +332,7 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TInt aError)
 		else
 			{
 			// Connection error
-			iDownloadsSuspended = ETrue;		
+			iPodcastModel.SettingsEngine().SetDownloadSuspended(ETrue);
 			NotifyShowFinishedL(aError);
 			}
 		}
@@ -1142,7 +1135,7 @@ void CShowEngine::DownloadNextShowL()
 
 	if (count > 0)
 		{
-		if (iDownloadsSuspended)
+		if (iPodcastModel.SettingsEngine().DownloadSuspended())
 			{
 			DP("CShowEngine::DownloadNextShow\tDownload process is suspended, ABORTING");
 			return;
@@ -1176,7 +1169,7 @@ void CShowEngine::DownloadNextShowL()
 					
 					if(info == NULL)
 						{
-						iDownloadsSuspended = ETrue;
+						iPodcastModel.SettingsEngine().SetDownloadSuspended(ETrue);
 						iShowDownloading = NULL;
 						}
 					}				

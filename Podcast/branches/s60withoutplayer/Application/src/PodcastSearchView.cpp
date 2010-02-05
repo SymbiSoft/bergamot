@@ -155,6 +155,7 @@ void CPodcastSearchView::HandleListBoxEventL(CEikListBox* /* aListBox */, TListB
 	case EEventItemDoubleClicked:
 	case EEventItemActioned:
 		{
+		HandleCommandL(EPodcastAddSearchResult);
 		}
 		break;
 	default:
