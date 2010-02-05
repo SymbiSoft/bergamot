@@ -76,11 +76,11 @@ protected:
 	void ShowListUpdatedL();  
 	void ShowDownloadUpdatedL(TInt aPercentOfCurrentDownload, TInt aBytesOfCurrentDownload, TInt aBytesTotal);
 	void DownloadQueueUpdatedL(TInt /*aDownloadingShows*/, TInt /*aQueuedShows*/) {};
-	// From feedengineobserver
-	void FeedInfoUpdated(TUint aFeedUid);
-	void FeedUpdateCompleteL(TUint aFeedUid);
-	void FeedUpdateAllCompleteL();
-	void FeedDownloadUpdatedL(TUint /*aFeedUid*/, TInt /*aPercentOfCurrentDownload*/);
+	// from MFeedEngineObserver
+	void FeedDownloadStartedL(TUint aFeedUid);
+	void FeedDownloadProgressL(TUint /*aFeedUid*/, TInt /*aPercent*/) {}
+	void FeedDownloadFinishedL(TUint aFeedUid);
+	void FeedUpdateAllCompleteL() {}
 	void FeedSearchResultsUpdated() {}
 
 	/** 
