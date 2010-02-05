@@ -214,9 +214,11 @@ CPodcastShowsView::~CPodcastShowsView()
 	{
 	iPodcastModel.ShowEngine().RemoveObserver(this);
 	iPodcastModel.FeedEngine().RemoveObserver(this);
+	delete iImageHandler;
     if(iStylusPopupMenu)
         delete iStylusPopupMenu, iStylusPopupMenu = NULL;
 	}
+
 
 TUid CPodcastShowsView::Id() const
 	{

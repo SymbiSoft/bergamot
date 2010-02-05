@@ -277,17 +277,18 @@ void CPodcastModel::SetActiveShowList(RShowInfoArray& aShowArray)
 sqlite3* CPodcastModel::DB()
 {
 	if (iDB == NULL) {		
-
 		TFileName dbFileName;
 		iFsSession.PrivatePath(dbFileName);
 		dbFileName.Append(KDBFileName);
 		DP1("DB is at %S", &dbFileName);
+
 		if (!BaflUtils::FileExists(iFsSession, dbFileName)) {
 			TFileName dbTemplate;
 			iFsSession.PrivatePath(dbTemplate);
 			dbTemplate.Append(KDBTemplateFileName);
 			DP1("No DB found, copying template from %S", &dbTemplate);
 			BaflUtils::CopyFile(iFsSession, dbTemplate,dbFileName);
+			iIsFirstStartup = ETrue;
 		}
 		
 		TBuf8<KMaxFileName> filename8;
@@ -296,7 +297,8 @@ sqlite3* CPodcastModel::DB()
 		if( rc != SQLITE_OK){
 			DP("Error loading DB");
 			User::Panic(_L("Podcatcher"), 10);
-		}		
+		}
+
 
 	}
 	return iDB;
@@ -422,5 +424,10 @@ TInt CPodcastModel::FindActiveShowByUid(TUint aUid)
 	}
 	
 	return KErrNotFound;
+	}
+
+EXPORT_C TBool CPodcastModel::IsFirstStartup()
+	{
+	return iIsFirstStartup;
 	}
 

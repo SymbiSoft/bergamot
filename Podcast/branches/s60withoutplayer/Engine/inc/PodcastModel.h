@@ -95,7 +95,7 @@ public:
 	IMPORT_C void MarkSelectionPlayed();
 	
 	TInt FindActiveShowByUid(TUint aUid);
-	
+	IMPORT_C TBool IsFirstStartup();
 protected:
 	CPodcastModel();
 	void ConstructL();
@@ -120,6 +120,7 @@ private:
    
    sqlite3* iDB;
    RCmManager iCmManager;
+   TBool iIsFirstStartup;
 };
 
 #endif // PODCASTMODEL_H

@@ -57,20 +57,19 @@ void CFeedEngine::ConstructL()
 	
 	RunFeedTimer();
 	
-	
-    if (DBGetFeedCount() > 0) {
+    if (DBGetFeedCount() > 0) 
+    	{
 		DP("Loading feeds from DB");
-		
 		DBLoadFeedsL();
-
-		} else {
-    	DP("No feeds in DB, loading default feeds");
-    	TFileName defaultFile = iPodcastModel.SettingsEngine().DefaultFeedsFileName();
-	    if (BaflUtils::FileExists(iPodcastModel.FsSession(), defaultFile)) {
-	    	DP("Loading default feeds");
-	    	ImportFeedsL(defaultFile);
-	    }
-    }
+		} 
+    
+	if (iPodcastModel.IsFirstStartup()) {
+		DP("Loading default feeds");
+		TFileName defaultFile = iPodcastModel.SettingsEngine().DefaultFeedsFileName();
+		if (BaflUtils::FileExists(iPodcastModel.FsSession(), defaultFile)) {
+			ImportFeedsL(defaultFile);
+		}
+	}
     
     TFileName importFile = iPodcastModel.SettingsEngine().ImportFeedsFileName();
     if (BaflUtils::FileExists(iPodcastModel.FsSession(), importFile)) {
