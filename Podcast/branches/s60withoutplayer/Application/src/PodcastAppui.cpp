@@ -116,7 +116,13 @@ CArrayFix<TCoeHelpContext>* CPodcastAppUi::HelpContextL() const
     CArrayFixFlat<TCoeHelpContext>* array = 
                 new(ELeave)CArrayFixFlat<TCoeHelpContext>(1);
     CleanupStack::PushL(array);
-	array->AppendL(TCoeHelpContext(KUidPodcast,KContextApplication));
+    // todo: view detection doesn't seem to work
+    if (ViewShown(KUidPodcastSearchViewID)) {
+		array->AppendL(TCoeHelpContext(KUidPodcast,KContextSettings));
+    } else {
+		array->AppendL(TCoeHelpContext(KUidPodcast,KContextApplication));
+    }
+	
     CleanupStack::Pop(array);
     return array;
 	}

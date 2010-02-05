@@ -544,20 +544,14 @@ void CPodcastSettingsView::HandleCommandL(TInt aCommand)
 	DP1("CPodcastListView::HandleCommandL=%d", aCommand);
 	switch(aCommand)
 	{
-	case EAknSoftkeyExit:
-	case EEikCmdExit:
-		{
-            AppUi()->Exit();
-            break;
-		}
 	case EAknSoftkeyBack:
 		{
 		iListbox->StoreSettings();
 		AppUi()->ActivateViewL(iPreviousView);
-		}break;	
-	case EPodcastAbout:
-		break;
+		}
+		break;	
 	default:
+		AppUi()->HandleCommandL(aCommand);
 		break;
 	}
 }

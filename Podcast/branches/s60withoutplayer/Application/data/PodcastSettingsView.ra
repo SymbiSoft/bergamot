@@ -30,8 +30,8 @@ RESOURCE MENU_PANE r_podcast_settingsview_menu
         {        
 		MENU_ITEM
 			{
-			command = EPodcastAbout;
-			txt = STRING_r_view_about_cmd;
+			command = EPodcastHelp;
+			txt = STRING_r_view_help;
 			}		
 		};
     }
@@ -40,7 +40,7 @@ RESOURCE MENU_PANE r_podcast_settingsview_menu
 RESOURCE AVKON_VIEW r_podcast_settingsview
 {
 	menubar = r_podcast_settingsview_menubar;
-	cba = R_AVKON_SOFTKEYS_BACK;    
+	cba = R_AVKON_SOFTKEYS_OPTIONS_BACK;    
 }
 
 RESOURCE AVKON_SETTING_ITEM_LIST r_podcast_settings
