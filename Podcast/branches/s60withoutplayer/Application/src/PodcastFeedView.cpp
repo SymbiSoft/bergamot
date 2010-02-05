@@ -303,16 +303,28 @@ void CPodcastFeedView::UpdateFeedInfoStatusL(TUint aFeedUid, TBool aIsUpdating)
 		
 	if (feedsIdx != KErrNotFound && listboxIdx != KErrNotFound)
 		{
-		// Update the listbox info
-		UpdateFeedInfoDataL(feeds[feedsIdx], listboxIdx, aIsUpdating);
-		//TODO sort the listbox after update
-		// If the listbox item is visible, it should be redrawn
-		if (iListContainer->Listbox()->TopItemIndex() <= listboxIdx &&
-			iListContainer->Listbox()->BottomItemIndex() >= listboxIdx)
+		// TODO In the long run we want to move the sorting resposibility from
+		// CFeedEngine to CPodcastFeedView.
+		// Hackish fix to make sure the listbox is sorted.
+		if (listboxIdx != feedsIdx)
 			{
-			iListContainer->Listbox()->DrawItem(listboxIdx);
+			iItemIdArray.Remove(listboxIdx);
+			iItemIdArray.InsertL(aFeedUid, feedsIdx);
+			iItemArray->Delete(listboxIdx);
+			iItemArray->InsertL(feedsIdx, KNullDesC);
+			iListContainer->Listbox()->HandleItemAdditionL();
 			}
+		// Update the listbox info
+		UpdateFeedInfoDataL(feeds[feedsIdx], feedsIdx, aIsUpdating);
+		//TODO sort the listbox after update
 		}
+		// Update all visible listbox items that are affected by sorting and update.
+		TInt minIdx = Max(Min(feedsIdx, listboxIdx), iListContainer->Listbox()->TopItemIndex());
+		TInt maxIdx = Min(Max(feedsIdx, listboxIdx), iListContainer->Listbox()->BottomItemIndex());
+		for (TInt k = minIdx; k <= maxIdx; k++)
+			{
+			iListContainer->Listbox()->DrawItem(k);
+			}
 	}
 
 void CPodcastFeedView::FormatFeedInfoListBoxItemL(CFeedInfo& aFeedInfo, TBool aIsUpdating)
