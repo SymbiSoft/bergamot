@@ -283,35 +283,28 @@ void CPodcastShowsView::ShowDownloadUpdatedL(TInt aPercentOfCurrentDownload,
 		}
 	}
 
-void CPodcastShowsView::FeedInfoUpdated(TUint aFeedUid)
+
+void CPodcastShowsView::FeedDownloadStartedL(TUint aFeedUid)
 	{
-	if (iPodcastModel.ActiveFeedInfo() != NULL && aFeedUid == 
-		iPodcastModel.ActiveFeedInfo()->Uid())
+	// TODO make use of the fact that we know that the feed download is
+	// started instead of checking feed engine states in UpdateFeedUpdateStateL.
+	if (iPodcastModel.ActiveFeedInfo() != NULL
+			&& iPodcastModel.ActiveFeedInfo()->Uid() == aFeedUid)
+		{
+		TRAP_IGNORE(UpdateFeedUpdateStateL());
+		}	
+	}
+
+void CPodcastShowsView::FeedDownloadFinishedL(TUint aFeedUid)
+	{
+	// TODO make use of the fact that we know that the feed download is
+	// finished instead of checking feed engine states in UpdateFeedUpdateStateL.
+	if (iPodcastModel.ActiveFeedInfo() != NULL
+			&& iPodcastModel.ActiveFeedInfo()->Uid() == aFeedUid)
 		{
 		TRAP_IGNORE(UpdateFeedUpdateStateL());
 		// Title might have changed
 		//TRAP_IGNORE(UpdateListboxItemsL());
-		}
-	}
-
-void CPodcastShowsView::FeedUpdateCompleteL(TUint aFeedUid)
-	{
-	if (iPodcastModel.ActiveFeedInfo() != NULL && iPodcastModel.ActiveFeedInfo()->Uid() == aFeedUid)
-		{
-		UpdateFeedUpdateStateL();
-		}
-	}
-
-void CPodcastShowsView::FeedUpdateAllCompleteL()
-	{
-	
-	}
-
-void CPodcastShowsView::FeedDownloadUpdatedL(TUint aFeedUid, TInt /*aPercentOfCurrentDownload*/)
-	{
-	if (iPodcastModel.ActiveFeedInfo() != NULL && iPodcastModel.ActiveFeedInfo()->Uid() == aFeedUid)
-		{
-		UpdateFeedUpdateStateL();
 		}
 	}
 
