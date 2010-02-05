@@ -228,68 +228,32 @@ void CPodcastFeedView::HandleListBoxEventL(CEikListBox* /* aListBox */, TListBox
 	DP("CPodcastFeedView::HandleListBoxEventL END");
 	}
 
-void CPodcastFeedView::FeedInfoUpdatedL(TUint aFeedUid)
-	{
-	const RFeedInfoArray& feeds = iPodcastModel.FeedEngine().GetSortedFeeds();
-
-	TInt feedsIdx = KErrNotFound;
-	TInt listboxIdx = KErrNotFound;
-	for (TInt i = 0; i < feeds.Count(); i++)
-		{
-		if (feeds[i]->Uid() == aFeedUid)
-			{
-			feedsIdx = i;
-			break;
-			}
-		}
-	for (TInt j = 0; j < iItemIdArray.Count(); j++)
-		{
-		if (iItemIdArray[j] == aFeedUid)
-			{
-			listboxIdx = j;
-			break;
-			}
-		}
-
-	if (feedsIdx != KErrNotFound && listboxIdx != KErrNotFound)
-		{
-		UpdateFeedInfoDataL(feeds[feedsIdx], listboxIdx);
-		if (iListContainer->Listbox()->TopItemIndex() <= listboxIdx &&
-			iListContainer->Listbox()->BottomItemIndex() >= listboxIdx)
-			{
-			iListContainer->Listbox()->DrawItem(listboxIdx);
-			}
-		}
-	}
-
-void CPodcastFeedView::FeedInfoUpdated(TUint aFeedUid)
-	{
-	TRAP_IGNORE(FeedInfoUpdatedL(aFeedUid))
-	}
-
-void CPodcastFeedView::FeedUpdateCompleteL(TUint aFeedUid)
-	{
-	UpdateFeedInfoStatusL(aFeedUid, EFalse);
-	}
-
 void CPodcastFeedView::FeedUpdateAllCompleteL()
 	{
 	iUpdatingAllRunning = EFalse;
 	UpdateToolbar();
 	}
 
-void CPodcastFeedView::FeedDownloadUpdatedL(TUint aFeedUid, TInt /*aPercentOfCurrentDownload*/)
+void CPodcastFeedView::FeedDownloadStartedL(TUint aFeedUid)
 	{
-	iUpdatingAllRunning = ETrue;		
+	UpdateFeedInfoStatusL(aFeedUid, ETrue);
+	}
 
-	// Update status text
-	UpdateFeedInfoStatusL(aFeedUid, ETrue);	
+void CPodcastFeedView::FeedDownloadProgressL(TUint /*aFeedUid*/, TInt /*aPercent*/)
+	{
+	// For future use...
+	}
+
+void CPodcastFeedView::FeedDownloadFinishedL(TUint aFeedUid)
+	{
+	UpdateFeedInfoStatusL(aFeedUid, EFalse);
 	}
 
 void CPodcastFeedView::UpdateFeedInfoStatusL(TUint aFeedUid, TBool aIsUpdating)
 	{
 	const RFeedInfoArray& feeds = iPodcastModel.FeedEngine().GetSortedFeeds();
 
+	// Find the index for the feed i both the feed-array and the listbox 
 	TInt feedsIdx = KErrNotFound;
 	TInt listboxIdx = KErrNotFound;
 	for (TInt i = 0; i < feeds.Count(); i++)
@@ -311,14 +275,16 @@ void CPodcastFeedView::UpdateFeedInfoStatusL(TUint aFeedUid, TBool aIsUpdating)
 		
 	if (feedsIdx != KErrNotFound && listboxIdx != KErrNotFound)
 		{
+		// Update the listbox info
 		UpdateFeedInfoDataL(feeds[feedsIdx], listboxIdx, aIsUpdating);
+		//TODO sort the listbox after update
+		// If the listbox item is visible, it should be redrawn
 		if (iListContainer->Listbox()->TopItemIndex() <= listboxIdx &&
 			iListContainer->Listbox()->BottomItemIndex() >= listboxIdx)
 			{
 			iListContainer->Listbox()->DrawItem(listboxIdx);
 			}
 		}
-	UpdateToolbar();
 	}
 
 void CPodcastFeedView::FormatFeedInfoListBoxItemL(CFeedInfo& aFeedInfo, TBool aIsUpdating)
@@ -485,8 +451,8 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			{
 			iUpdatingAllRunning = ETrue;			
 			iPodcastModel.FeedEngine().UpdateAllFeedsL();
-			}
-			break;
+			UpdateToolbar();
+			}break;
 		case EPodcastCancelUpdateAllFeeds:
 			{
 			if(iUpdatingAllRunning)
