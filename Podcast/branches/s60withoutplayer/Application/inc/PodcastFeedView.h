@@ -31,7 +31,8 @@ class CPodcastFeedView : public CPodcastListView, public MEikListBoxObserver,
         static CPodcastFeedView* NewLC(CPodcastModel& aPodcastModel);
         ~CPodcastFeedView();
         void UpdateItemL(TInt aIndex);
-        
+		void CheckResumeDownload();
+
 	protected:
 	    void ConstructL();
 		CPodcastFeedView(CPodcastModel& aPodcastModel);

@@ -197,23 +197,7 @@ void CPodcastFeedView::DoActivateL(const TVwsViewId& aPrevViewId,
 	if (iFirstActivateAfterLaunch)
 		{
 		iFirstActivateAfterLaunch = EFalse;
-		
-		RShowInfoArray showsDownloading;
-		iPodcastModel.ShowEngine().GetShowsDownloadingL(showsDownloading);
-		
-		if (iPodcastModel.SettingsEngine().DownloadSuspended() && showsDownloading.Count() > 0)
-			{
-			TBuf<KMaxMessageLength> msg;
-			iEikonEnv->ReadResourceL(msg, R_PODCAST_ENABLE_DOWNLOADS_PROMPT);
-			
-			if (ShowQueryMessage(msg))
-				{
-				iPodcastModel.ShowEngine().ResumeDownloadsL();
-				}
-			}
-		showsDownloading.ResetAndDestroy();
-		
-	}
+		}
 	}
 
 void CPodcastFeedView::DoDeactivate()
@@ -776,3 +760,31 @@ void CPodcastFeedView::HandleExportFeedsL()
 	}
 	CleanupStack::PopAndDestroy(memDlg);									
 	}
+
+void CPodcastFeedView::CheckResumeDownload()
+	{
+	if (iPodcastModel.SettingsEngine().DownloadSuspended())
+		{
+		RShowInfoArray showsDownloading;
+		iPodcastModel.ShowEngine().GetShowsDownloadingL(showsDownloading);
+
+		if (showsDownloading.Count() > 0)
+			{
+			TBuf<KMaxMessageLength> msg;
+			iEikonEnv->ReadResourceL(msg, R_PODCAST_ENABLE_DOWNLOADS_PROMPT);
+		
+			if (ShowQueryMessage(msg))
+				{
+				iPodcastModel.ShowEngine().ResumeDownloadsL();
+				}
+			}
+		
+		showsDownloading.ResetAndDestroy();
+		}
+	else
+		{
+		iPodcastModel.ShowEngine().ResumeDownloadsL();
+		}
+
+	}
+

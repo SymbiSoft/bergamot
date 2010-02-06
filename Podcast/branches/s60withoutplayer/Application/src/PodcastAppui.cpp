@@ -32,6 +32,8 @@
 #include <HLPLCH.H>
 #include <avkon.hrh>
 
+const TUint KDelayLaunch = 1000;
+
 CPodcastAppUi::CPodcastAppUi(CPodcastModel* aPodcastModel):iPodcastModel(aPodcastModel)
 	{
 	
@@ -56,6 +58,8 @@ void CPodcastAppUi::ConstructL()
 	
 	iNaviPane =( CAknNavigationControlContainer * ) StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidNavi ) );
 	NaviShowTabGroupL();
+	iStartTimer = CTimeout::NewL(*this);
+	iStartTimer->After(KDelayLaunch);
     DP("CPodcastAppUi::ConstructL() END");
     }
 
@@ -63,6 +67,7 @@ CPodcastAppUi::~CPodcastAppUi()
     {
     iNaviPane->Pop(iNaviDecorator);
 	delete iNaviDecorator;
+	delete iStartTimer;
     }
 
 // -----------------------------------------------------------------------------
@@ -186,3 +191,8 @@ void CPodcastAppUi::TabChangedL (TInt /*aIndex*/)
 void CPodcastAppUi::SetActiveTab(TInt aIndex) {
 	iTabGroup->SetActiveTabByIndex(aIndex);
 }
+
+void CPodcastAppUi::HandleTimeout(const CTimeout& aId, TInt aError)
+	{
+	iFeedView->CheckResumeDownload();
+	}

@@ -45,7 +45,7 @@ CMetaDataReader::~CMetaDataReader()
 
 void CMetaDataReader::ConstructL()
 {
-	DP("ConstructL");
+	DP("MetaDataReader::ConstructL");
 	iPlayer = CMdaAudioPlayerUtility::NewL(*this);
 
 	TCallBack callback(ParseNextShowCallbackL, this);

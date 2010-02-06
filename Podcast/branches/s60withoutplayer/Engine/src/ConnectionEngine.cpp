@@ -214,7 +214,7 @@ RConnection& CConnectionEngine::Connection()
 CConnectionEngine::TConnectionState CConnectionEngine::ConnectionState()
 	{
 	
-	if( iPodcastModel.SettingsEngine().SpecificIAP()!= iSnapPreference.Snap() )
+	if( iPodcastModel.SettingsEngine().SpecificIAP()!= (TInt) iSnapPreference.Snap() )
 		{
 		if(iConnection.SubSessionHandle() != 0)
 			{

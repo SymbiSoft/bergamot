@@ -94,7 +94,6 @@ void CShowEngine::ConstructL()
 	iMetaDataReader = new (ELeave) CMetaDataReader(*this, iPodcastModel.FsSession());
 	iMetaDataReader->ConstructL();
 	User::LeaveIfError(iApaSession.Connect());
-	DownloadNextShowL();
 	}
 
 EXPORT_C void CShowEngine::SuspendDownloads()

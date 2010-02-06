@@ -38,7 +38,62 @@ const TUid KUidPodcastShowsViewID = {0x00000003};
 const TUid KUidPodcastSettingsViewID = {0x00000005};
 const TUid KUidPodcastSearchViewID = {0x00000006};
 
-class CPodcastAppUi : public CAknViewAppUi, public MAknTabObserver
+const TInt KTimeoutPrio = CActive::EPriorityStandard;
+
+class CTimeout;
+
+class MTimeoutObserver
+{
+public:
+    virtual void HandleTimeout(const CTimeout& aId, TInt aError)=0;
+protected:
+    virtual ~MTimeoutObserver() {}
+};
+
+class CTimeout : public CTimer
+{
+public:
+	
+     static CTimeout* NewLC(MTimeoutObserver& aObserver, TInt aPrio=KTimeoutPrio)
+    	 {
+         CTimeout* self=new(ELeave) CTimeout(aObserver, aPrio);
+         CleanupStack::PushL(self);
+         self->ConstructL();
+         return self;
+    	 }
+     
+     static CTimeout* NewL(MTimeoutObserver& aObserver, TInt aPrio=KTimeoutPrio)
+		{
+		CTimeout* self=NewLC(aObserver, aPrio);
+		CleanupStack::Pop(self);
+		return self;
+		}
+     
+     ~CTimeout()
+    	 {
+    	 Cancel();
+    	 }
+protected:
+    CTimeout(MTimeoutObserver& aObserver, TInt aPrio) : CTimer(aPrio), iObserver(aObserver)
+    {
+        CActiveScheduler::Add(this);
+    }
+    void ConstructL()
+    	{
+    	    CTimer::ConstructL();
+    	}
+    
+    void RunL()
+    	{
+    	    TInt r=iStatus.Int();
+    	    iObserver.HandleTimeout(*this, r);
+    	}
+
+protected:
+    MTimeoutObserver& iObserver;
+};
+
+class CPodcastAppUi : public CAknViewAppUi, public MAknTabObserver, MTimeoutObserver
     {
     public: 
     	CPodcastAppUi(CPodcastModel* aPodcastModel);
@@ -54,6 +109,9 @@ class CPodcastAppUi : public CAknViewAppUi, public MAknTabObserver
     private:
         void HandleCommandL(TInt aCommand);
         void NaviShowTabGroupL();
+    protected:
+    	void HandleTimeout(const CTimeout& aId, TInt aError);
+
     private:
     	CPodcastMainView *iMainView;
 		CPodcastFeedView* iFeedView;
@@ -65,6 +123,8 @@ class CPodcastAppUi : public CAknViewAppUi, public MAknTabObserver
 		CAknNavigationDecorator* iNaviDecorator;
 		CAknTabGroup* iTabGroup;
 		CAknNavigationControlContainer* iNaviPane;
+		
+		CTimeout* iStartTimer;
     };
 
 #endif
