@@ -763,28 +763,28 @@ void CPodcastFeedView::HandleExportFeedsL()
 
 void CPodcastFeedView::CheckResumeDownload()
 	{
-	if (iPodcastModel.SettingsEngine().DownloadSuspended())
-		{
-		RShowInfoArray showsDownloading;
-		iPodcastModel.ShowEngine().GetShowsDownloadingL(showsDownloading);
+	// if there are shows queued for downloading, ask if we should resume now
+	RShowInfoArray showsDownloading;
+	iPodcastModel.ShowEngine().GetShowsDownloadingL(showsDownloading);
 
-		if (showsDownloading.Count() > 0)
+	if (showsDownloading.Count() > 0)
+		{
+		TBuf<KMaxMessageLength> msg;
+		iEikonEnv->ReadResourceL(msg, R_PODCAST_ENABLE_DOWNLOADS_PROMPT);
+	
+		if (ShowQueryMessage(msg))
 			{
-			TBuf<KMaxMessageLength> msg;
-			iEikonEnv->ReadResourceL(msg, R_PODCAST_ENABLE_DOWNLOADS_PROMPT);
-		
-			if (ShowQueryMessage(msg))
-				{
-				iPodcastModel.ShowEngine().ResumeDownloadsL();
-				}
+			// resume downloading if user says yes
+			iPodcastModel.ShowEngine().ResumeDownloadsL();
 			}
-		
-		showsDownloading.ResetAndDestroy();
+		else
+			{
+			// we disable downloading if user says no
+			iPodcastModel.SettingsEngine().SetDownloadSuspended(ETrue);
+			}
 		}
-	else
-		{
-		iPodcastModel.ShowEngine().ResumeDownloadsL();
-		}
-
+	
+	// if no shows in queue, we keep whichever state suspend is in
+	showsDownloading.ResetAndDestroy();
 	}
 
