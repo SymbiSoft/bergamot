@@ -412,5 +412,6 @@ EXPORT_C TBool CSettingsEngine::DownloadSuspended()
 
 EXPORT_C void CSettingsEngine::SetDownloadSuspended(TBool aSuspended)
 	{
+	DP1("CSettingsEngine::SetDownloadSuspended, aSuspended=%d", aSuspended);
 	iDownloadSuspended = aSuspended;
 	}

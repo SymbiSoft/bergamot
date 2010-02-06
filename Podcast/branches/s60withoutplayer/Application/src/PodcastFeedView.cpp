@@ -774,6 +774,8 @@ void CPodcastFeedView::CheckResumeDownload()
 	
 		if (ShowQueryMessage(msg))
 			{
+			// need to suspend downloads before ResumeDownloadL will work :)
+			iPodcastModel.SettingsEngine().SetDownloadSuspended(ETrue);
 			// resume downloading if user says yes
 			iPodcastModel.ShowEngine().ResumeDownloadsL();
 			}

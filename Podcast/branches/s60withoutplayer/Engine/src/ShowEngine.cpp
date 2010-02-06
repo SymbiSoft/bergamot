@@ -104,13 +104,14 @@ EXPORT_C void CShowEngine::SuspendDownloads()
 
 EXPORT_C void CShowEngine::ResumeDownloadsL()
 	{
-	DP("CShowEngine::ResumeDownloadsL");
+	DP("CShowEngine::ResumeDownloadsL BEGIN");
 	if (iPodcastModel.SettingsEngine().DownloadSuspended())
 		{
 		iPodcastModel.SettingsEngine().SetDownloadSuspended(EFalse);
 		iDownloadErrors = 0;
 		DownloadNextShowL();
 		}
+	DP("CShowEngine::ResumeDownloadsL END");
 	}
 
 EXPORT_C void CShowEngine::RemoveAllDownloads()
@@ -1125,6 +1126,7 @@ EXPORT_C void CShowEngine::AddDownloadL(CShowInfo& aInfo)
 
 void CShowEngine::DownloadNextShowL()
 	{
+	DP("CShowEngine::DownloadNextShowL BEGIN");
 	// Check if we have anything in the download queue
 	const TInt count = DBGetDownloadsCount();
 	DP("CShowEngine::DownloadNextShow\tTrying to start new download");DP1("CShowEngine::DownloadNextShow\tShows in download queue %d", count);
@@ -1183,6 +1185,7 @@ void CShowEngine::DownloadNextShowL()
 		{
 		iShowDownloading = NULL;DP("CShowEngine::DownloadNextShow\tNothing to download");
 		}
+	DP("CShowEngine::DownloadNextShowL END");
 	}
 
 void CShowEngine::NotifyDownloadQueueUpdatedL()
