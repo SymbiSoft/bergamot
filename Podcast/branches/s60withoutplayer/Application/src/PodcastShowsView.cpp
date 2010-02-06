@@ -880,12 +880,17 @@ void CPodcastShowsView::DeleteShow()
 
 	if (index >= 0 && index < iPodcastModel.ActiveShowList().Count())
 		{
-		if (iEikonEnv->QueryWinL(R_PODCAST_DELETE_SHOW_TITLE, R_PODCAST_DELETE_SHOW_PROMPT))
+		CShowInfo *info = iPodcastModel.ActiveShowList()[index];
+		TBuf<KMaxMessageLength> msg;
+		TBuf<KMaxMessageLength> templ;
+		iEikonEnv->ReadResourceL(templ, R_PODCAST_DELETE_SHOW_PROMPT);
+		msg.Format(templ, &(info->Title()));
+		if (ShowQueryMessage(msg))
 			{
 			iPodcastModel.ShowEngine().DeleteShowL(iPodcastModel.ActiveShowList()[index]->Uid());
 			
 			// and mark as played, and not downloaded
-			CShowInfo *info = iPodcastModel.ActiveShowList()[index];
+			
 			info->SetDownloadState(ENotDownloaded);
 			info->SetPlayState(EPlayed);
 			iPodcastModel.ShowEngine().UpdateShow(*info);

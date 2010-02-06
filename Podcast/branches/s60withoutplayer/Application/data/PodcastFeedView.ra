@@ -299,6 +299,6 @@ RESOURCE FILESELECTIONDIALOG r_podcast_export_feeds
 RESOURCE FILENAMEPROMPTDIALOG r_podcast_filename_prompt_dialog
 {
 	filename_prompt = STRING_r_enter_filename;
-	default_filename = "feeds.xml";
+	default_filename = "feeds.opml";
 	path = "";
 }
