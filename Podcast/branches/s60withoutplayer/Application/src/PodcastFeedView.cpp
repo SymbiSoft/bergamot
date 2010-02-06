@@ -490,6 +490,31 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 				iPodcastModel.FeedEngine().CancelUpdateAllFeeds();
 				}
 			}break;
+		case EAknSoftkeyExit:
+			{
+			RShowInfoArray dlQueue;
+			iPodcastModel.ShowEngine().GetShowsDownloadingL(dlQueue);
+			TUint queueCount = dlQueue.Count();
+			dlQueue.ResetAndDestroy();
+			dlQueue.Close();
+			
+			if (queueCount > 0 && !iPodcastModel.SettingsEngine().DownloadSuspended())
+				{
+				TBuf<KMaxMessageLength> message;
+				iEikonEnv->ReadResourceL(message, R_EXIT_SHOWS_DOWNLOADING);
+				if(ShowQueryMessage(message))
+					{
+					// pass it on to AppUi, which will exit for us
+					CPodcastListView::HandleCommandL(aCommand);
+					}
+				} 
+			else
+				{
+					// nothing in queue, or downloading suspended
+					CPodcastListView::HandleCommandL(aCommand);
+				}
+			}
+			break;
 		default:
 			CPodcastListView::HandleCommandL(aCommand);
 			break;

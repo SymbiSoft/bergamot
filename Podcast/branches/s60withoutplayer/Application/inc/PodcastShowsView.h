@@ -75,7 +75,7 @@ protected:
 	// From showengine observer
 	void ShowListUpdatedL();  	
 	void ShowDownloadUpdatedL(TInt aBytesOfCurrentDownload, TInt aBytesTotal);	
-	void DownloadQueueUpdatedL(TInt /*aDownloadingShows*/, TInt /*aQueuedShows*/) {};
+	void DownloadQueueUpdatedL(TInt aDownloadingShows, TInt aQueuedShows);
 	void ShowDownloadFinishedL(TUint aShowUid, TInt aError) ;
 	// from MFeedEngineObserver
 	void FeedDownloadStartedL(TUint aFeedUid);

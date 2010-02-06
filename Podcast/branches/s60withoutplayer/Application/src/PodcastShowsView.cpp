@@ -884,3 +884,7 @@ void CPodcastShowsView::DeleteShow()
 		}
 	}
 
+void CPodcastShowsView::DownloadQueueUpdatedL(TInt aDownloadingShows, TInt aQueuedShows)
+	{
+	((CPodcastAppUi*)AppUi())->UpdateQueueTab(aDownloadingShows+aQueuedShows);
+	}

@@ -58,6 +58,9 @@ void CPodcastAppUi::ConstructL()
 	
 	iNaviPane =( CAknNavigationControlContainer * ) StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidNavi ) );
 	NaviShowTabGroupL();
+	
+	// start a timer to let ConstructL finish before we display any dialogs or start downloading
+	// this provides another entry point in HandleTimeout below
 	iStartTimer = CTimeout::NewL(*this);
 	iStartTimer->After(KDelayLaunch);
     DP("CPodcastAppUi::ConstructL() END");
@@ -145,12 +148,11 @@ void CPodcastAppUi::NaviShowTabGroupL()
 	iTabGroup->AddTabL(0,*label1);
 	iTabGroup->AddTabL(1,*label2);
 	
-#ifdef SEARCH_ENABLED
 	iTabGroup->SetTabFixedWidthL(EAknTabWidthWithThreeTabs);
 	HBufC *label3 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_SEARCH);			
 	iTabGroup->AddTabL(2,*label3);
 	CleanupStack::PopAndDestroy(label3);
-#endif
+
 	CleanupStack::PopAndDestroy(label2);
 	CleanupStack::PopAndDestroy(label1);
 	
@@ -159,7 +161,6 @@ void CPodcastAppUi::NaviShowTabGroupL()
 
 	iNaviPane->Pop();
 	iNaviPane->PushL(*iNaviDecorator);
-
 	}
 
 void CPodcastAppUi::TabChangedL (TInt /*aIndex*/)
@@ -195,4 +196,24 @@ void CPodcastAppUi::SetActiveTab(TInt aIndex) {
 void CPodcastAppUi::HandleTimeout(const CTimeout& aId, TInt aError)
 	{
 	iFeedView->CheckResumeDownload();
+	}
+
+void CPodcastAppUi::UpdateQueueTab(TInt aQueueLength)
+	{
+	if (aQueueLength == 0)
+		{
+		HBufC *queue = iEikonEnv->AllocReadResourceLC(R_TABGROUP_QUEUE);
+		iTabGroup->ReplaceTabL(1, *queue);
+		CleanupStack::PopAndDestroy(queue);
+		}
+	else
+		{
+		HBufC *queueTemplate = iEikonEnv->AllocReadResourceLC(R_TABGROUP_QUEUE_COUNTER);
+		HBufC *queueCounter = HBufC::NewLC(queueTemplate->Length()+2);
+		queueCounter->Des().Format(*queueTemplate, aQueueLength);
+		
+		iTabGroup->ReplaceTabL(1, *queueCounter);
+		CleanupStack::PopAndDestroy(queueCounter);
+		CleanupStack::PopAndDestroy(queueTemplate);	
+		}
 	}

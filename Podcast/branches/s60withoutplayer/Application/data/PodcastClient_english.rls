@@ -175,6 +175,7 @@ rls_string STRING_r_cba_hide "Hide"
 
 rls_string STRING_r_tabgroup_feeds "Feeds"
 rls_string STRING_r_tabgroup_queue "Queue"
+rls_string STRING_r_tabgroup_queue_counter "Queue (%d)"
 rls_string STRING_r_tabgroup_downloaded "Downloaded"
 rls_string STRING_r_podcast_empty_queue "(queue empty)"
 rls_string STRING_r_podcast_empty_list "(list empty)"
@@ -205,3 +206,4 @@ rls_string STRING_r_searching "Searching"
 rls_string STRING_r_cba_cancel "Cancel"
 
 rls_string STRING_r_podcast_connection_error "Connection failed. Check connection settings."
+rls_string STRING_r_exit_shows_downloading "Shows are being downloaded. Exit anyway?"

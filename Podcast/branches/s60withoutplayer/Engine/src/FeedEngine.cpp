@@ -886,13 +886,13 @@ EXPORT_C void CFeedEngine::GetDownloadedStats(TUint &aNumShows, TUint &aNumUnpla
 
 EXPORT_C void CFeedEngine::GetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed)
 	{
-	DP1("CFeedEngine::GetStatsByFeed, aFeedUid=%u", aFeedUid);
+	//DP1("CFeedEngine::GetStatsByFeed, aFeedUid=%u", aFeedUid);
 	DBGetStatsByFeed(aFeedUid, aNumShows, aNumUnplayed);
 	}
 
 void CFeedEngine::DBGetStatsByFeed(TUint aFeedUid, TUint &aNumShows, TUint &aNumUnplayed)
 	{
-	DP1("CFeedEngine::DBGetStatsByFeed, feedUid=%u", aFeedUid);
+	//DP1("CFeedEngine::DBGetStatsByFeed, feedUid=%u", aFeedUid);
 	_LIT(KSqlStatement, "select count(*) from shows where feeduid=%u");
 	iSqlBuffer.Format(KSqlStatement, aFeedUid);
 
