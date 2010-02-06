@@ -602,7 +602,7 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 			SetShowPlayed(ETrue);
 			break;
 		case EPodcastMarkAsUnplayed:
-			SetShowPlayed(ETrue);
+			SetShowPlayed(EFalse);
 			break;
 		case EPodcastDeleteShow:
 			DeleteShow();
@@ -758,7 +758,8 @@ void CPodcastShowsView::UpdateToolbar()
 	RShowInfoArray &fItems = iPodcastModel.ActiveShowList();
 	TInt itemCnt = fItems.Count();
 
-	TBool hideDownloadShowCmd = ETrue;
+	TBool hideDownloadShowCmd = EFalse;
+	TBool dimDownloadShowCmd = EFalse;
 	TBool hideSetPlayed = EFalse;
 	TBool updatingState = (iCurrentCategory == EShowFeedShows && 
 			iPodcastModel.FeedEngine().ClientState() != EIdle && 
@@ -769,10 +770,22 @@ void CPodcastShowsView::UpdateToolbar()
 		TInt index = iListContainer->Listbox()->CurrentItemIndex();
 		
 		if(index>= 0 && index < itemCnt)
-		{							
-			if(fItems[index]->DownloadState() == ENotDownloaded)
+		{
+			switch(fItems[index]->DownloadState())
 				{
+				case ENotDownloaded:
+				case EFailedDownload:
 					hideDownloadShowCmd = EFalse;
+					dimDownloadShowCmd = EFalse;
+					break;
+				case EQueued:
+				case EDownloading:
+					hideDownloadShowCmd = EFalse;
+					dimDownloadShowCmd = ETrue;
+					break;
+				case EDownloaded:
+					hideDownloadShowCmd = ETrue;
+					break;
 				}
 				
 			if(fItems[index]->PlayState() == EPlayed) {
@@ -793,8 +806,9 @@ void CPodcastShowsView::UpdateToolbar()
 		} else {
 			toolbar->HideItem(EPodcastDownloadShow, EFalse, ETrue );
 			toolbar->HideItem(EPodcastDeleteShow, ETrue, ETrue);
-			toolbar->SetItemDimmed(EPodcastDownloadShow, updatingState, ETrue);	
+			toolbar->SetItemDimmed(EPodcastDownloadShow, updatingState || dimDownloadShowCmd, ETrue);	
 		}
+		
 		if (hideSetPlayed) {
 			toolbar->HideItem(EPodcastMarkAsPlayed, ETrue, ETrue );
 			toolbar->HideItem(EPodcastMarkAsUnplayed, EFalse, ETrue );
@@ -809,8 +823,6 @@ void CPodcastShowsView::UpdateToolbar()
 		toolbar->HideItem(EPodcastRemoveAllDownloads, ETrue, ETrue);
 		toolbar->HideItem(EPodcastSuspendDownloads,ETrue, ETrue);
 		toolbar->HideItem(EPodcastResumeDownloads,ETrue, ETrue);
-
-
 		break;
 	case EShowPendingShows:
 		toolbar->HideItem(EPodcastUpdateFeed, ETrue, ETrue );
