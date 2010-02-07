@@ -40,7 +40,11 @@ _LIT(KOpmlFooter, "  </outline>\n</body>\n</opml>");
 _LIT(KSearchUrl, "http://www.digitalpodcast.com/podcastsearchservice/v2b/search/?appid=SymbianPodcatcher&keywords=%S&format=rssopml&sort=rel&searchsource=all&contentfilter=noadult&start=0&results=20");
 _LIT(KSearchResultsFileName, "searchresults.opml");
 
-const int KMaxSearchString = 30;
+const TInt KMaxUidBufLen = 20;
+const TInt KMaxDescriptionLength = 1024;
+const TInt KMaxURLLength = 512;
+const TInt KMaxLineLength = 4096;
+const TInt KMaxSearchString = 30;
 
 enum TClientState {
 	EIdle,
@@ -73,9 +77,6 @@ public:
 
 	void RunFeedTimer();
 	
-	static void FileNameFromUrl(const TDesC &aUrl, TFileName &aFileName);
-	static void EnsureProperPathName(TFileName &aPath);
-
 	IMPORT_C void UpdateFeed(CFeedInfo *aItem);
 	/**
 	 * Returns the current internal state of the feed engine4
@@ -112,9 +113,6 @@ private:
 	void ParsingCompleteL(CFeedInfo *aItem);
 
 	void GetFeedImageL(CFeedInfo *aFeedInfo);
-	static void ReplaceChar(TDes & aString, TUint aCharToReplace, TUint aReplacement);
-	static void ReplaceString(TDes & aString, const TDesC& aStringToReplace,const TDesC& aReplacement);
-	void CleanHtmlL(TDes &str);
 	
 	void UpdateNextFeedL();
 	void NotifyFeedUpdateComplete(TInt aError);

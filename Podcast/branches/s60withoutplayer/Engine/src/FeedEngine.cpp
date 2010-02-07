@@ -23,13 +23,9 @@
 #include "SettingsEngine.h"
 #include "ShowEngine.h"
 #include <e32hashtab.h>
-#include <TXTETEXT.H> // for ELineBreak
 #include "OpmlParser.h"
+#include "PodcastUtils.h"
 
-const TInt KMaxUidBufLen = 20;
-const TInt KMaxDescriptionLength = 1024;
-const TInt KMaxURLLength = 512;
-const TInt KMaxLineLength = 4096;
 // Cleanup stack macro for SQLite3
 // TODO Move this to some common place.
 static void Cleanup_sqlite3_finalize_wrapper(TAny* handle)
@@ -237,7 +233,7 @@ void CFeedEngine::NewShowL(CShowInfo& aItem)
 	HBufC* description = HBufC::NewLC(KMaxDescriptionLength);
 	TPtr ptr(description->Des());
 	ptr.Copy(aItem.Description());
-	CleanHtmlL(ptr);
+	PodcastUtils::CleanHtmlL(ptr);
 	//DP1("New show has feed ID: %u") item->FeedUid());
 	TRAP_IGNORE(aItem.SetDescriptionL(*description));
 	CleanupStack::PopAndDestroy(description);
@@ -271,9 +267,9 @@ void CFeedEngine::GetFeedImageL(CFeedInfo *aFeedInfo)
 	relPath.Append('\\');
 
 	TFileName fileName;
-	FileNameFromUrl(aFeedInfo->ImageUrl(), fileName);
+	PodcastUtils::FileNameFromUrl(aFeedInfo->ImageUrl(), fileName);
 	relPath.Append(fileName);
-	EnsureProperPathName(relPath);
+	PodcastUtils::EnsureProperPathName(relPath);
 	
 	// complete file path is base dir + rel path
 	filePath.Append(relPath);
@@ -282,71 +278,6 @@ void CFeedEngine::GetFeedImageL(CFeedInfo *aFeedInfo)
 	if(iFeedClient->GetL(aFeedInfo->ImageUrl(), filePath, ETrue))
 		{
 			iClientState = EUpdatingImage;
-		}
-	}
-
-void CFeedEngine::FileNameFromUrl(const TDesC& aUrl, TFileName &aFileName)
-	{
-	TInt pos = aUrl.LocateReverse('/');
-	
-	if (pos != KErrNotFound) 
-		{	
-		TPtrC str = aUrl.Mid(pos+1);
-		pos = str.Locate('?');
-		if (pos != KErrNotFound) 
-			{
-			aFileName.Copy(str.Left(pos));
-			} 
-		else 
-			{
-			aFileName.Copy(str);
-			}
-		}
-	DP2("FileNameFromUrl in: %S, out: %S", &aUrl, &aFileName);
-	}
-
-void CFeedEngine::EnsureProperPathName(TFileName &aPath)
-	{
-	// from the SDK: The following characters cannot occur in the path: < >: " / |*
-	
-	ReplaceChar(aPath, '/', '_'); // better not to add \\ in case we have multiple /
-	ReplaceChar(aPath, ':', '_');
-	ReplaceChar(aPath, '?', '_');
-	ReplaceChar(aPath, '|', '_');
-	ReplaceChar(aPath, '*', '_');
-	ReplaceChar(aPath, '<', '_');
-	ReplaceChar(aPath, '>', '_');
-	ReplaceChar(aPath, '"', '_');
-
-	//buf.Append(_L("\\"));
-	}
-
-void CFeedEngine::ReplaceChar(TDes & aString, TUint aCharToReplace, TUint aReplacement)
-	{
-	TInt strLen=aString.Length();
-	for (TInt i=0; i < strLen; i++)
-		{
-		if (aString[i] == aCharToReplace)
-			{
-			aString[i] = aReplacement;
-			}
-		}
-	}
-
-void CFeedEngine::ReplaceString(TDes & aString, const TDesC& aStringToReplace, const TDesC& aReplacement)
-	{
-	TInt pos=aString.Find(aStringToReplace);
-	TInt offset = 0;
-	while (pos != KErrNotFound)
-		{
-		aString.Replace(offset+pos, aStringToReplace.Length(), aReplacement);
-		offset += pos + aStringToReplace.Length()+1;
-		if (offset > aString.Length())
-			{
-			return;
-			}
-
-		pos=aString.Mid(offset).Find(aStringToReplace);
 		}
 	}
 
@@ -515,7 +446,7 @@ void CFeedEngine::ParsingCompleteL(CFeedInfo *item)
 	{
 	TBuf<KMaxLineLength> title;
 	title.Copy(item->Title());
-	TRAP_IGNORE(CleanHtmlL(title));
+	TRAP_IGNORE(PodcastUtils::CleanHtmlL(title));
 	TRAP_IGNORE(item->SetTitleL(title));
 	DBUpdateFeed(*item);
 	}
@@ -742,7 +673,7 @@ EXPORT_C TBool CFeedEngine::ExportFeedsL(TFileName& aFile)
 		TPtr ptr(xmlUrl->Des());
 		_LIT(KAnd, "&");
 		_LIT(KAmp, "&amp;");
-		ReplaceString(ptr, KAnd, KAmp);
+		PodcastUtils::ReplaceString(ptr, KAnd, KAmp);
 		
 		desc->Des().Zero();
 		if (iSortedFeeds[i]->Description() != KNullDesC) {
@@ -780,66 +711,6 @@ EXPORT_C const RFeedInfoArray& CFeedEngine::GetSortedFeeds()
 
 	iSortedFeeds.Sort(sortOrder);
 	return iSortedFeeds;
-}
-
-void CFeedEngine::CleanHtmlL(TDes &str)
-{
-#ifdef UIQ
-	_LIT(KLineBreak, "\r\n");
-#else
-	const TChar KLineBreak(CEditableText::ELineBreak); 
-#endif
-	_LIT(KNewLine, "\n");
-	ReplaceString(str, KNewLine, KNullDesC);
-
-//	DP2("CleanHtml %d, %S", str.Length(), &str);
-	TInt startPos = str.Locate('<');
-	TInt endPos = str.Locate('>');
-	//DP3("length: %d, startPos: %d, endPos: %d", str.Length(), startPos, endPos);
-	HBufC* tmpBuf = HBufC::NewLC(KMaxDescriptionLength);
-	TPtr tmp(tmpBuf->Des());
-	while (startPos != KErrNotFound && endPos != KErrNotFound && endPos > startPos) {
-		//DP1("Cleaning out %S", &str.Mid(startPos, endPos-startPos+1));
-		tmp.Copy(str.Left(startPos));
-		TPtrC ptr=str.Mid(startPos, endPos-startPos+1);
-		_LIT(KHtmlBr, "<br>");
-		_LIT(KHtmlBr2, "<br />");
-		_LIT(KHtmlBr3, "<br/>");
-		_LIT(KHtmlP, "<p>");
-		if (ptr.CompareF(KHtmlBr)== 0 || ptr.CompareF(KHtmlBr2)== 0 || ptr.CompareF(KHtmlBr3)== 0)
-			{
-			tmp.Append(KLineBreak);
-			}
-		else if (ptr.CompareF(KHtmlP) == 0)
-			{
-			tmp.Append(KLineBreak);
-			tmp.Append(KLineBreak);
-			}
-		
-		if (str.Length() > endPos+1) {
-			tmp.Append(str.Mid(endPos+1));
-		}
-		
-		str.Copy(tmp);
-		startPos = str.Locate('<');
-		endPos = str.Locate('>');
-	}
-	
-	str.Trim();
-	_LIT(KAmp, "&amp;");
-	_LIT(KQuot, "&quot;");
-	_LIT(KNbsp, "&nbsp;");
-	_LIT(KCopy, "&copy;");
-	_LIT(KCopyReplacement, "(c)");
-	if(str.Locate('&') != KErrNotFound) {
-		ReplaceString(str, KAmp, KNullDesC);
-		ReplaceString(str, KQuot, KNullDesC);
-		ReplaceString(str, KNbsp, KNullDesC);
-		ReplaceString(str, KCopy, KCopyReplacement);
-	}
-	ReplaceChar(str, '"', '\'');
-	
-	CleanupStack::PopAndDestroy(tmpBuf);
 }
 
 TInt CFeedEngine::CompareFeedsByTitle(const CFeedInfo &a, const CFeedInfo &b)
@@ -1103,7 +974,7 @@ EXPORT_C void CFeedEngine::SearchForFeedL(TDesC& aSearchString)
 	}
 	TBuf<KMaxURLLength> ssBuf;
 	ssBuf.Copy(aSearchString);
-	ReplaceString(ssBuf, _L(" "), _L("%20"));
+	PodcastUtils::ReplaceString(ssBuf, _L(" "), _L("%20"));
 	// prepare search URL
 	HBufC* templ = HBufC::NewLC(KMaxLineLength);
 	templ->Des().Copy(KSearchUrl());

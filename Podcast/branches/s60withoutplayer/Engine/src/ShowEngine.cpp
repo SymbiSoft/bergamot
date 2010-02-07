@@ -26,6 +26,7 @@
 #include <httperr.h>
 #include "SoundEngine.h"
 #include "debug.h"
+#include "PodcastUtils.h"
 
 //#include <mpxmedia.h>
 //#include <mpxattribute.h>
@@ -211,9 +212,9 @@ TBool CShowEngine::GetShowL(CShowInfo *info)
 	relPath.Append('\\');
 
 	TFileName fileName;
-	iPodcastModel.FeedEngine().FileNameFromUrl(info->Url(), fileName);
+	PodcastUtils::FileNameFromUrl(info->Url(), fileName);
 	relPath.Append(fileName);
-	iPodcastModel.FeedEngine().EnsureProperPathName(relPath);
+	PodcastUtils::EnsureProperPathName(relPath);
 
 	// complete file path is base dir + rel path
 	filePath.Append(relPath);

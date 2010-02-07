@@ -29,7 +29,11 @@ class PodcastUtils
 	{
 public:
 	IMPORT_C static void FixProtocolsL(TDes &aUrl);
-	
+	IMPORT_C static void CleanHtmlL(TDes &str);
+	IMPORT_C static void ReplaceString(TDes & aString, const TDesC& aStringToReplace, const TDesC& aReplacement);
+	IMPORT_C static void ReplaceChar(TDes & aString, TUint aCharToReplace, TUint aReplacement);
+	IMPORT_C static void EnsureProperPathName(TFileName &aPath);
+	IMPORT_C static void FileNameFromUrl(const TDesC &aUrl, TFileName &aFileName);
 	};
 
 #endif /* PODCASTUTILS_H_ */

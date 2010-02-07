@@ -39,7 +39,6 @@
 #include <akntoolbarextension.h>
 
 const TInt KMaxFeedNameLength = 100;
-const TInt KMaxDescriptionLength = 100;
 const TInt KDefaultGran = 5;
 const TInt KNumberOfFilesMaxLength = 4;
 #define KMaxMessageLength 200
