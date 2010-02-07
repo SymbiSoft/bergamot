@@ -695,23 +695,16 @@ void CPodcastFeedView::HandleImportFeedsL()
 			if(importName.Length()>0)
 				{
 				TInt numFeedsBefore = iPodcastModel.FeedEngine().GetSortedFeeds().Count();
-				
+				HBufC *waitText = iEikonEnv->AllocReadResourceLC(R_IMPORTING);
+				iImporting = ETrue;
+				ShowWaitDialogL(*waitText);
+				CleanupStack::PopAndDestroy(waitText);	
+
 				TRAPD(err, iPodcastModel.FeedEngine().ImportFeedsL(importName));
-			
+				
 				TInt numFeedsAfter = iPodcastModel.FeedEngine().GetSortedFeeds().Count();
 					
-				if (err == KErrNone && numFeedsAfter-numFeedsBefore > 0) 
-					{
-					UpdateListboxItemsL();
-									
-					TBuf<KMaxMessageLength> message;
-					TBuf<KMaxMessageLength> templ;
-					iEikonEnv->ReadResourceL(templ, R_IMPORT_FEED_SUCCESS);
-					message.Format(templ, numFeedsAfter-numFeedsBefore);
-					ShowOkMessage(message);
-					} 
-				else 
-					{
+				if (err != KErrNone) {
 					TBuf<KMaxMessageLength> message;
 					iEikonEnv->ReadResourceL(message, R_IMPORT_FEED_FAILURE);
 					ShowErrorMessage(message);
@@ -813,5 +806,31 @@ void CPodcastFeedView::CheckResumeDownload()
 	
 	// if no shows in queue, we keep whichever state suspend is in
 	showsDownloading.ResetAndDestroy();
+	}
+
+void CPodcastFeedView::OpmlParsingComplete(TUint aNumFeedsImported)
+	{
+	DP("CPodcastFeedView::OpmlParsingComplete BEGIN");
+	
+	if (iImporting)
+		{
+		UpdateListboxItemsL();
+					
+		TBuf<KMaxMessageLength> message;
+		TBuf<KMaxMessageLength> templ;
+		iEikonEnv->ReadResourceL(templ, R_IMPORT_FEED_SUCCESS);
+		message.Format(templ, aNumFeedsImported);
+		ShowOkMessage(message);
+
+		delete iWaitDialog;
+		iImporting = EFalse;
+		}
+	
+	DP("CPodcastFeedView::OpmlParsingComplete END");
+	}
+
+void CPodcastFeedView::DialogDismissedL(TInt aButtonId)
+	{
+	
 	}
 

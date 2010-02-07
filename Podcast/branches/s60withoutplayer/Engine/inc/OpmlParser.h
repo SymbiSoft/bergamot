@@ -77,6 +77,7 @@ private:
 	TEncoding iEncoding;
 	RFs& iFs;
 	TBool iSearching;
+	TUint iNumFeedsAdded;
 };
 
 #endif

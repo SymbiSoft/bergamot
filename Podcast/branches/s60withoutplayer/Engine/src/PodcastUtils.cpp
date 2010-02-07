@@ -191,3 +191,16 @@ EXPORT_C void PodcastUtils::FileNameFromUrl(const TDesC& aUrl, TFileName &aFileN
 	DP2("FileNameFromUrl in: %S, out: %S", &aUrl, &aFileName);
 	}
 
+EXPORT_C void PodcastUtils::SQLEncode(TDes &aString)
+	{
+	ReplaceString(aString, _L("\""), _L("\"\""));
+	//ReplaceString(aString, _L("'"), _L("''"));	
+	}
+
+EXPORT_C void PodcastUtils::XMLEncode(TDes &aString)
+	{
+	ReplaceString(aString, _L("\""), _L("&quot;"));	
+	ReplaceString(aString, _L("<"), _L("&lt;"));
+	ReplaceString(aString, _L(">"), _L("&gt;"));
+	ReplaceString(aString, _L("&"), _L("&amp;"));
+	}

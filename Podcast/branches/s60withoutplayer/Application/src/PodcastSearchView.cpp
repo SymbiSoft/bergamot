@@ -253,19 +253,24 @@ void CPodcastSearchView::HandleCommandL(TInt aCommand)
 		UpdateToolbar();
 	}
 
-void CPodcastSearchView::FeedSearchResultsUpdated()
+void CPodcastSearchView::OpmlParsingComplete(TUint aNumFeedsImported)
 	{
-	iSearchRunning = EFalse;
-	UpdateListboxItemsL();
-	UpdateToolbar();
-	
-	delete iWaitDialog;
-	if (iPodcastModel.FeedEngine().GetSearchResults().Count() == 0)
+	DP("CPodcastSearchView::OpmlParsingComplete BEGIN");
+	if (iSearchRunning)
 		{
-		TBuf<KMaxMessageLength> message;
-		iEikonEnv->ReadResourceL(message, R_SEARCH_NORESULTS);
-		ShowErrorMessage(message);
+		iSearchRunning = EFalse;
+		UpdateListboxItemsL();
+		UpdateToolbar();
+		
+		delete iWaitDialog;
+		if (iPodcastModel.FeedEngine().GetSearchResults().Count() == 0)
+			{
+			TBuf<KMaxMessageLength> message;
+			iEikonEnv->ReadResourceL(message, R_SEARCH_NORESULTS);
+			ShowErrorMessage(message);
+			}
 		}
+	DP("CPodcastSearchView::OpmlParsingComplete END");
 	}
 
 void CPodcastSearchView::UpdateToolbar()
@@ -282,21 +287,6 @@ void CPodcastSearchView::UpdateToolbar()
 		toolbar->HideItem(EPodcastCancelUpdateAllFeeds, !iSearchRunning, ETrue);
 		}
 }
-
-void CPodcastSearchView::ShowWaitDialogL()
-	{
-	DP("CPodcastSearchView::ShowWaitDialogL BEGIN");
-	if (!iWaitDialog)
-		{
-		iWaitDialog=new(ELeave) CAknWaitDialog(reinterpret_cast<CEikDialog**>(&iWaitDialog), EFalse);
-		iWaitDialog->SetCallback(this);
-		HBufC *waitText = iEikonEnv->AllocReadResourceLC(R_SEARCHING);
-		iWaitDialog->ExecuteLD(R_WAITDLG);
-		iWaitDialog->SetTextL(*waitText);
-		CleanupStack::PopAndDestroy(waitText);	
-		}
-	DP("CPodcastSearchView::ShowWaitDialogL END");
-	}
 
 void CPodcastSearchView::DialogDismissedL (TInt aButtonId)
 	{
@@ -316,7 +306,10 @@ void CPodcastSearchView::SearchL()
 	
 	if(dlg->RunLD())
 		{
-		ShowWaitDialogL();
+		HBufC *waitText = iEikonEnv->AllocReadResourceLC(R_SEARCHING);
+		ShowWaitDialogL(*waitText);
+		CleanupStack::PopAndDestroy(waitText);	
+
 		iSearchRunning = ETrue;
 		iPodcastModel.FeedEngine().SearchForFeedL(searchString);
 		}

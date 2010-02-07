@@ -23,6 +23,6 @@ public:
 	virtual void FeedDownloadStartedL(TUint aFeedUid) = 0;
 	virtual void FeedDownloadFinishedL(TUint aFeedUid, TInt aError) = 0;
 	virtual void FeedUpdateAllCompleteL() = 0;
-	virtual void FeedSearchResultsUpdated() = 0;
+	virtual void OpmlParsingComplete(TUint aNumFeedsImported) = 0;
 };
 #endif /*FEEDENGINEOBSERVER_H_*/

@@ -27,7 +27,8 @@
 #include <AknToolbar.h>
 #include <aknlongtapdetector.h>
 #include <aknstyluspopupmenu.h>
-
+#include <aknprogressdialog.h> 
+#include <aknwaitdialog.h> 
 #include "PodcastModel.h"
 
 class CAknDoubleLargeStyleListBox;
@@ -75,7 +76,8 @@ class CPodcastListContainer : public CCoeControl
 
 
 class CPodcastListView : public CAknView, public MAknToolbarObserver,
-public MPointerListener, public MAknLongTapDetectorCallBack 
+public MPointerListener, public MAknLongTapDetectorCallBack, 
+public MProgressDialogCallback
     {
     public: 
         ~CPodcastListView();
@@ -128,10 +130,15 @@ public MPointerListener, public MAknLongTapDetectorCallBack
         void ShowErrorMessage(TDesC &aText);
         TInt ShowQueryMessage(TDesC &aText);
 		void CloseToolbarExtension();
+		void ShowWaitDialogL(TDesC &aWaitText);
+		void CloseWaitDialog();
 
 		// From MAknLongTapDetectorCallBack
 		virtual void HandleLongTapEventL( const TPoint& aPenEventLocation, const TPoint& aPenEventScreenLocation );
 		 
+		// from MProgressDialogCallback		
+		void DialogDismissedL(TInt aButtonId) {}
+
 		void PointerEventL(const TPointerEvent& aPointerEvent);
 
 		virtual void UpdateToolbar() = 0;
@@ -151,6 +158,8 @@ public MPointerListener, public MAknLongTapDetectorCallBack
 		 CAknToolbar *iToolbar;
 		 CAknStylusPopUpMenu* iStylusPopupMenu;
 		 CAknLongTapDetector* iLongTapDetector;
+		 CAknWaitDialog *iWaitDialog;
+
     };
 #endif // PODCASTBASEVIEWH
 

@@ -46,7 +46,7 @@ void COpmlParser::ParseOpmlL(const TFileName &feedFileName, TBool aSearching)
 	CParser* parser = CParser::NewLC(KXmlMimeType, *this);
 	iOpmlState = EStateOpmlRoot;
 	iEncoding = EUtf8;
-
+	iNumFeedsAdded = 0;
 	ParseL(*parser, iFs, feedFileName);
 
 	CleanupStack::PopAndDestroy(parser);	
@@ -73,6 +73,7 @@ void COpmlParser::OnStartDocumentL(const RDocumentParameters& aDocParam, TInt /*
 
 void COpmlParser::OnEndDocumentL(TInt /*aErrorCode*/)
 	{
+	iFeedEngine.OpmlParsingComplete(iNumFeedsAdded);
 	//DP("OnEndDocumentL()");
 	}
 
@@ -109,9 +110,10 @@ void COpmlParser::OnStartElementL(const RTagInfo& aElement, const RAttributeArra
 				RAttribute attr = aAttributes[i];
 				TBuf<KMaxStringBuffer> attr16;
 				attr16.Copy(attr.Attribute().LocalName().DesC().Left(KMaxStringBuffer));
-				HBufC* val16 = HBufC::NewLC(KMaxParseBuffer);
+				HBufC* val16 = CnvUtfConverter::ConvertToUnicodeFromUtf8L(
+						attr.Value().DesC().Left(KMaxParseBuffer));
+				CleanupStack::PushL(val16);
 				
-				val16->Des().Copy(attr.Value().DesC().Left(KMaxParseBuffer));
 				// xmlUrl=...
 				if (attr16.Compare(KTagXmlUrl) == 0 || attr16.Compare(KTagUrl) == 0) {
 					newFeed->SetUrlL(*val16);
@@ -148,6 +150,7 @@ void COpmlParser::OnStartElementL(const RTagInfo& aElement, const RAttributeArra
 			} else {
 				iFeedEngine.AddFeedL(*newFeed);
 				CleanupStack::PopAndDestroy(newFeed);
+				iNumFeedsAdded++;
 			}
 		}
 		break;

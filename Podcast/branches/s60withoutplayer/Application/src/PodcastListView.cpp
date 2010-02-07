@@ -375,3 +375,17 @@ void CPodcastListView::OfferToolbarEventL(TInt aCommand)
 	HandleCommandL(aCommand);
 	}
 
+void CPodcastListView::ShowWaitDialogL(TDesC &aWaitText)
+	{
+	DP("CPodcastListView::ShowWaitDialogL BEGIN");
+	
+	if (iWaitDialog) {
+		User::Leave(KErrInUse);
+	}
+
+	iWaitDialog=new(ELeave) CAknWaitDialog(reinterpret_cast<CEikDialog**>(&iWaitDialog), EFalse);
+	iWaitDialog->SetCallback(this);
+	iWaitDialog->ExecuteLD(R_WAITDLG);
+	iWaitDialog->SetTextL(aWaitText);
+	DP("CPodcastListView::ShowWaitDialogL END");
+	}

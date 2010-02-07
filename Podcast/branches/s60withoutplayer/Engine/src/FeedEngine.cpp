@@ -25,6 +25,7 @@
 #include <e32hashtab.h>
 #include "OpmlParser.h"
 #include "PodcastUtils.h"
+#include <utf.h>
 
 // Cleanup stack macro for SQLite3
 // TODO Move this to some common place.
@@ -316,12 +317,25 @@ TBool CFeedEngine::DBAddFeedL(const CFeedInfo& aItem)
 		return EFalse;
 	}
 
+	HBufC* titleBuf = HBufC::NewLC(KMaxLineLength);
+	TPtr titlePtr(titleBuf->Des());
+	titlePtr.Copy(aItem.Title());
+	PodcastUtils::SQLEncode(titlePtr);
+	
+	HBufC* descBuf = HBufC::NewLC(KMaxLineLength);
+	TPtr descPtr(descBuf->Des());
+	descPtr.Copy(aItem.Description());
+	PodcastUtils::SQLEncode(descPtr);
+	
 	_LIT(KSqlStatement, "insert into feeds (url, title, description, imageurl, imagefile, link, built, lastupdated, uid, feedtype, customtitle, lasterror)"
 			" values (\"%S\",\"%S\", \"%S\", \"%S\", \"%S\", \"%S\", \"%Ld\", \"%Ld\", \"%u\", \"%u\", \"%u\", \"%d\")");
 	iSqlBuffer.Format(KSqlStatement,
-			&aItem.Url(), &aItem.Title(), &aItem.Description(), &aItem.ImageUrl(), &aItem.ImageFileName(), &aItem.Link(),
+			&aItem.Url(), titleBuf, descBuf, &aItem.ImageUrl(), &aItem.ImageFileName(), &aItem.Link(),
 			aItem.BuildDate().Int64(), aItem.LastUpdated().Int64(), aItem.Uid(), EAudioPodcast, aItem.CustomTitle(), aItem.LastError());
 
+	CleanupStack::PopAndDestroy(descBuf);
+	CleanupStack::PopAndDestroy(titleBuf);
+	
 	sqlite3_stmt *st;
 	 
 	//DP1("SQL statement length=%d", iSqlBuffer.Length());
@@ -413,12 +427,26 @@ TBool CFeedEngine::DBRemoveFeed(TUint aUid)
 TBool CFeedEngine::DBUpdateFeed(const CFeedInfo &aItem)
 	{
 	DP2("CFeedEngine::DBUpdateFeed, title=%S, URL=%S", &aItem.Title(), &aItem.Url());
+	
+	HBufC* titleBuf = HBufC::NewLC(KMaxLineLength);
+	TPtr titlePtr(titleBuf->Des());
+	titlePtr.Copy(aItem.Title());
+	PodcastUtils::SQLEncode(titlePtr);
+	
+	HBufC* descBuf = HBufC::NewLC(KMaxLineLength);
+	TPtr descPtr(descBuf->Des());
+	descPtr.Copy(aItem.Description());
+	PodcastUtils::SQLEncode(descPtr);
+	
 	_LIT(KSqlStatement, "update feeds set url=\"%S\", title=\"%S\", description=\"%S\", imageurl=\"%S\", imagefile=\"%S\"," \
 			"link=\"%S\", built=\"%Lu\", lastupdated=\"%Lu\", feedtype=\"%u\", customtitle=\"%u\", lasterror=\"%d\" where uid=\"%u\"");
 	iSqlBuffer.Format(KSqlStatement,
-			&aItem.Url(), &aItem.Title(), &aItem.Description(), &aItem.ImageUrl(), &aItem.ImageFileName(), &aItem.Link(),
+			&aItem.Url(), titleBuf, descBuf, &aItem.ImageUrl(), &aItem.ImageFileName(), &aItem.Link(),
 			aItem.BuildDate().Int64(), aItem.LastUpdated().Int64(), EAudioPodcast, aItem.CustomTitle(), aItem.LastError(), aItem.Uid());
 
+	CleanupStack::PopAndDestroy(descBuf);
+	CleanupStack::PopAndDestroy(titleBuf);
+	
 	sqlite3_stmt *st;
 	 
 	//DP1("SQL statement length=%d", iSqlBuffer.Length());
@@ -446,9 +474,8 @@ void CFeedEngine::ParsingCompleteL(CFeedInfo *item)
 	{
 	TBuf<KMaxLineLength> title;
 	title.Copy(item->Title());
-	TRAP_IGNORE(PodcastUtils::CleanHtmlL(title));
 	TRAP_IGNORE(item->SetTitleL(title));
-	DBUpdateFeed(*item);
+	//DBUpdateFeed(*item);
 	}
 
 
@@ -584,21 +611,9 @@ void CFeedEngine::CompleteL(CHttpClient* /*aClient*/, TInt aError)
 				}
 
 			DP("Parsing OPML");
-			TRAPD(err, iOpmlParser->ParseOpmlL(iSearchResultsFileName, ETrue));
-
-			if (err == KErrNone) 
-				{
-				NotifySearchComplete();
-				} 
-			else 
-				{
-				DP1("Parsing failed, err=%d", err);	
-				}
+			iOpmlParser->ParseOpmlL(iSearchResultsFileName, ETrue);
 			}
-		else
-			{
-
-			}
+		
 		BaflUtils::DeleteFile(iPodcastModel.FsSession(), iSearchResultsFileName);
 		}break;
 		}
@@ -651,42 +666,63 @@ EXPORT_C TBool CFeedEngine::ExportFeedsL(TFileName& aFile)
 		return EFalse;
 		}
 	CleanupClosePushL(rfile);
-	TFileText tft;
-	tft.Set(rfile);
-	HBufC* templ = HBufC::NewLC(KMaxLineLength);
 	
+	HBufC* templ = HBufC::NewLC(KMaxLineLength);
 	templ->Des().Copy(KOpmlFeed());
 	
 	HBufC* line = HBufC::NewLC(KMaxLineLength);
-	
 	HBufC* xmlUrl = HBufC::NewLC(KMaxURLLength);		
 	HBufC* htmlUrl = HBufC::NewLC(KMaxURLLength);		
-
 	HBufC* desc = HBufC::NewLC(KMaxDescriptionLength);
+	HBufC* title = HBufC::NewLC(KMaxTitleLength);
 
-	tft.Write(KOpmlHeader());
+	HBufC8* utf8line = CnvUtfConverter::ConvertFromUnicodeToUtf8L(KOpmlHeader());
+
+	rfile.Write(*utf8line);
+	delete utf8line;
+	
 	for (int i=0; i<iSortedFeeds.Count(); i++)
 		{
+		CFeedInfo *info = iSortedFeeds[i];
 		DP1("Exporting feed '%S'", &iSortedFeeds[i]->Title());
 		
-		xmlUrl->Des().Copy(iSortedFeeds[i]->Url());
-		TPtr ptr(xmlUrl->Des());
-		_LIT(KAnd, "&");
-		_LIT(KAmp, "&amp;");
-		PodcastUtils::ReplaceString(ptr, KAnd, KAmp);
+	// XML URL
+		TPtr ptrXml(xmlUrl->Des());
+		if (info->Url() != KNullDesC)
+			{
+			ptrXml.Copy(info->Url());
+			PodcastUtils::XMLEncode(ptrXml);
+			}
 		
-		desc->Des().Zero();
-		if (iSortedFeeds[i]->Description() != KNullDesC) {
-			desc->Des().Copy(iSortedFeeds[i]->Description());
+	// Description	
+		TPtr ptrDesc(desc->Des());
+		ptrDesc.Zero();
+		if (info->Description() != KNullDesC) {
+			ptrDesc.Copy(info->Description());
+			PodcastUtils::XMLEncode(ptrDesc);
 		}
 		
-		line->Des().Format(*templ, &iSortedFeeds[i]->Title(), desc, xmlUrl, htmlUrl);
-		tft.Write(*line);
+	// Title	
+		TPtr ptrTitle(title->Des());
+		ptrTitle.Zero();
+
+		if (info->Title() != KNullDesC) {
+			ptrTitle.Copy(info->Title());
+			PodcastUtils::XMLEncode(ptrTitle);
+		}
+	
+	// Write line to OPML file
+		line->Des().Format(*templ, title, desc, xmlUrl, htmlUrl);
+		utf8line = CnvUtfConverter::ConvertFromUnicodeToUtf8L(*line);
+		rfile.Write(*utf8line);
+		delete utf8line;
 		}
 
-	tft.Write(KOpmlFooter());
+	utf8line = CnvUtfConverter::ConvertFromUnicodeToUtf8L(KOpmlFooter());
+	rfile.Write(*utf8line);
+	delete utf8line;
 		
-	CleanupStack::PopAndDestroy(6);//destroy 4 bufs & close rfile
+	CleanupStack::PopAndDestroy(7);//destroy 6 bufs & close rfile
 	
 	return ETrue;
 	}
@@ -1018,10 +1054,15 @@ EXPORT_C const RFeedInfoArray& CFeedEngine::GetSearchResults()
 	}
 
 
-void CFeedEngine::NotifySearchComplete()
+EXPORT_C void CFeedEngine::OpmlParsingComplete(TUint aNumFeedsAdded)
+	{
+	NotifyOpmlParsingComplete(aNumFeedsAdded);
+	}
+
+void CFeedEngine::NotifyOpmlParsingComplete(TUint aNumFeedsAdded)
 	{
 	for (TInt i=0;i<iObservers.Count();i++) 
 		{
-		iObservers[i]->FeedSearchResultsUpdated();
+		iObservers[i]->OpmlParsingComplete(aNumFeedsAdded);
 		}
 	}

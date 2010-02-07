@@ -70,7 +70,7 @@ class CPodcastFeedView : public CPodcastListView, public MEikListBoxObserver,
 		void FeedDownloadStartedL(TUint aFeedUid);		
 		void FeedDownloadFinishedL(TUint aFeeidUid, TInt aError);
 		void FeedUpdateAllCompleteL();
-		void FeedSearchResultsUpdated() {}
+		void OpmlParsingComplete(TUint aNumFeedsImported);
 
 		/** 
 		 * Command handling function intended for overriding by sub classes. 
@@ -83,6 +83,9 @@ class CPodcastFeedView : public CPodcastListView, public MEikListBoxObserver,
 		void UpdateFeedInfoStatusL(TUint aFeedUid, TBool aIsUpdating = EFalse);
 
 		void UpdateToolbar();
+		// from MProgressDialogCallback
+		void DialogDismissedL(TInt aButtonId); 
+
 	private:
 		void FormatFeedInfoListBoxItemL(CFeedInfo& aFeedInfo, TBool aIsUpdating = EFalse);
 		void HandleAddFeedL();
@@ -97,6 +100,7 @@ class CPodcastFeedView : public CPodcastListView, public MEikListBoxObserver,
 		HBufC* iNeverUpdated;
 		CPodcastFeedViewUpdater* iUpdater;
 		TBool iFirstActivateAfterLaunch;
+		TBool iImporting;
 };
 
 #endif // PODCASTFEEDVIEWH

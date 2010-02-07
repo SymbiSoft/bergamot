@@ -20,8 +20,6 @@
 #define PODCASTSEARCHVIEW_H 
 
 #include <aknview.h>
-#include <aknwaitdialog.h> 
-#include <aknprogressdialog.h> 
 #include "FeedEngine.h"
 #include "PodcastModel.h"
 #include "PodcastListView.h"
@@ -71,7 +69,7 @@ class CPodcastSearchView : public CPodcastListView, public MEikListBoxObserver,
 		void FeedDownloadStartedL(TUint /*aFeedUid*/) {}		
 		void FeedDownloadFinishedL(TUint /*aFeedUid*/, TInt /*aError*/) {}
 		void FeedUpdateAllCompleteL() {}
-		void FeedSearchResultsUpdated();
+		void OpmlParsingComplete(TUint aNumFeedsImported);
 
 		/** 
 		 * Command handling function intended for overriding by sub classes. 
@@ -84,14 +82,12 @@ class CPodcastSearchView : public CPodcastListView, public MEikListBoxObserver,
 		void DialogDismissedL(TInt aButtonId); 
 
 		void UpdateToolbar();
-		void ShowWaitDialogL();
 		
 		void SearchL();
 		void CancelSearch();
 		
 	private:
 		CPodcastModel& iPodcastModel;		
-		CAknWaitDialog *iWaitDialog;
 		TBool iSearchRunning;
 };
 

@@ -34,6 +34,8 @@ public:
 	IMPORT_C static void ReplaceChar(TDes & aString, TUint aCharToReplace, TUint aReplacement);
 	IMPORT_C static void EnsureProperPathName(TFileName &aPath);
 	IMPORT_C static void FileNameFromUrl(const TDesC &aUrl, TFileName &aFileName);
-	};
+	IMPORT_C static void SQLEncode(TDes &aString);
+	IMPORT_C static void XMLEncode(TDes &aString);
+};
 
 #endif /* PODCASTUTILS_H_ */

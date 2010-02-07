@@ -34,13 +34,14 @@ class CPodcastModel;
 class COpmlParser;
 
 _LIT(KOpmlFeed, "    <outline title=\"%S\" description=\"%S\" xmlUrl=\"%S\" htmlUrl=\"%S\"/>");
-_LIT(KOpmlHeader, "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n<opml version=\"1.1\" xmlns:podcastSearch=\"http://digitalpodcast.com/podcastsearchservice/output_specs.html\">\n<head>\n  <title>Podcast Feed List</title>\n</head>\n<body>\n  <outline>");
+_LIT(KOpmlHeader, "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<opml version=\"1.1\" xmlns:podcastSearch=\"http://digitalpodcast.com/podcastsearchservice/output_specs.html\">\n<head>\n  <title>Podcast Feed List</title>\n</head>\n<body>\n  <outline>");
 _LIT(KOpmlFooter, "  </outline>\n</body>\n</opml>");
 
 _LIT(KSearchUrl, "http://www.digitalpodcast.com/podcastsearchservice/v2b/search/?appid=SymbianPodcatcher&keywords=%S&format=rssopml&sort=rel&searchsource=all&contentfilter=noadult&start=0&results=20");
 _LIT(KSearchResultsFileName, "searchresults.opml");
 
 const TInt KMaxUidBufLen = 20;
+const TInt KMaxTitleLength = 512;
 const TInt KMaxDescriptionLength = 1024;
 const TInt KMaxURLLength = 512;
 const TInt KMaxLineLength = 4096;
@@ -93,6 +94,7 @@ public:
 	IMPORT_C void AddSearchResultL(CFeedInfo *item);
 	IMPORT_C const RFeedInfoArray& GetSearchResults();
 
+	IMPORT_C void OpmlParsingComplete(TUint aNumFeedsAdded);
 protected:
 	
 	static TInt CompareFeedsByTitle(const CFeedInfo &a, const CFeedInfo &b);
@@ -116,7 +118,8 @@ private:
 	
 	void UpdateNextFeedL();
 	void NotifyFeedUpdateComplete(TInt aError);
-	void NotifySearchComplete();
+	void NotifyOpmlParsingComplete(TUint aNumFeedsAdded);
+
 	
 private:
 	void DBLoadFeedsL();
