@@ -556,14 +556,33 @@ void CPodcastFeedView::HandleAddFeedL()
 		
 
 		TBool added = iPodcastModel.FeedEngine().AddFeedL(*newFeedInfo); // takes ownership
-		if (!added)
+		if (added)
+			{
+			UpdateListboxItemsL();
+			// scroll to newly added feed
+			for (TUint i=0;i<iItemIdArray.Count();i++) {
+				if (iItemIdArray[i]==newFeedInfo->Uid()) {
+					iListContainer->iListbox->SetCurrentItemIndex(i);
+				}
+			}
+			
+			// ask if users wants to update it now
+			iListContainer->ScrollToVisible();
+			TBuf<KMaxMessageLength> message;
+			iEikonEnv->ReadResourceL(message, R_ADD_FEED_SUCCESS);
+			if(ShowQueryMessage(message)) {
+				iPodcastModel.FeedEngine().UpdateFeedL(newFeedInfo->Uid());
+			}
+			}
+		else
 			{
 			TBuf<KMaxMessageLength> message;
 			iEikonEnv->ReadResourceL(message, R_ADD_FEED_EXISTS);
 			ShowErrorMessage(message);
-			}				
+			}
+		
 		CleanupStack::PopAndDestroy(newFeedInfo);
-		UpdateListboxItemsL();
+		
 		}
 	}
 
@@ -815,15 +834,18 @@ void CPodcastFeedView::OpmlParsingComplete(TUint aNumFeedsImported)
 	if (iImporting)
 		{
 		UpdateListboxItemsL();
-					
+		delete iWaitDialog;
+		iImporting = EFalse;
+			
 		TBuf<KMaxMessageLength> message;
 		TBuf<KMaxMessageLength> templ;
 		iEikonEnv->ReadResourceL(templ, R_IMPORT_FEED_SUCCESS);
 		message.Format(templ, aNumFeedsImported);
-		ShowOkMessage(message);
+		
+		if(ShowQueryMessage(message)) {
+			iPodcastModel.FeedEngine().UpdateAllFeedsL(EFalse);
+		}
 
-		delete iWaitDialog;
-		iImporting = EFalse;
 		}
 	
 	DP("CPodcastFeedView::OpmlParsingComplete END");

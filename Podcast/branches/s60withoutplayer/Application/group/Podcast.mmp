@@ -93,6 +93,7 @@ SOURCE  PodcastSettingsView.cpp
 SOURCE  PodcastShowsView.cpp
 SOURCE  PodcastSearchView.cpp
 SOURCE  ImageHandler.cpp
+SOURCE  PodcastFeedViewUpdater.cpp 
 
 SOURCEPATH ..\data
 
@@ -156,6 +157,3 @@ LIBRARY PlatformEnv.lib // for PathInfo
 LIBRARY form.lib 
 LIBRARY ws32.lib 
 LIBRARY hlplch.lib
-
-SOURCEPATH ..\src
-SOURCE PodcastFeedViewUpdater.cpp
