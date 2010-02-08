@@ -195,7 +195,7 @@ RESOURCE DIALOG r_podcast_add_feed_dlg
 					layout = EDataLayout;
 					control = EDWIN
 						{
-						flags= EEikEdwinNoHorizScrolling | EEikEdwinResizable | EEikEdwinNoAutoSelection;
+						flags= EEikEdwinNoHorizScrolling | EEikEdwinResizable; // | EEikEdwinNoAutoSelection;
 						maxlength = 256;
 						width = 4;
 						lines = 5;
