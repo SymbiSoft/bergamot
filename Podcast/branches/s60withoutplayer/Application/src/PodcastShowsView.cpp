@@ -231,62 +231,11 @@ void CPodcastShowsView::DoActivateL(const TVwsViewId& aPrevViewId,
 		TUid aCustomMessageId, const TDesC8& aCustomMessage)
 	{
 	DP("CPodcastShowsView::DoActivateL BEGIN");
-	 CAknTitlePane* titlePane = static_cast<CAknTitlePane*>
-	      ( StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidTitle ) ) );
-	   
-	switch (aCustomMessageId.iUid)
-		{
-		case EShowPendingShows:
-			iCurrentCategory
-					= (TPodcastClientShowCategory) aCustomMessageId.iUid;
-			SetEmptyTextL(R_PODCAST_EMPTY_QUEUE);
-			
-			titlePane->SetSmallPicture(NULL, NULL, ETrue);
-			titlePane->SetPicture(NULL, NULL);
-			titlePane->SetTextToDefaultL();
-			break;
-		case EShowFeedShows:
-			iCurrentCategory = EShowFeedShows;
-			SetEmptyTextL(R_PODCAST_EMPTY_LIST);
-			titlePane->SetTextL( iPodcastModel.ActiveFeedInfo()->Title(), ETrue );
-			if(iPodcastModel.ActiveFeedInfo()->ImageFileName().Length())
-				{
-				CFbsBitmap * bitmap = new (ELeave) CFbsBitmap;
-				CleanupStack::PushL(bitmap);
-
-				TRAPD(loaderror, iImageHandler->LoadFileAndScaleL(bitmap, iPodcastModel.ActiveFeedInfo()->ImageFileName(), TSize(24,24)));
-
-				if(loaderror == KErrNone)
-					{
-					iSetTitlebarImage = ETrue;
-					//titlePane->SetSmallPicture(bitmap, NULL, ETrue);
-					CleanupStack::Pop(bitmap);
-					bitmap = NULL;
-					/*CActiveScheduler::Start();
-					if(iLastImageHandlerError == KErrNone)
-						{	
-						
-						
-						CleanupStack::Pop(bitmap);
-						bitmap = NULL;
-						}
-					else
-						{				
-						CleanupStack::PopAndDestroy(bitmap);
-						bitmap = NULL;
-						}*/
-					}
-				/*else
-					{
-					CleanupStack::PopAndDestroy(bitmap);
-					bitmap = NULL;
-					}*/
-				}												
-
-				
-			break;
-		}
-
+	
+	iCurrentCategory = (TPodcastClientShowCategory) aCustomMessageId.iUid;
+	
+	UpdateViewTitleL();
+	
 	CPodcastListView::DoActivateL(aPrevViewId, aCustomMessageId, aCustomMessage);
 	iPreviousView = TVwsViewId(KUidPodcast, KUidPodcastFeedViewID);
 	
@@ -355,20 +304,22 @@ void CPodcastShowsView::FeedDownloadStartedL(TFeedState aState,TUint aFeedUid)
 			&& iPodcastModel.ActiveFeedInfo()->Uid() == aFeedUid)
 		{
 		TRAP_IGNORE(UpdateFeedUpdateStateL());
+		UpdateToolbar();
 		}	
 	}
 
 void CPodcastShowsView::FeedDownloadFinishedL(TFeedState aState,TUint aFeedUid, TInt /*aError*/)
 	{
+	DP("CPodcastShowsView::FeedDownloadFinishedL BEGIN");
 	// TODO make use of the fact that we know that the feed download is
 	// finished instead of checking feed engine states in UpdateFeedUpdateStateL.
 	if (iPodcastModel.ActiveFeedInfo() != NULL
 			&& iPodcastModel.ActiveFeedInfo()->Uid() == aFeedUid)
 		{
 		TRAP_IGNORE(UpdateFeedUpdateStateL());
-		// Title might have changed
-		//TRAP_IGNORE(UpdateListboxItemsL());
+		TRAP_IGNORE(UpdateViewTitleL());
 		}
+	DP("CPodcastShowsView::FeedDownloadFinishedL END");
 	}
 
 void CPodcastShowsView::HandleListBoxEventL(CEikListBox* /*aListBox*/,
@@ -965,4 +916,69 @@ void CPodcastShowsView::DeleteShow()
 void CPodcastShowsView::DownloadQueueUpdatedL(TInt aDownloadingShows, TInt aQueuedShows)
 	{
 	((CPodcastAppUi*)AppUi())->UpdateQueueTab(aDownloadingShows+aQueuedShows);
+	}
+
+void CPodcastShowsView::FeedUpdateAllCompleteL(TFeedState aState)
+	{
+	UpdateListboxItemsL();
+	UpdateToolbar();
+	}
+
+void CPodcastShowsView::UpdateViewTitleL()
+	{
+	DP("CPodcastShowsView::UpdateViewTitleL BEGIN");
+	 CAknTitlePane* titlePane = static_cast<CAknTitlePane*>
+		      ( StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidTitle ) ) );
+		   
+	switch (iCurrentCategory)
+		{
+		case EShowPendingShows:
+			SetEmptyTextL(R_PODCAST_EMPTY_QUEUE);
+			titlePane->SetSmallPicture(NULL, NULL, ETrue);
+			titlePane->SetPicture(NULL, NULL);
+			titlePane->SetTextToDefaultL();
+			break;
+		case EShowFeedShows:
+			SetEmptyTextL(R_PODCAST_EMPTY_LIST);
+			if (iPodcastModel.ActiveFeedInfo()->Title() != KNullDesC)
+				{
+				titlePane->SetTextL( iPodcastModel.ActiveFeedInfo()->Title(), ETrue );
+				}
+			
+//			if(iPodcastModel.ActiveFeedInfo()->ImageFileName().Length())
+//				{
+//				CFbsBitmap * bitmap = new (ELeave) CFbsBitmap;
+//				CleanupStack::PushL(bitmap);
+//		
+//				TRAPD(loaderror, iImageHandler->LoadFileAndScaleL(bitmap, iPodcastModel.ActiveFeedInfo()->ImageFileName(), TSize(24,24)));
+//		
+//				if(loaderror == KErrNone)
+//					{
+//					iSetTitlebarImage = ETrue;
+//					//titlePane->SetSmallPicture(bitmap, NULL, ETrue);
+//					CleanupStack::Pop(bitmap);
+//					bitmap = NULL;
+//					/*CActiveScheduler::Start();
+//					if(iLastImageHandlerError == KErrNone)
+//						{	
+//						
+//						
+//						CleanupStack::Pop(bitmap);
+//						bitmap = NULL;
+//						}
+//					else
+//						{				
+//						CleanupStack::PopAndDestroy(bitmap);
+//						bitmap = NULL;
+//						}*/
+//					}
+//				/*else
+//					{
+//					CleanupStack::PopAndDestroy(bitmap);
+//					bitmap = NULL;
+//					}*/
+//				}			
+				break;
+		}
+	DP("CPodcastShowsView::UpdateViewTitleL END");
 	}

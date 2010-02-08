@@ -185,8 +185,8 @@ void CPodcastSearchView::UpdateListboxItemsL()
 			iItemIdArray.Append(fi->Uid());
 			TInt iconIndex = 1;
 			
-			TBuf<KMaxDescriptionLength> descr;
-			descr.Copy(fi->Description().Left(KMaxDescriptionLength));
+			TBuf<512> descr;
+			descr.Copy(fi->Description().Left(512));
 			
 			iListboxFormatbuffer.Format(KSearchResultFormat(), iconIndex, &fi->Title(), &descr);
 			iItemArray->AppendL(iListboxFormatbuffer);
@@ -235,7 +235,12 @@ void CPodcastSearchView::HandleCommandL(TInt aCommand)
 					{
 					TBuf<KMaxMessageLength> message;
 					iEikonEnv->ReadResourceL(message, R_ADD_FEED_SUCCESS);
-					ShowOkMessage(message);
+					if(ShowQueryMessage(message)) {
+						iPodcastModel.ActiveShowList().Reset();
+						iPodcastModel.SetActiveFeedInfo(info);			
+						AppUi()->ActivateLocalViewL(KUidPodcastShowsViewID,  TUid::Uid(EShowFeedShows), KNullDesC8());
+						iPodcastModel.FeedEngine().UpdateFeedL(info->Uid());
+					}
 					}
 				else
 					{
@@ -259,10 +264,10 @@ void CPodcastSearchView::OpmlParsingComplete(TUint aNumFeedsImported)
 	if (iSearchRunning)
 		{
 		iSearchRunning = EFalse;
+		delete iWaitDialog;
 		UpdateListboxItemsL();
 		UpdateToolbar();
 		
-		delete iWaitDialog;
 		if (iPodcastModel.FeedEngine().GetSearchResults().Count() == 0)
 			{
 			TBuf<KMaxMessageLength> message;

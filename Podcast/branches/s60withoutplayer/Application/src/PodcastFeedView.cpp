@@ -562,20 +562,20 @@ void CPodcastFeedView::HandleAddFeedL()
 		if (added)
 			{
 			UpdateListboxItemsL();
-			// scroll to newly added feed
-			for (TUint i=0;i<iItemIdArray.Count();i++) {
-				if (iItemIdArray[i]==newFeedInfo->Uid()) {
-					iListContainer->iListbox->SetCurrentItemIndex(i);
-				}
-			}
 			
 			// ask if users wants to update it now
-			iListContainer->ScrollToVisible();
 			TBuf<KMaxMessageLength> message;
 			iEikonEnv->ReadResourceL(message, R_ADD_FEED_SUCCESS);
-			if(ShowQueryMessage(message)) {
-				iPodcastModel.FeedEngine().UpdateFeedL(newFeedInfo->Uid());
-			}
+			if(ShowQueryMessage(message))
+				{
+				// newFeedInfo will be deleted below, so we must get a permanent pointer from the feed engine
+				CFeedInfo *info = iPodcastModel.FeedEngine().GetFeedInfoByUid(newFeedInfo->Uid());
+				
+				iPodcastModel.ActiveShowList().Reset();
+				iPodcastModel.SetActiveFeedInfo(info);			
+				AppUi()->ActivateLocalViewL(KUidPodcastShowsViewID,  TUid::Uid(EShowFeedShows), KNullDesC8());
+				iPodcastModel.FeedEngine().UpdateFeedL(info->Uid());
+				}
 			}
 		else
 			{
