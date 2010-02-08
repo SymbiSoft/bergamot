@@ -333,6 +333,11 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TInt aError)
 		else
 			{
 			// Connection error
+			if(iShowDownloading)
+				{
+				iShowDownloading->SetDownloadState(EQueued);
+				DBUpdateShow(*iShowDownloading);
+				}
 			iPodcastModel.SettingsEngine().SetDownloadSuspended(ETrue);
 			NotifyShowFinishedL(aError);
 			}
