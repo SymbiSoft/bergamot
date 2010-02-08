@@ -77,7 +77,7 @@ class CPodcastListContainer : public CCoeControl
 
 class CPodcastListView : public CAknView, public MAknToolbarObserver,
 public MPointerListener, public MAknLongTapDetectorCallBack, 
-public MProgressDialogCallback
+public MProgressDialogCallback, public MKeyEventListener
     {
     public: 
         ~CPodcastListView();
@@ -139,6 +139,10 @@ public MProgressDialogCallback
 		// from MProgressDialogCallback		
 		void DialogDismissedL(TInt aButtonId) {}
 
+		// from MKeyEventListener
+		virtual TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType);
+
+		// from MPointerListener
 		void PointerEventL(const TPointerEvent& aPointerEvent);
 
 		virtual void UpdateToolbar() = 0;

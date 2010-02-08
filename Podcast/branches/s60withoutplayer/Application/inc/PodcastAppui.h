@@ -102,6 +102,8 @@ class CPodcastAppUi : public CAknViewAppUi, public MAknTabObserver, MTimeoutObse
 
        void SetActiveTab(TInt aIndex);
        void UpdateQueueTab(TInt aQueueLength);
+       void TabLeft();
+       void TabRight();
     private:
         // From MEikMenuObserver
         void DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane);

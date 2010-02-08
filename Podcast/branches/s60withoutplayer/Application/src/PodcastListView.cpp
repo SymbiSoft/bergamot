@@ -45,6 +45,7 @@ TKeyResponse CPodcastListContainer::OfferKeyEventL(const TKeyEvent& aKeyEvent,TE
 	TKeyResponse response = iListbox->OfferKeyEventL(aKeyEvent, aType);
 	if (iKeyEventListener)
 		iKeyEventListener->OfferKeyEventL(aKeyEvent, aType);
+	
 	return response;
 }
 
@@ -185,6 +186,7 @@ void CPodcastListView::ConstructL()
 	
 	iLongTapDetector = CAknLongTapDetector::NewL(this);
 	iListContainer->SetPointerListener(this);
+	iListContainer->SetKeyEventListener(this);
 }
 
 void CPodcastListView::HandleViewRectChange()
@@ -389,3 +391,21 @@ void CPodcastListView::ShowWaitDialogL(TDesC &aWaitText)
 	iWaitDialog->SetTextL(aWaitText);
 	DP("CPodcastListView::ShowWaitDialogL END");
 	}
+
+TKeyResponse CPodcastListView::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType)
+	{
+	if (aType==EEventKey)
+		{
+		switch (aKeyEvent.iCode)
+			{
+			case EKeyRightArrow:
+				((CPodcastAppUi*)AppUi())->TabRight();
+				return EKeyWasConsumed;
+			case EKeyLeftArrow:
+				((CPodcastAppUi*)AppUi())->TabLeft();
+				return EKeyWasConsumed;
+			}
+		}
+	return EKeyWasNotConsumed;
+	}
+

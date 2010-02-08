@@ -34,7 +34,7 @@
 class CImageHandler;
 
 class CPodcastShowsView : public CPodcastListView, public MEikListBoxObserver, 
-	public MFeedEngineObserver, public MShowEngineObserver, public MKeyEventListener, public MImageHandlerCallback
+	public MFeedEngineObserver, public MShowEngineObserver, public MImageHandlerCallback
 	{
 public: 
 	static CPodcastShowsView* NewL(CPodcastModel& aPodcastModel);

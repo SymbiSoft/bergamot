@@ -163,20 +163,19 @@ void CPodcastAppUi::NaviShowTabGroupL()
 	iNaviPane->PushL(*iNaviDecorator);
 	}
 
-void CPodcastAppUi::TabChangedL (TInt /*aIndex*/)
+void CPodcastAppUi::TabChangedL (TInt aIndex)
 	{
 	DP("CPodcastListView::TabChangedL ");
-	TInt index = iTabGroup->ActiveTabIndex();
 	
 	TUid newview = TUid::Uid(0);
 	TUid messageUid = TUid::Uid(0);
 	
-	if (index == 0) {
+	if (aIndex == 0) {
 		newview = KUidPodcastFeedViewID;
-	} else if (index == 1) {
+	} else if (aIndex == 1) {
 		newview = KUidPodcastShowsViewID;
 		messageUid = TUid::Uid(EShowPendingShows);
-	} else if (index == 2) {
+	} else if (aIndex == 2) {
 		newview = KUidPodcastSearchViewID;
 		messageUid = TUid::Uid(0);	
 	} else {
@@ -216,4 +215,23 @@ void CPodcastAppUi::UpdateQueueTab(TInt aQueueLength)
 		CleanupStack::PopAndDestroy(queueCounter);
 		CleanupStack::PopAndDestroy(queueTemplate);	
 		}
+	}
+
+void CPodcastAppUi::TabLeft()
+	{
+	TUint ati = iTabGroup->ActiveTabIndex();
+	if(ati > 0) {
+		SetActiveTab(ati-1);
+		TabChangedL(ati-1);
+	}
+	}
+
+void CPodcastAppUi::TabRight()
+	{
+	TUint ati = iTabGroup->ActiveTabIndex();
+	
+	if(ati < iTabGroup->TabCount()-1) {
+		SetActiveTab(ati+1);
+		TabChangedL(ati+1);
+	}
 	}

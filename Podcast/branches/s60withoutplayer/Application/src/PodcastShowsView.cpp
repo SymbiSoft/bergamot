@@ -153,7 +153,6 @@ void CPodcastShowsView::ConstructL()
 	CleanupStack::Pop(icons); // icons
 	iListContainer->Listbox()->SetListBoxObserver(this);
 	
-	iListContainer->SetKeyEventListener(this);
 	iPodcastModel.FeedEngine().AddObserver(this);
 	iPodcastModel.ShowEngine().AddObserver(this);
 	
@@ -203,11 +202,13 @@ TKeyResponse CPodcastShowsView::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEvent
 					HandleCommandL(EPodcastDeleteShowHardware);
 				}
 				break;
+			default:
+				break;
 			}
 			UpdateToolbar();
 		}
 	}
-		return EKeyWasNotConsumed;
+		return CPodcastListView::OfferKeyEventL(aKeyEvent, aType);
 	}
 
 CPodcastShowsView::~CPodcastShowsView()
