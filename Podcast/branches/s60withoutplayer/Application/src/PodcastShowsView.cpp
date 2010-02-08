@@ -240,12 +240,50 @@ void CPodcastShowsView::DoActivateL(const TVwsViewId& aPrevViewId,
 			iCurrentCategory
 					= (TPodcastClientShowCategory) aCustomMessageId.iUid;
 			SetEmptyTextL(R_PODCAST_EMPTY_QUEUE);
+			
+			titlePane->SetSmallPicture(NULL, NULL, ETrue);
+			titlePane->SetPicture(NULL, NULL);
 			titlePane->SetTextToDefaultL();
 			break;
 		case EShowFeedShows:
 			iCurrentCategory = EShowFeedShows;
 			SetEmptyTextL(R_PODCAST_EMPTY_LIST);
 			titlePane->SetTextL( iPodcastModel.ActiveFeedInfo()->Title(), ETrue );
+			if(iPodcastModel.ActiveFeedInfo()->ImageFileName().Length())
+				{
+				CFbsBitmap * bitmap = new (ELeave) CFbsBitmap;
+				CleanupStack::PushL(bitmap);
+
+				TRAPD(loaderror, iImageHandler->LoadFileAndScaleL(bitmap, iPodcastModel.ActiveFeedInfo()->ImageFileName(), TSize(24,24)));
+
+				if(loaderror == KErrNone)
+					{
+					iSetTitlebarImage = ETrue;
+					//titlePane->SetSmallPicture(bitmap, NULL, ETrue);
+					CleanupStack::Pop(bitmap);
+					bitmap = NULL;
+					/*CActiveScheduler::Start();
+					if(iLastImageHandlerError == KErrNone)
+						{	
+						
+						
+						CleanupStack::Pop(bitmap);
+						bitmap = NULL;
+						}
+					else
+						{				
+						CleanupStack::PopAndDestroy(bitmap);
+						bitmap = NULL;
+						}*/
+					}
+				/*else
+					{
+					CleanupStack::PopAndDestroy(bitmap);
+					bitmap = NULL;
+					}*/
+				}												
+
+				
 			break;
 		}
 
@@ -261,6 +299,9 @@ void CPodcastShowsView::DoDeactivate()
 	{
 	CAknTitlePane* titlePane = static_cast<CAknTitlePane*>
 		     ( StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidTitle ) ) );
+	
+	titlePane->SetSmallPicture(NULL, NULL, ETrue);
+	titlePane->SetPicture(NULL, NULL);
 	titlePane->SetTextToDefaultL();
 	CPodcastListView::DoDeactivate();
 	}
@@ -710,7 +751,18 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 void CPodcastShowsView::ImageOperationCompleteL(TInt aError)
 	{
 	iLastImageHandlerError = aError;
-	CActiveScheduler::Stop();
+	if(iSetTitlebarImage)
+		{
+		iSetTitlebarImage = EFalse;
+		CAknTitlePane* titlePane = static_cast<CAknTitlePane*>
+				     ( StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidTitle ) ) );
+	    titlePane->SetSmallPicture(iImageHandler->ScaleddBitmap(), NULL, ETrue);				  
+			
+		}
+	else
+		{
+		CActiveScheduler::Stop();
+		}
 	}
 	
 void CPodcastShowsView::DisplayShowInfoDialogL()

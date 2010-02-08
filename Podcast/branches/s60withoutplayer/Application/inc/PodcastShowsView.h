@@ -119,6 +119,7 @@ private:
 	TBool iProgressAdded;
 	CImageHandler* iImageHandler;
 	TInt iLastImageHandlerError;
+	TBool iSetTitlebarImage;
 	};
 
 #endif // PODCASTSHOWSVIEWH
