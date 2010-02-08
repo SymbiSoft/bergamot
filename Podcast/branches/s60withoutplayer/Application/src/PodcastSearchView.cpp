@@ -230,24 +230,31 @@ void CPodcastSearchView::HandleCommandL(TInt aCommand)
 		
 			if(index < iItemArray->MdcaCount() && index >= 0)
 				{
-				CFeedInfo *info = iPodcastModel.FeedEngine().GetSearchResults()[index];
-				if(iPodcastModel.FeedEngine().AddFeedL(*info))
-					{
+				CFeedInfo *newInfo = iPodcastModel.FeedEngine().GetSearchResults()[index];
+				TBool added = iPodcastModel.FeedEngine().AddFeedL(*newInfo);
+				
+				if (added)
+					{					
+					// ask if users wants to update it now
 					TBuf<KMaxMessageLength> message;
 					iEikonEnv->ReadResourceL(message, R_ADD_FEED_SUCCESS);
-					if(ShowQueryMessage(message)) {
+					if(ShowQueryMessage(message))
+						{
+						CFeedInfo *info = iPodcastModel.FeedEngine().GetFeedInfoByUid(newInfo->Uid());
+						
 						iPodcastModel.ActiveShowList().Reset();
 						iPodcastModel.SetActiveFeedInfo(info);			
 						AppUi()->ActivateLocalViewL(KUidPodcastShowsViewID,  TUid::Uid(EShowFeedShows), KNullDesC8());
+						((CPodcastAppUi*)AppUi())->SetActiveTab(KTabIdShows);
 						iPodcastModel.FeedEngine().UpdateFeedL(info->Uid());
-					}
+						}
 					}
 				else
 					{
 					TBuf<KMaxMessageLength> message;
-					iEikonEnv->ReadResourceL(message, R_ADD_FEED_FAILURE);
+					iEikonEnv->ReadResourceL(message, R_ADD_FEED_EXISTS);
 					ShowErrorMessage(message);
-					}
+					}		
 				}
 			}
 			break;

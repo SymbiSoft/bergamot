@@ -38,6 +38,11 @@ const TUid KUidPodcastShowsViewID = {0x00000003};
 const TUid KUidPodcastSettingsViewID = {0x00000005};
 const TUid KUidPodcastSearchViewID = {0x00000006};
 
+const TUint KTabIdFeeds = 0;
+const TUint KTabIdShows = 0;
+const TUint KTabIdQueue = 1;
+const TUint KTabIdSearch = 0;
+
 const TInt KTimeoutPrio = CActive::EPriorityStandard;
 
 class CTimeout;

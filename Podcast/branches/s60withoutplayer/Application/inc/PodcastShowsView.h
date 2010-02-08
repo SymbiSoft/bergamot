@@ -80,7 +80,7 @@ protected:
 	// from MFeedEngineObserver
 	void FeedDownloadStartedL(TFeedState aState,TUint aFeedUid);
 	void FeedDownloadFinishedL(TFeedState aState,TUint aFeedUid, TInt aError);
-	void FeedUpdateAllCompleteL(TFeedState /*aState*/) {}
+	void FeedUpdateAllCompleteL(TFeedState aState);
 	void OpmlParsingComplete(TUint aNumFeedsImported) {}
 
 	/** 
@@ -111,6 +111,7 @@ private:
 	virtual void ImageOperationCompleteL(TInt aError);
 	void SetShowPlayed(TBool aPlayed);
 	void DeleteShow();
+	void UpdateViewTitleL();
 	
 private:
 	

@@ -557,8 +557,8 @@ void CPodcastFeedView::HandleAddFeedL()
 		newFeedInfo->SetUrlL(url);
 		newFeedInfo->SetTitleL(newFeedInfo->Url());
 		
-
-		TBool added = iPodcastModel.FeedEngine().AddFeedL(*newFeedInfo); // takes ownership
+		TBool added = iPodcastModel.FeedEngine().AddFeedL(*newFeedInfo);
+		
 		if (added)
 			{
 			UpdateListboxItemsL();
@@ -568,13 +568,12 @@ void CPodcastFeedView::HandleAddFeedL()
 			iEikonEnv->ReadResourceL(message, R_ADD_FEED_SUCCESS);
 			if(ShowQueryMessage(message))
 				{
-				// newFeedInfo will be deleted below, so we must get a permanent pointer from the feed engine
 				CFeedInfo *info = iPodcastModel.FeedEngine().GetFeedInfoByUid(newFeedInfo->Uid());
 				
 				iPodcastModel.ActiveShowList().Reset();
 				iPodcastModel.SetActiveFeedInfo(info);			
 				AppUi()->ActivateLocalViewL(KUidPodcastShowsViewID,  TUid::Uid(EShowFeedShows), KNullDesC8());
-				iPodcastModel.FeedEngine().UpdateFeedL(info->Uid());
+				iPodcastModel.FeedEngine().UpdateFeedL(newFeedInfo->Uid());
 				}
 			}
 		else
@@ -582,7 +581,7 @@ void CPodcastFeedView::HandleAddFeedL()
 			TBuf<KMaxMessageLength> message;
 			iEikonEnv->ReadResourceL(message, R_ADD_FEED_EXISTS);
 			ShowErrorMessage(message);
-			}
+			}		
 		
 		CleanupStack::PopAndDestroy(newFeedInfo);
 		
@@ -858,4 +857,3 @@ void CPodcastFeedView::DialogDismissedL(TInt aButtonId)
 	{
 	
 	}
-
