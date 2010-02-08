@@ -20,9 +20,16 @@
 #define FEEDENGINEOBSERVER_H_
 class MFeedEngineObserver {
 public:
-	virtual void FeedDownloadStartedL(TUint aFeedUid) = 0;
-	virtual void FeedDownloadFinishedL(TUint aFeedUid, TInt aError) = 0;
-	virtual void FeedUpdateAllCompleteL() = 0;
+	enum TFeedState
+		{
+		EFeedAutoUpdate,
+		EFeedManualUpdate, 
+		EFeedSearch
+		};
+	
+	virtual void FeedDownloadStartedL(TFeedState aState, TUint aFeedUid) = 0;
+	virtual void FeedDownloadFinishedL(TFeedState aState, TUint aFeedUid, TInt aError) = 0;
+	virtual void FeedUpdateAllCompleteL(TFeedState aState) = 0;
 	virtual void OpmlParsingComplete(TUint aNumFeedsImported) = 0;
 };
 #endif /*FEEDENGINEOBSERVER_H_*/

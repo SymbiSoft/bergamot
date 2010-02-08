@@ -235,13 +235,13 @@ void CPodcastFeedView::HandleListBoxEventL(CEikListBox* /* aListBox */, TListBox
 	DP("CPodcastFeedView::HandleListBoxEventL END");
 	}
 
-void CPodcastFeedView::FeedUpdateAllCompleteL()
+void CPodcastFeedView::FeedUpdateAllCompleteL(TFeedState aState)
 	{
 	iUpdatingAllRunning = EFalse;
 	UpdateToolbar();
 	}
 
-void CPodcastFeedView::FeedDownloadStartedL(TUint aFeedUid)
+void CPodcastFeedView::FeedDownloadStartedL(TFeedState aState,TUint aFeedUid)
 	{
 	iUpdatingAllRunning = ETrue;		
 
@@ -249,15 +249,18 @@ void CPodcastFeedView::FeedDownloadStartedL(TUint aFeedUid)
 	UpdateFeedInfoStatusL(aFeedUid, ETrue);
 	}
 
-void CPodcastFeedView::FeedDownloadFinishedL(TUint aFeedUid, TInt aError)
+void CPodcastFeedView::FeedDownloadFinishedL(TFeedState aState,TUint aFeedUid, TInt aError)
 	{
 	switch(aError)
 		{
 		case KErrCouldNotConnect:
 			{
-			TBuf<KMaxMessageLength> message;
-			iEikonEnv->ReadResourceL(message, R_PODCAST_CONNECTION_ERROR);
-			ShowErrorMessage(message);
+			if(aState == MFeedEngineObserver::EFeedAutoUpdate)
+				{
+				TBuf<KMaxMessageLength> message;
+				iEikonEnv->ReadResourceL(message, R_PODCAST_CONNECTION_ERROR);
+				ShowErrorMessage(message);
+				}
 			}
 			break;
 		default: // Do nothing

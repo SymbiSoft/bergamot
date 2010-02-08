@@ -78,9 +78,9 @@ protected:
 	void DownloadQueueUpdatedL(TInt aDownloadingShows, TInt aQueuedShows);
 	void ShowDownloadFinishedL(TUint aShowUid, TInt aError) ;
 	// from MFeedEngineObserver
-	void FeedDownloadStartedL(TUint aFeedUid);
-	void FeedDownloadFinishedL(TUint aFeedUid, TInt aError);
-	void FeedUpdateAllCompleteL() {}
+	void FeedDownloadStartedL(TFeedState aState,TUint aFeedUid);
+	void FeedDownloadFinishedL(TFeedState aState,TUint aFeedUid, TInt aError);
+	void FeedUpdateAllCompleteL(TFeedState /*aState*/) {}
 	void OpmlParsingComplete(TUint aNumFeedsImported) {}
 
 	/** 

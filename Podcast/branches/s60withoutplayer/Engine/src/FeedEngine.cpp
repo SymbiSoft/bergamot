@@ -136,6 +136,7 @@ void CFeedEngine::RunFeedTimer()
 
 EXPORT_C void CFeedEngine::UpdateAllFeedsL(TBool aAutoUpdate)
 	{
+	iAutoUpdatedInitiator = aAutoUpdate;
 	if (iFeedsUpdating.Count() > 0)
 		{
 		DP("Cancelling update");
@@ -179,7 +180,7 @@ void CFeedEngine::UpdateNextFeedL()
 			DP("Error while updating all feeds");
 			for (TInt i=0;i<iObservers.Count();i++) 
 				{
-				TRAP_IGNORE(iObservers[i]->FeedUpdateAllCompleteL());
+				TRAP_IGNORE(iObservers[i]->FeedUpdateAllCompleteL(iAutoUpdatedInitiator?MFeedEngineObserver::EFeedAutoUpdate:MFeedEngineObserver::EFeedManualUpdate));
 				}
 			}
 		}
@@ -188,7 +189,7 @@ void CFeedEngine::UpdateNextFeedL()
 		iClientState = EIdle;
 		for (TInt i=0;i<iObservers.Count();i++) 
 			{
-			TRAP_IGNORE(iObservers[i]->FeedUpdateAllCompleteL());
+			TRAP_IGNORE(iObservers[i]->FeedUpdateAllCompleteL(iAutoUpdatedInitiator?MFeedEngineObserver::EFeedAutoUpdate:MFeedEngineObserver::EFeedManualUpdate));
 			}
 		}
 	}
@@ -214,7 +215,7 @@ EXPORT_C TBool CFeedEngine::UpdateFeedL(TUint aFeedUid)
 		
 		for (TInt i=0;i<iObservers.Count();i++)
 			{
-			TRAP_IGNORE(iObservers[i]->FeedDownloadStartedL(iActiveFeed->Uid()));
+			TRAP_IGNORE(iObservers[i]->FeedDownloadStartedL(iAutoUpdatedInitiator?MFeedEngineObserver::EFeedAutoUpdate:MFeedEngineObserver::EFeedManualUpdate, iActiveFeed->Uid()));
 			}
 
 		DP("FeedEngine::UpdateFeedL END, return ETrue");
@@ -626,7 +627,7 @@ void CFeedEngine::NotifyFeedUpdateComplete(TInt aError)
 	DBUpdateFeed(*iActiveFeed);
 	for (TInt i=0;i<iObservers.Count();i++) 
 		{
-		TRAP_IGNORE(iObservers[i]->FeedDownloadFinishedL(iActiveFeed->Uid(), aError));
+		TRAP_IGNORE(iObservers[i]->FeedDownloadFinishedL(iAutoUpdatedInitiator?MFeedEngineObserver::EFeedAutoUpdate:MFeedEngineObserver::EFeedManualUpdate, iActiveFeed->Uid(), aError));
 		}
 	}
 

@@ -161,6 +161,7 @@ private:
     
     COpmlParser* iOpmlParser;
 	RFeedInfoArray iSearchResults;
+	TBool iAutoUpdatedInitiator;
 };
 #endif /*FEEDENGINE_H_*/
 

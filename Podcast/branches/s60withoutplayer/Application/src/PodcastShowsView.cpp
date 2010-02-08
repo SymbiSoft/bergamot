@@ -298,7 +298,7 @@ void CPodcastShowsView::ShowDownloadFinishedL(TUint aFeedUid, TInt aError)
 	}
 
 
-void CPodcastShowsView::FeedDownloadStartedL(TUint aFeedUid)
+void CPodcastShowsView::FeedDownloadStartedL(TFeedState aState,TUint aFeedUid)
 	{
 	// TODO make use of the fact that we know that the feed download is
 	// started instead of checking feed engine states in UpdateFeedUpdateStateL.
@@ -309,7 +309,7 @@ void CPodcastShowsView::FeedDownloadStartedL(TUint aFeedUid)
 		}	
 	}
 
-void CPodcastShowsView::FeedDownloadFinishedL(TUint aFeedUid, TInt /*aError*/)
+void CPodcastShowsView::FeedDownloadFinishedL(TFeedState aState,TUint aFeedUid, TInt /*aError*/)
 	{
 	// TODO make use of the fact that we know that the feed download is
 	// finished instead of checking feed engine states in UpdateFeedUpdateStateL.
