@@ -24,6 +24,7 @@
 #include "Constants.h"
 #include "imagehandler.h"
 
+#include <akntitle.h>
 #include <podcast.rsg>
 #include <podcast.mbg>
 #include <gulicon.h>
@@ -230,17 +231,21 @@ void CPodcastShowsView::DoActivateL(const TVwsViewId& aPrevViewId,
 		TUid aCustomMessageId, const TDesC8& aCustomMessage)
 	{
 	DP("CPodcastShowsView::DoActivateL BEGIN");
-	
+	 CAknTitlePane* titlePane = static_cast<CAknTitlePane*>
+	      ( StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidTitle ) ) );
+	   
 	switch (aCustomMessageId.iUid)
 		{
 		case EShowPendingShows:
 			iCurrentCategory
 					= (TPodcastClientShowCategory) aCustomMessageId.iUid;
 			SetEmptyTextL(R_PODCAST_EMPTY_QUEUE);
+			titlePane->SetTextToDefaultL();
 			break;
 		case EShowFeedShows:
 			iCurrentCategory = EShowFeedShows;
 			SetEmptyTextL(R_PODCAST_EMPTY_LIST);
+			titlePane->SetTextL( iPodcastModel.ActiveFeedInfo()->Title(), ETrue );
 			break;
 		}
 
@@ -254,6 +259,9 @@ void CPodcastShowsView::DoActivateL(const TVwsViewId& aPrevViewId,
 
 void CPodcastShowsView::DoDeactivate()
 	{
+	CAknTitlePane* titlePane = static_cast<CAknTitlePane*>
+		     ( StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidTitle ) ) );
+	titlePane->SetTextToDefaultL();
 	CPodcastListView::DoDeactivate();
 	}
 
