@@ -255,7 +255,7 @@ void CPodcastFeedView::FeedDownloadFinishedL(TFeedState aState,TUint aFeedUid, T
 		{
 		case KErrCouldNotConnect:
 			{
-			if(aState == MFeedEngineObserver::EFeedAutoUpdate)
+			if(aState == MFeedEngineObserver::EFeedManualUpdate)
 				{
 				TBuf<KMaxMessageLength> message;
 				iEikonEnv->ReadResourceL(message, R_PODCAST_CONNECTION_ERROR);
