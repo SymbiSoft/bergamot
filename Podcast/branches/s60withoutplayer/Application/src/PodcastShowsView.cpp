@@ -954,7 +954,7 @@ void CPodcastShowsView::UpdateViewTitleL()
 					titlePane->SetTextL( iPodcastModel.ActiveFeedInfo()->Title(), ETrue );
 					}
 
-				if(iPodcastModel.ActiveFeedInfo()->ImageFileName().Length())
+				if(iPodcastModel.ActiveFeedInfo()->ImageFileName().Length() && !iImageHandler->IsActive())
 					{
 					CFbsBitmap * bitmap = new (ELeave) CFbsBitmap;
 					CleanupStack::PushL(bitmap);

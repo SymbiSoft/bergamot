@@ -191,7 +191,7 @@ void CImageHandler::DoCancel()
         }
     if ( iScaler )
         {
-        iDecoder->Cancel();
+        iScaler->Cancel();
         }
     }
 
