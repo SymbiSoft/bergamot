@@ -124,6 +124,8 @@ LIBRARY esock.lib
 LIBRARY mmfcontrollerframework.lib 
 LIBRARY cmmanager.lib
 LIBRARY libc.lib
+LIBRARY imageconversion.lib 
+LIBRARY bitmaptransforms.lib 
 #else
 LIBRARY PodCastEngine.lib
 #endif
