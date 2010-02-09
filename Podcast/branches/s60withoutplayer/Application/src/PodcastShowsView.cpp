@@ -705,9 +705,16 @@ void CPodcastShowsView::ImageOperationCompleteL(TInt aError)
 	if(iSetTitlebarImage)
 		{
 		iSetTitlebarImage = EFalse;
-		CAknTitlePane* titlePane = static_cast<CAknTitlePane*>
-				     ( StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidTitle ) ) );
-	    titlePane->SetSmallPicture(iImageHandler->ScaleddBitmap(), NULL, ETrue);				  
+		if(aError == KErrNone)
+			{
+			CAknTitlePane* titlePane = static_cast<CAknTitlePane*>
+						 ( StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidTitle ) ) );
+			titlePane->SetSmallPicture(iImageHandler->ScaleddBitmap(), NULL, ETrue);
+			}
+		else
+			{
+			delete iImageHandler->ScaleddBitmap();
+			}
 			
 		}
 	else

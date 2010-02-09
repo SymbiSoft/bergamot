@@ -75,7 +75,8 @@ void CHttpClient::SetResumeEnabled(TBool aEnabled)
 void CHttpClient::ConnectHttpSessionL()
 {
 	DP("ConnectHttpSessionL START");	
-	if(iPodcastModel.ConnectionEngine().ConnectionState() == CConnectionEngine::EConnected)
+	CConnectionEngine::TConnectionState connState = iPodcastModel.ConnectionEngine().ConnectionState();
+	if(connState == CConnectionEngine::EConnected)
 		{
 		DP("ConnectionState == CConnectionEngine::EConnected");
 		// Session already connected, call connect complete directly but return status since URLs or so might be faulty
@@ -83,25 +84,27 @@ void CHttpClient::ConnectHttpSessionL()
 		return;
 		}
 
-	DP1("SpecificIAP() == %d",iPodcastModel.SettingsEngine().SpecificIAP());
+	if(connState == CConnectionEngine::ENotConnected)
+		{
+		DP1("SpecificIAP() == %d",iPodcastModel.SettingsEngine().SpecificIAP());
 
-	if(iPodcastModel.SettingsEngine().SpecificIAP() == -1)
-		{
-		iPodcastModel.ConnectionEngine().StartL(CConnectionEngine::EUserSelectConnection);	
+		if(iPodcastModel.SettingsEngine().SpecificIAP() == -1)
+			{
+			iPodcastModel.ConnectionEngine().StartL(CConnectionEngine::EUserSelectConnection);	
+			}
+		else if ( iPodcastModel.SettingsEngine().SpecificIAP() == 0 )
+			{
+			iPodcastModel.ConnectionEngine().StartL(CConnectionEngine::EDefaultConnection);	
+			}
+		else if( (iPodcastModel.SettingsEngine().SpecificIAP()&KUseIAPFlag))
+			{
+			iPodcastModel.ConnectionEngine().StartL(CConnectionEngine::EIAPConnection);
+			}
+		else
+			{
+			iPodcastModel.ConnectionEngine().StartL(CConnectionEngine::EMobilityConnection);
+			}
 		}
-	else if ( iPodcastModel.SettingsEngine().SpecificIAP() == 0 )
-		{
-		iPodcastModel.ConnectionEngine().StartL(CConnectionEngine::EDefaultConnection);	
-		}
-	else if( (iPodcastModel.SettingsEngine().SpecificIAP()&KUseIAPFlag))
-		{
-		iPodcastModel.ConnectionEngine().StartL(CConnectionEngine::EIAPConnection);
-		}
-	else
-		{
-		iPodcastModel.ConnectionEngine().StartL(CConnectionEngine::EMobilityConnection);
-		}
-		
 	DP("ConnectHttpSessionL END");	
 }
 

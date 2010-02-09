@@ -393,12 +393,14 @@ void CHttpEventHandler::SetSilent(TBool aSilent)
 void CHttpEventHandler::CloseSaveFile()
 {
 	if(iRespBody != NULL)
-	{
-		TInt size;
-		
-		iRespBodyFile.Size(size);
-		DP2("Closing file at size %d, bytes downloaded %d", size, iBytesDownloaded);
-		iRespBodyFile.Close();
+	{		
+		if(iRespBodyFile.SubSessionHandle() != 0)
+			{
+			TInt size;
+			iRespBodyFile.Size(size);
+			DP2("Closing file at size %d, bytes downloaded %d", size, iBytesDownloaded);
+			iRespBodyFile.Close();
+			}
 	}
 }
 

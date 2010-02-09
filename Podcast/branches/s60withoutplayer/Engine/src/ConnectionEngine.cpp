@@ -204,6 +204,7 @@ void CConnectionEngine::StartL(TConnectionType aConnectionType)
 		}		
 	
 	iConnectionType = aConnectionType;
+	iConnectionState = CConnectionEngine::EConnecting;
 	}
 
 RConnection& CConnectionEngine::Connection()
@@ -213,8 +214,17 @@ RConnection& CConnectionEngine::Connection()
 
 CConnectionEngine::TConnectionState CConnectionEngine::ConnectionState()
 	{
+	TInt selectedConn = (TInt) iSnapPreference.Snap();
+	TInt specIAPSNAP = iPodcastModel.SettingsEngine().SpecificIAP();
+	// If we have IAP preference then get that from our current connection and mask out the selected iap
+	if((specIAPSNAP&KUseIAPFlag))
+		{
+		selectedConn = iCommdbPreference.IapId();
+		specIAPSNAP = specIAPSNAP&KUseIAPMask;
+		}
 	
-	if( iPodcastModel.SettingsEngine().SpecificIAP()!= (TInt) iSnapPreference.Snap() )
+	// IAPSNAP must be > 0 and then  if the IAP/Sel conn IAP differs
+	if(specIAPSNAP >0 && specIAPSNAP !=  selectedConn )
 		{
 		if(iConnection.SubSessionHandle() != 0)
 			{
@@ -225,12 +235,16 @@ CConnectionEngine::TConnectionState CConnectionEngine::ConnectionState()
 		}
 	else
 		{
+		// We have a user selection or default selction, check our current connection state.
 		TNifProgress progress;
 		if(iConnection.Progress(progress) == KErrNone)
 			{
 			if(progress.iError == KErrNone && progress.iStage != 0)
 				{
-				iConnectionState = CConnectionEngine::EConnected;
+				if(progress.iStage == KLinkLayerOpen)
+					{
+					iConnectionState = CConnectionEngine::EConnected;
+					}				
 				}
 			else
 				{
