@@ -947,28 +947,37 @@ void CPodcastShowsView::UpdateViewTitleL()
 			break;
 		case EShowFeedShows:
 			SetEmptyTextL(R_PODCAST_EMPTY_LIST);
-			if (iPodcastModel.ActiveFeedInfo()->Title() != KNullDesC)
+			if(iPodcastModel.ActiveFeedInfo())
 				{
-				titlePane->SetTextL( iPodcastModel.ActiveFeedInfo()->Title(), ETrue );
+				if (iPodcastModel.ActiveFeedInfo()->Title() != KNullDesC)
+					{
+					titlePane->SetTextL( iPodcastModel.ActiveFeedInfo()->Title(), ETrue );
+					}
+
+				if(iPodcastModel.ActiveFeedInfo()->ImageFileName().Length())
+					{
+					CFbsBitmap * bitmap = new (ELeave) CFbsBitmap;
+					CleanupStack::PushL(bitmap);
+
+					TRAPD(loaderror, iImageHandler->LoadFileAndScaleL(bitmap, iPodcastModel.ActiveFeedInfo()->ImageFileName(), TSize(24,24)));
+
+					if(loaderror == KErrNone)
+						{
+						iSetTitlebarImage = ETrue;					
+						CleanupStack::Pop(bitmap);
+						bitmap = NULL;
+						}
+					else
+						{
+						CleanupStack::PopAndDestroy(bitmap);
+						}
+					}
 				}
-
-			if(iPodcastModel.ActiveFeedInfo()->ImageFileName().Length())
+			else
 				{
-				CFbsBitmap * bitmap = new (ELeave) CFbsBitmap;
-				CleanupStack::PushL(bitmap);
-
-				TRAPD(loaderror, iImageHandler->LoadFileAndScaleL(bitmap, iPodcastModel.ActiveFeedInfo()->ImageFileName(), TSize(24,24)));
-
-				if(loaderror == KErrNone)
-					{
-					iSetTitlebarImage = ETrue;					
-					CleanupStack::Pop(bitmap);
-					bitmap = NULL;
-					}
-				else
-					{
-					CleanupStack::PopAndDestroy(bitmap);
-					}
+				titlePane->SetSmallPicture(NULL, NULL, ETrue);
+				titlePane->SetPicture(NULL, NULL);
+				titlePane->SetTextToDefaultL();
 				}
 				break;
 		}
