@@ -30,6 +30,7 @@
 #include "ShowInfo.h"
 #include "debug.h"
 #include "sqlite3.h"
+#include "ImageHandler.h"
 
 // SQLite leaks memory when sorting, so to test our own memory leaks we need to disable this
 //#define DONT_SORT_SQL
@@ -52,7 +53,7 @@ public:
 /**
  * This class handles application storage needs and ownership of audioplayer, resource lists etc.
  */
-class CPodcastModel : public CBase
+class CPodcastModel : public CBase, public MImageHandlerCallback
 {
 public:
 	IMPORT_C static CPodcastModel* NewL();
@@ -96,9 +97,12 @@ public:
 	
 	TInt FindActiveShowByUid(TUint aUid);
 	IMPORT_C TBool IsFirstStartup();
+	IMPORT_C CImageHandler& ImageHandler();
 protected:
 	CPodcastModel();
 	void ConstructL();
+	// From ImageHandler
+	void ImageOperationCompleteL(TInt aError);
 private:	
    CShowInfo* iPlayingPodcast;
    
@@ -121,6 +125,7 @@ private:
    sqlite3* iDB;
    RCmManager iCmManager;
    TBool iIsFirstStartup;
+   CImageHandler* iImageHandler;
 };
 
 #endif // PODCASTMODEL_H

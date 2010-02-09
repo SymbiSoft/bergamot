@@ -22,11 +22,14 @@
 #include <e32base.h>
 #include <s32strm.h>
 
+#include "ImageHandler.h"
+
 const TInt KFeedTitleLength=256;
 const TInt KFeedUrlLength=1024;
 const TInt KFeedDescriptionLength=2048;
+class CFbsBitmap;
 
-class CFeedInfo : public CBase
+class CFeedInfo : public CBase, public MImageHandlerCallback
 	{
 	public:
 		IMPORT_C static CFeedInfo* NewL();
@@ -64,10 +67,13 @@ class CFeedInfo : public CBase
 		
 		IMPORT_C void SetLastError(TInt aLastError);
 		IMPORT_C TInt LastError() const;
+		
+		IMPORT_C CFbsBitmap* FeedIcon() const;
+		IMPORT_C void SetFeedIcon(CFbsBitmap* aBitmapToClone);
 	private:
 		CFeedInfo();
 		void ConstructL();
-
+		void ImageOperationCompleteL(TInt aError);
 	private:
 		HBufC* iUrl;
 		HBufC* iTitle;
@@ -80,6 +86,7 @@ class CFeedInfo : public CBase
 		TUint iUid;
 		TBool iCustomTitle;
 		TInt   iLastError;
+		CFbsBitmap* iFeedIcon;	
 	};
 
 typedef RPointerArray<CFeedInfo> RFeedInfoArray;

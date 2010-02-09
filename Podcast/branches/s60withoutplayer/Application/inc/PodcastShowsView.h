@@ -117,8 +117,7 @@ private:
 	
 	TPodcastClientShowCategory iCurrentCategory;
 	CPodcastModel& iPodcastModel;
-	TBool iProgressAdded;
-	CImageHandler* iImageHandler;
+	TBool iProgressAdded;	
 	TInt iLastImageHandlerError;
 	TBool iSetTitlebarImage;
 	};

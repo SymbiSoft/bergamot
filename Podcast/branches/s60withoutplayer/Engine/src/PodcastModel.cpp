@@ -61,6 +61,7 @@ CPodcastModel::~CPodcastModel()
 	iActiveShowList.Close();
 	delete iConnectionEngine;
 	iCmManager.Close();
+	delete iImageHandler;
 }
 
 CPodcastModel::CPodcastModel()
@@ -77,6 +78,8 @@ void CPodcastModel::ConstructL()
 	iIapNameArray = new (ELeave) CDesCArrayFlat(KDefaultGranu);
 	iSNAPNameArray = new (ELeave) CDesCArrayFlat(KDefaultGranu);
 	iCmManager.OpenL();
+	iImageHandler = CImageHandler::NewL(FsSession());
+	
 	UpdateIAPListL();
 	UpdateSNAPListL();
 	
@@ -431,3 +434,13 @@ EXPORT_C TBool CPodcastModel::IsFirstStartup()
 	return iIsFirstStartup;
 	}
 
+
+void CPodcastModel::ImageOperationCompleteL(TInt aError)
+	{
+	
+	}
+
+EXPORT_C CImageHandler& CPodcastModel::ImageHandler()
+	{
+	return *iImageHandler;
+	}

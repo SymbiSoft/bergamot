@@ -30,12 +30,10 @@
 // might leave.
 // -----------------------------------------------------------------------------
 //
-CImageHandler::CImageHandler( RFs& aFs,
-                              MImageHandlerCallback& aCallback )
+CImageHandler::CImageHandler( RFs& aFs )
     : CActive(CActive::EPriorityStandard)
     , iDecoder(NULL)
     , iScaler(NULL)
-    , iCallback(aCallback)    
     , iFs(aFs)
     , iSize(0,0)
     {
@@ -57,10 +55,9 @@ void CImageHandler::ConstructL()
 // Two-phased constructor.
 // -----------------------------------------------------------------------------
 //
-CImageHandler* CImageHandler::NewL(RFs& aFs,
-                                   MImageHandlerCallback& aCallback)
+EXPORT_C CImageHandler* CImageHandler::NewL(RFs& aFs)
     {
-    CImageHandler* self = NewLC(aFs, aCallback);
+    CImageHandler* self = NewLC(aFs);
     CleanupStack::Pop();
     return self;
     }
@@ -70,11 +67,9 @@ CImageHandler* CImageHandler::NewL(RFs& aFs,
 // Two-phased constructor.
 // -----------------------------------------------------------------------------
 //
-CImageHandler* CImageHandler::NewLC(RFs& aFs,
-                                    MImageHandlerCallback& aCallback)
+EXPORT_C CImageHandler* CImageHandler::NewLC(RFs& aFs)
     {
-    CImageHandler* self = new (ELeave) CImageHandler(aFs,
-                                                     aCallback);
+    CImageHandler* self = new (ELeave) CImageHandler(aFs);
     CleanupStack::PushL( self );
     self->ConstructL();
 
@@ -82,11 +77,12 @@ CImageHandler* CImageHandler::NewLC(RFs& aFs,
     }
 
 // Destructor
-CImageHandler::~CImageHandler()
+EXPORT_C CImageHandler::~CImageHandler()
     {
     delete iDecoder;
     delete iScaler;
     delete iBitmap;
+    iCallbackQue.Close(); 
     }
 
 // -----------------------------------------------------------------------------
@@ -118,20 +114,34 @@ void CImageHandler::LoadFileL(const TFileName& aFileName, TInt aSelectedFrame)
     SetActive();
     }
 
-void CImageHandler::LoadFileAndScaleL(CFbsBitmap* aScaledBitmap, 
+EXPORT_C void CImageHandler::LoadFileAndScaleL(CFbsBitmap* aScaledBitmap, 
 								      const TFileName& aFileName,
                                       const TSize &aSize,
+                                      MImageHandlerCallback& aCallback,
                                       TInt aSelectedFrame)
-    {
-    __ASSERT_ALWAYS(!IsActive(),User::Invariant());
-    iSize = aSize;
-    iScaledBitmap = aScaledBitmap;
-    iScaledBitmap->Reset();
-    iScaledBitmap->Create(aSize, EColor16M);
-    LoadFileL(aFileName, aSelectedFrame);
+    {        
+    if(!IsActive())
+    	{
+    	__ASSERT_ALWAYS(!IsActive(),User::Invariant());
+    	iSize = aSize;
+    	iScaledBitmap = aScaledBitmap;
+    	iScaledBitmap->Reset();
+    	iScaledBitmap->Create(aSize, EColor16M);
+    	iCallback = &aCallback; 
+    	LoadFileL(aFileName, aSelectedFrame);
+    	}
+    else
+    	{
+    	TImageStruct imageStruct;
+    	imageStruct.iCallBack = &aCallback;
+    	imageStruct.iScaledImage = aScaledBitmap;
+    	imageStruct.iScaledSize = aSize;    
+    	imageStruct.iFileName = aFileName;
+    	iCallbackQue.Append(imageStruct);
+    	}
     }
 
-CFbsBitmap* CImageHandler::ScaledBitmap()
+EXPORT_C CFbsBitmap* CImageHandler::ScaledBitmap()
 	{
 	return iScaledBitmap;
 	}
@@ -169,13 +179,24 @@ void CImageHandler::RunL()
     if ((! iStatus.Int()) && (iSize.iWidth != 0) && (iSize.iHeight != 0))
         {
         ScaleL();
+        iSize.SetSize(0,0);
         }
     else
         {
         // Invoke callback.
-        iCallback.ImageOperationCompleteL(iStatus.Int());
+        iCallback->ImageOperationCompleteL(iStatus.Int());        
+        if(iCallbackQue.Count())
+        	{
+        	TInt loaderror = KErrNotFound;
+        	while(loaderror != KErrNone && iCallbackQue.Count())
+        		{
+        		TImageStruct imageStruct= iCallbackQue[0];
+        		iCallbackQue.Remove(0);
+        		TRAP(loaderror, LoadFileAndScaleL(imageStruct.iScaledImage, imageStruct.iFileName, imageStruct.iScaledSize, *imageStruct.iCallBack));
+        		}
+        	}
         }
-    iSize.SetSize(0,0);
+ 
     }
 
 // -----------------------------------------------------------------------------

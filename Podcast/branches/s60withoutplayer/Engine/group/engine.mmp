@@ -45,12 +45,15 @@ SOURCE			SettingsEngine.cpp
 SOURCE			MetaDataReader.cpp 
 SOURCE			OpmlParser.cpp 
 SOURCE			PodcastUtils.cpp
-SOURCE			PodCastModel.cpp ConnectionEngine.cpp 
-
+SOURCE			PodCastModel.cpp  
+SOURCE			ImageHandler.cpp
+SOURCE 			ConnectionEngine.cpp
 CAPABILITY NetworkServices UserEnvironment
 
 #ifndef SQLITE_INCLUDED
 LIBRARY	sqlite3.lib
+#endif
+
 LIBRARY	euser.lib 
 LIBRARY	bafl.lib
 LIBRARY	efsrv.lib
@@ -66,8 +69,9 @@ LIBRARY	commdb.lib
 LIBRARY esock.lib
 LIBRARY mmfcontrollerframework.lib 
 LIBRARY apgrfx.lib
-//LIBRARY estlib.lib
 LIBRARY cone.lib
 LIBRARY apmime.lib 
 LIBRARY cmmanager.lib
-#endif
+LIBRARY fbscli.lib
+LIBRARY imageconversion.lib 
+LIBRARY bitmaptransforms.lib 

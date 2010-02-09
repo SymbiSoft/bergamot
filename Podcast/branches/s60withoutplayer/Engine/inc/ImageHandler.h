@@ -47,7 +47,14 @@ public:
     };
 
 // ============================================================================
-
+class TImageStruct
+	{
+public:
+	CFbsBitmap* iScaledImage;
+	TSize iScaledSize;
+	MImageHandlerCallback* iCallBack;
+	TFileName iFileName;
+	};
 /**
 *  CImageHandler
 *  Image loader and scaler class.
@@ -65,8 +72,7 @@ class CImageHandler : public CActive
         *  when an image has been loaded.
         * @return pointer to created CImageHandler-object
         */
-        static CImageHandler* NewL(RFs& aFs,
-                                   MImageHandlerCallback& aCallback);
+        IMPORT_C static CImageHandler* NewL(RFs& aFs);
 
        /**
         * Factory method that constructs a CImageHandler and leaves it to the
@@ -78,13 +84,12 @@ class CImageHandler : public CActive
         *  when an image has been loaded.
         * @return pointer to created CImageHandler-object
         */
-        static CImageHandler* NewLC(RFs& aFs,
-                                    MImageHandlerCallback& aCallback);
+        IMPORT_C static CImageHandler* NewLC(RFs& aFs);
        /**
         * Desctructor. Destroys the CImageDecoder used by the image handler.
         */
-        virtual ~CImageHandler();
-        CFbsBitmap* ScaledBitmap();
+        IMPORT_C virtual ~CImageHandler();
+        IMPORT_C CFbsBitmap* ScaledBitmap();
     public: // New functions      
 
         /**
@@ -95,9 +100,10 @@ class CImageHandler : public CActive
          * @param aSelectedFrame A single frame index in a multi-frame file.
          *  If not given the first frame is loaded.
          */
-        void LoadFileAndScaleL(CFbsBitmap* aScaledBitmap, 
+    	IMPORT_C void LoadFileAndScaleL(CFbsBitmap* aScaledBitmap, 
 							   const TFileName& aFileName,
                                const TSize &aSize,
+                               MImageHandlerCallback& aCallback,
                                TInt aSelectedFrame = 0);
 
         /**
@@ -140,8 +146,7 @@ class CImageHandler : public CActive
          * @param aCallback Listener interface implementation that is notified
          *  when an image has been loaded.
          */
-        CImageHandler(RFs& aFs,
-                      MImageHandlerCallback& aCallback);
+        CImageHandler(RFs& aFs);
         /**
          * 2nd phase constructor. Adds this object to the active scheduler.
          */
@@ -155,7 +160,7 @@ class CImageHandler : public CActive
         CBitmapScaler           *iScaler;
 
         /** Listener that is notified when an image has been loaded. */
-        MImageHandlerCallback   &iCallback;
+        MImageHandlerCallback *  iCallback;
 
         /** Bitmap (owned by the user of this class) where the loaded image is put */
         CFbsBitmap              *iBitmap;
@@ -171,6 +176,7 @@ class CImageHandler : public CActive
 
         /** target size for scaled image */
         TSize                   iSize;
+        RArray<TImageStruct> iCallbackQue;      
     };
 
 #endif

@@ -162,4 +162,12 @@ EXPORTS
 	?SetDownloadSuspended@CSettingsEngine@@QAEXH@Z @ 161 NONAME ; void CSettingsEngine::SetDownloadSuspended(int)
 	?SuspendDownloads@CShowEngine@@QAEXXZ @ 162 NONAME ; void CShowEngine::SuspendDownloads(void)
 	?XMLEncode@PodcastUtils@@SAXAAVTDes16@@@Z @ 163 NONAME ; void PodcastUtils::XMLEncode(class TDes16 &)
+	?FeedIcon@CFeedInfo@@QBEPAVCFbsBitmap@@XZ @ 164 NONAME ; class CFbsBitmap * CFeedInfo::FeedIcon(void) const
+	?SetFeedIcon@CFeedInfo@@QAEXPAVCFbsBitmap@@@Z @ 165 NONAME ; void CFeedInfo::SetFeedIcon(class CFbsBitmap *)
+	??1CImageHandler@@UAE@XZ @ 166 NONAME ; CImageHandler::~CImageHandler(void)
+	?LoadFileAndScaleL@CImageHandler@@QAEXPAVCFbsBitmap@@ABV?$TBuf@$0BAA@@@ABVTSize@@AAVMImageHandlerCallback@@H@Z @ 167 NONAME ; void CImageHandler::LoadFileAndScaleL(class CFbsBitmap *, class TBuf<256> const &, class TSize const &, class MImageHandlerCallback &, int)
+	?NewL@CImageHandler@@SAPAV1@AAVRFs@@@Z @ 168 NONAME ; class CImageHandler * CImageHandler::NewL(class RFs &)
+	?NewLC@CImageHandler@@SAPAV1@AAVRFs@@@Z @ 169 NONAME ; class CImageHandler * CImageHandler::NewLC(class RFs &)
+	?ScaledBitmap@CImageHandler@@QAEPAVCFbsBitmap@@XZ @ 170 NONAME ; class CFbsBitmap * CImageHandler::ScaledBitmap(void)
+	?ImageHandler@CPodcastModel@@QAEAAVCImageHandler@@XZ @ 171 NONAME ; class CImageHandler & CPodcastModel::ImageHandler(void)
 

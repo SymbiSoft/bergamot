@@ -18,7 +18,7 @@
 
 #include "FeedInfo.h"
 #include <e32hashtab.h>
-
+#include <fbs.h>
 
 EXPORT_C CFeedInfo* CFeedInfo::NewL()
 	{
@@ -48,7 +48,7 @@ EXPORT_C CFeedInfo* CFeedInfo::CopyL() const
 	copy->SetBuildDate(BuildDate());
 	copy->SetLastUpdated(LastUpdated());
 	copy->SetImageFileNameL(ImageFileName());
-	
+	copy->iFeedIcon->Duplicate(iFeedIcon->Handle());
 	if(CustomTitle())
 		{
 		copy->SetCustomTitle();
@@ -71,10 +71,12 @@ EXPORT_C CFeedInfo::~CFeedInfo()
 	delete iImageUrl;
 	delete iImageFileName;
 	delete iLink;
+	delete iFeedIcon;	
 	}
 
 void CFeedInfo::ConstructL()
 	{
+	iFeedIcon = new (ELeave) CFbsBitmap;
 	}
 
 EXPORT_C const TDesC& CFeedInfo::Url() const
@@ -192,7 +194,7 @@ EXPORT_C void CFeedInfo::SetImageFileNameL(const TDesC& aFileName)
 		delete iImageFileName;
 		iImageFileName = NULL;
 		}
-	iImageFileName = aFileName.AllocL();
+	iImageFileName = aFileName.AllocL();	
 	}
 
 EXPORT_C TBool CFeedInfo::CustomTitle() const
@@ -213,4 +215,19 @@ EXPORT_C void CFeedInfo::SetLastError(TInt aLastError)
 EXPORT_C TInt CFeedInfo::LastError() const
 	{
 	return iLastError;
+	}
+
+EXPORT_C CFbsBitmap* CFeedInfo::FeedIcon() const
+	{
+	return iFeedIcon;
+	}
+
+EXPORT_C void CFeedInfo::SetFeedIcon(CFbsBitmap* aBitmapToClone)
+	{
+	iFeedIcon->Duplicate(aBitmapToClone->Handle());
+	}
+
+void CFeedInfo::ImageOperationCompleteL(TInt aError)
+	{
+	
 	}

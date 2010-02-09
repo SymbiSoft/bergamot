@@ -92,7 +92,6 @@ SOURCE  PodcastFeedView.cpp
 SOURCE  PodcastSettingsView.cpp
 SOURCE  PodcastShowsView.cpp
 SOURCE  PodcastSearchView.cpp
-SOURCE  ImageHandler.cpp
 SOURCE  PodcastFeedViewUpdater.cpp 
 
 SOURCEPATH ..\data
@@ -149,8 +148,6 @@ LIBRARY	estor.lib
 LIBRARY apgrfx.lib
 LIBRARY CommonDialogs.lib
 LIBRARY aknskins.lib 
-LIBRARY imageconversion.lib 
-LIBRARY bitmaptransforms.lib 
 LIBRARY fbscli.lib
 LIBRARY etext.lib  
 LIBRARY PlatformEnv.lib // for PathInfo

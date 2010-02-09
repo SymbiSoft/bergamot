@@ -161,8 +161,7 @@ void CPodcastShowsView::ConstructL()
 	TResourceReader reader;
 	iCoeEnv->CreateResourceReaderLC(reader,R_SHOWVIEW_POPUP_MENU);
 	iStylusPopupMenu->ConstructFromResourceL(reader);
-	CleanupStack::PopAndDestroy();
-	iImageHandler = CImageHandler::NewL(iEikonEnv->FsSession(), *this);
+	CleanupStack::PopAndDestroy();	
 	}
 
 TKeyResponse CPodcastShowsView::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType)
@@ -216,7 +215,7 @@ CPodcastShowsView::~CPodcastShowsView()
 	{
 	iPodcastModel.ShowEngine().RemoveObserver(this);
 	iPodcastModel.FeedEngine().RemoveObserver(this);
-	delete iImageHandler;
+	
     if(iStylusPopupMenu)
         delete iStylusPopupMenu, iStylusPopupMenu = NULL;
 	}
@@ -709,11 +708,11 @@ void CPodcastShowsView::ImageOperationCompleteL(TInt aError)
 			{
 			CAknTitlePane* titlePane = static_cast<CAknTitlePane*>
 						 ( StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidTitle ) ) );
-			titlePane->SetSmallPicture(iImageHandler->ScaledBitmap(), NULL, ETrue);
+			titlePane->SetSmallPicture(iPodcastModel.ImageHandler().ScaledBitmap(), NULL, ETrue);
 			}
 		else
 			{
-			delete iImageHandler->ScaledBitmap();
+			iPodcastModel.ImageHandler().ScaledBitmap();
 			}
 			
 		}
@@ -741,7 +740,7 @@ void CPodcastShowsView::DisplayShowInfoDialogL()
 			CFbsBitmap * bitmap = new (ELeave) CFbsBitmap;
 			CleanupStack::PushL(bitmap);
 			
-			TRAPD(loaderror, iImageHandler->LoadFileAndScaleL(bitmap, feedInfo->ImageFileName(), TSize(KPodcastImageWidth, KPodcastImageHeight)));
+			TRAPD(loaderror, iPodcastModel.ImageHandler().LoadFileAndScaleL(bitmap, feedInfo->ImageFileName(), TSize(KPodcastImageWidth, KPodcastImageHeight), *this));
 			
 			if(loaderror == KErrNone)
 				{
@@ -954,12 +953,12 @@ void CPodcastShowsView::UpdateViewTitleL()
 					titlePane->SetTextL( iPodcastModel.ActiveFeedInfo()->Title(), ETrue );
 					}
 
-				if(iPodcastModel.ActiveFeedInfo()->ImageFileName().Length() && !iImageHandler->IsActive())
+				if(iPodcastModel.ActiveFeedInfo()->ImageFileName().Length())
 					{
 					CFbsBitmap * bitmap = new (ELeave) CFbsBitmap;
 					CleanupStack::PushL(bitmap);
 
-					TRAPD(loaderror, iImageHandler->LoadFileAndScaleL(bitmap, iPodcastModel.ActiveFeedInfo()->ImageFileName(), TSize(24,24)));
+					TRAPD(loaderror, iPodcastModel.ImageHandler().LoadFileAndScaleL(bitmap, iPodcastModel.ActiveFeedInfo()->ImageFileName(), TSize(24,24), *this));
 
 					if(loaderror == KErrNone)
 						{
