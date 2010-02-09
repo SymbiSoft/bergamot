@@ -248,6 +248,8 @@ void CPodcastFeedView::FeedDownloadStartedL(TFeedState aState,TUint aFeedUid)
 
 	// Update status text
 	UpdateFeedInfoStatusL(aFeedUid, ETrue);
+	
+	UpdateToolbar();
 	}
 
 void CPodcastFeedView::FeedDownloadFinishedL(TFeedState aState,TUint aFeedUid, TInt aError)
