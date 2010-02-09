@@ -55,7 +55,7 @@ CPodcastFeedViewUpdater::~CPodcastFeedViewUpdater()
 	}
         
 CPodcastFeedViewUpdater::CPodcastFeedViewUpdater(CPodcastFeedView& aPodcastFeedView)
-	: CAsyncOneShot(EPriorityLow), iPodcastFeedView(aPodcastFeedView)
+	: CAsyncOneShot(EPriorityNormal), iPodcastFeedView(aPodcastFeedView)
 	{
 	}
 
