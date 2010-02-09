@@ -176,8 +176,15 @@ void CPodcastAppUi::TabChangedL (TInt aIndex)
 	if (aIndex == KTabIdFeeds) {
 		newview = KUidPodcastFeedViewID;
 	} else if (aIndex == KTabIdShows) {
-		newview = KUidPodcastShowsViewID;
-		messageUid = TUid::Uid(EShowFeedShows);
+		if(iPodcastModel->ActiveFeedInfo() != NULL)
+			{
+			newview = KUidPodcastShowsViewID;
+			messageUid = TUid::Uid(EShowFeedShows);
+			}
+		else
+			{
+			iTabGroup->SetActiveTabByIndex(0);
+			}
 	} else if (aIndex == KTabIdQueue) {
 		newview = KUidPodcastShowsViewID;
 		messageUid = TUid::Uid(EShowPendingShows);
