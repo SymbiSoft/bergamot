@@ -225,6 +225,7 @@ void CPodcastFeedView::HandleListBoxEventL(CEikListBox* /* aListBox */, TListBox
 				{
 				iPodcastModel.ActiveShowList().Reset();
 				iPodcastModel.SetActiveFeedInfo((*sortedItems)[index]);			
+				((CPodcastAppUi*)AppUi())->SetActiveTab(KTabIdShows);
 				AppUi()->ActivateLocalViewL(KUidPodcastShowsViewID,  TUid::Uid(EShowFeedShows), KNullDesC8());
 				}
 			}

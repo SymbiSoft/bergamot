@@ -140,19 +140,22 @@ void CPodcastAppUi::NaviShowTabGroupL()
 	iNaviDecorator = iNaviPane->CreateTabGroupL();
 	
 	iTabGroup = STATIC_CAST(CAknTabGroup*, iNaviDecorator->DecoratedControl());
-	iTabGroup->SetTabFixedWidthL(EAknTabWidthWithTwoTabs);
+	iTabGroup->SetTabFixedWidthL(EAknTabWidthWithFourTabs);
 
 	HBufC *label1 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_FEEDS);
-	HBufC *label2 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_QUEUE);
-			
-	iTabGroup->AddTabL(0,*label1);
-	iTabGroup->AddTabL(1,*label2);
+	iTabGroup->AddTabL(KTabIdFeeds,*label1);
 	
-	iTabGroup->SetTabFixedWidthL(EAknTabWidthWithThreeTabs);
-	HBufC *label3 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_SEARCH);			
-	iTabGroup->AddTabL(2,*label3);
+	HBufC *label2 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_SHOWS);
+	iTabGroup->AddTabL(KTabIdShows,*label2);
+	
+	HBufC *label3 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_QUEUE);
+	iTabGroup->AddTabL(KTabIdQueue,*label3);
+	
+	HBufC *label4 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_SEARCH);			
+	iTabGroup->AddTabL(KTabIdSearch,*label4);
+	
+	CleanupStack::PopAndDestroy(label4);
 	CleanupStack::PopAndDestroy(label3);
-
 	CleanupStack::PopAndDestroy(label2);
 	CleanupStack::PopAndDestroy(label1);
 	
@@ -170,12 +173,15 @@ void CPodcastAppUi::TabChangedL (TInt aIndex)
 	TUid newview = TUid::Uid(0);
 	TUid messageUid = TUid::Uid(0);
 	
-	if (aIndex == 0) {
+	if (aIndex == KTabIdFeeds) {
 		newview = KUidPodcastFeedViewID;
-	} else if (aIndex == 1) {
+	} else if (aIndex == KTabIdShows) {
+		newview = KUidPodcastShowsViewID;
+		messageUid = TUid::Uid(EShowFeedShows);
+	} else if (aIndex == KTabIdQueue) {
 		newview = KUidPodcastShowsViewID;
 		messageUid = TUid::Uid(EShowPendingShows);
-	} else if (aIndex == 2) {
+	} else if (aIndex == KTabIdSearch) {
 		newview = KUidPodcastSearchViewID;
 		messageUid = TUid::Uid(0);	
 	} else {
@@ -202,7 +208,7 @@ void CPodcastAppUi::UpdateQueueTab(TInt aQueueLength)
 	if (aQueueLength == 0)
 		{
 		HBufC *queue = iEikonEnv->AllocReadResourceLC(R_TABGROUP_QUEUE);
-		iTabGroup->ReplaceTabL(1, *queue);
+		iTabGroup->ReplaceTabL(KTabIdQueue, *queue);
 		CleanupStack::PopAndDestroy(queue);
 		}
 	else
@@ -211,7 +217,7 @@ void CPodcastAppUi::UpdateQueueTab(TInt aQueueLength)
 		HBufC *queueCounter = HBufC::NewLC(queueTemplate->Length()+2);
 		queueCounter->Des().Format(*queueTemplate, aQueueLength);
 		
-		iTabGroup->ReplaceTabL(1, *queueCounter);
+		iTabGroup->ReplaceTabL(KTabIdQueue, *queueCounter);
 		CleanupStack::PopAndDestroy(queueCounter);
 		CleanupStack::PopAndDestroy(queueTemplate);	
 		}
