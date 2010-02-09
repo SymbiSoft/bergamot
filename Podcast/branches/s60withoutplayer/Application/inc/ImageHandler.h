@@ -84,7 +84,7 @@ class CImageHandler : public CActive
         * Desctructor. Destroys the CImageDecoder used by the image handler.
         */
         virtual ~CImageHandler();
-        CFbsBitmap* ScaleddBitmap();
+        CFbsBitmap* ScaledBitmap();
     public: // New functions      
 
         /**

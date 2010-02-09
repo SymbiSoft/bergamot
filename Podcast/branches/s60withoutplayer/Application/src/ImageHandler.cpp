@@ -131,7 +131,7 @@ void CImageHandler::LoadFileAndScaleL(CFbsBitmap* aScaledBitmap,
     LoadFileL(aFileName, aSelectedFrame);
     }
 
-CFbsBitmap* CImageHandler::ScaleddBitmap()
+CFbsBitmap* CImageHandler::ScaledBitmap()
 	{
 	return iScaledBitmap;
 	}

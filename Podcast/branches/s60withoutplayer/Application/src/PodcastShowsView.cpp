@@ -709,11 +709,11 @@ void CPodcastShowsView::ImageOperationCompleteL(TInt aError)
 			{
 			CAknTitlePane* titlePane = static_cast<CAknTitlePane*>
 						 ( StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidTitle ) ) );
-			titlePane->SetSmallPicture(iImageHandler->ScaleddBitmap(), NULL, ETrue);
+			titlePane->SetSmallPicture(iImageHandler->ScaledBitmap(), NULL, ETrue);
 			}
 		else
 			{
-			delete iImageHandler->ScaleddBitmap();
+			delete iImageHandler->ScaledBitmap();
 			}
 			
 		}
@@ -951,40 +951,25 @@ void CPodcastShowsView::UpdateViewTitleL()
 				{
 				titlePane->SetTextL( iPodcastModel.ActiveFeedInfo()->Title(), ETrue );
 				}
-			
-//			if(iPodcastModel.ActiveFeedInfo()->ImageFileName().Length())
-//				{
-//				CFbsBitmap * bitmap = new (ELeave) CFbsBitmap;
-//				CleanupStack::PushL(bitmap);
-//		
-//				TRAPD(loaderror, iImageHandler->LoadFileAndScaleL(bitmap, iPodcastModel.ActiveFeedInfo()->ImageFileName(), TSize(24,24)));
-//		
-//				if(loaderror == KErrNone)
-//					{
-//					iSetTitlebarImage = ETrue;
-//					//titlePane->SetSmallPicture(bitmap, NULL, ETrue);
-//					CleanupStack::Pop(bitmap);
-//					bitmap = NULL;
-//					/*CActiveScheduler::Start();
-//					if(iLastImageHandlerError == KErrNone)
-//						{	
-//						
-//						
-//						CleanupStack::Pop(bitmap);
-//						bitmap = NULL;
-//						}
-//					else
-//						{				
-//						CleanupStack::PopAndDestroy(bitmap);
-//						bitmap = NULL;
-//						}*/
-//					}
-//				/*else
-//					{
-//					CleanupStack::PopAndDestroy(bitmap);
-//					bitmap = NULL;
-//					}*/
-//				}			
+
+			if(iPodcastModel.ActiveFeedInfo()->ImageFileName().Length())
+				{
+				CFbsBitmap * bitmap = new (ELeave) CFbsBitmap;
+				CleanupStack::PushL(bitmap);
+
+				TRAPD(loaderror, iImageHandler->LoadFileAndScaleL(bitmap, iPodcastModel.ActiveFeedInfo()->ImageFileName(), TSize(24,24)));
+
+				if(loaderror == KErrNone)
+					{
+					iSetTitlebarImage = ETrue;					
+					CleanupStack::Pop(bitmap);
+					bitmap = NULL;
+					}
+				else
+					{
+					CleanupStack::PopAndDestroy(bitmap);
+					}
+				}
 				break;
 		}
 	DP("CPodcastShowsView::UpdateViewTitleL END");
