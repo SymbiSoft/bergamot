@@ -711,7 +711,15 @@ EXPORT_C TBool CFeedEngine::ExportFeedsL(TFileName& aFile)
 			ptrTitle.Copy(info->Title());
 			PodcastUtils::XMLEncode(ptrTitle);
 		}
-	
+		
+	// HTML URL	
+		TPtr ptrHtmlUrl(htmlUrl->Des());
+		ptrHtmlUrl.Zero();
+
+		if (info->Link() != KNullDesC) {
+			ptrHtmlUrl.Copy(info->Link());
+			PodcastUtils::XMLEncode(ptrHtmlUrl);
+		}	
 	// Write line to OPML file
 		line->Des().Format(*templ, title, desc, xmlUrl, htmlUrl);
 		utf8line = CnvUtfConverter::ConvertFromUnicodeToUtf8L(*line);
@@ -939,14 +947,68 @@ void CFeedEngine::DBLoadFeedsL()
 CFeedInfo* CFeedEngine::DBGetFeedInfoByUidL(TUint aFeedUid)
 	{
 	DP("CFeedEngine::DBGetFeedInfoByUid");
+	CFeedInfo *feedInfo = NULL;
+	_LIT(KSqlStatement, "select url, title, description, imageurl, imagefile, link, built, lastupdated, uid, feedtype, customtitle, lasterror from feeds where uid=%u");
+	iSqlBuffer.Format(KSqlStatement, aFeedUid);
+
+	sqlite3_stmt *st;
+	 
+	//DP1("SQL statement length=%d", iSqlBuffer.Length());
+
+	int rc = sqlite3_prepare16_v2(&iDB, (const void*)iSqlBuffer.PtrZ() , -1, &st,	(const void**) NULL);
 	
-	for (int i=0;i<iSortedFeeds.Count();i++) {
-		if (iSortedFeeds[i]->Uid()==aFeedUid) {
-			return iSortedFeeds[i];
+	if (rc==SQLITE_OK) {
+		Cleanup_sqlite3_finalize_PushL(st);
+		rc = sqlite3_step(st);
+		if (rc == SQLITE_ROW) {
+			feedInfo = CFeedInfo::NewLC();
+			
+			const void *urlz = sqlite3_column_text16(st, 0);
+			TPtrC16 url((const TUint16*)urlz);
+			feedInfo->SetUrlL(url);
+
+			const void *titlez = sqlite3_column_text16(st, 1);
+			TPtrC16 title((const TUint16*)titlez);
+			feedInfo->SetTitleL(title);
+
+			const void *descz = sqlite3_column_text16(st, 2);
+			TPtrC16 desc((const TUint16*)descz);
+			feedInfo->SetDescriptionL(desc);
+
+			const void *imagez = sqlite3_column_text16(st, 3);
+			TPtrC16 image((const TUint16*)imagez);
+			feedInfo->SetImageUrlL(image);
+
+			const void *imagefilez = sqlite3_column_text16(st, 4);
+			TPtrC16 imagefile((const TUint16*)imagefilez);
+			feedInfo->SetDescriptionL(imagefile);
+			
+			const void *linkz = sqlite3_column_text16(st, 5);
+			TPtrC16 link((const TUint16*)linkz);
+			feedInfo->SetDescriptionL(link);
+					
+			sqlite3_int64 built = sqlite3_column_int64(st, 6);
+			TTime buildtime(built);
+			feedInfo->SetBuildDate(buildtime);
+
+			sqlite3_int64 lastupdated = sqlite3_column_int64(st, 7);
+			TTime lastupdatedtime(lastupdated);
+			feedInfo->SetLastUpdated(lastupdatedtime);
+			
+			sqlite3_int64 customtitle = sqlite3_column_int64(st, 10);
+			if (customtitle) {
+				feedInfo->SetCustomTitle();
+			}
+			
+			TInt lasterror = sqlite3_column_int(st, 11);
+			feedInfo->SetLastError(lasterror);
+						
+			CleanupStack::Pop(feedInfo);
 		}
+		CleanupStack::PopAndDestroy();//st	
 	}
 	
-	return NULL;
+	return feedInfo;
 }
 
 EXPORT_C void CFeedEngine::UpdateFeed(CFeedInfo *aItem)

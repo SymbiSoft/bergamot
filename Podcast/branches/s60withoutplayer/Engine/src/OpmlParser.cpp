@@ -117,6 +117,10 @@ void COpmlParser::OnStartElementL(const RTagInfo& aElement, const RAttributeArra
 				// xmlUrl=...
 				if (attr16.Compare(KTagXmlUrl) == 0 || attr16.Compare(KTagUrl) == 0) {
 					newFeed->SetUrlL(*val16);
+					hasUrl = ETrue;			
+				// htmlUrl
+				} else if (attr16.Compare(KTagHtmlUrl) == 0) {
+					newFeed->SetLinkL(*val16);
 					hasUrl = ETrue;
 				// text=...
 				} else if (attr16.Compare(KTagTitle) == 0) {

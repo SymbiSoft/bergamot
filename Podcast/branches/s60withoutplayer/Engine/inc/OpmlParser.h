@@ -29,9 +29,7 @@ _LIT(KTagBody, "body");
 _LIT(KTagOutline, "outline");
 _LIT(KTagXmlUrl, "xmlUrl");
 _LIT(KTagText, "text");
-//_LIT(KTagTitle, "title");
 _LIT(KTagHtmlUrl, "htmlUrl");
-//_LIT(KTagDescription, "description");
 
 enum TOpmlState {
 	EStateOpmlRoot,
@@ -39,14 +37,7 @@ enum TOpmlState {
 	EStateOpmlOutline,
 	EStateOpmlOutlineOutline
 	};
-/*
-enum TEncoding {
-	EUtf8,
-	ELatin1
-};
 
-const int KBufferLength = 1024;
-*/
 class COpmlParser : public CBase, public Xml::MContentHandler 
 {
 public:
