@@ -898,7 +898,7 @@ void CFeedEngine::DBLoadFeedsL()
 			if(BaflUtils::FileExists(iPodcastModel.FsSession(), imagefile))
 				{
 				// If this fails, no reason to worry
-				TRAP_IGNORE(iPodcastModel.ImageHandler().LoadFileAndScaleL(feedInfo->FeedIcon(), imagefile, TSize(40,40), *feedInfo));
+				TRAP_IGNORE(iPodcastModel.ImageHandler().LoadFileAndScaleL(feedInfo->FeedIcon(), imagefile, TSize(64,56), *feedInfo));
 				}
 			
 			const void *linkz = sqlite3_column_text16(st, 5);
