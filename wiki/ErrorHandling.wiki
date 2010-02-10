@@ -1,41 +1,80 @@
 = View description =
 
-== Feed View ==
-_Shows/lists Feeds_
 
-  * Add Feed
-  * Remove feed
-  * Change Feeds
-  * Update all Feeds
-  * Import all feeds
-  * Export Feeds
-  * Select Feed to goto to show view
+== Feed view ==
+_Shows/lists feeds_
+  * *Add feed*
+    * Error in URL
+      * Error dialog and back to URL-editor
+    * Duplicate already exists
+      * Error dialog and back to URL-editor
+  * *Remove feed*
+    * No errors expected
+  * *Change feeds*
+    * Like *Add feed*
+  * *Update all feeds*
+    * Problems with Internet connection
+      * No Internet connections at all defined
+        * Show dialog
+      * Timeout at select Internet connection
+        * Is it possible to get a timeout here? In that case show dialog
+      * Internet connection failed
+        * Show dialog
+    * For each feed
+      * No answer
+        * Mark the feed as failed with an icon overlay. Show error information in listbox item?
+      * Error response (http)
+        * Mark the feed as failed with an icon overlay. Show error information in listbox item?
+      * Response body is corrupt (parse error)
+        * Mark the feed as failed with an icon overlay. Show error information in listbox item?
+  * *Import all feeds*
+    * The import data is corrupt (parse error)
+      * Error dialog? Save the feeds that have already been parsed? Try to recover and import more feeds?
+  * *Export feeds*
+    * No errors expected
+  * *Select feed to goto to show view*
+    * No errors expected
 
 == Show view ==
-_Show Shows in Feed_
-  * Update  Feed
-  * Download show
-  * Play show
-  * Mark show as new
-  * Mark show as old
-  * Display show information (not enabled today)
+_Show Shows in feed_
+  * *Update  feed*
+    * See *Update all feeds* in *Feed view*
+  * *Download show* (add the show to the download queue)
+    * No errors expected
+  * *Play show*
+    * *HELP!!* what kinds of errors can we expect here?
+  * *Mark show as new*
+    * No errors expected
+  * *Mark show as old*
+    * No errors expected
+  * *Display show information* (not enabled today)
+    * No errors expected
 
 == Download queue view (show view filter) ==
 _Displays shows in download queue_
-
-  * SUspend downloads
-  * Start downloads
-  * Remove download from que
-  * Remove all from que
+  * *Suspend downloads*
+    * No errors expected
+  * *Start downloads*
+    * Problems with Internet connection
+      * See "Problems with Internet connection" in *Update all feeds* in *Feeds view*
+    * Http errors (for each show)
+      * Temporary errors
+        * Try another show in the queue
+        * After that the specific show has had temporary errors X times in a row it is removed from the queue and marked as falied with an icon overlay
+      * Permanent errors
+        * Immediately remove the show from the queue and mark it as failed with an icon overlay
+      * No answer
+        * Handle like temporary errors
+  * *Remove download from queue*
+    * No errors expected
+  * *Remove all from queue*
+    * No errors expected
 
 == Settings view ==
 _Displays podcast settings_
+No errors expected
 
-== Error handling ==
-  * Direct errors by action
-  * Logged error handling
-    * Transient errors
-    * Serious errors
-  * System/platform errors
-  * Display error icon at failed dled show or feed
-  * Display errors in status line.
+
+
+= TODO =
+We also need to specify how to handle problems doesn't arise as a response to user interaction. For example automatic downloads.
