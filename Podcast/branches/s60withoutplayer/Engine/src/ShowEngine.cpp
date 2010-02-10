@@ -789,12 +789,12 @@ TBool CShowEngine::DBUpdateShow(CShowInfo& aItem)
 
 	_LIT(KSqlStatement, "update shows set url=\"%S\", title=\"%S\", description=\"%S\", filename=\"%S\", position=\"%Lu\","
 			"playtime=\"%u\", playstate=\"%u\", downloadstate=\"%u\", feeduid=\"%u\", showsize=\"%u\", trackno=\"%u\","
-			"pubdate=\"%Lu\", showtype=\"%d\" where uid=\"%u\"");
+			"pubdate=\"%Lu\", showtype=\"%d\", lasterror=\"%d\" where uid=\"%u\"");
 	iSqlBuffer.Format(KSqlStatement, &aItem.Url(), &aItem.Title(), &aItem.Description(),
 			&aItem.FileName(), aItem.Position().Int64(), aItem.PlayTime(),
 			aItem.PlayState(), aItem.DownloadState(), aItem.FeedUid(),
 			aItem.ShowSize(), aItem.TrackNo(), aItem.PubDate().Int64(),
-			aItem.ShowType(), aItem.Uid());
+			aItem.ShowType(), aItem.LastError(), aItem.Uid());
 
 	sqlite3_stmt *st;
 
