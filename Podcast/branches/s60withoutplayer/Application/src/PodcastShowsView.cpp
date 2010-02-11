@@ -140,10 +140,15 @@ void CPodcastShowsView::ConstructL()
 	while (KIconArrayIds[pos] > 0)
 		{
 		// Load the bitmap for play icon	
-		CFbsBitmap* bitmap= iEikonEnv->CreateBitmapL( _L("*"), KIconArrayIds[pos]);
+		CFbsBitmap* bitmap= NULL;//iEikonEnv->CreateBitmapL( _L("*"), KIconArrayIds[pos]);
+		CFbsBitmap* mask=  NULL;////iEikonEnv->CreateBitmapL( _L("*"), KIconArrayIds[pos+1] );
+		AknIconUtils::CreateIconL(bitmap,
+					                          mask,
+					                          iEikonEnv->EikAppUi()->Application()->BitmapStoreName(),
+					                          KIconArrayIds[pos],
+					                          KIconArrayIds[pos+1]);	
 		CleanupStack::PushL(bitmap);
-		// Load the mask for play icon	
-		CFbsBitmap* mask= iEikonEnv->CreateBitmapL( _L("*"), KIconArrayIds[pos+1] );
+		// Load the mask for play icon			
 		CleanupStack::PushL(mask);
 		// Append the play icon to icon array
 		icons->AppendL(CGulIcon::NewL(bitmap, mask) );
