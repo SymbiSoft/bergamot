@@ -45,7 +45,7 @@ const TUint KIconArrayIds[] =
 	{
 			EMbmPodcastEmptyimage,
 			EMbmPodcastEmptyimage,
-			EMbmPodcastShow_40x40,
+			/*EMbmPodcastShow_40x40,
 			EMbmPodcastShow_40x40m,
 			EMbmPodcastNew_40x40,
 			EMbmPodcastNew_40x40m,
@@ -62,7 +62,7 @@ const TUint KIconArrayIds[] =
 			EMbmPodcastDownloaded_new_40x40,
 			EMbmPodcastDownloaded_new_40x40m,
 			EMbmPodcastShowwarning_40x40,
-			EMbmPodcastShowwarning_40x40m,
+			EMbmPodcastShowwarning_40x40m,*/
 			0,
 			0
 	};

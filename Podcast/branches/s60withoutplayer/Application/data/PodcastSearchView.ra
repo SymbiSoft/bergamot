@@ -140,8 +140,8 @@ RESOURCE DIALOG r_waitdlg
 				flags= EAknWaitNoteFlags;
                 singular_label = STRING_r_searching;
                 imagefile = APPICON;
-                imageid = 	EMbmPodcastsvgPodcatcher_64px;
-                imagemask = EMbmPodcastsvgPodcatcher_64px_mask;
+                imageid = 	EMbmPodcastPodcatcher_64px;
+                imagemask = EMbmPodcastPodcatcher_64px_mask;
                 animation = R_QGN_GRAF_WAIT_BAR_ANIM;
                 };
             }

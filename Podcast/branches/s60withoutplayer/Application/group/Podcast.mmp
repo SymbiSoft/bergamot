@@ -24,13 +24,11 @@ CAPABILITY NetworkServices UserEnvironment
 
 EPOCSTACKSIZE 81920
 EPOCHEAPSIZE 1024000 32768000
-
+/*
 START BITMAP Podcast.mbm
 	TARGETPATH \resource\apps
 	HEADER
-	SOURCEPATH ..\data\images
-	SOURCE c16 feed_40x40.bmp
-	SOURCE 8 feed_40x40m.bmp
+	SOURCEPATH ..\data\images	
 	SOURCE c16 feed_new_40x40.bmp
 	SOURCE 8 feed_new_40x40m.bmp
 	SOURCE c16 feed_error_40x40.bmp
@@ -61,7 +59,7 @@ START BITMAP Podcast.mbm
 	SOURCE 8 showwarning_40x40m.bmp
 	SOURCE 8 emptyimage.bmp
 END
-
+*/
 SYSTEMINCLUDE \epoc32\include
 SYSTEMINCLUDE \epoc32\include\mmf\common 
 SYSTEMINCLUDE \epoc32\include\domain\middleware

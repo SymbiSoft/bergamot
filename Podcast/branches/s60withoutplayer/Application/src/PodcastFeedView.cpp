@@ -94,11 +94,20 @@ void CPodcastFeedView::ConstructL()
 	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );
 	CleanupStack::Pop(2); // bitmap, mask
 	
-	// Load the bitmap for feed icon	
-	bitmap = iEikonEnv->CreateBitmapL(KAsterisk,EMbmPodcastFeed_40x40);
+	// Load the bitmap for feed icon
+	
+	// Load svg.-image and mask with a single call
+		AknIconUtils::CreateIconL(bitmap,
+		                          mask,
+		                          iEikonEnv->EikAppUi()->Application()->BitmapStoreName(),
+		                          EMbmPodcastFeed,
+		                          EMbmPodcastFeed_mask);
+	    
+	/*bitmap = iEikonEnv->CreateBitmapL(KAsterisk,EMbmPodcastFeed_40x40);
+	 * */
 	CleanupStack::PushL( bitmap );		
 	// Load the mask for feed icon	
-	mask = iEikonEnv->CreateBitmapL(KAsterisk,EMbmPodcastFeed_40x40m );	
+	//mask = iEikonEnv->CreateBitmapL(KAsterisk,EMbmPodcastFeed_40x40m );	
 	CleanupStack::PushL( mask );
 	// Append the feed icon to icon array
 	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );
@@ -107,7 +116,7 @@ void CPodcastFeedView::ConstructL()
 	bitmap = iEikonEnv->CreateBitmapL(KAsterisk,EMbmPodcastFeed_new_40x40);
 	CleanupStack::PushL( bitmap );		
 	// Load the mask
-	mask = iEikonEnv->CreateBitmapL(KAsterisk,EMbmPodcastFeed_new_40x40m );	
+	mask = iEikonEnv->CreateBitmapL(KAsterisk,EMbmPodcastFeed_new_40x40_mask );	
 	CleanupStack::PushL( mask );
 	// Append the feed icon to icon array
 	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );
@@ -116,7 +125,7 @@ void CPodcastFeedView::ConstructL()
 	bitmap = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastFeed_error_40x40);
 	CleanupStack::PushL( bitmap );		
 	// Load the mask
-	mask = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastFeed_error_40x40m );	
+	mask = iEikonEnv->CreateBitmapL( _L("*"),EMbmPodcastFeed_error_40x40_mask );	
 	CleanupStack::PushL( mask );
 	// Append the feed icon to icon array
 	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );

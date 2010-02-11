@@ -26,7 +26,6 @@ NAME    PODC // 4 letter ID
 #include <avkon.mbg>
 #include <appinfo.rh>
 #include <podcast.mbg>
-#include <podcastsvg.mbg>
 #include <commondialogs.rh>
 #include <commondialogs.hrh>
 
@@ -69,8 +68,8 @@ RESOURCE DIALOG r_dlg_about
 				layout = ENoteWithImageLayout;
 				singular_label = STRING_r_about_text_s60; 
 				imagefile = APPICON;
-				imageid = EMbmPodcastsvgPodcatcher_64px;
-				imagemask = EMbmPodcastsvgPodcatcher_64px_mask;
+				imageid = EMbmPodcastPodcatcher_64px;
+				imagemask = EMbmPodcastPodcatcher_64px_mask;
 				};
 			}
         };
