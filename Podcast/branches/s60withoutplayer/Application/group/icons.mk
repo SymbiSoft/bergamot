@@ -24,28 +24,13 @@ CLEANLIB : do_nothing
 
 RESOURCE :	
 		mifconv $(ICONTARGETFILENAME) /h$(HEADERFILE) /c16,1\
-		 .\podcast.svg /c16 $(DPATH)\PodcastClient_64x64.bmp\
-		  /8 $(DPATH)\PodcastClient_64x64_mask.bmp\
-		  /c16 $(DPATH)\PodcastClient_40x40.bmp\
-		/8 $(DPATH)\PodcastClient_40x40_mask.bmp\
-	/c16 $(DPATH)\PodcastClient_18x18.bmp\
-	/8 $(DPATH)\PodcastClient_18x18_mask.bmp\
-	/c16 $(DPATH)\feeds_40x40.bmp\
-	/8 $(DPATH)\feeds_40x40m.bmp\
-	/c16 $(DPATH)\feed_40x40.bmp\
-	/8 $(DPATH)\feed_40x40m.bmp\
-	/c16 $(DPATH)\play_40x40.bmp\
-	/8 $(DPATH)\play_40x40m.bmp\
-	/c16 $(DPATH)\downloaded_view_40x40.bmp\
-	/8 $(DPATH)\downloaded_view_40x40m.bmp\
-	/c16 $(DPATH)\pending_view_40x40.bmp\
-	/8 $(DPATH)\pending_view_40x40m.bmp\
-	/c16 $(DPATH)\show_40x40.bmp\
-	/8 $(DPATH)\show_40x40m.bmp\
-	/c16 $(DPATH)\show_playing_40x40.bmp\
-	/8 $(DPATH)\show_playing_40x40m.bmp\
-	/c16 $(DPATH)\downloading_40x40.bmp\
-	/8 $(DPATH)\downloading_40x40m.bmp
+		$(DPATH)\podcatcher_64px.svg\
+		$(DPATH)\Audio.svg\
+		$(DPATH)\Audio_blue.svg\
+		$(DPATH)\Audio_green.svg\
+		$(DPATH)\Audio_pink.svg\
+		$(DPATH)\Feed.svg\
+		$(DPATH)\Video.svg
 	
 		
 FREEZE : do_nothing

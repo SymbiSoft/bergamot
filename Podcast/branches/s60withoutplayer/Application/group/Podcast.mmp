@@ -29,14 +29,6 @@ START BITMAP Podcast.mbm
 	TARGETPATH \resource\apps
 	HEADER
 	SOURCEPATH ..\data\images
-	SOURCE c16 PodcastClient_64x64.bmp
-	SOURCE 8 PodcastClient_64x64_mask.bmp
-	SOURCE c16 PodcastClient_40x40.bmp
-	SOURCE 8 PodcastClient_40x40_mask.bmp
-	SOURCE c16 PodcastClient_18x18.bmp
-	SOURCE 8 PodcastClient_18x18_mask.bmp
-	SOURCE c16 feeds_40x40.bmp
-	SOURCE 8 feeds_40x40m.bmp
 	SOURCE c16 feed_40x40.bmp
 	SOURCE 8 feed_40x40m.bmp
 	SOURCE c16 feed_new_40x40.bmp
@@ -67,8 +59,6 @@ START BITMAP Podcast.mbm
 	SOURCE 8 suspended_40x40m.bmp
 	SOURCE c16 showwarning_40x40.bmp
 	SOURCE 8 showwarning_40x40m.bmp
-	SOURCE c16 Show_120.bmp
-	SOURCE 8 Show_120m.bmp 
 	SOURCE 8 emptyimage.bmp
 END
 

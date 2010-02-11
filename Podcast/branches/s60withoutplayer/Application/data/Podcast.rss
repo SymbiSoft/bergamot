@@ -69,8 +69,8 @@ RESOURCE DIALOG r_dlg_about
 				layout = ENoteWithImageLayout;
 				singular_label = STRING_r_about_text_s60; 
 				imagefile = APPICON;
-				imageid = EMbmPodcastsvgPodcast;
-				imagemask = EMbmPodcastsvgPodcast_mask;
+				imageid = EMbmPodcastsvgPodcatcher_64px;
+				imagemask = EMbmPodcastsvgPodcatcher_64px_mask;
 				};
 			}
         };
