@@ -45,24 +45,24 @@ const TUint KIconArrayIds[] =
 	{
 			EMbmPodcastEmptyimage,
 			EMbmPodcastEmptyimage,
-			/*EMbmPodcastShow_40x40,
-			EMbmPodcastShow_40x40m,
-			EMbmPodcastNew_40x40,
-			EMbmPodcastNew_40x40m,
-			EMbmPodcastShow_playing_40x40,
-			EMbmPodcastShow_playing_40x40m,
-			EMbmPodcastDownloading_40x40,
-			EMbmPodcastDownloading_40x40m,
-			EMbmPodcastSuspended_40x40,
-			EMbmPodcastSuspended_40x40m,
-			EMbmPodcastQueued_40x40,
-			EMbmPodcastQueued_40x40m,
-			EMbmPodcastOld_40x40,
-			EMbmPodcastOld_40x40m,
-			EMbmPodcastDownloaded_new_40x40,
-			EMbmPodcastDownloaded_new_40x40m,
-			EMbmPodcastShowwarning_40x40,
-			EMbmPodcastShowwarning_40x40m,*/
+			EMbmPodcastAudio,
+			EMbmPodcastAudio_mask,
+			EMbmPodcastNew_showstate_right,// new
+			EMbmPodcastNew_showstate_right_mask,
+			EMbmPodcastAudio_green, // playing
+			EMbmPodcastAudio_green_mask,
+			EMbmPodcastNot_downloaded_right, //downloading
+			EMbmPodcastNot_downloaded_right_mask,
+			EMbmPodcastNot_downloaded_right,
+			EMbmPodcastNot_downloaded_right_mask,
+			EMbmPodcastQueue_downloaded_right,
+			EMbmPodcastQueue_downloaded_right_mask,
+			EMbmPodcastBroken_right,
+			EMbmPodcastBroken_right_mask,  // old
+			EMbmPodcastQueue_downloaded_right,
+			EMbmPodcastQueue_downloaded_right_mask,
+			EMbmPodcastRed_right,
+			EMbmPodcastRed_right_mask,
 			0,
 			0
 	};
