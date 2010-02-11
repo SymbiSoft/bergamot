@@ -32,7 +32,7 @@ NAME    PODC // 4 letter ID
 #include "Podcast.hrh"
 #include "languages.rss"
 
-#define APPICON "\\resource\\apps\\Podcastsvg.mif"
+#define APPICON "\\resource\\apps\\Podcast.mif"
 RESOURCE RSS_SIGNATURE { }
 
 RESOURCE TBUF { buf = "Podcatcher"; }
