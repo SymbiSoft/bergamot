@@ -268,7 +268,7 @@ EXPORT_C RShowInfoArray& CPodcastModel::ActiveShowList()
 
 void CPodcastModel::SetActiveShowList(RShowInfoArray& aShowArray)
 {
-	iActiveShowList.Reset();
+	iActiveShowList.ResetAndDestroy();
 	TInt cnt = aShowArray.Count();
 
 	for(TInt loop = 0;loop < cnt; loop++)
