@@ -402,7 +402,13 @@ void CPodcastFeedView::FormatFeedInfoListBoxItemL(CFeedInfo& aFeedInfo, TBool aI
 	
 	if(aFeedInfo.FeedIcon() != NULL)
 		{
-		icons->AppendL( CGulIcon::NewL( aFeedInfo.FeedIcon(), NULL) );
+		// Hopefully temporary haxx to prevent double delete. I would prefer if
+	    // this could be solved with a little better design.
+		CFbsBitmap* bmpCopy = new (ELeave) CFbsBitmap;
+		CleanupStack::PushL(bmpCopy);
+		bmpCopy->Duplicate(aFeedInfo.FeedIcon()->Handle());
+		icons->AppendL( CGulIcon::NewL(bmpCopy, NULL));
+		CleanupStack::Pop(bmpCopy);
 		iconIndex = icons->Count()-1;
 		}
 	iListboxFormatbuffer.Format(KFeedFormat(), iconIndex, &(aFeedInfo.Title()), &updatedDate,  &unplayedShows);

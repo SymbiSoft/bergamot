@@ -81,7 +81,9 @@ EXPORT_C CImageHandler::~CImageHandler()
     {
     delete iDecoder;
     delete iScaler;
-    delete iBitmap;
+	// As far as I know the ImageHandler does not take ownership
+	// of the bitmap..
+	//delete iBitmap;
     iCallbackQue.Close(); 
     }
 
