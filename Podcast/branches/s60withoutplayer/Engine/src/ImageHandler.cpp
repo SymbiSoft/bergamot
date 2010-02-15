@@ -79,6 +79,9 @@ EXPORT_C CImageHandler* CImageHandler::NewLC(RFs& aFs)
 // Destructor
 EXPORT_C CImageHandler::~CImageHandler()
     {
+	// Cancel any outstanding request
+	Cancel();
+	Deque();
     delete iDecoder;
     delete iScaler;
 	// As far as I know the ImageHandler does not take ownership
