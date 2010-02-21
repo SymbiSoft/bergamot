@@ -75,6 +75,7 @@ CPodcastFeedView::CPodcastFeedView(CPodcastModel& aPodcastModel):iPodcastModel(a
 #define KAsterisk iEikonEnv->EikAppUi()->Application()->BitmapStoreName()
 void CPodcastFeedView::ConstructL()
 	{
+	DP("CPodcastFeedView::ConstructL BEGIN");
 	//_LIT(KAsterisk, "*");
 	BaseConstructL(R_PODCAST_FEEDVIEW);
 	iNeverUpdated = iEikonEnv->AllocReadResourceL(R_PODCAST_FEEDS_NEVER_UPDATED);
@@ -89,11 +90,14 @@ void CPodcastFeedView::ConstructL()
 	// Load the bitmap for empty icon	
 	TFileName fname = KAsterisk;
 	TParsePtr parser(fname);
-	AknIconUtils::CreateIconL(bitmap,
+	DP("EMbmPodcastEmptyimage");
+	TRAPD(rr, AknIconUtils::CreateIconL(bitmap,
 			                          mask,
 			                          iEikonEnv->EikAppUi()->Application()->BitmapStoreName(),
 			                          EMbmPodcastEmptyimage,
-			                          EMbmPodcastEmptyimage);	
+			                          EMbmPodcastEmptyimage));
+	DP1("rr=%d", rr);
+	
 	CleanupStack::PushL( bitmap );		
 	// Load the mask for feed icon		
 	CleanupStack::PushL( mask );
@@ -102,7 +106,7 @@ void CPodcastFeedView::ConstructL()
 	CleanupStack::Pop(2); // bitmap, mask
 	
 	// Load the bitmap for feed icon
-	
+	DP("EMbmPodcastFeed");
 	// Load svg.-image and mask with a single call
 		AknIconUtils::CreateIconL(bitmap,
 		                          mask,
@@ -119,6 +123,8 @@ void CPodcastFeedView::ConstructL()
 	// Append the feed icon to icon array
 	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );
 	CleanupStack::Pop(2); // bitmap, mask
+	DP("EMbmPodcastFeed_new_40x40");
+	
 	AknIconUtils::CreateIconL(bitmap,
 			                          mask,
 			                          iEikonEnv->EikAppUi()->Application()->BitmapStoreName(),
@@ -133,6 +139,8 @@ void CPodcastFeedView::ConstructL()
 	// Append the feed icon to icon array
 	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );
 	CleanupStack::Pop(2); // bitmap, mask
+	DP("EMbmPodcastFeed_error_40x40");
+
 	AknIconUtils::CreateIconL(bitmap,
 			                          mask,
 			                          iEikonEnv->EikAppUi()->Application()->BitmapStoreName(),
@@ -157,6 +165,7 @@ void CPodcastFeedView::ConstructL()
     CleanupStack::PopAndDestroy();
     
     iUpdater = CPodcastFeedViewUpdater::NewL(*this);
+	DP("CPodcastFeedView::ConstructL END");
 	}
     
 CPodcastFeedView::~CPodcastFeedView()
@@ -248,7 +257,7 @@ void CPodcastFeedView::HandleListBoxEventL(CEikListBox* /* aListBox */, TListBox
 				{
 				iPodcastModel.ActiveShowList().Reset();
 				iPodcastModel.SetActiveFeedInfo((*sortedItems)[index]);			
-				((CPodcastAppUi*)AppUi())->SetActiveTab(KTabIdShows);
+				//((CPodcastAppUi*)AppUi())->SetActiveTab(KTabIdShows);
 				AppUi()->ActivateLocalViewL(KUidPodcastShowsViewID,  TUid::Uid(EShowFeedShows), KNullDesC8());
 				}
 			}

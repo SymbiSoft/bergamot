@@ -48,6 +48,7 @@ CSettingsEngine* CSettingsEngine::NewL(CPodcastModel& aPodcastModel)
 
 void CSettingsEngine::ConstructL()
 	{
+	DP("CSettingsEngine::ConstructL BEGIN");
 	// default values
 	iUpdateFeedInterval = KDefaultUpdateFeedInterval;
 	iDownloadAutomatically = EFalse;
@@ -73,9 +74,7 @@ void CSettingsEngine::ConstructL()
 			DP1("error saving: %d", error);
 			}
 		}
-	
-#pragma message("SEB Remove the creation of logging path before delivery!")
-	BaflUtils::EnsurePathExistsL(iPodcastModel.FsSession(), _L("c:\\logs\\podcatcher\\"));
+	DP("CSettingsEngine::ConstructL END");	
 	}
 
 void CSettingsEngine::GetDefaultBaseDirL(TDes & /*aBaseDir*/)
@@ -174,7 +173,7 @@ void CSettingsEngine::LoadSettingsL()
 
 EXPORT_C void CSettingsEngine::SaveSettingsL()
 	{
-	DP("CSettingsEngine::SaveSettingsL\tTrying to save settings");
+	DP("CSettingsEngine::SaveSettingsL BEGIN");
 
 	TFileName configPath;
 	configPath.Copy(PrivatePath());
@@ -201,6 +200,7 @@ EXPORT_C void CSettingsEngine::SaveSettingsL()
 	stream.CommitL();
 	store->CommitL();
 	CleanupStack::PopAndDestroy(2); // stream and store
+	DP("CSettingsEngine::SaveSettingsL END");
 	}
 
 void CSettingsEngine::ImportSettingsL()

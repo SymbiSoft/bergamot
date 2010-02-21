@@ -39,9 +39,9 @@ const TUid KUidPodcastSettingsViewID = {0x00000005};
 const TUid KUidPodcastSearchViewID = {0x00000006};
 
 const TUint KTabIdFeeds = 0;
-const TUint KTabIdShows = 1;
-const TUint KTabIdQueue = 2;
-const TUint KTabIdSearch = 3;
+//const TUint KTabIdShows = 1;
+const TUint KTabIdQueue = 1;
+const TUint KTabIdSearch = 2;
 
 const TInt KTimeoutPrio = CActive::EPriorityStandard;
 

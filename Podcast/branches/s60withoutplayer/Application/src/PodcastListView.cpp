@@ -171,6 +171,7 @@ CPodcastListView::CPodcastListView()
 
 void CPodcastListView::ConstructL()
 {
+	DP("CPodcastListView::ConstructL BEGIN");
 	iListContainer = new (ELeave) CPodcastListContainer;
 	iListContainer->ConstructL(ClientRect(), iListboxFlags);
 	iListContainer->SetMopParent(this);
@@ -187,6 +188,7 @@ void CPodcastListView::ConstructL()
 	iLongTapDetector = CAknLongTapDetector::NewL(this);
 	iListContainer->SetPointerListener(this);
 	iListContainer->SetKeyEventListener(this);
+	DP("CPodcastListView::ConstructL END");
 }
 
 void CPodcastListView::HandleViewRectChange()

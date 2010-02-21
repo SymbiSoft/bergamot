@@ -44,15 +44,19 @@ void CPodcastAppUi::ConstructL()
     DP("CPodcastAppUi::ConstructL() BEGIN");
     BaseConstructL(CAknAppUi::EAknEnableSkin); 
 
+    DP("Constructing FeedView");
 	iFeedView = CPodcastFeedView::NewL(*iPodcastModel);
 	this->AddViewL(iFeedView);
 
+    DP("Constructing ShowsView");
 	iShowsView = CPodcastShowsView::NewL(*iPodcastModel);
 	this->AddViewL(iShowsView);
 
+    DP("Constructing SearchView");
 	iSearchView = CPodcastSearchView::NewL(*iPodcastModel);
 	this->AddViewL(iSearchView);
 	
+    DP("Constructing SettingsView");
 	iSettingsView = CPodcastSettingsView::NewL(*iPodcastModel);
 	this->AddViewL(iSettingsView);
 	
@@ -148,8 +152,8 @@ void CPodcastAppUi::NaviShowTabGroupL()
 	HBufC *label1 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_FEEDS);
 	iTabGroup->AddTabL(KTabIdFeeds,*label1);
 	
-	HBufC *label2 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_SHOWS);
-	iTabGroup->AddTabL(KTabIdShows,*label2);
+	//HBufC *label2 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_SHOWS);
+	//iTabGroup->AddTabL(KTabIdShows,*label2);
 	
 	HBufC *label3 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_QUEUE);
 	iTabGroup->AddTabL(KTabIdQueue,*label3);
@@ -159,7 +163,7 @@ void CPodcastAppUi::NaviShowTabGroupL()
 	
 	CleanupStack::PopAndDestroy(label4);
 	CleanupStack::PopAndDestroy(label3);
-	CleanupStack::PopAndDestroy(label2);
+	//CleanupStack::PopAndDestroy(label2);
 	CleanupStack::PopAndDestroy(label1);
 	
 	iTabGroup->SetActiveTabByIndex(0);
@@ -178,7 +182,7 @@ void CPodcastAppUi::TabChangedL (TInt aIndex)
 	
 	if (aIndex == KTabIdFeeds) {
 		newview = KUidPodcastFeedViewID;
-	} else if (aIndex == KTabIdShows) {
+	/*} else if (aIndex == KTabIdShows) {
 		if(iPodcastModel->ActiveFeedInfo() != NULL)
 			{
 			newview = KUidPodcastShowsViewID;
@@ -187,7 +191,7 @@ void CPodcastAppUi::TabChangedL (TInt aIndex)
 		else
 			{
 			iTabGroup->SetActiveTabByIndex(0);
-			}
+			}*/
 	} else if (aIndex == KTabIdQueue) {
 		newview = KUidPodcastShowsViewID;
 		messageUid = TUid::Uid(EShowPendingShows);
