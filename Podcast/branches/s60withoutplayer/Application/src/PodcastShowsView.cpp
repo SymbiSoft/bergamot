@@ -609,6 +609,10 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 		case EPodcastMarkAsUnplayed:
 			SetShowPlayed(EFalse);
 			break;
+		case EPodcastMarkAllPlayed:
+			iPodcastModel.MarkSelectionPlayed();
+			UpdateListboxItemsL();
+			break;
 		case EPodcastDeleteShow:
 			DeleteShow();
 			break;
@@ -698,10 +702,15 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 	UpdateToolbar();
 	}
 	
-	void CPodcastShowsView::DynInitMenuPaneL(TInt /*aResourceId*/,CEikMenuPane* /*aMenuPane*/)
-	{
+void CPodcastShowsView::DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPane)
+{
+	if(aResourceId == R_PODCAST_SHOWSVIEW_MENU)
+		{
+		TBool updatingState = iPodcastModel.FeedEngine().ClientState() != EIdle && iPodcastModel.FeedEngine().ActiveClientUid() == iPodcastModel.ActiveFeedInfo()->Uid();
+		aMenuPane->SetItemDimmed(EPodcastMarkAllPlayed, updatingState || iCurrentCategory == EShowPendingShows);
+		}
 
-	}
+}
 	
 void CPodcastShowsView::ImageOperationCompleteL(TInt aError)
 	{
