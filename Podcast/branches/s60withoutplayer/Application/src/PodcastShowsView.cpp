@@ -253,7 +253,7 @@ void CPodcastShowsView::DoDeactivate()
 	CAknTitlePane* titlePane = static_cast<CAknTitlePane*>
 		     ( StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidTitle ) ) );
 	
-	titlePane->SetSmallPicture(NULL, NULL, ETrue);
+//	titlePane->SetSmallPicture(NULL, NULL, ETrue);
 	titlePane->SetPicture(NULL, NULL);
 	titlePane->SetTextToDefaultL();
 	CPodcastListView::DoDeactivate();
@@ -945,7 +945,7 @@ void CPodcastShowsView::UpdateViewTitleL()
 		{
 		case EShowPendingShows:
 			SetEmptyTextL(R_PODCAST_EMPTY_QUEUE);
-			titlePane->SetSmallPicture(NULL, NULL, ETrue);
+			//titlePane->SetSmallPicture(NULL, NULL, ETrue);
 			titlePane->SetPicture(NULL, NULL);
 			titlePane->SetTextToDefaultL();
 			break;
@@ -958,28 +958,28 @@ void CPodcastShowsView::UpdateViewTitleL()
 					titlePane->SetTextL( iPodcastModel.ActiveFeedInfo()->Title(), ETrue );
 					}
 
-				if(iPodcastModel.ActiveFeedInfo()->ImageFileName().Length())
-					{
-					CFbsBitmap * bitmap = new (ELeave) CFbsBitmap;
-					CleanupStack::PushL(bitmap);
-
-					TRAPD(loaderror, iPodcastModel.ImageHandler().LoadFileAndScaleL(bitmap, iPodcastModel.ActiveFeedInfo()->ImageFileName(), TSize(24,24), *this));
-
-					if(loaderror == KErrNone)
-						{
-						iSetTitlebarImage = ETrue;					
-						CleanupStack::Pop(bitmap);
-						bitmap = NULL;
-						}
-					else
-						{
-						CleanupStack::PopAndDestroy(bitmap);
-						}
-					}
+//				if(iPodcastModel.ActiveFeedInfo()->ImageFileName().Length())
+//					{
+//					CFbsBitmap * bitmap = new (ELeave) CFbsBitmap;
+//					CleanupStack::PushL(bitmap);
+//
+//					TRAPD(loaderror, iPodcastModel.ImageHandler().LoadFileAndScaleL(bitmap, iPodcastModel.ActiveFeedInfo()->ImageFileName(), TSize(24,24), *this));
+//
+//					if(loaderror == KErrNone)
+//						{
+//						iSetTitlebarImage = ETrue;					
+//						CleanupStack::Pop(bitmap);
+//						bitmap = NULL;
+//						}
+//					else
+//						{
+//						CleanupStack::PopAndDestroy(bitmap);
+//						}
+//					}
 				}
 			else
 				{
-				titlePane->SetSmallPicture(NULL, NULL, ETrue);
+//				titlePane->SetSmallPicture(NULL, NULL, ETrue);
 				titlePane->SetPicture(NULL, NULL);
 				titlePane->SetTextToDefaultL();
 				}
