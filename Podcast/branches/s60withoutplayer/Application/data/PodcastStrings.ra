@@ -100,6 +100,7 @@ RESOURCE TBUF r_search_prompt {buf = STRING_r_search_title;}
 RESOURCE TBUF r_podcast_no_search_results {buf = STRING_r_podcast_empty_list;}
 
 RESOURCE TBUF r_add_feed_title {buf=STRING_add_feed_title;}
+RESOURCE TBUF r_add_feed_query {buf=STRING_add_feed_query;}
 RESOURCE TBUF r_add_feed_success {buf=STRING_add_feed_success;}
 RESOURCE TBUF r_add_feed_failure {buf=STRING_add_feed_error;}
 

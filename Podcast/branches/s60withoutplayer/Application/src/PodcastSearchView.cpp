@@ -154,6 +154,7 @@ void CPodcastSearchView::DoActivateL(const TVwsViewId& aPrevViewId,
 	
 	CPodcastListView::DoActivateL(aPrevViewId, aCustomMessageId, aCustomMessage);
 	iPreviousView = TVwsViewId(KUidPodcast, KUidPodcastFeedViewID);
+	SearchL();
 }
 
 void CPodcastSearchView::DoDeactivate()
@@ -248,30 +249,39 @@ void CPodcastSearchView::HandleCommandL(TInt aCommand)
 			if(index < iItemArray->MdcaCount() && index >= 0)
 				{
 				CFeedInfo *newInfo = iPodcastModel.FeedEngine().GetSearchResults()[index];
-				TBool added = iPodcastModel.FeedEngine().AddFeedL(*newInfo);
 				
-				if (added)
-					{					
-					// ask if users wants to update it now
-					TBuf<KMaxMessageLength> message;
-					iEikonEnv->ReadResourceL(message, R_ADD_FEED_SUCCESS);
-					if(ShowQueryMessage(message))
-						{
-						CFeedInfo *info = iPodcastModel.FeedEngine().GetFeedInfoByUid(newInfo->Uid());
-						
-						iPodcastModel.ActiveShowList().Reset();
-						iPodcastModel.SetActiveFeedInfo(info);			
-						AppUi()->ActivateLocalViewL(KUidPodcastShowsViewID,  TUid::Uid(0), KNullDesC8());
-						//((CPodcastAppUi*)AppUi())->SetActiveTab(KTabIdShows);
-						iPodcastModel.FeedEngine().UpdateFeedL(info->Uid());
+				// ask if user wants to add the feed
+				TBuf<KMaxMessageLength> templ;
+				TBuf<KMaxMessageLength> message;
+								
+				iEikonEnv->ReadResourceL(templ, R_ADD_FEED_QUERY);
+				message.Format(templ, &newInfo->Title());
+				if(ShowQueryMessage(message)) {
+					TBool added = iPodcastModel.FeedEngine().AddFeedL(*newInfo);
+					
+					if (added)
+						{					
+						// ask if user wants to update it now
+						TBuf<KMaxMessageLength> message;
+						iEikonEnv->ReadResourceL(message, R_ADD_FEED_SUCCESS);
+						if(ShowQueryMessage(message))
+							{
+							CFeedInfo *info = iPodcastModel.FeedEngine().GetFeedInfoByUid(newInfo->Uid());
+							
+							iPodcastModel.ActiveShowList().Reset();
+							iPodcastModel.SetActiveFeedInfo(info);			
+							AppUi()->ActivateLocalViewL(KUidPodcastShowsViewID,  TUid::Uid(0), KNullDesC8());
+							//((CPodcastAppUi*)AppUi())->SetActiveTab(KTabIdShows);
+							iPodcastModel.FeedEngine().UpdateFeedL(info->Uid());
+							}
 						}
-					}
-				else
-					{
-					TBuf<KMaxMessageLength> message;
-					iEikonEnv->ReadResourceL(message, R_ADD_FEED_EXISTS);
-					ShowErrorMessage(message);
-					}		
+					else
+						{
+						TBuf<KMaxMessageLength> message;
+						iEikonEnv->ReadResourceL(message, R_ADD_FEED_EXISTS);
+						ShowErrorMessage(message);
+						}		
+				}
 				}
 			}
 			break;

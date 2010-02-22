@@ -55,6 +55,7 @@ EXPORT_C CFeedInfo* CFeedInfo::CopyL() const
 		}
 	
 	copy->SetLastError(LastError());
+	copy->SetFeedIconIndex(FeedIconIndex());
 	CleanupStack::Pop(copy);
 	return copy;
 	}

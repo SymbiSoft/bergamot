@@ -263,12 +263,12 @@ RESOURCE STYLUS_POPUP_MENU r_showview_popup_menu
 			STYLUS_POPUP_MENU_ITEM
 				{
 					txt = STRING_r_view_mark_as_unplayed_cmd_short;
-					command = EPodcastMarkAsPlayed;
+					command = EPodcastMarkAsUnplayed;
 				},
 			STYLUS_POPUP_MENU_ITEM
 				{
 					txt = STRING_r_view_mark_as_played_cmd_short;
-					command = EPodcastMarkAsUnplayed;
+					command = EPodcastMarkAsPlayed;
 				},
 			STYLUS_POPUP_MENU_ITEM
 				{

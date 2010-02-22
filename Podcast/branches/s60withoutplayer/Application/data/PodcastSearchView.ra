@@ -63,7 +63,7 @@ RESOURCE AVKON_TOOLBAR r_searchview_toolbar
 						  }  
 					  };
 				  };
-			  },
+			  }/*,
 		TBAR_CTRL
 			{
 			type = EAknCtButton;
@@ -81,7 +81,7 @@ RESOURCE AVKON_TOOLBAR r_searchview_toolbar
 					   }  
 					};
 				};
-			}
+			}*/
 			};// items
     }
 

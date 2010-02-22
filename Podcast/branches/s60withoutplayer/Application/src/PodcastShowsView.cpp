@@ -166,6 +166,7 @@ void CPodcastShowsView::ConstructL()
 	TResourceReader reader;
 	iCoeEnv->CreateResourceReaderLC(reader,R_SHOWVIEW_POPUP_MENU);
 	iStylusPopupMenu->ConstructFromResourceL(reader);
+
 	CleanupStack::PopAndDestroy();	
 	}
 
@@ -683,16 +684,6 @@ void CPodcastShowsView::DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPan
 		TBool updatingState = iPodcastModel.FeedEngine().ClientState() != EIdle && iPodcastModel.FeedEngine().ActiveClientUid() == iPodcastModel.ActiveFeedInfo()->Uid();
 		aMenuPane->SetItemDimmed(EPodcastMarkAllPlayed, updatingState);
 		}
-	else if (aResourceId == R_SHOWVIEW_POPUP_MENU)
-		{
-		TInt index = iListContainer->Listbox()->CurrentItemIndex();
-		if (index >= 0 && index < iPodcastModel.ActiveShowList().Count())
-			{
-			CShowInfo *info = iPodcastModel.ActiveShowList()[index];
-			}
-
-		}
-
 }
 	
 void CPodcastShowsView::ImageOperationCompleteL(TInt aError)
@@ -843,6 +834,21 @@ void CPodcastShowsView::HandleLongTapEventL( const TPoint& aPenEventLocation, co
 	
     if(iStylusPopupMenu)
     {
+		TInt index = iListContainer->Listbox()->CurrentItemIndex();
+		if (index >= 0 && index < iPodcastModel.ActiveShowList().Count())
+			{
+			CShowInfo *info = iPodcastModel.ActiveShowList()[index];
+			TBool hideDownloadShowCmd = info->DownloadState() != ENotDownloaded;
+			TBool hideDeleteShowCmd = info->DownloadState() != EDownloaded;
+			TBool hideMarkOld = info->PlayState() == EPlayed;
+			
+			iStylusPopupMenu->SetItemDimmed(EPodcastMarkAsPlayed, hideMarkOld);
+			iStylusPopupMenu->SetItemDimmed(EPodcastMarkAsUnplayed, !hideMarkOld);
+						
+			iStylusPopupMenu->SetItemDimmed(EPodcastDownloadShow, hideDownloadShowCmd);
+			iStylusPopupMenu->SetItemDimmed(EPodcastDeleteShow, hideDeleteShowCmd);
+			}
+
 		iStylusPopupMenu->ShowMenu();
 		iStylusPopupMenu->SetPosition(aPenEventLocation);
     }
