@@ -152,14 +152,11 @@ void CPodcastAppUi::NaviShowTabGroupL()
 	iNaviDecorator = iNaviPane->CreateTabGroupL();
 	
 	iTabGroup = STATIC_CAST(CAknTabGroup*, iNaviDecorator->DecoratedControl());
-	iTabGroup->SetTabFixedWidthL(EAknTabWidthWithFourTabs);
+	iTabGroup->SetTabFixedWidthL(EAknTabWidthWithThreeTabs);
 
 	HBufC *label1 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_FEEDS);
 	iTabGroup->AddTabL(KTabIdFeeds,*label1);
-	
-	//HBufC *label2 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_SHOWS);
-	//iTabGroup->AddTabL(KTabIdShows,*label2);
-	
+		
 	HBufC *label3 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_QUEUE);
 	iTabGroup->AddTabL(KTabIdQueue,*label3);
 	
@@ -168,7 +165,6 @@ void CPodcastAppUi::NaviShowTabGroupL()
 	
 	CleanupStack::PopAndDestroy(label4);
 	CleanupStack::PopAndDestroy(label3);
-	//CleanupStack::PopAndDestroy(label2);
 	CleanupStack::PopAndDestroy(label1);
 	
 	iTabGroup->SetActiveTabByIndex(0);

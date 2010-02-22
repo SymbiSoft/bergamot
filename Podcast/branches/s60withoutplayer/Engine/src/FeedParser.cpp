@@ -132,6 +132,20 @@ void CFeedParser::OnStartElementL(const RTagInfo& aElement, const RAttributeArra
 			iFeedState=EStateChannelDescription;
 		// <channel> <image>
 		} else if (str.CompareF(KTagImage) == 0) {
+			for (int i=0;i<aAttributes.Count();i++) {
+				RAttribute attr = aAttributes[i];
+				TBuf<KMaxStringBuffer> attr16;
+				attr16.Copy(attr.Attribute().LocalName().DesC().Left(KMaxStringBuffer));
+				HBufC* val16 = CnvUtfConverter::ConvertToUnicodeFromUtf8L(attr.Value().DesC().Left(KMaxParseBuffer));
+				CleanupStack::PushL(val16);
+						
+				// href=...
+				if (attr16.Compare(KTagHref) == 0) {
+					iActiveFeed->SetImageUrlL(*val16);
+				}
+				CleanupStack::PopAndDestroy(val16);
+			}
+					
 			iFeedState=EStateChannelImage;
 		}
 		break;

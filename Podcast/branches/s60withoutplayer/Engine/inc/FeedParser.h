@@ -36,6 +36,7 @@ _LIT(KTagChannel, "channel");
 _LIT(KTagEnclosure, "enclosure");
 _LIT(KTagPubDate, "pubDate");
 _LIT(KTagLastBuildDate, "lastBuildDate");
+_LIT(KTagHref, "href");
 
 enum TFeedState {
 	EStateRoot,
