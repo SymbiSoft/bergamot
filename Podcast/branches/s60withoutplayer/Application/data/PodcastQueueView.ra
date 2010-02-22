@@ -69,9 +69,9 @@ RESOURCE AVKON_TOOLBAR r_queueview_toolbar
 					{
 					AVKON_BUTTON_STATE
 						{
-						//bmpfile = AVKON_BITMAP_FILE;
-						//bmpid = EMbmAvkonQgn_indi_find_goto;
-						txt = STRING_r_suspend_download_cmd;
+                        bmpfile = APPICON;
+                        bmpid = EMbmPodcastPodcast_tb_suspend;
+                        bmpmask = EMbmPodcastPodcast_tb_suspend_mask;
 						helptxt = STRING_r_view_stop_downloads_cmd;
 						}  
 					};
@@ -87,9 +87,9 @@ RESOURCE AVKON_TOOLBAR r_queueview_toolbar
 					{
 					AVKON_BUTTON_STATE
 						{
-						//bmpfile = AVKON_BITMAP_FILE;
-						//bmpid = EMbmAvkonQgn_indi_find_goto;
-						txt = STRING_r_view_resume_short_dls_cmd;
+                        bmpfile = APPICON;
+                        bmpid = EMbmPodcastPodcast_tb_resume;
+                        bmpmask = EMbmPodcastPodcast_tb_resume_mask;
 						helptxt = STRING_r_view_resume_downloads_cmd;
 						}  
 					};
@@ -105,9 +105,9 @@ RESOURCE AVKON_TOOLBAR r_queueview_toolbar
 					{
 					AVKON_BUTTON_STATE
 						{
-						//bmpfile = AVKON_BITMAP_FILE;
-						//bmpid = EMbmAvkonQgn_indi_find_goto;
-						txt = STRING_r_view_remove_download_short_cmd;
+                        bmpfile = APPICON;
+                        bmpid = EMbmPodcastPodcast_tb_remove;
+                        bmpmask = EMbmPodcastPodcast_tb_remove_mask;
 						helptxt = STRING_r_view_remove_download_cmd;
 						}  
 					};
@@ -123,9 +123,9 @@ RESOURCE AVKON_TOOLBAR r_queueview_toolbar
 					{
 					AVKON_BUTTON_STATE
 						{
-						//bmpfile = AVKON_BITMAP_FILE;
-						//bmpid = EMbmAvkonQgn_indi_find_goto;
-						txt = STRING_r_view_remove_all_downloads_cmd_short;
+                        bmpfile = APPICON;
+                        bmpid = EMbmPodcastPodcast_tb_clear;
+                        bmpmask = EMbmPodcastPodcast_tb_clear_mask;
 						helptxt = STRING_r_view_remove_all_downloads_cmd;
 						}  
 					};

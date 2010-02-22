@@ -38,10 +38,10 @@ RESOURCE AVKON_TOOLBAR r_searchview_toolbar
                     {
                     AVKON_BUTTON_STATE
                         {
-                        //bmpfile = AVKON_BITMAP_FILE;
-                        //bmpid = EMbmAvkonQgn_indi_find_goto;
-                        txt = STRING_r_search;
-                        helptxt = STRING_r_update_all_feeds_cmd;
+                        bmpfile = APPICON;
+                        bmpid = EMbmPodcastPodcast_tb_search;
+                        bmpmask = EMbmPodcastPodcast_tb_search_mask;
+                        helptxt = STRING_r_search;
                         }  
                     };
                 };
@@ -56,10 +56,10 @@ RESOURCE AVKON_TOOLBAR r_searchview_toolbar
 					  {
 					  AVKON_BUTTON_STATE
 						  {
-						  //bmpfile = AVKON_BITMAP_FILE;
-						  //bmpid = EMbmAvkonQgn_indi_find_goto;
-						  txt = STRING_r_cancel_update_all_feeds_short_cmd;
-						  helptxt = STRING_r_cancel_update_all_feeds_cmd;
+	                       bmpfile = APPICON;
+	                        bmpid = EMbmPodcastPodcast_tb_cancel;
+	                        bmpmask = EMbmPodcastPodcast_tb_cancel_mask;
+	 					    helptxt = STRING_r_cancel_update_all_feeds_cmd;
 						  }  
 					  };
 				  };
