@@ -291,13 +291,6 @@ void CPodcastListView::HandleCommandL(TInt aCommand)
 void CPodcastListView::RunAboutDialogL()
 {
 	CAknNoteDialog* dlg = new(ELeave) CAknNoteDialog();
-	CleanupStack::PushL(dlg);
-	
-	/*TBuf<255> aboutMessage;
-	iEikonEnv->ReadResourceL(aboutMessage, STRING_R_ABOUT_TEXT_S60);
-	dlg->SetTextL(aboutMessage);*/
-	
-	CleanupStack::Pop(dlg);
 	dlg->ExecuteLD(R_DLG_ABOUT);
 }
 

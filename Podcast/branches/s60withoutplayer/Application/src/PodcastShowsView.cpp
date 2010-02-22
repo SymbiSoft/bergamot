@@ -623,49 +623,6 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 		case EPodcastCancelUpdateAllFeeds:
 			iPodcastModel.FeedEngine().CancelUpdateAllFeeds();
 			break;
-		case EPodcastRemoveAllDownloads:
-			{
-			TBuf<KMaxMessageLength> msg;
-			iEikonEnv->ReadResourceL(msg, R_CLEAR_QUERY);
-												
-			if(ShowQueryMessage(msg))
-				{
-				iPodcastModel.ShowEngine().RemoveAllDownloads();
-				UpdateListboxItemsL();
-				}
-			}
-			break;
-		case EPodcastRemoveDownload:
-			{
-			TInt index = iListContainer->Listbox()->CurrentItemIndex();
-			if (index >= 0 && index < iPodcastModel.ActiveShowList().Count())
-				{
-				if (iPodcastModel.ShowEngine().RemoveDownloadL(iPodcastModel.ActiveShowList()[index]->Uid()))
-					{
-						iItemArray->Delete(index);
-						iItemIdArray.Remove(index);						
-						iListContainer->Listbox()->HandleItemRemovalL();
-						iListContainer->Listbox()->SetCurrentItemIndex(index - 1 > 0 ? index - 1 : 0);
-						iListContainer->Listbox()->DrawNow();
-						
-						delete iPodcastModel.ActiveShowList()[index];
-						iPodcastModel.ActiveShowList().Remove(index);
-					}
-				}
-			}
-			break;
-		case EPodcastSuspendDownloads:
-			{
-			iPodcastModel.ShowEngine().SuspendDownloads();
-			UpdateListboxItemsL();
-			}
-			break;
-		case EPodcastResumeDownloads:
-			{
-			iPodcastModel.ShowEngine().ResumeDownloadsL();
-			UpdateListboxItemsL();
-			}
-			break;
 		case EPodcastShowInfo:
 			{
 			DisplayShowInfoDialogL();

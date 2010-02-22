@@ -65,7 +65,7 @@ RESOURCE DIALOG r_dlg_about
             id = EPodcastAboutDlg;
             control = AVKON_NOTE
 				{
-				layout = ENoteWithImageLayout;
+				layout = EGeneralLayout;
 				singular_label = STRING_r_about_text_s60; 
 				imagefile = APPICON;
 				imageid = EMbmPodcastPodcatcher_64px;
@@ -74,6 +74,8 @@ RESOURCE DIALOG r_dlg_about
 			}
         };
     }
+
+
 
 #include "PodcastStrings.ra"
 #include "PodcastFeedView.ra"

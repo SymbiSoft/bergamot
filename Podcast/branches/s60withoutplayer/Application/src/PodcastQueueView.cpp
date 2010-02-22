@@ -67,49 +67,6 @@ const TUint KIconArrayIds[] =
 			0
 	};
 
-#define KPodcastImageWidth 160
-#define KPodcastImageHeight 120
-#define KPodcastDialogOffset 2
-
-/** 
- *  This is an interal class to display a message query dialog with an image at the bottm
- */
-class CPodcastImageMessageQueryDialog:public CAknMessageQueryDialog
-	{
-	public:
-		/**
-		 * C++ default constructor.
-		 *
-		 * @param aMessage Dialog box text.
-		 * @param aHeader Header for the dialog.
-		 * @deprecated 
-		 */ 
-		CPodcastImageMessageQueryDialog(TDesC* aMessage, TDesC* aHeader):CAknMessageQueryDialog(aMessage, aHeader)
-    		{
-
-    		}    
-
-		~CPodcastImageMessageQueryDialog()
-			{
-
-			}
-
-		void SetSizeAndPosition(const TSize& aSize)
-			{
-			CAknMessageQueryDialog::SetSizeAndPosition(aSize);
-
-			TPoint pos = Position();		 
-			TSize size = Size();
-
-			CAknDialog::SetSizeAndPosition(aSize);		 		 
-
-			pos.iY-=((aSize.iHeight-size.iHeight)-KPodcastDialogOffset);
-			SetPosition(pos);	
-			SetSize(aSize);
-			}
-
-	};
-
 CPodcastQueueView* CPodcastQueueView::NewL(CPodcastModel& aPodcastModel)
 	{
 	CPodcastQueueView* self = CPodcastQueueView::NewLC(aPodcastModel);
@@ -614,16 +571,6 @@ void CPodcastQueueView::DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPan
 		TBool updatingState = iPodcastModel.FeedEngine().ClientState() != EIdle && iPodcastModel.FeedEngine().ActiveClientUid() == iPodcastModel.ActiveFeedInfo()->Uid();
 		aMenuPane->SetItemDimmed(EPodcastMarkAllPlayed, ETrue);
 		}
-	else if (aResourceId == R_SHOWVIEW_POPUP_MENU)
-		{
-		TInt index = iListContainer->Listbox()->CurrentItemIndex();
-		if (index >= 0 && index < iPodcastModel.ActiveShowList().Count())
-			{
-			CShowInfo *info = iPodcastModel.ActiveShowList()[index];
-			}
-
-		}
-
 }
 
 void CPodcastQueueView::UpdateToolbar()
