@@ -29,12 +29,9 @@
 #include "PodcastModel.h"
 #include "Podcast.hrh"
 #include "PodcastListView.h"
-#include "Imagehandler.h"
-
-class CImageHandler;
 
 class CPodcastQueueView : public CPodcastListView, public MEikListBoxObserver, 
-	public MFeedEngineObserver, public MShowEngineObserver, public MImageHandlerCallback
+	public MFeedEngineObserver, public MShowEngineObserver
 	{
 public: 
 	static CPodcastQueueView* NewL(CPodcastModel& aPodcastModel);
@@ -102,16 +99,7 @@ protected:
 private:
 	void GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex);
 	void UpdateToolbar();
-	void DisplayShowInfoDialogL();
-	/*
-	 * Called by CImageHandler when an image has been loaded.
-	 * @param aError Error code given by the CImageHandler or 0 (zero) if the
-	 *   image was loaded successfully.
-	 */
-	virtual void ImageOperationCompleteL(TInt aError);
-	void SetShowPlayed(TBool aPlayed);
-	void DeleteShow();
-	void UpdateViewTitleL();
+
 	
 private:
 	

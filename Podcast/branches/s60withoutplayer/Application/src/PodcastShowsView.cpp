@@ -201,7 +201,7 @@ TKeyResponse CPodcastShowsView::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEvent
 				break;
 			case EKeyBackspace:
 			case EKeyDelete:
-					HandleCommandL(EPodcastDeleteShowHardware);
+					HandleCommandL(EPodcastDeleteShow);
 				break;
 			default:
 				break;
@@ -634,7 +634,6 @@ void CPodcastShowsView::HandleCommandL(TInt aCommand)
 				}
 			}
 			break;
-		case EPodcastRemoveDownloadHardware:
 		case EPodcastRemoveDownload:
 			{
 			TInt index = iListContainer->Listbox()->CurrentItemIndex();
