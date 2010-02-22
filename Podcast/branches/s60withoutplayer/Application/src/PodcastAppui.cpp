@@ -21,6 +21,7 @@
 #include "Podcast.hrh"
 #include "PodcastFeedView.h"
 #include "PodcastShowsView.h"
+#include "PodcastQueueView.h"
 #include "PodcastSettingsView.h"
 #include "PodcastSearchView.h"
 #include "ShowEngine.h"
@@ -51,6 +52,10 @@ void CPodcastAppUi::ConstructL()
     DP("Constructing ShowsView");
 	iShowsView = CPodcastShowsView::NewL(*iPodcastModel);
 	this->AddViewL(iShowsView);
+
+    DP("Constructing QueueView");
+    iQueueView = CPodcastQueueView::NewL(*iPodcastModel);
+	this->AddViewL(iQueueView);
 
     DP("Constructing SearchView");
 	iSearchView = CPodcastSearchView::NewL(*iPodcastModel);
@@ -182,22 +187,10 @@ void CPodcastAppUi::TabChangedL (TInt aIndex)
 	
 	if (aIndex == KTabIdFeeds) {
 		newview = KUidPodcastFeedViewID;
-	/*} else if (aIndex == KTabIdShows) {
-		if(iPodcastModel->ActiveFeedInfo() != NULL)
-			{
-			newview = KUidPodcastShowsViewID;
-			messageUid = TUid::Uid(EShowFeedShows);
-			}
-		else
-			{
-			iTabGroup->SetActiveTabByIndex(0);
-			}*/
 	} else if (aIndex == KTabIdQueue) {
-		newview = KUidPodcastShowsViewID;
-		messageUid = TUid::Uid(EShowPendingShows);
+		newview = KUidPodcastQueueViewID;
 	} else if (aIndex == KTabIdSearch) {
 		newview = KUidPodcastSearchViewID;
-		messageUid = TUid::Uid(0);	
 	} else {
 		User::Leave(KErrTooBig);
 	}

@@ -262,6 +262,11 @@ RESOURCE STYLUS_POPUP_MENU r_feedview_popup_menu
 				{
 					txt = STRING_r_view_delete_feed_cmd_short;
 					command = EPodcastDeleteFeed;
+				},
+			STYLUS_POPUP_MENU_ITEM
+				{
+					txt = STRING_r_update_feed_short_cmd;
+					command = EPodcastUpdateFeed;
 				}
 		};
 	}

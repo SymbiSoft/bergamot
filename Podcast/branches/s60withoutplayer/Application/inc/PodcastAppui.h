@@ -27,6 +27,7 @@
 class CPodcastMainView;
 class CPodcastFeedView;
 class CPodcastShowsView;
+class CPodcastQueueView;
 class CPodcastSettingsView;
 class CPodcastSearchView;
 class CPodcastModel;
@@ -37,6 +38,7 @@ const TUid KUidPodcastFeedViewID = {0x00000002};
 const TUid KUidPodcastShowsViewID = {0x00000003};
 const TUid KUidPodcastSettingsViewID = {0x00000005};
 const TUid KUidPodcastSearchViewID = {0x00000006};
+const TUid KUidPodcastQueueViewID = {0x00000007};
 
 const TUint KTabIdFeeds = 0;
 //const TUint KTabIdShows = 1;
@@ -123,9 +125,11 @@ class CPodcastAppUi : public CAknViewAppUi, public MAknTabObserver, MTimeoutObse
     private:
     	CPodcastMainView *iMainView;
 		CPodcastFeedView* iFeedView;
-		CPodcastShowsView* iShowsView;		
+		CPodcastShowsView* iShowsView;
+		CPodcastQueueView* iQueueView;
 		CPodcastSearchView* iSearchView;
 		CPodcastSettingsView* iSettingsView;
+		
 		CPodcastModel* iPodcastModel;
 
 		CAknNavigationDecorator* iNaviDecorator;

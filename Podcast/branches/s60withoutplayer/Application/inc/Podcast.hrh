@@ -84,12 +84,6 @@ enum TPodcastControl
 	EWaitDlg
 	};
 
-enum TPodcastClientShowCategory
-	{
-	EShowFeedShows =0x4000,
-	EShowPendingShows
-	};
-
 enum TShowsIconIndex
 	{
 	EShowNoIcon,

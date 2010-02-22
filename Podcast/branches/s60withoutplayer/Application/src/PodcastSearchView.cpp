@@ -261,7 +261,7 @@ void CPodcastSearchView::HandleCommandL(TInt aCommand)
 						
 						iPodcastModel.ActiveShowList().Reset();
 						iPodcastModel.SetActiveFeedInfo(info);			
-						AppUi()->ActivateLocalViewL(KUidPodcastShowsViewID,  TUid::Uid(EShowFeedShows), KNullDesC8());
+						AppUi()->ActivateLocalViewL(KUidPodcastShowsViewID,  TUid::Uid(0), KNullDesC8());
 						//((CPodcastAppUi*)AppUi())->SetActiveTab(KTabIdShows);
 						iPodcastModel.FeedEngine().UpdateFeedL(info->Uid());
 						}

@@ -93,6 +93,8 @@ class CPodcastFeedView : public CPodcastListView, public MEikListBoxObserver,
 		void HandleRemoveFeedL();
 		void HandleImportFeedsL();
 		void HandleExportFeedsL();
+		void HandleUpdateFeedL();
+
 	private:
 		CPodcastModel& iPodcastModel;		
 		TBool iUpdatingAllRunning;

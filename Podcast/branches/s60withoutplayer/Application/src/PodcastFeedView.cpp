@@ -257,8 +257,8 @@ void CPodcastFeedView::HandleListBoxEventL(CEikListBox* /* aListBox */, TListBox
 				{
 				iPodcastModel.ActiveShowList().Reset();
 				iPodcastModel.SetActiveFeedInfo((*sortedItems)[index]);			
-				//((CPodcastAppUi*)AppUi())->SetActiveTab(KTabIdShows);
-				AppUi()->ActivateLocalViewL(KUidPodcastShowsViewID,  TUid::Uid(EShowFeedShows), KNullDesC8());
+
+				AppUi()->ActivateLocalViewL(KUidPodcastShowsViewID,  TUid::Uid(0), KNullDesC8());
 				}
 			}
 		break;
@@ -276,8 +276,6 @@ void CPodcastFeedView::FeedUpdateAllCompleteL(TFeedState aState)
 
 void CPodcastFeedView::FeedDownloadStartedL(TFeedState aState,TUint aFeedUid)
 	{
-	iUpdatingAllRunning = ETrue;		
-
 	// Update status text
 	UpdateFeedInfoStatusL(aFeedUid, ETrue);
 	
@@ -532,6 +530,10 @@ void CPodcastFeedView::HandleCommandL(TInt aCommand)
 			iPodcastModel.FeedEngine().UpdateAllFeedsL();
 			UpdateToolbar();
 			}break;
+		case EPodcastUpdateFeed:
+			{
+			HandleUpdateFeedL();
+			}break;
 		case EPodcastCancelUpdateAllFeeds:
 			{
 			if(iUpdatingAllRunning)
@@ -619,7 +621,7 @@ void CPodcastFeedView::HandleAddFeedL()
 				
 				iPodcastModel.ActiveShowList().Reset();
 				iPodcastModel.SetActiveFeedInfo(info);			
-				AppUi()->ActivateLocalViewL(KUidPodcastShowsViewID,  TUid::Uid(EShowFeedShows), KNullDesC8());
+				AppUi()->ActivateLocalViewL(KUidPodcastShowsViewID,  TUid::Uid(0), KNullDesC8());
 				iPodcastModel.FeedEngine().UpdateFeedL(newFeedInfo->Uid());
 				}
 			}
@@ -729,6 +731,17 @@ void CPodcastFeedView::HandleRemoveFeedL()
 				}					
 			}
 		UpdateListboxItemsL();
+		}
+	}
+
+void CPodcastFeedView::HandleUpdateFeedL()
+	{
+	TInt index = iListContainer->Listbox()->CurrentItemIndex();
+	
+	if(index < iItemArray->MdcaCount() && index >= 0)
+		{
+		CFeedInfo *info = iPodcastModel.FeedEngine().GetSortedFeeds()[index];
+		iPodcastModel.FeedEngine().UpdateFeedL(info->Uid());
 		}
 	}
 

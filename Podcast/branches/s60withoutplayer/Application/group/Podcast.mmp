@@ -81,6 +81,8 @@ SOURCE  PodcastSettingsView.cpp
 SOURCE  PodcastShowsView.cpp
 SOURCE  PodcastSearchView.cpp
 SOURCE  PodcastFeedViewUpdater.cpp 
+SOURCE  PodcastQueueView.cpp
+
 
 SOURCEPATH ..\data
 

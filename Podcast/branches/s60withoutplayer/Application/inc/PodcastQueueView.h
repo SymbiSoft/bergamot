@@ -16,8 +16,8 @@
 *
 */
 
-#ifndef PODCASTSHOWSVIEWH
-#define PODCASTSHOWSVIEWH 
+#ifndef PODCASTQUEUEVIEWH
+#define PODCASTQUEUEVIEWH 
 
 #include <aknview.h>
 #include <aknlists.h> 
@@ -33,16 +33,16 @@
 
 class CImageHandler;
 
-class CPodcastShowsView : public CPodcastListView, public MEikListBoxObserver, 
+class CPodcastQueueView : public CPodcastListView, public MEikListBoxObserver, 
 	public MFeedEngineObserver, public MShowEngineObserver, public MImageHandlerCallback
 	{
 public: 
-	static CPodcastShowsView* NewL(CPodcastModel& aPodcastModel);
-	static CPodcastShowsView* NewLC(CPodcastModel& aPodcastModel);
-	~CPodcastShowsView();
+	static CPodcastQueueView* NewL(CPodcastModel& aPodcastModel);
+	static CPodcastQueueView* NewLC(CPodcastModel& aPodcastModel);
+	~CPodcastQueueView();
 protected:
 	void ConstructL();
-	CPodcastShowsView(CPodcastModel& aPodcastModel);
+	CPodcastQueueView(CPodcastModel& aPodcastModel);
 
 	/**
 	 * Returns views id, intended for overriding by sub classes.
