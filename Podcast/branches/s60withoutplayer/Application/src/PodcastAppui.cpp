@@ -29,6 +29,7 @@
 #include "debug.h"
 #include "..\help\podcatcher.hlp.hrh"
 #include "PodcastApp.h"
+#include "Podcast.mbg"
 
 #include <HLPLCH.H>
 #include <avkon.hrh>
@@ -154,18 +155,31 @@ void CPodcastAppUi::NaviShowTabGroupL()
 	iTabGroup = STATIC_CAST(CAknTabGroup*, iNaviDecorator->DecoratedControl());
 	iTabGroup->SetTabFixedWidthL(EAknTabWidthWithThreeTabs);
 
-	HBufC *label1 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_FEEDS);
-	iTabGroup->AddTabL(KTabIdFeeds,*label1);
+	CFbsBitmap* bitmap = NULL;
+	CFbsBitmap* mask = NULL;
+
+	AknIconUtils::CreateIconL(bitmap,
+			  mask,
+			  iEikonEnv->EikAppUi()->Application()->BitmapStoreName(),
+			  EMbmPodcastPodcast_tab_feeds,
+			  EMbmPodcastPodcast_tab_feeds_mask);
+	
+	iTabGroup->AddTabL(KTabIdFeeds, bitmap, mask);
 		
-	HBufC *label3 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_QUEUE);
-	iTabGroup->AddTabL(KTabIdQueue,*label3);
+	AknIconUtils::CreateIconL(bitmap,
+			  mask,
+			  iEikonEnv->EikAppUi()->Application()->BitmapStoreName(),
+			  EMbmPodcastPodcast_tab_queue,
+			  EMbmPodcastPodcast_tab_queue_mask);
 	
-	HBufC *label4 = iEikonEnv->AllocReadResourceLC(R_TABGROUP_SEARCH);			
-	iTabGroup->AddTabL(KTabIdSearch,*label4);
+	iTabGroup->AddTabL(KTabIdQueue, bitmap, mask);
 	
-	CleanupStack::PopAndDestroy(label4);
-	CleanupStack::PopAndDestroy(label3);
-	CleanupStack::PopAndDestroy(label1);
+	AknIconUtils::CreateIconL(bitmap,
+			  mask,
+			  iEikonEnv->EikAppUi()->Application()->BitmapStoreName(),
+			  EMbmPodcastPodcast_tab_search,
+			  EMbmPodcastPodcast_tab_search_mask);
+	iTabGroup->AddTabL(KTabIdSearch, bitmap, mask);
 	
 	iTabGroup->SetActiveTabByIndex(0);
 	iTabGroup->SetObserver(this);
