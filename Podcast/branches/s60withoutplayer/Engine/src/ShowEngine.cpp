@@ -274,7 +274,10 @@ void CShowEngine::CompleteL(CHttpClient* /*aHttpClient*/, TInt aError)
 		// decide what kind of file this is		
 		if(aError != KErrCouldNotConnect)
 			{
-			iShowDownloading->SetLastError(aError);
+			if(aError == KErrDisconnected && !iPodcastModel.SettingsEngine().DownloadSuspended()) {
+				// no error if disconnect happened because of suspended downloading
+				iShowDownloading->SetLastError(aError);
+			}
 
 			if (aError == KErrNone)
 				{
@@ -1164,6 +1167,7 @@ void CShowEngine::DownloadNextShowL()
 				TBool getOk = EFalse;
 				DP1("CShowEngine::DownloadNextShow\tDownloading: %S", &(info->Title()));
 				info->SetDownloadState(EDownloading);
+				info->SetLastError(KErrNone);
 				DBUpdateShow(*info);
 				iShowDownloading = info;
 				TRAPD(error,getOk = GetShowL(info));

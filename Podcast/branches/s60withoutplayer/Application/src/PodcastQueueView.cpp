@@ -34,10 +34,10 @@
 
 const TInt KSizeBufLen = 64;
 const TInt KDefaultGran = 5;
-_LIT(KSizeDownloadingOf, "(%.1f/%.1f MB)");
-_LIT(KShowsSizeFormatS60, "(%.1f MB)");
-_LIT(KChapterFormatting, "%03d");
-_LIT(KShowFormat, "%d\t%S\t%S %S\t");
+_LIT(KSizeDownloadingOf, "%.1f/%.1f MB");
+_LIT(KShowsSizeFormatS60, "%.1f MB");
+
+_LIT(KShowQueueFormat, "%d\t%S\t%S%S\t");
 _LIT(KShowErrorFormat, "%d\t%S\t%S\t");
 #define KMaxMessageLength 200
 
@@ -89,7 +89,7 @@ CPodcastQueueView::CPodcastQueueView(CPodcastModel& aPodcastModel) :
 
 void CPodcastQueueView::ConstructL()
 	{
-	BaseConstructL(R_PODCAST_SHOWSVIEW);
+	BaseConstructL(R_PODCAST_QUEUEVIEW);
 	CPodcastListView::ConstructL();
 	CArrayPtr< CGulIcon>* icons = new(ELeave) CArrayPtrFlat< CGulIcon>(1);
 	CleanupStack::PushL(icons);
@@ -123,7 +123,8 @@ void CPodcastQueueView::ConstructL()
 	TResourceReader reader;
 	iCoeEnv->CreateResourceReaderLC(reader,R_QUEUEVIEW_POPUP_MENU);
 	iStylusPopupMenu->ConstructFromResourceL(reader);
-	CleanupStack::PopAndDestroy();	
+	CleanupStack::PopAndDestroy();
+	SetEmptyTextL(R_PODCAST_EMPTY_QUEUE);
 	}
 
 TKeyResponse CPodcastQueueView::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType)
@@ -199,9 +200,6 @@ void CPodcastQueueView::DoActivateL(const TVwsViewId& aPrevViewId,
 
 void CPodcastQueueView::DoDeactivate()
 	{
-	CAknTitlePane* titlePane = static_cast<CAknTitlePane*>
-		     ( StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidTitle ) ) );
-	
 	CPodcastListView::DoDeactivate();
 	}
 
@@ -212,12 +210,17 @@ void CPodcastQueueView::ShowListUpdatedL()
 	}
 
 void CPodcastQueueView::ShowDownloadUpdatedL(TInt aBytesOfCurrentDownload, TInt /*aBytesTotal*/)
-	{	
-		CShowInfo *info = iPodcastModel.ShowEngine().ShowDownloading();
-		if (info) 
-			{
-			UpdateShowItemL(info->Uid(), aBytesOfCurrentDownload);
-			}		
+	{
+	if (!iListContainer->IsVisible())
+		{
+		return;
+		}
+		
+	CShowInfo *info = iPodcastModel.ShowEngine().ShowDownloading();
+	if (info) 
+		{
+		UpdateShowItemL(info->Uid(), aBytesOfCurrentDownload);
+		}
 	}
 
 void CPodcastQueueView::ShowDownloadFinishedL(TUint aFeedUid, TInt aError)
@@ -287,37 +290,15 @@ void CPodcastQueueView::GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex)
 	{
 	TBool dlStop = iPodcastModel.SettingsEngine().DownloadSuspended();
 	TUint showDownloadingUid = iPodcastModel.ShowEngine().ShowDownloading() ? iPodcastModel.ShowEngine().ShowDownloading()->Uid() : 0;
-	TUint showPlayingUid = iPodcastModel.PlayingPodcast() ? iPodcastModel.PlayingPodcast()->Uid() : 0;
-	TBool playingOrPaused = EFalse;/*iPodcastModel.SoundEngine().State() == ESoundEnginePlaying || 
-							iPodcastModel.SoundEngine().State() == ESoundEnginePaused;*/
-#pragma message("LAPER Need to rework playing api if it should still exist")
 	
 	if (showDownloadingUid == aShowInfo->Uid())
 		{
 		aIconIndex = dlStop ? ESuspendedShowIcon : EDownloadingShowIcon;		
 		}
-	else if (showPlayingUid == aShowInfo->Uid() && playingOrPaused)
-		{
-		aIconIndex = EPlayingShowIcon;
-		}
 	else
 		{
 		switch (aShowInfo->DownloadState())
 			{
-			case EDownloaded:
-				if (aShowInfo->PlayState() == ENeverPlayed) {
-					aIconIndex = EDownloadedNewShowIcon;
-				} else {
-					aIconIndex = EShowIcon;
-				}
-				break;
-			case ENotDownloaded:
-				if (aShowInfo->PlayState() == ENeverPlayed) {
-					aIconIndex = ENewShowIcon;
-				} else {
-					aIconIndex = EOldShowIcon;
-				}
-				break;
 			case EQueued:
 				aIconIndex = dlStop ? ESuspendedShowIcon : EQuedShowIcon;
 				break;
@@ -326,6 +307,9 @@ void CPodcastQueueView::GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex)
 				break;
 			case EFailedDownload:
 				aIconIndex = EFailedShowIcon;
+				break;
+			default:
+				DP("Wrong download state for queue view!");
 				break;
 			}
 		}
@@ -393,14 +377,11 @@ void CPodcastQueueView::FormatShowInfoListBoxItemL(CShowInfo& aShowInfo, TInt aS
 		}
 	else	
 		{
-		if(aShowInfo.DownloadState() == EDownloaded)
-			{
-			iListboxFormatbuffer.Format(KShowFormat(), iconIndex, &aShowInfo.Title(), &showDate, &aShowInfo.Description());
-			}
-		else
-			{
-			iListboxFormatbuffer.Format(KShowFormat(), iconIndex, &aShowInfo.Title(), &showDate, &infoSize);
-			}
+		if (infoSize.Length() > 0) {
+			infoSize.Insert(0,_L(", "));
+		}
+		
+		iListboxFormatbuffer.Format(KShowQueueFormat(), iconIndex, &aShowInfo.Title(), &showDate, &infoSize);
 		}
 	}
 
@@ -435,8 +416,6 @@ void CPodcastQueueView::UpdateShowItemL(TUint aUid, TInt aSizeDownloaded)
 
 void CPodcastQueueView::UpdateListboxItemsL()
 	{
-	_LIT(KPanicCategory, "CPodcastQueueView::UpdateListboxItemsL");
-
 	if (iListContainer->IsVisible())
 		{
 		TListItemProperties itemProps;
@@ -568,7 +547,6 @@ void CPodcastQueueView::DynInitMenuPaneL(TInt aResourceId,CEikMenuPane* aMenuPan
 {
 	if(aResourceId == R_PODCAST_SHOWSVIEW_MENU)
 		{
-		TBool updatingState = iPodcastModel.FeedEngine().ClientState() != EIdle && iPodcastModel.FeedEngine().ActiveClientUid() == iPodcastModel.ActiveFeedInfo()->Uid();
 		aMenuPane->SetItemDimmed(EPodcastMarkAllPlayed, ETrue);
 		}
 }
@@ -579,56 +557,13 @@ void CPodcastQueueView::UpdateToolbar()
 	
 	RShowInfoArray &fItems = iPodcastModel.ActiveShowList();
 	TInt itemCnt = fItems.Count();
-
-	TBool hideDownloadShowCmd = EFalse;
-	TBool dimDownloadShowCmd = EFalse;
-	TBool hideSetPlayed = EFalse;
-	TBool updatingState = EFalse;
-	
-	if(iListContainer->Listbox() != NULL)
-	{
-		TInt index = iListContainer->Listbox()->CurrentItemIndex();
-		
-		if(index>= 0 && index < itemCnt)
-		{
-			switch(fItems[index]->DownloadState())
-				{
-				case ENotDownloaded:
-				case EFailedDownload:
-					hideDownloadShowCmd = EFalse;
-					dimDownloadShowCmd = EFalse;
-					break;
-				case EQueued:
-				case EDownloading:
-					hideDownloadShowCmd = EFalse;
-					dimDownloadShowCmd = ETrue;
-					break;
-				case EDownloaded:
-					hideDownloadShowCmd = ETrue;
-					break;
-				}
-				
-			if(fItems[index]->PlayState() == EPlayed) {
-				hideSetPlayed = ETrue;
-			}
-		}
-	}
-	
-	toolbar->HideItem(EPodcastUpdateFeed, ETrue, ETrue );
-	toolbar->HideItem(EPodcastCancelUpdateAllFeeds, ETrue, ETrue );
-	toolbar->HideItem(EPodcastDownloadShow, ETrue, ETrue );
-	toolbar->HideItem(EPodcastDeleteShow, ETrue, ETrue);
-	toolbar->HideItem(EPodcastMarkAsPlayed, ETrue, ETrue );
-	toolbar->HideItem(EPodcastMarkAsUnplayed, ETrue, ETrue );
-	toolbar->HideItem(EPodcastShowInfo, ETrue, ETrue );
 	
 	toolbar->HideItem(EPodcastRemoveDownload, EFalse, ETrue);
 	toolbar->HideItem(EPodcastRemoveAllDownloads, EFalse, ETrue);
 	toolbar->SetItemDimmed(EPodcastRemoveDownload, itemCnt == 0, ETrue);
 	toolbar->SetItemDimmed(EPodcastRemoveAllDownloads, itemCnt == 0, ETrue);
 	toolbar->HideItem(EPodcastSuspendDownloads,iPodcastModel.SettingsEngine().DownloadSuspended(), ETrue);
-	toolbar->HideItem(EPodcastResumeDownloads,!iPodcastModel.SettingsEngine().DownloadSuspended(), ETrue);
-	
+	toolbar->HideItem(EPodcastResumeDownloads,!iPodcastModel.SettingsEngine().DownloadSuspended(), ETrue);	
 }
 
 void CPodcastQueueView::HandleLongTapEventL( const TPoint& aPenEventLocation, const TPoint& /* aPenEventScreenLocation */)
@@ -645,7 +580,7 @@ void CPodcastQueueView::HandleLongTapEventL( const TPoint& aPenEventLocation, co
 
 void CPodcastQueueView::DownloadQueueUpdatedL(TInt aDownloadingShows, TInt aQueuedShows)
 	{
-	((CPodcastAppUi*)AppUi())->UpdateQueueTab(aDownloadingShows+aQueuedShows);
+	//((CPodcastAppUi*)AppUi())->UpdateQueueTab(aDownloadingShows+aQueuedShows);
 	}
 
 void CPodcastQueueView::FeedUpdateAllCompleteL(TFeedState aState)

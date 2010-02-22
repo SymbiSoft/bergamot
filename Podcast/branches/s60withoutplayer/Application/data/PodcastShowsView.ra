@@ -170,78 +170,6 @@ RESOURCE AVKON_TOOLBAR r_showsview_toolbar
 							}  
 						};
 					};
-				},
-			TBAR_CTRL
-				{
-				type = EAknCtButton;
-				id =EPodcastSuspendDownloads;
-				control = AVKON_BUTTON
-					{
-					states =
-						{
-						AVKON_BUTTON_STATE
-							{
-							//bmpfile = AVKON_BITMAP_FILE;
-							//bmpid = EMbmAvkonQgn_indi_find_goto;
-							txt = STRING_r_suspend_download_cmd;
-							helptxt = STRING_r_view_stop_downloads_cmd;
-							}  
-						};
-					};
-				},
-			TBAR_CTRL
-				{
-				type = EAknCtButton;
-				id =EPodcastResumeDownloads;
-				control = AVKON_BUTTON
-					{
-					states =
-						{
-						AVKON_BUTTON_STATE
-							{
-							//bmpfile = AVKON_BITMAP_FILE;
-							//bmpid = EMbmAvkonQgn_indi_find_goto;
-							txt = STRING_r_view_resume_short_dls_cmd;
-							helptxt = STRING_r_view_resume_downloads_cmd;
-							}  
-						};
-					};
-				},
-			TBAR_CTRL
-				{
-				type = EAknCtButton;
-				id =EPodcastRemoveDownload;
-				control = AVKON_BUTTON
-					{
-					states =
-						{
-						AVKON_BUTTON_STATE
-							{
-							//bmpfile = AVKON_BITMAP_FILE;
-							//bmpid = EMbmAvkonQgn_indi_find_goto;
-							txt = STRING_r_view_remove_download_short_cmd;
-							helptxt = STRING_r_view_remove_download_cmd;
-							}  
-						};
-					};
-				},
-			TBAR_CTRL
-				{
-				type = EAknCtButton;
-				id =EPodcastRemoveAllDownloads;
-				control = AVKON_BUTTON
-					{
-					states =
-						{
-						AVKON_BUTTON_STATE
-							{
-							//bmpfile = AVKON_BITMAP_FILE;
-							//bmpid = EMbmAvkonQgn_indi_find_goto;
-							txt = STRING_r_view_remove_all_downloads_cmd_short;
-							helptxt = STRING_r_view_remove_all_downloads_cmd;
-							}  
-						};
-					};
 				}
         };
     }
@@ -283,23 +211,6 @@ RESOURCE STYLUS_POPUP_MENU r_showview_popup_menu
 		};
 	}
 
-
-RESOURCE STYLUS_POPUP_MENU r_queueview_popup_menu
-	{
-		items =
-		{
-	/*		STYLUS_POPUP_MENU_ITEM
-				{
-					txt = STRING_r_view_show_info_cmd;
-					command = EPodcastShowInfo;
-				},*/
-			STYLUS_POPUP_MENU_ITEM
-				{
-					txt = STRING_r_view_remove_download_short_cmd;
-					command = EPodcastRemoveDownload;
-				}
-		};
-	}
 /*
 RESOURCE DIALOG r_show_info_note
     {

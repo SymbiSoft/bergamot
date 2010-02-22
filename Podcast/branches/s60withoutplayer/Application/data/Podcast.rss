@@ -82,4 +82,5 @@ RESOURCE DIALOG r_dlg_about
 #include "PodcastShowsView.ra"
 #include "PodcastSettingsView.ra"
 #include "PodcastSearchView.ra"
+#include "PodcastQueueView.ra"
 #include "PodcastDialogs.ra"

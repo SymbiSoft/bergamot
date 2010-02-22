@@ -126,7 +126,7 @@ void CPodcastSearchView::ConstructL()
 
 	iListContainer->Listbox()->SetListBoxObserver(this);
 	
-	SetEmptyTextL(R_PODCAST_EMPTY_LIST);
+	SetEmptyTextL(R_PODCAST_EMPTY_SEARCH);
 }
     
 CPodcastSearchView::~CPodcastSearchView()

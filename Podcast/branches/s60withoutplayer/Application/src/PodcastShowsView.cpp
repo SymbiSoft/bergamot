@@ -34,9 +34,9 @@
 
 const TInt KSizeBufLen = 64;
 const TInt KDefaultGran = 5;
-_LIT(KSizeDownloadingOf, "(%.1f/%.1f MB)");
-_LIT(KShowsSizeFormatS60, "(%.1f MB)");
-_LIT(KChapterFormatting, "%03d");
+_LIT(KSizeDownloadingOf, "%.1f/%.1f MB");
+_LIT(KShowsSizeFormatS60, "%.1f MB");
+
 _LIT(KShowFormat, "%d\t%S\t%S %S\t");
 _LIT(KShowErrorFormat, "%d\t%S\t%S\t");
 #define KMaxMessageLength 200
@@ -261,12 +261,17 @@ void CPodcastShowsView::ShowListUpdatedL()
 	}
 
 void CPodcastShowsView::ShowDownloadUpdatedL(TInt aBytesOfCurrentDownload, TInt /*aBytesTotal*/)
-	{	
-		CShowInfo *info = iPodcastModel.ShowEngine().ShowDownloading();
-		if (info) 
-			{
-			UpdateShowItemL(info->Uid(), aBytesOfCurrentDownload);
-			}		
+	{
+	if (!iListContainer->IsVisible())
+		{
+		return;
+		}
+	
+	CShowInfo *info = iPodcastModel.ShowEngine().ShowDownloading();
+	if (info) 
+		{
+		UpdateShowItemL(info->Uid(), aBytesOfCurrentDownload);
+		}		
 	}
 
 void CPodcastShowsView::ShowDownloadFinishedL(TUint aFeedUid, TInt aError)
@@ -458,14 +463,11 @@ void CPodcastShowsView::FormatShowInfoListBoxItemL(CShowInfo& aShowInfo, TInt aS
 		}
 	else	
 		{
-		if(aShowInfo.DownloadState() == EDownloaded)
-			{
-			iListboxFormatbuffer.Format(KShowFormat(), iconIndex, &aShowInfo.Title(), &showDate, &aShowInfo.Description());
-			}
-		else
-			{
-			iListboxFormatbuffer.Format(KShowFormat(), iconIndex, &aShowInfo.Title(), &showDate, &infoSize);
-			}
+		if (infoSize.Length() > 0) {
+			infoSize.Insert(0,_L(", "));
+		}
+		
+		iListboxFormatbuffer.Format(KShowFormat(), iconIndex, &aShowInfo.Title(), &showDate, &infoSize);
 		}
 	}
 
@@ -778,11 +780,6 @@ void CPodcastShowsView::UpdateToolbar()
 		toolbar->HideItem(EPodcastMarkAsUnplayed, ETrue, ETrue );
 		toolbar->SetItemDimmed(EPodcastMarkAsPlayed, updatingState, ETrue);
 	}
-	toolbar->HideItem(EPodcastShowInfo, ETrue, ETrue );
-	toolbar->HideItem(EPodcastRemoveDownload, ETrue, ETrue);
-	toolbar->HideItem(EPodcastRemoveAllDownloads, ETrue, ETrue);
-	toolbar->HideItem(EPodcastSuspendDownloads,ETrue, ETrue);
-	toolbar->HideItem(EPodcastResumeDownloads,ETrue, ETrue);
 }
 
 void CPodcastShowsView::HandleLongTapEventL( const TPoint& aPenEventLocation, const TPoint& /* aPenEventScreenLocation */)
@@ -856,7 +853,7 @@ void CPodcastShowsView::DeleteShow()
 
 void CPodcastShowsView::DownloadQueueUpdatedL(TInt aDownloadingShows, TInt aQueuedShows)
 	{
-	((CPodcastAppUi*)AppUi())->UpdateQueueTab(aDownloadingShows+aQueuedShows);
+	//((CPodcastAppUi*)AppUi())->UpdateQueueTab(aDownloadingShows+aQueuedShows);
 	}
 
 void CPodcastShowsView::FeedUpdateAllCompleteL(TFeedState aState)

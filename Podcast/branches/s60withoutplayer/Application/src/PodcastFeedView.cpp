@@ -43,8 +43,7 @@ const TInt KNumberOfFilesMaxLength = 4;
 #define KMaxTitleLength 100
 const TInt KMimeBufLength = 100;
 
-_LIT(KUnknownUpdateDateString, "?/?");
-_LIT(KFeedFormat, "%d\t%S\t%S %S");
+_LIT(KFeedFormat, "%d\t%S\t%S%S");
 enum 
 {
  EEmptyFeedIcon,
@@ -370,12 +369,16 @@ void CPodcastFeedView::FormatFeedInfoListBoxItemL(CFeedInfo& aFeedInfo, TBool aI
 		{
 		iPodcastModel.FeedEngine().GetStatsByFeed(aFeedInfo.Uid(), showCount, unplayedCount);	
 		
-		unplayedShows.Format(*iFeedsFormat, unplayedCount, showCount);
+		if (unplayedCount) {
+			unplayedShows.Format(*iFeedsFormat, unplayedCount);
+		} else {
+			unplayedShows.Zero();
+		}
 		
 		if (aFeedInfo.LastUpdated().Int64() == 0) 
 			{
 			updatedDate.Copy(*iNeverUpdated);					
-			unplayedShows.Copy(KUnknownUpdateDateString());
+			unplayedShows.Zero();
 			}
 		else 
 			{
@@ -434,6 +437,10 @@ void CPodcastFeedView::FormatFeedInfoListBoxItemL(CFeedInfo& aFeedInfo, TBool aI
 			TRAP_IGNORE(iPodcastModel.ImageHandler().LoadFileAndScaleL(aFeedInfo.FeedIcon(), aFeedInfo.ImageFileName(), TSize(64,56), *this));
 			}
 		}
+	}
+	
+	if (unplayedShows.Length() > 0) {
+		unplayedShows.Insert(0,_L(", "));
 	}
 	
 	iListboxFormatbuffer.Format(KFeedFormat(), iconIndex, &(aFeedInfo.Title()), &updatedDate,  &unplayedShows);
