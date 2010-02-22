@@ -21,10 +21,12 @@
 
 #include "FeedEngine.h"
 #include "PodcastListView.h"
+#include "ImageHandler.h"
+
 class CPodcastFeedViewUpdater;
 
 class CPodcastFeedView : public CPodcastListView, public MEikListBoxObserver, 
-	public MFeedEngineObserver
+	public MFeedEngineObserver, public MImageHandlerCallback
     {
     public: 
         static CPodcastFeedView* NewL(CPodcastModel& aPodcastModel);
@@ -86,6 +88,8 @@ class CPodcastFeedView : public CPodcastListView, public MEikListBoxObserver,
 		// from MProgressDialogCallback
 		void DialogDismissedL(TInt aButtonId); 
 
+		// from MImageHandlerCallback
+		void ImageOperationCompleteL(TInt aError);
 	private:
 		void FormatFeedInfoListBoxItemL(CFeedInfo& aFeedInfo, TBool aIsUpdating = EFalse);
 		void HandleAddFeedL();

@@ -358,7 +358,7 @@ void CPodcastFeedView::FormatFeedInfoListBoxItemL(CFeedInfo& aFeedInfo, TBool aI
 	TBuf<KMaxUnplayedFeedsLength> unplayedShows;
 	TUint unplayedCount = 0;
 	TUint showCount = 0;
-	TInt iconIndex = EEmptyFeedIcon;
+	TInt iconIndex = EFeedIcon;
 	
 	if(aIsUpdating)
 		{
@@ -368,14 +368,8 @@ void CPodcastFeedView::FormatFeedInfoListBoxItemL(CFeedInfo& aFeedInfo, TBool aI
 		}
 	else
 		{
-		iPodcastModel.FeedEngine().GetStatsByFeed(aFeedInfo.Uid(), showCount, unplayedCount);
-
-		if (unplayedCount > 0) {
-		iconIndex = ENewFeedIcon;
-		} else {
-		iconIndex = EFeedIcon;
-		}			
-
+		iPodcastModel.FeedEngine().GetStatsByFeed(aFeedInfo.Uid(), showCount, unplayedCount);	
+		
 		unplayedShows.Format(*iFeedsFormat, unplayedCount, showCount);
 		
 		if (aFeedInfo.LastUpdated().Int64() == 0) 
@@ -399,26 +393,57 @@ void CPodcastFeedView::FormatFeedInfoListBoxItemL(CFeedInfo& aFeedInfo, TBool aI
 				}
 			}
 
+		if (unplayedCount > 0) {
+			iconIndex = ENewFeedIcon;
+			} else {
+			iconIndex = EFeedIcon;
+			}	
+		
 		if(aFeedInfo.LastError() != KErrNone)
 			{
 			iconIndex = EErrorFeedIcon;
 			iEikonEnv->GetErrorText(unplayedShows, aFeedInfo.LastError());
-			}	
+			}
+		
+#pragma message("SEB below is just until we have the other icons fixed")
+		iconIndex = EFeedIcon;
 		}
 	CArrayPtr<CGulIcon>* icons = iListContainer->Listbox()->ItemDrawer()->FormattedCellData()->IconArray();
 	
-	if(aFeedInfo.FeedIcon() != NULL)
-		{
-		// Hopefully temporary haxx to prevent double delete. I would prefer if
-	    // this could be solved with a little better design.
-		CFbsBitmap* bmpCopy = new (ELeave) CFbsBitmap;
-		CleanupStack::PushL(bmpCopy);
-		bmpCopy->Duplicate(aFeedInfo.FeedIcon()->Handle());
-		icons->AppendL( CGulIcon::NewL(bmpCopy, NULL));
-		CleanupStack::Pop(bmpCopy);
-		iconIndex = icons->Count()-1;
+	if (aFeedInfo.FeedIconIndex() != -1) {
+		iconIndex = aFeedInfo.FeedIconIndex();
+	} else {
+		if(aFeedInfo.FeedIcon() != NULL && 
+				aFeedInfo.FeedIcon()->SizeInPixels().iHeight > 0 &&
+				aFeedInfo.FeedIcon()->SizeInPixels().iWidth > 0)
+			{
+			// Hopefully temporary haxx to prevent double delete. I would prefer if
+			// this could be solved with a little better design.
+			CFbsBitmap* bmpCopy = new (ELeave) CFbsBitmap;
+			CleanupStack::PushL(bmpCopy);
+			bmpCopy->Duplicate(aFeedInfo.FeedIcon()->Handle());
+			icons->AppendL( CGulIcon::NewL(bmpCopy, NULL));
+			CleanupStack::Pop(bmpCopy);
+			iconIndex = icons->Count()-1;
+			aFeedInfo.SetFeedIconIndex(iconIndex);
+			}
+		else {
+			if(BaflUtils::FileExists(iPodcastModel.FsSession(), aFeedInfo.ImageFileName()))
+			{
+			// If this fails, no reason to worry
+			TRAP_IGNORE(iPodcastModel.ImageHandler().LoadFileAndScaleL(aFeedInfo.FeedIcon(), aFeedInfo.ImageFileName(), TSize(64,56), *this));
+			}
 		}
+	}
+	
 	iListboxFormatbuffer.Format(KFeedFormat(), iconIndex, &(aFeedInfo.Title()), &updatedDate,  &unplayedShows);
+	}
+
+void CPodcastFeedView::ImageOperationCompleteL(TInt aError)
+	{
+	if (aError == KErrNone) {
+		UpdateListboxItemsL();
+	}
 	}
 
 void CPodcastFeedView::UpdateFeedInfoDataL(CFeedInfo* aFeedInfo, TInt aIndex, TBool aIsUpdating )

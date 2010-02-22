@@ -61,6 +61,7 @@ EXPORT_C CFeedInfo* CFeedInfo::CopyL() const
 CFeedInfo::CFeedInfo()
 	{
 	iCustomTitle = EFalse;
+	iFeedIconIndex = -1;
 	}
 
 EXPORT_C CFeedInfo::~CFeedInfo()
@@ -230,4 +231,14 @@ EXPORT_C void CFeedInfo::SetFeedIcon(CFbsBitmap* aBitmapToClone)
 void CFeedInfo::ImageOperationCompleteL(TInt aError)
 	{
 	
+	}
+
+EXPORT_C TInt CFeedInfo::FeedIconIndex() const
+	{
+	return iFeedIconIndex;
+	}
+
+EXPORT_C void CFeedInfo::SetFeedIconIndex(TInt aIndex)
+	{
+	iFeedIconIndex = aIndex;
 	}
