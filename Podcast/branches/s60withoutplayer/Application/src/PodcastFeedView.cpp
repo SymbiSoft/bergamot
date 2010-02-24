@@ -631,41 +631,54 @@ void CPodcastFeedView::HandleAddFeedL()
 	
 	if(dlg->RunLD())
 		{
-		PodcastUtils::FixProtocolsL(url);
-
-		CFeedInfo* newFeedInfo = CFeedInfo::NewL();
-		CleanupStack::PushL(newFeedInfo);
-		newFeedInfo->SetUrlL(url);
-		newFeedInfo->SetTitleL(newFeedInfo->Url());
 		
-		TBool added = iPodcastModel.FeedEngine().AddFeedL(*newFeedInfo);
-		
-		if (added)
+		// if no :// we do a search
+		if (url.Find(_L("://")) == KErrNotFound)
 			{
-			UpdateListboxItemsL();
-			
-			// ask if users wants to update it now
-			TBuf<KMaxMessageLength> message;
-			iEikonEnv->ReadResourceL(message, R_ADD_FEED_SUCCESS);
-			if(ShowQueryMessage(message))
-				{
-				CFeedInfo *info = iPodcastModel.FeedEngine().GetFeedInfoByUid(newFeedInfo->Uid());
-				
-				iPodcastModel.ActiveShowList().Reset();
-				iPodcastModel.SetActiveFeedInfo(info);			
-				AppUi()->ActivateLocalViewL(KUidPodcastShowsViewID,  TUid::Uid(0), KNullDesC8());
-				iPodcastModel.FeedEngine().UpdateFeedL(newFeedInfo->Uid());
-				}
+			HBufC *waitText = iEikonEnv->AllocReadResourceLC(R_SEARCHING);
+			ShowWaitDialogL(*waitText);
+			CleanupStack::PopAndDestroy(waitText);	
+	
+			iOpmlState = EOpmlSearching;
+			iPodcastModel.FeedEngine().SearchForFeedL(url);
 			}
 		else
 			{
-			TBuf<KMaxMessageLength> message;
-			iEikonEnv->ReadResourceL(message, R_ADD_FEED_EXISTS);
-			ShowErrorMessage(message);
-			}		
-		
-		CleanupStack::PopAndDestroy(newFeedInfo);
-		
+			PodcastUtils::FixProtocolsL(url);
+	
+			CFeedInfo* newFeedInfo = CFeedInfo::NewL();
+			CleanupStack::PushL(newFeedInfo);
+			newFeedInfo->SetUrlL(url);
+			newFeedInfo->SetTitleL(newFeedInfo->Url());
+			
+			TBool added = iPodcastModel.FeedEngine().AddFeedL(*newFeedInfo);
+			
+			if (added)
+				{
+				UpdateListboxItemsL();
+				
+				// ask if users wants to update it now
+				TBuf<KMaxMessageLength> message;
+				iEikonEnv->ReadResourceL(message, R_ADD_FEED_SUCCESS);
+				if(ShowQueryMessage(message))
+					{
+					CFeedInfo *info = iPodcastModel.FeedEngine().GetFeedInfoByUid(newFeedInfo->Uid());
+					
+					iPodcastModel.ActiveShowList().Reset();
+					iPodcastModel.SetActiveFeedInfo(info);			
+					AppUi()->ActivateLocalViewL(KUidPodcastShowsViewID,  TUid::Uid(0), KNullDesC8());
+					iPodcastModel.FeedEngine().UpdateFeedL(newFeedInfo->Uid());
+					}
+				}
+			else
+				{
+				TBuf<KMaxMessageLength> message;
+				iEikonEnv->ReadResourceL(message, R_ADD_FEED_EXISTS);
+				ShowErrorMessage(message);
+				}		
+			
+			CleanupStack::PopAndDestroy(newFeedInfo);
+			}
 		}
 	}
 
@@ -809,7 +822,7 @@ void CPodcastFeedView::HandleImportFeedsL()
 				{
 				TInt numFeedsBefore = iPodcastModel.FeedEngine().GetSortedFeeds().Count();
 				HBufC *waitText = iEikonEnv->AllocReadResourceLC(R_IMPORTING);
-				iImporting = ETrue;
+				iOpmlState = EOpmlImporting;
 				ShowWaitDialogL(*waitText);
 				CleanupStack::PopAndDestroy(waitText);	
 
@@ -925,21 +938,40 @@ void CPodcastFeedView::OpmlParsingComplete(TUint aNumFeedsImported)
 	{
 	DP("CPodcastFeedView::OpmlParsingComplete BEGIN");
 	
-	if (iImporting)
+	switch (iOpmlState)
 		{
-		UpdateListboxItemsL();
-		delete iWaitDialog;
-		iImporting = EFalse;
+		case EOpmlIdle:
+			break;
+		case EOpmlImporting:
+			{
+			UpdateListboxItemsL();
+			delete iWaitDialog;
+			iOpmlState = EOpmlIdle;
+				
+			TBuf<KMaxMessageLength> message;
+			TBuf<KMaxMessageLength> templ;
+			iEikonEnv->ReadResourceL(templ, R_IMPORT_FEED_SUCCESS);
+			message.Format(templ, aNumFeedsImported);
 			
-		TBuf<KMaxMessageLength> message;
-		TBuf<KMaxMessageLength> templ;
-		iEikonEnv->ReadResourceL(templ, R_IMPORT_FEED_SUCCESS);
-		message.Format(templ, aNumFeedsImported);
-		
-		if(ShowQueryMessage(message)) {
-			iPodcastModel.FeedEngine().UpdateAllFeedsL(EFalse);
-		}
-
+			if(ShowQueryMessage(message)) {
+				iPodcastModel.FeedEngine().UpdateAllFeedsL(EFalse);
+			}
+			}
+		case EOpmlSearching:
+			delete iWaitDialog;
+			if (iPodcastModel.FeedEngine().GetSearchResults().Count() == 0)
+				{
+				TBuf<KMaxMessageLength> message;
+				iEikonEnv->ReadResourceL(message, R_SEARCH_NORESULTS);
+				ShowErrorMessage(message);
+				}
+			else
+				{
+				AppUi()->ActivateLocalViewL(KUidPodcastSearchViewID,  TUid::Uid(0), KNullDesC8());
+				}
+			iOpmlState = EOpmlIdle;
+		default:
+			break;
 		}
 	
 	DP("CPodcastFeedView::OpmlParsingComplete END");

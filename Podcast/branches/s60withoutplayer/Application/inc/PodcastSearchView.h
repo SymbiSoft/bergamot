@@ -26,13 +26,14 @@
 #include "Podcast.hrh"
 
 class CPodcastSearchView : public CPodcastListView, public MEikListBoxObserver, 
-	public MFeedEngineObserver, public MProgressDialogCallback
+	public MFeedEngineObserver
     {
     public: 
         static CPodcastSearchView* NewL(CPodcastModel& aPodcastModel);
         static CPodcastSearchView* NewLC(CPodcastModel& aPodcastModel);
         ~CPodcastSearchView();
-        
+        void DoSearchL(TDesC& aSearchString);
+
 	protected:
 	    void ConstructL();
 		CPodcastSearchView(CPodcastModel& aPodcastModel);

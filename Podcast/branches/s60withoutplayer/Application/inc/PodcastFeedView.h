@@ -25,6 +25,12 @@
 
 class CPodcastFeedViewUpdater;
 
+enum TOpmlState {
+	EOpmlIdle,
+	EOpmlImporting,
+	EOpmlSearching
+};
+
 class CPodcastFeedView : public CPodcastListView, public MEikListBoxObserver, 
 	public MFeedEngineObserver, public MImageHandlerCallback
     {
@@ -106,7 +112,7 @@ class CPodcastFeedView : public CPodcastListView, public MEikListBoxObserver,
 		HBufC* iNeverUpdated;
 		CPodcastFeedViewUpdater* iUpdater;
 		TBool iFirstActivateAfterLaunch;
-		TBool iImporting;
+		TOpmlState iOpmlState;
 };
 
 #endif // PODCASTFEEDVIEWH

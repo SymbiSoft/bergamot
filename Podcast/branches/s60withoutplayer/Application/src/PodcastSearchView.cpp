@@ -37,6 +37,7 @@
 #include <pathinfo.h> 
 #include <f32file.h>
 #include <akntoolbarextension.h>
+#include <akntitle.h>
 
 const TInt KMaxFeedNameLength = 100;
 const TInt KDefaultGran = 5;
@@ -152,14 +153,30 @@ void CPodcastSearchView::DoActivateL(const TVwsViewId& aPrevViewId,
 {
 	UpdateToolbar();
 	
+	 CAknTitlePane* titlePane = static_cast<CAknTitlePane*>
+		      ( StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidTitle ) ) );
+	
+	HBufC* title = iEikonEnv->AllocReadResourceLC(R_SEARCH_RESULTS);
+	titlePane->SetTextL( *title, ETrue );
+	CleanupStack::PopAndDestroy(title);
+    
 	CPodcastListView::DoActivateL(aPrevViewId, aCustomMessageId, aCustomMessage);
 	iPreviousView = TVwsViewId(KUidPodcast, KUidPodcastFeedViewID);
-	SearchL();
+	
+	if (aCustomMessage != KNullDesC8())
+		{
+		TBuf<KFeedUrlLength> searchString;
+		searchString.Copy(aCustomMessage);
+		DoSearchL(searchString);
+		}
 }
 
 void CPodcastSearchView::DoDeactivate()
 {
 	CPodcastListView::DoDeactivate();
+	CAknTitlePane* titlePane = static_cast<CAknTitlePane*>
+		     ( StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidTitle ) ) );
+	titlePane->SetTextToDefaultL();
 }
 
 
@@ -295,20 +312,12 @@ void CPodcastSearchView::HandleCommandL(TInt aCommand)
 void CPodcastSearchView::OpmlParsingComplete(TUint aNumFeedsImported)
 	{
 	DP("CPodcastSearchView::OpmlParsingComplete BEGIN");
-	if (iSearchRunning)
-		{
-		iSearchRunning = EFalse;
-		delete iWaitDialog;
+//	if (iSearchRunning)
+//		{
+//		iSearchRunning = EFalse;
 		UpdateListboxItemsL();
 		UpdateToolbar();
-		
-		if (iPodcastModel.FeedEngine().GetSearchResults().Count() == 0)
-			{
-			TBuf<KMaxMessageLength> message;
-			iEikonEnv->ReadResourceL(message, R_SEARCH_NORESULTS);
-			ShowErrorMessage(message);
-			}
-		}
+//		}
 	DP("CPodcastSearchView::OpmlParsingComplete END");
 	}
 
@@ -345,13 +354,14 @@ void CPodcastSearchView::SearchL()
 	
 	if(dlg->RunLD())
 		{
-		HBufC *waitText = iEikonEnv->AllocReadResourceLC(R_SEARCHING);
-		ShowWaitDialogL(*waitText);
-		CleanupStack::PopAndDestroy(waitText);	
-
-		iSearchRunning = ETrue;
-		iPodcastModel.FeedEngine().SearchForFeedL(searchString);
+		DoSearchL(searchString);
 		}
+	}
+
+void CPodcastSearchView::DoSearchL(TDesC& aSearchString)
+	{
+	iSearchRunning = ETrue;
+	iPodcastModel.FeedEngine().SearchForFeedL(aSearchString);
 	}
 
 void CPodcastSearchView::CancelSearch()
