@@ -1221,7 +1221,7 @@ void CShowEngine::NotifyShowFinishedL(TInt aError)
 	const TInt count = iObservers.Count();
 		for (TInt i = 0; i < count; i++)
 			{
-				iObservers[i]->ShowDownloadFinishedL(iShowDownloading?iShowDownloading->Uid():-1, aError);
+				iObservers[i]->ShowDownloadFinishedL(iShowDownloading?iShowDownloading->Uid():0, aError);
 			}
 	}
 

@@ -232,7 +232,7 @@ void CPodcastQueueView::ShowDownloadUpdatedL(TInt aBytesOfCurrentDownload, TInt 
 		}
 	}
 
-void CPodcastQueueView::ShowDownloadFinishedL(TUint /*aFeedUid*/, TInt aError)
+void CPodcastQueueView::ShowDownloadFinishedL(TUint /*aShowUid*/, TInt aError)
 	{
 	iProgressAdded = EFalse;
 

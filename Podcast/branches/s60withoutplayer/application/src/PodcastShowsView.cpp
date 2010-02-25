@@ -284,7 +284,7 @@ void CPodcastShowsView::ShowDownloadUpdatedL(TInt aBytesOfCurrentDownload, TInt 
 		}		
 	}
 
-void CPodcastShowsView::ShowDownloadFinishedL(TUint /*aFeedUid*/, TInt aError)
+void CPodcastShowsView::ShowDownloadFinishedL(TUint /*aShowUid*/, TInt aError)
 	{
 	iProgressAdded = EFalse;
 	
@@ -366,7 +366,6 @@ void CPodcastShowsView::GetShowIcons(CShowInfo* aShowInfo, TInt& aIconIndex)
 	{
 	TBool dlStop = iPodcastModel.SettingsEngine().DownloadSuspended();
 	TUint showDownloadingUid = iPodcastModel.ShowEngine().ShowDownloading() ? iPodcastModel.ShowEngine().ShowDownloading()->Uid() : 0;
-	TUint showPlayingUid = iPodcastModel.PlayingPodcast() ? iPodcastModel.PlayingPodcast()->Uid() : 0;
 	
 	if (showDownloadingUid == aShowInfo->Uid())
 		{
@@ -510,8 +509,6 @@ void CPodcastShowsView::UpdateShowItemL(TUint aUid, TInt aSizeDownloaded)
 
 void CPodcastShowsView::UpdateListboxItemsL()
 	{
-	_LIT(KPanicCategory, "CPodcastShowsView::UpdateListboxItemsL");
-
 	if (iListContainer->IsVisible())
 		{
 		TListItemProperties itemProps;

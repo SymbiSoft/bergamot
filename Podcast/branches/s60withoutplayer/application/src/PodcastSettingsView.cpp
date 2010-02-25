@@ -368,7 +368,7 @@ public:
 			{
 			TInt snapIndex = 0;
 			TInt cnt = iPodcastModel.SNAPIds().Count();
-			while(snapIndex < cnt && iPodcastModel.SNAPIds()[snapIndex].iIapId != iIap)
+			while(snapIndex < cnt && ((TInt)iPodcastModel.SNAPIds()[snapIndex].iIapId) != iIap)
 				{
 				snapIndex++;
 				}

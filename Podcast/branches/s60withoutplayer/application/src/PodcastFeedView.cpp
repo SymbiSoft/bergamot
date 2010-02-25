@@ -177,7 +177,6 @@ void CPodcastFeedView::DoActivateL(const TVwsViewId& aPrevViewId,
 	UpdateToolbar();
 	
 	CPodcastListView::DoActivateL(aPrevViewId, aCustomMessageId, aCustomMessage);
-	iPreviousView = TVwsViewId(KUidPodcast, KUidPodcastBaseViewID);
 	
 	if (iFirstActivateAfterLaunch)
 		{
@@ -416,7 +415,6 @@ void CPodcastFeedView::UpdateFeedInfoDataL(CFeedInfo* aFeedInfo, TInt aIndex, TB
 
 void CPodcastFeedView::UpdateListboxItemsL()
 	{
-	_LIT(KPanicCategory, "CPodcastFeedView::UpdateListboxItemsL");
 	// No reason to do any work if it isn't going to show..
 	if(!iListContainer->IsVisible())
 		{
@@ -758,16 +756,13 @@ void CPodcastFeedView::HandleImportFeedsL()
 			{
 			if(importName.Length()>0)
 				{
-				TInt numFeedsBefore = iPodcastModel.FeedEngine().GetSortedFeeds().Count();
 				HBufC *waitText = iEikonEnv->AllocReadResourceLC(R_IMPORTING);
 				iOpmlState = EOpmlImporting;
 				ShowWaitDialogL(*waitText);
 				CleanupStack::PopAndDestroy(waitText);	
 
 				TRAPD(err, iPodcastModel.FeedEngine().ImportFeedsL(importName));
-				
-				TInt numFeedsAfter = iPodcastModel.FeedEngine().GetSortedFeeds().Count();
-					
+									
 				if (err != KErrNone) {
 					TBuf<KMaxMessageLength> message;
 					iEikonEnv->ReadResourceL(message, R_IMPORT_FEED_FAILURE);

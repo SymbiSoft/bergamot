@@ -185,8 +185,6 @@ void CPodcastAppUi::TabChangedL (TInt aIndex)
 		newview = KUidPodcastFeedViewID;
 	} else if (aIndex == KTabIdQueue) {
 		newview = KUidPodcastQueueViewID;
-	} else if (aIndex == KTabIdSearch) {
-		newview = KUidPodcastSearchViewID;
 	} else {
 		User::Leave(KErrTooBig);
 	}
@@ -228,7 +226,7 @@ void CPodcastAppUi::UpdateQueueTab(TInt aQueueLength)
 
 void CPodcastAppUi::TabLeft()
 	{
-	TUint ati = iTabGroup->ActiveTabIndex();
+	TInt ati = iTabGroup->ActiveTabIndex();
 	if(ati > 0) {
 		SetActiveTab(ati-1);
 		TabChangedL(ati-1);
@@ -237,7 +235,7 @@ void CPodcastAppUi::TabLeft()
 
 void CPodcastAppUi::TabRight()
 	{
-	TUint ati = iTabGroup->ActiveTabIndex();
+	TInt ati = iTabGroup->ActiveTabIndex();
 	
 	if(ati < iTabGroup->TabCount()-1) {
 		SetActiveTab(ati+1);
