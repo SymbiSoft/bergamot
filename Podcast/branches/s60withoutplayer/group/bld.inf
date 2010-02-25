@@ -26,12 +26,13 @@ PRJ_MMPFILES
 ..\engine\sqlite\group\sqlite.mmp
 #endif
 
-#include "..\engine\group\bld.inf"
-
 PRJ_MMPFILES
+..\engine\group\engine.mmp
+
 gnumakefile ..\application\group\icons.mk
 ..\application\group\Podcast.mmp
 
 PRJ_EXPORTS
-
+..\engine\config\defaultfeeds.xml \epoc32\winscw\c\private\A0009D00\defaultfeeds.xml
+..\engine\config\testfeeds.xml \epoc32\winscw\c\data\testfeeds.xml
 ..\application\help\podcatcher.hlp \epoc32\winscw\c\resource\help\podcatcher.hlp

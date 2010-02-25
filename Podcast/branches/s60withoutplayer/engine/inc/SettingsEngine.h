@@ -90,7 +90,6 @@ class CSettingsEngine : public CBase
 	private:
 		CSettingsEngine(CPodcastModel& aPodcastModel);
 		void ConstructL();
-		void ImportSettingsL();
 		void LoadSettingsL();
 		void GetDefaultBaseDirL(TDes &aBaseDir);
 

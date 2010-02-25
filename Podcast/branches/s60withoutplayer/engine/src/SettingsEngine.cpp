@@ -65,9 +65,8 @@ void CSettingsEngine::ConstructL()
 	if (loadErr != KErrNone)
 		{
 		DP1("CSettingsEngine::ConstructL\tLoadSettingsL returned error=%d", loadErr);
-		DP("CSettingsEngine::ConstructL\tImporting default settings instead");
+		DP("CSettingsEngine::ConstructL\tUsing default settings instead");
 	
-		ImportSettingsL();
 		TRAPD(error,SaveSettingsL());
 		if (error != KErrNone) 
 			{
@@ -201,78 +200,6 @@ EXPORT_C void CSettingsEngine::SaveSettingsL()
 	store->CommitL();
 	CleanupStack::PopAndDestroy(2); // stream and store
 	DP("CSettingsEngine::SaveSettingsL END");
-	}
-
-void CSettingsEngine::ImportSettingsL()
-	{
-	DP("CSettingsEngine::ImportSettings");
-
-	TFileName configPath;
-	configPath.Copy(PrivatePath());
-	configPath.Append(KConfigImportFile);
-	
-	DP1("Importing settings from %S", &configPath);
-	
-	RFile rfile;
-	TInt error = rfile.Open(iPodcastModel.FsSession(), configPath,  EFileRead);
-	if (error != KErrNone) 
-		{
-		DP("CSettingsEngine::ImportSettings()\tFailed to read settings");
-		return;
-		}
-	CleanupClosePushL(rfile);
-	TFileText tft;
-	tft.Set(rfile);
-	
-	HBufC* line = HBufC::NewLC(KMaxParseBuffer);
-	TPtr linePtr(line->Des());
-	error = tft.Read(linePtr);
-	
-	while (error == KErrNone) 
-		{
-		if (line->Locate('#') == 0) 
-			{
-			error = tft.Read(linePtr);
-			continue;
-			}
-		
-		TInt equalsPos = line->Locate('=');
-		if (equalsPos != KErrNotFound) 
-			{
-			TPtrC tag = line->Left(equalsPos);
-			TPtrC value = line->Mid(equalsPos+1);
-			DP3("line: %S, tag: '%S', value: '%S'", &line, &tag, &value);
-			if (tag.CompareF(_L("BaseDir")) == 0) 
-				{
-				iBaseDir.Copy(value);
-				} 
-			else if (tag.CompareF(_L("UpdateFeedIntervalMinutes")) == 0) 
-				{
-				TLex lex(value);
-				lex.Val(iUpdateFeedInterval);
-				DP1("Updating automatically every %d minutes", iUpdateFeedInterval);
-				} 
-			else if (tag.CompareF(_L("DownloadAutomatically")) == 0) 
-				{
-				TLex lex(value);
-				lex.Val((TInt &) iDownloadAutomatically);
-				DP1("Download automatically: %d", iDownloadAutomatically);
-				} 
-			else if (tag.CompareF(_L("MaxShowsPerFeed")) == 0) 
-				{
-				TLex lex(value);
-				lex.Val(iMaxListItems);
-				DP1("Max shows per feed: %d", iMaxListItems);
-				}
-			else 
-				{
-				DP1("Unknown tag '%S'", &tag);
-				}
-			}
-		
-		error = tft.Read(linePtr);
-		}
-	CleanupStack::PopAndDestroy(2);//rfile.Close(); & delete buffer
 	}
 
 TFileName CSettingsEngine::DefaultFeedsFileName()

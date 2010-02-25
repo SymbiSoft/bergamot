@@ -886,10 +886,12 @@ void CPodcastFeedView::OpmlParsingComplete(TUint aNumFeedsImported)
 			iEikonEnv->ReadResourceL(templ, R_IMPORT_FEED_SUCCESS);
 			message.Format(templ, aNumFeedsImported);
 			
-			if(ShowQueryMessage(message)) {
-				iPodcastModel.FeedEngine().UpdateAllFeedsL(EFalse);
+			if(ShowQueryMessage(message))
+				{
+				HandleCommandL(EPodcastUpdateAllFeeds);
+				}
 			}
-			}
+			break;
 		case EOpmlSearching:
 			delete iWaitDialog;
 			if (iPodcastModel.FeedEngine().GetSearchResults().Count() == 0)
