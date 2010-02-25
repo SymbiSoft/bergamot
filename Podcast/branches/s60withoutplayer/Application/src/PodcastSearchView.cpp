@@ -139,13 +139,6 @@ void CPodcastSearchView::DoActivateL(const TVwsViewId& aPrevViewId,
     
 	CPodcastListView::DoActivateL(aPrevViewId, aCustomMessageId, aCustomMessage);
 	iPreviousView = TVwsViewId(KUidPodcast, KUidPodcastFeedViewID);
-	
-	if (aCustomMessage != KNullDesC8())
-		{
-		TBuf<KFeedUrlLength> searchString;
-		searchString.Copy(aCustomMessage);
-		DoSearchL(searchString);
-		}
 }
 
 void CPodcastSearchView::DoDeactivate()
@@ -177,7 +170,9 @@ void CPodcastSearchView::HandleListBoxEventL(CEikListBox* /* aListBox */, TListB
 
 void CPodcastSearchView::UpdateListboxItemsL()
 	{
+	DP("CPodcastSearchView::UpdateListboxItemsL BEGIN");
 	if(!iListContainer->IsVisible()) {
+		DP("CPodcastSearchView::UpdateListboxItemsL END (not visible)");
 		return;
 	}
 	const RFeedInfoArray* searchItems = NULL;
@@ -195,7 +190,7 @@ void CPodcastSearchView::UpdateListboxItemsL()
 			{				
 			CFeedInfo *fi = (*searchItems)[i];
 			iItemIdArray.Append(fi->Uid());
-			TInt iconIndex = 1;
+			TInt iconIndex = 0;
 			
 			TBuf<512> descr;
 			descr.Copy(fi->Description().Left(512));
@@ -217,7 +212,8 @@ void CPodcastSearchView::UpdateListboxItemsL()
 		itemProps.SetHiddenSelection(ETrue);								
 		iListContainer->Listbox()->ItemDrawer()->SetPropertiesL(0, itemProps);
 		}
-	iListContainer->Listbox()->HandleItemAdditionL();		
+	iListContainer->Listbox()->HandleItemAdditionL();
+	DP("CPodcastSearchView::UpdateListboxItemsL END");
 	}
 
 /** 
@@ -230,12 +226,6 @@ void CPodcastSearchView::HandleCommandL(TInt aCommand)
 	//CloseToolbarExtension();
 	switch(aCommand)
 		{
-		case EPodcastSearch:
-			SearchL();
-			break;
-		case EPodcastCancelUpdateAllFeeds:
-			CancelSearch();
-			break;
 		case EPodcastAddSearchResult:
 			{
 			TInt index = iListContainer->Listbox()->CurrentItemIndex();
@@ -316,36 +306,7 @@ void CPodcastSearchView::UpdateToolbar()
 void CPodcastSearchView::DialogDismissedL (TInt aButtonId)
 	{
 	DP("CPodcastSearchView::DialogDismissedL BEGIN");
-	CancelSearch();
+	iPodcastModel.FeedEngine().CancelUpdateAllFeeds();
 	DP("CPodcastSearchView::DialogDismissedL END");
-	}
-
-void CPodcastSearchView::SearchL()
-	{
-	TBuf<KMaxSearchString> searchString;
-	CAknTextQueryDialog * dlg =CAknTextQueryDialog::NewL(searchString);
-	dlg->PrepareLC(R_PODCAST_SEARCH_DLG);
-	HBufC* prompt = iEikonEnv->AllocReadResourceLC(R_SEARCH_PROMPT);
-	dlg->SetPromptL(*prompt);
-	CleanupStack::PopAndDestroy(prompt);
-	
-	if(dlg->RunLD())
-		{
-		DoSearchL(searchString);
-		}
-	}
-
-void CPodcastSearchView::DoSearchL(TDesC& aSearchString)
-	{
-	iSearchRunning = ETrue;
-	iPodcastModel.FeedEngine().SearchForFeedL(aSearchString);
-	}
-
-void CPodcastSearchView::CancelSearch()
-	{
-	if (iSearchRunning) {
-		iPodcastModel.FeedEngine().CancelUpdateAllFeeds();
-		iSearchRunning = EFalse;
-	}
 	}
 

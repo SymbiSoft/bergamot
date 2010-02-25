@@ -113,6 +113,7 @@ private:
 	void DeleteShow();
 	void UpdateViewTitleL();
 	void CreateIconsL();
+	void GetShowErrorText(TDes &aErrorMessage, TInt aErrorCode);
 	
 private:
 	

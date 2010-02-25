@@ -236,7 +236,7 @@ RESOURCE DIALOG r_podcast_edit_feed_dlg
 				control= AVKON_DATA_QUERY
 					{
 					layout = EMultiDataSecondEdwin;
-					label = STRING_r_add_feed_prompt;
+					label = STRING_r_edit_feed_prompt;
 					control = EDWIN
 						{
 						flags= EEikEdwinNoHorizScrolling | EEikEdwinResizable;

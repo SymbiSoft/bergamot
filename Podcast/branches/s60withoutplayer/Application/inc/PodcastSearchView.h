@@ -32,7 +32,6 @@ class CPodcastSearchView : public CPodcastListView, public MEikListBoxObserver,
         static CPodcastSearchView* NewL(CPodcastModel& aPodcastModel);
         static CPodcastSearchView* NewLC(CPodcastModel& aPodcastModel);
         ~CPodcastSearchView();
-        void DoSearchL(TDesC& aSearchString);
 
 	protected:
 	    void ConstructL();
@@ -83,9 +82,6 @@ class CPodcastSearchView : public CPodcastListView, public MEikListBoxObserver,
 		void DialogDismissedL(TInt aButtonId); 
 
 		void UpdateToolbar();
-		
-		void SearchL();
-		void CancelSearch();
 		
 	private:
 		CPodcastModel& iPodcastModel;		

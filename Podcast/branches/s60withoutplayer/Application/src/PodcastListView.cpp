@@ -230,7 +230,7 @@ void CPodcastListView::DoActivateL(const TVwsViewId& /*aPrevViewId */,
 	                                  TUid /*aCustomMessageId */,
 									  const TDesC8& /* aCustomMessage */)
 {	
-	DP("CPodcastListView::DoActivateL()");
+	DP("CPodcastListView::DoActivateL() BEGIN");
 	
 	if(iListContainer)
 	{
@@ -242,16 +242,19 @@ void CPodcastListView::DoActivateL(const TVwsViewId& /*aPrevViewId */,
 		UpdateListboxItemsL();		
 		iListContainer->DrawNow();
 	}
+	DP("CPodcastListView::DoActivateL() END");
+
 }
 
 void CPodcastListView::DoDeactivate()
 {
-	DP("CPodcastListView::DoDeactivate()");
+	DP("CPodcastListView::DoDeactivate() BEGIN");
 	if ( iListContainer )
 	{
 		AppUi()->RemoveFromViewStack( *this, iListContainer);
 		iListContainer->MakeVisible(EFalse);
 	}
+	DP("CPodcastListView::DoDeactivate() END");
 }
 
 /** 

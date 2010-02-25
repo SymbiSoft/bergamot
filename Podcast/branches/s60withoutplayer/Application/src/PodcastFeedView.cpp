@@ -46,9 +46,7 @@ const TInt KMimeBufLength = 100;
 _LIT(KFeedFormat, "%d\t%S\t%S%S");
 enum 
 {
- EFeedIcon,
- ENewFeedIcon,
- EErrorFeedIcon
+ EFeedIcon
 };
 
 CPodcastFeedView* CPodcastFeedView::NewL(CPodcastModel& aPodcastModel)
@@ -317,7 +315,6 @@ void CPodcastFeedView::FormatFeedInfoListBoxItemL(CFeedInfo& aFeedInfo, TBool aI
 	
 	if(aIsUpdating)
 		{
-		iconIndex = 1;
 		iEikonEnv->ReadResourceL(updatedDate, R_PODCAST_FEEDS_IS_UPDATING);
 		unplayedShows = KNullDesC();			
 		}
@@ -351,21 +348,6 @@ void CPodcastFeedView::FormatFeedInfoListBoxItemL(CFeedInfo& aFeedInfo, TBool aI
 				aFeedInfo.LastUpdated().FormatL(updatedDate, KDateFormatShort());
 				}
 			}
-
-		if (unplayedCount > 0) {
-			iconIndex = ENewFeedIcon;
-			} else {
-			iconIndex = EFeedIcon;
-			}	
-		
-		if(aFeedInfo.LastError() != KErrNone)
-			{
-			iconIndex = EErrorFeedIcon;
-			iEikonEnv->GetErrorText(unplayedShows, aFeedInfo.LastError());
-			}
-		
-#pragma message("SEB below is just until we have the other icons fixed")
-		iconIndex = EFeedIcon;
 		}
 	CArrayPtr<CGulIcon>* icons = iListContainer->Listbox()->ItemDrawer()->FormattedCellData()->IconArray();
 	

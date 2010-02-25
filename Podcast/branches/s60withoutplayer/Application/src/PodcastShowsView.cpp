@@ -461,7 +461,7 @@ void CPodcastShowsView::FormatShowInfoListBoxItemL(CShowInfo& aShowInfo, TInt aS
 	if(aShowInfo.LastError() != KErrNone)
 		{
 		TBuf<KSizeBufLen> errorBuffer;
-		iEikonEnv->GetErrorText(errorBuffer, aShowInfo.LastError());
+		GetShowErrorText(errorBuffer, aShowInfo.LastError());
 		iListboxFormatbuffer.Format(KShowErrorFormat(), iconIndex, &aShowInfo.Title(), &errorBuffer);
 		}
 	else	
@@ -472,6 +472,11 @@ void CPodcastShowsView::FormatShowInfoListBoxItemL(CShowInfo& aShowInfo, TInt aS
 		
 		iListboxFormatbuffer.Format(KShowFormat(), iconIndex, &aShowInfo.Title(), &showDate, &infoSize);
 		}
+	}
+
+void CPodcastShowsView::GetShowErrorText(TDes &aErrorMessage, TInt aErrorCode)
+	{
+	iEikonEnv->GetErrorText(aErrorMessage, aErrorCode);
 	}
 
 void CPodcastShowsView::UpdateShowItemDataL(CShowInfo* aShowInfo,TInt aIndex, TInt aSizeDownloaded)
@@ -869,37 +874,25 @@ void CPodcastShowsView::UpdateViewTitleL()
 	DP("CPodcastShowsView::UpdateViewTitleL BEGIN");
 	 CAknTitlePane* titlePane = static_cast<CAknTitlePane*>
 		      ( StatusPane()->ControlL( TUid::Uid( EEikStatusPaneUidTitle ) ) );
-		   
-		SetEmptyTextL(R_PODCAST_EMPTY_LIST);
+		 
+		TBool updatingState = iPodcastModel.FeedEngine().ClientState() != EIdle && 
+				iPodcastModel.FeedEngine().ActiveClientUid() == iPodcastModel.ActiveFeedInfo()->Uid();
+
+		if (updatingState) {
+			SetEmptyTextL(R_PODCAST_EMPTY_LIST_UPDATING);		
+		} else {
+			SetEmptyTextL(R_PODCAST_EMPTY_LIST);
+		}
+		
 		if(iPodcastModel.ActiveFeedInfo())
 			{
 			if (iPodcastModel.ActiveFeedInfo()->Title() != KNullDesC)
 				{
 				titlePane->SetTextL( iPodcastModel.ActiveFeedInfo()->Title(), ETrue );
 				}
-
-//				if(iPodcastModel.ActiveFeedInfo()->ImageFileName().Length())
-//					{
-//					CFbsBitmap * bitmap = new (ELeave) CFbsBitmap;
-//					CleanupStack::PushL(bitmap);
-//
-//					TRAPD(loaderror, iPodcastModel.ImageHandler().LoadFileAndScaleL(bitmap, iPodcastModel.ActiveFeedInfo()->ImageFileName(), TSize(24,24), *this));
-//
-//					if(loaderror == KErrNone)
-//						{
-//						iSetTitlebarImage = ETrue;					
-//						CleanupStack::Pop(bitmap);
-//						bitmap = NULL;
-//						}
-//					else
-//						{
-//						CleanupStack::PopAndDestroy(bitmap);
-//						}
-//					}
-				}
+			}
 		else
 			{
-//				titlePane->SetSmallPicture(NULL, NULL, ETrue);
 			titlePane->SetPicture(NULL, NULL);
 			titlePane->SetTextToDefaultL();
 			}
