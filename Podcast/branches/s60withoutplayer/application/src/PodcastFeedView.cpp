@@ -87,8 +87,8 @@ void CPodcastFeedView::ConstructL()
 	TFileName fname = KAsterisk;
 	TParsePtr parser(fname);
 
-	// Load the bitmap for feed icon
-	DP("EMbmPodcastFeed");
+	SetEmptyTextL(R_PODCAST_NO_FEEDS);
+	
 	// Load svg.-image and mask with a single call
 		AknIconUtils::CreateIconL(bitmap,
 		                          mask,

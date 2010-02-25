@@ -345,13 +345,19 @@ void CPodcastShowsView::HandleListBoxEventL(CEikListBox* /*aListBox*/,
 				DP2("Handle event for podcast %S, downloadState is %d", &(fItems[index]->Title()), fItems[index]->DownloadState());
 				CShowInfo *showInfo = fItems[index];
 				
-				if (showInfo->DownloadState() == ENotDownloaded)
-					{
+				switch (showInfo->DownloadState()) {
+				case ENotDownloaded:
 					HandleCommandL(EPodcastDownloadShow);
-					}
-				else
-					{
+					break;
+				case EQueued:
+					AppUi()->ActivateLocalViewL(KUidPodcastQueueViewID,  TUid::Uid(0), KNullDesC8());
+					((CPodcastAppUi*)AppUi())->SetActiveTab(KTabIdQueue);
+					break;
+				case EDownloaded:
 					#pragma message("LAPER Replace activate playview with activate playback in mpx")
+					break;
+				default:
+					break;
 					}
 				}
 			}

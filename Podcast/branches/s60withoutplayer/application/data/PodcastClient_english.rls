@@ -84,7 +84,7 @@ rls_string STRING_r_podcast_feeds_title_format "%d Feeds"
 rls_string STRING_r_podcast_feeds_status_format "%d new"
 rls_string STRING_r_podcast_shows_never_updated "Never"
 rls_string STRING_r_podcast_feeds_is_updating "Updating..."
-rls_string STRING_r_podcast_no_feeds "No feeds"
+rls_string STRING_r_podcast_no_feeds "(no feeds)"
 
 // DIALOG string
 rls_string STRING_r_about_title "About"
@@ -180,7 +180,7 @@ rls_string STRING_r_tabgroup_queue_counter "Queue (%d)"
 rls_string STRING_r_tabgroup_shows "Shows"
 
 rls_string STRING_r_podcast_empty_queue "(queue empty)"
-rls_string STRING_r_podcast_empty_list "(list empty)"
+rls_string STRING_r_podcast_empty_list "(no shows)"
 rls_string STRING_r_podcast_empty_search "(no search results)"
 rls_string STRING_r_podcast_empty_list_updating "(updating...)"
 

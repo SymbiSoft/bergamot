@@ -61,8 +61,8 @@ void CFeedEngine::ConstructL()
 		} 
     
 	if (iPodcastModel.IsFirstStartup()) {
-		DP("Loading default feeds");
 		TFileName defaultFile = iPodcastModel.SettingsEngine().DefaultFeedsFileName();
+		DP1("Loading default feeds from %S", &defaultFile);
 		if (BaflUtils::FileExists(iPodcastModel.FsSession(), defaultFile)) {
 			ImportFeedsL(defaultFile);
 		}

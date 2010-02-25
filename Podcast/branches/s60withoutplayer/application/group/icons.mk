@@ -33,7 +33,7 @@ RESOURCE :
 		$(DPATH)\new\Audio_downloaded_new.svg\
 		$(DPATH)\new\Audio_failed.svg\
 		$(DPATH)\new\Audio_suspended.svg\
-		$(DPATH)\Feed.svg
+		$(DPATH)\new\Feed.svg
 
 FREEZE : do_nothing
 

@@ -277,7 +277,7 @@ void CPodcastListView::HandleCommandL(TInt aCommand)
 		{
 		AppUi()->ActivateViewL(iPreviousView);
 		if (iPreviousView.iViewUid == KUidPodcastFeedViewID) {
-			((CPodcastAppUi*)AppUi())->SetActiveTab(0);
+			((CPodcastAppUi*)AppUi())->SetActiveTab(KTabIdFeeds);
 		}
 		}break;
 	case EPodcastSettings:
@@ -346,7 +346,7 @@ void CPodcastListView::CloseToolbarExtension()
 
 void CPodcastListView::PointerEventL(const TPointerEvent& aPointerEvent)
 	{
-	DP1("CPodcastListView::PointerEventL, iType=%d", aPointerEvent.iType);
+	//DP1("CPodcastListView::PointerEventL, iType=%d", aPointerEvent.iType);
 	// Pass the pointer event to Long tap detector component
 	iLongTapDetector->PointerEventL(aPointerEvent);
 	}
