@@ -17,7 +17,7 @@
 
 ; configuration and DB
 "../../engine/config/config.cfg"-"c:\private\A0009D00\config.cfg"
-"../../engine/config/goodfeeds.opml"-"c:\private\A0009D00\defaultfeeds.xml"
+"../../engine/config/defaultfeeds.xml"-"c:\private\A0009D00\defaultfeeds.xml"
 "../../engine/config/podcatcher.sqlite"-"c:\private\A0009D00\podcatcher.sqlite.template"
 
 ; backup

@@ -24,42 +24,7 @@ CAPABILITY NetworkServices UserEnvironment
 
 EPOCSTACKSIZE 81920
 EPOCHEAPSIZE 1024000 32768000
-/*
-START BITMAP Podcast.mbm
-	TARGETPATH \resource\apps
-	HEADER
-	SOURCEPATH ..\data\images	
-	SOURCE c16 feed_new_40x40.bmp
-	SOURCE 8 feed_new_40x40m.bmp
-	SOURCE c16 feed_error_40x40.bmp
-	SOURCE 8 feed_error_40x40m.bmp
-	SOURCE c16 downloaded_new_40x40.bmp
-	SOURCE 8 downloaded_new_40x40m.bmp
-	SOURCE c16 play_40x40.bmp
-	SOURCE 8 play_40x40m.bmp
-	SOURCE c16 downloaded_view_40x40.bmp
-	SOURCE 8 downloaded_view_40x40m.bmp
-	SOURCE c16 pending_view_40x40.bmp
-	SOURCE 8 pending_view_40x40m.bmp
-	SOURCE c16 show_40x40.bmp
-	SOURCE 8 show_40x40m.bmp
-	SOURCE c16 show_playing_40x40.bmp
-	SOURCE 8 show_playing_40x40m.bmp
-	SOURCE c16 downloading_40x40.bmp
-	SOURCE 8 downloading_40x40m.bmp 
-	SOURCE c16 new_40x40.bmp
-	SOURCE 8 new_40x40m.bmp
-	SOURCE c16 old_40x40.bmp
-	SOURCE 8 old_40x40m.bmp
-	SOURCE c16 queued_40x40.bmp
-	SOURCE 8 queued_40x40m.bmp
-	SOURCE c16 suspended_40x40.bmp
-	SOURCE 8 suspended_40x40m.bmp
-	SOURCE c16 showwarning_40x40.bmp
-	SOURCE 8 showwarning_40x40m.bmp
-	SOURCE 8 emptyimage.bmp
-END
-*/
+
 SYSTEMINCLUDE \epoc32\include
 SYSTEMINCLUDE \epoc32\include\mmf\common 
 SYSTEMINCLUDE \epoc32\include\domain\middleware
@@ -146,3 +111,5 @@ LIBRARY PlatformEnv.lib // for PathInfo
 LIBRARY form.lib 
 LIBRARY ws32.lib 
 LIBRARY hlplch.lib
+LIBRARY bitgdi.lib 
+

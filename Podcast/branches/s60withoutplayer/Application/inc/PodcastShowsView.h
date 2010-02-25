@@ -112,6 +112,7 @@ private:
 	void SetShowPlayed(TBool aPlayed);
 	void DeleteShow();
 	void UpdateViewTitleL();
+	void CreateIconsL();
 	
 private:
 	

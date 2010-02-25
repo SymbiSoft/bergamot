@@ -23,6 +23,7 @@
 #include "PodcastApp.h"
 #include "Constants.h"
 #include "imagehandler.h"
+#include "PodcastShowsView.h"
 
 #include <akntitle.h>
 #include <podcast.rsg>
@@ -31,38 +32,46 @@
 #include <barsread.h>
 #include <aknnotedialog.h>
 #include <aknmessagequerydialog.h>
+#include "Podcast.hrh"
+
+#define KMaxMessageLength 200
+
+#define KPodcastImageWidth 160
+#define KPodcastImageHeight 120
+#define KPodcastDialogOffset 2
+
+#define KOneHundredPercent 100
 
 const TInt KSizeBufLen = 64;
 const TInt KDefaultGran = 5;
 _LIT(KSizeDownloadingOf, "%.1f/%.1f MB");
 _LIT(KShowsSizeFormatS60, "%.1f MB");
 
-_LIT(KShowQueueFormat, "%d\t%S\t%S%S\t");
+_LIT(KShowFormat, "%d\t%S\t%S %S\t");
 _LIT(KShowErrorFormat, "%d\t%S\t%S\t");
-#define KMaxMessageLength 200
+_LIT(KShowQueueFormat, "%d\t%S\t%S%S\t");
 
-const TUint KIconArrayIds[] =
+
+// these must correspond with TShowsIconIndex
+
+const TUint KShowIconArrayIds[] =
 	{
-			EMbmPodcastEmptyimage,
-			EMbmPodcastEmptyimage,
 			EMbmPodcastAudio,
 			EMbmPodcastAudio_mask,
-			EMbmPodcastNew_showstate_right,// new
-			EMbmPodcastNew_showstate_right_mask,
-			EMbmPodcastAudio_green, // playing
-			EMbmPodcastAudio_green_mask,
-			EMbmPodcastNot_downloaded_right, //downloading
-			EMbmPodcastNot_downloaded_right_mask,
-			EMbmPodcastNot_downloaded_right,
-			EMbmPodcastNot_downloaded_right_mask,
-			EMbmPodcastQueue_downloaded_right,
-			EMbmPodcastQueue_downloaded_right_mask,
-			EMbmPodcastBroken_right,
-			EMbmPodcastBroken_right_mask,  // old
-			EMbmPodcastQueue_downloaded_right,
-			EMbmPodcastQueue_downloaded_right_mask,
-			EMbmPodcastRed_right,
-			EMbmPodcastRed_right_mask,
+			EMbmPodcastAudio_new,
+			EMbmPodcastAudio_new_mask,
+			EMbmPodcastAudio_queued,
+			EMbmPodcastAudio_queued_mask,
+			EMbmPodcastAudio_downloading,
+			EMbmPodcastAudio_downloading_mask,
+			EMbmPodcastAudio_downloaded,
+			EMbmPodcastAudio_downloaded_mask,
+			EMbmPodcastAudio_downloaded_new,
+			EMbmPodcastAudio_downloaded_new_mask,
+			EMbmPodcastAudio_failed,
+			EMbmPodcastAudio_failed_mask,
+			EMbmPodcastAudio_suspended,
+			EMbmPodcastAudio_suspended_mask,
 			0,
 			0
 	};
@@ -94,7 +103,7 @@ void CPodcastQueueView::ConstructL()
 	CArrayPtr< CGulIcon>* icons = new(ELeave) CArrayPtrFlat< CGulIcon>(1);
 	CleanupStack::PushL(icons);
 	TInt pos = 0;
-	while (KIconArrayIds[pos] > 0)
+	while (KShowIconArrayIds[pos] > 0)
 		{
 		// Load the bitmap for play icon	
 		CFbsBitmap* bitmap= NULL;//iEikonEnv->CreateBitmapL( _L("*"), KIconArrayIds[pos]);
@@ -102,8 +111,8 @@ void CPodcastQueueView::ConstructL()
 		AknIconUtils::CreateIconL(bitmap,
 					                          mask,
 					                          iEikonEnv->EikAppUi()->Application()->BitmapStoreName(),
-					                          KIconArrayIds[pos],
-					                          KIconArrayIds[pos+1]);	
+					                          KShowIconArrayIds[pos],
+					                          KShowIconArrayIds[pos+1]);	
 		CleanupStack::PushL(bitmap);
 		// Load the mask for play icon			
 		CleanupStack::PushL(mask);

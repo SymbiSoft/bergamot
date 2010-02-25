@@ -19,6 +19,7 @@
 #include "PodcastListView.h"
 #include "Podcast.hrh"
 #include "PodcastAppUi.h"
+#include "constants.h"
 #include <podcast.rsg>
 #include <aknlists.h> 
 #include <aknviewappui.h>
@@ -29,8 +30,8 @@
 #include <aknquerydialog.h>
 #include <barsread.h>
 
-
 const TInt KDefaultGran = 5;
+
 CPodcastListContainer::CPodcastListContainer()
 {
 }

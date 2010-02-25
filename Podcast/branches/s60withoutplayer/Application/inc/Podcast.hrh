@@ -19,10 +19,6 @@
 #ifndef PODCAST_HRH
 #define PODCAST_HRH
 
-#define KOneHundredPercent 100
-
-#define SEARCH_ENABLED
-
 enum TPodcastCommandIds
 	{
 	EPodcastView = 0x1000,
@@ -84,16 +80,14 @@ enum TPodcastControl
 
 enum TShowsIconIndex
 	{
-	EShowNoIcon,
 	EShowIcon,
 	ENewShowIcon,
-	EPlayingShowIcon,
-	EDownloadingShowIcon,
-	ESuspendedShowIcon,
 	EQuedShowIcon,
-	EOldShowIcon,
+	EDownloadingShowIcon,
+	EDownloadedShowIcon,
 	EDownloadedNewShowIcon,
-	EFailedShowIcon
+	EFailedShowIcon,
+	ESuspendedShowIcon
 	};
 
 enum TConnectionSetting {
@@ -102,4 +96,5 @@ enum TConnectionSetting {
 	EConnectionUseNetwork = 2,
 	EConnectionUseIap = 0x7FFF
 };
+
 #endif
