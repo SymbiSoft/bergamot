@@ -23,15 +23,15 @@ WINSCW
 PRJ_MMPFILES
 
 #ifdef SQLITE_INCLUDED
-..\..\Engine\sqlite\group\sqlite.mmp
+..\engine\sqlite\group\sqlite.mmp
 #endif
 
-#include "..\..\engine\group\bld.inf"
+#include "..\engine\group\bld.inf"
 
 PRJ_MMPFILES
-gnumakefile icons.mk
-Podcast.mmp
+gnumakefile ..\application\group\icons.mk
+..\application\group\Podcast.mmp
 
 PRJ_EXPORTS
 
-..\help\podcatcher.hlp \epoc32\winscw\c\resource\help\podcatcher.hlp
+..\application\help\podcatcher.hlp \epoc32\winscw\c\resource\help\podcatcher.hlp
