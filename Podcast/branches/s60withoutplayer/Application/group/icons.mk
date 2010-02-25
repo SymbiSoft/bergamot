@@ -33,30 +33,8 @@ RESOURCE :
 		$(DPATH)\new\Audio_downloaded_new.svg\
 		$(DPATH)\new\Audio_failed.svg\
 		$(DPATH)\new\Audio_suspended.svg\
-		$(DPATH)\Audio_blue.svg\
-		$(DPATH)\Audio_green.svg\
-		$(DPATH)\Audio_pink.svg\
-		$(DPATH)\Feed.svg\
-		$(DPATH)\Video.svg\
-		$(DPATH)\Blue_left.svg\
-		$(DPATH)\Blue_right.svg\
-		$(DPATH)\Broken_left.svg\
-		$(DPATH)\Broken_right.svg\
-		$(DPATH)\Download_left.svg\
-		$(DPATH)\Download_right.svg\
-		$(DPATH)\Green_left.svg\
-		$(DPATH)\Green_right.svg\
-		$(DPATH)\New_showstate_left.svg\
-		$(DPATH)\New_showstate_right.svg\
-		$(DPATH)\Not_downloaded_left.svg\
-		$(DPATH)\Not_downloaded_right.svg\
-		$(DPATH)\Queue_downloaded_left.svg\
-		$(DPATH)\Queue_downloaded_right.svg\
-		$(DPATH)\Red_left.svg\
-		$(DPATH)\Red_right.svg\
-		/c16,1 $(DPATH)\feed_new_40x40.bmp\
-		/c16,1 $(DPATH)\feed_error_40x40.bmp\
-		/c16 $(DPATH)\emptyimage.bmp
+		$(DPATH)\Feed.svg
+
 FREEZE : do_nothing
 
 SAVESPACE : do_nothing

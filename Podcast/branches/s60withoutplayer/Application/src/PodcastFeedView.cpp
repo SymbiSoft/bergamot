@@ -46,7 +46,6 @@ const TInt KMimeBufLength = 100;
 _LIT(KFeedFormat, "%d\t%S\t%S%S");
 enum 
 {
- EEmptyFeedIcon,
  EFeedIcon,
  ENewFeedIcon,
  EErrorFeedIcon
@@ -89,21 +88,7 @@ void CPodcastFeedView::ConstructL()
 	// Load the bitmap for empty icon	
 	TFileName fname = KAsterisk;
 	TParsePtr parser(fname);
-	DP("EMbmPodcastEmptyimage");
-	TRAPD(rr, AknIconUtils::CreateIconL(bitmap,
-			                          mask,
-			                          iEikonEnv->EikAppUi()->Application()->BitmapStoreName(),
-			                          EMbmPodcastEmptyimage,
-			                          EMbmPodcastEmptyimage));
-	DP1("rr=%d", rr);
-	
-	CleanupStack::PushL( bitmap );		
-	// Load the mask for feed icon		
-	CleanupStack::PushL( mask );
-	// Append the feed icon to icon array
-	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );
-	CleanupStack::Pop(2); // bitmap, mask
-	
+
 	// Load the bitmap for feed icon
 	DP("EMbmPodcastFeed");
 	// Load svg.-image and mask with a single call
@@ -118,35 +103,6 @@ void CPodcastFeedView::ConstructL()
 	CleanupStack::PushL( bitmap );		
 	// Load the mask for feed icon	
 	//mask = iEikonEnv->CreateBitmapL(KAsterisk,EMbmPodcastFeed_40x40m );	
-	CleanupStack::PushL( mask );
-	// Append the feed icon to icon array
-	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );
-	CleanupStack::Pop(2); // bitmap, mask
-	DP("EMbmPodcastFeed_new_40x40");
-	
-	AknIconUtils::CreateIconL(bitmap,
-			                          mask,
-			                          iEikonEnv->EikAppUi()->Application()->BitmapStoreName(),
-			                          EMbmPodcastFeed_new_40x40,
-			                          EMbmPodcastFeed_new_40x40_mask);	
-
-//	bitmap = iEikonEnv->CreateBitmapL(KAsterisk,EMbmPodcastFeed_new_40x40);
-	CleanupStack::PushL( bitmap );		
-	// Load the mask
-	//mask = iEikonEnv->CreateBitmapL(KAsterisk,EMbmPodcastFeed_new_40x40_mask );	
-	CleanupStack::PushL( mask );
-	// Append the feed icon to icon array
-	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );
-	CleanupStack::Pop(2); // bitmap, mask
-	DP("EMbmPodcastFeed_error_40x40");
-
-	AknIconUtils::CreateIconL(bitmap,
-			                          mask,
-			                          iEikonEnv->EikAppUi()->Application()->BitmapStoreName(),
-			                          EMbmPodcastFeed_error_40x40,
-			                          EMbmPodcastFeed_error_40x40_mask);
-	CleanupStack::PushL( bitmap );		
-	
 	CleanupStack::PushL( mask );
 	// Append the feed icon to icon array
 	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );

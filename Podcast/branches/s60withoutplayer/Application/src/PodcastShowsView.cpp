@@ -572,7 +572,6 @@ void CPodcastShowsView::UpdateListboxItemsL()
 				}				
 			}
 		}
-	iListContainer->ScrollToVisible();
 	}
 
 /** 

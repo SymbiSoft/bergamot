@@ -80,17 +80,6 @@ void CPodcastSearchView::ConstructL()
 	CFbsBitmap* bitmap = NULL;
 	CFbsBitmap* mask = NULL;//	
 	
-	AknIconUtils::CreateIconL(bitmap,
-			                          mask,
-			                          iEikonEnv->EikAppUi()->Application()->BitmapStoreName(),
-			                          EMbmPodcastEmptyimage,
-			                          EMbmPodcastEmptyimage);
-	CleanupStack::PushL( bitmap );		
-	CleanupStack::PushL( mask );
-	// Append the feed icon to icon array
-	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );
-	CleanupStack::Pop(2); // bitmap, mask
-	
 	// Load the bitmap for feed icon	
 
 	// Load svg.-image and mask with a single call
@@ -110,18 +99,6 @@ void CPodcastSearchView::ConstructL()
 	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );
 	CleanupStack::Pop(2); // bitmap, mask
 	
-	AknIconUtils::CreateIconL(bitmap,
-		                          mask,
-		                          iEikonEnv->EikAppUi()->Application()->BitmapStoreName(),
-		                          EMbmPodcastFeed_new_40x40,
-		                          EMbmPodcastFeed_new_40x40_mask);
-	CleanupStack::PushL( bitmap );		
-	// Load the mask
-	CleanupStack::PushL( mask );
-	// Append the feed icon to icon array
-	icons->AppendL( CGulIcon::NewL( bitmap, mask ) );
-	CleanupStack::Pop(2); // bitmap, mask
-
 	iListContainer->Listbox()->ItemDrawer()->FormattedCellData()->SetIconArrayL( icons );
 	CleanupStack::Pop(icons); // icons
 

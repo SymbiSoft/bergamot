@@ -31,10 +31,6 @@ PRJ_MMPFILES
 PRJ_MMPFILES
 gnumakefile icons.mk
 Podcast.mmp
-gnumakefile Copy of icons.mk
-Copy of Podcast.mmp
-gnumakefile ..\Copy of icons.mk
-gnumakefile ..\icons.mk
 
 PRJ_EXPORTS
 

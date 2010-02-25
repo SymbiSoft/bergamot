@@ -148,7 +148,7 @@ RESOURCE AVKON_TOOLBAR r_showsview_toolbar
 						//bmpfile = AVKON_BITMAP_FILE;
 						//bmpid = EMbmAvkonQgn_indi_find_goto;
 						txt = STRING_r_view_mark_as_played_cmd_short;
-						helptxt = STRING_r_view_mark_as_played_cmd;
+						helptxt = STRING_r_view_mark_as_played_cmd_short;
 						}  
 					};
 				};
@@ -166,7 +166,7 @@ RESOURCE AVKON_TOOLBAR r_showsview_toolbar
 							//bmpfile = AVKON_BITMAP_FILE;
 							//bmpid = EMbmAvkonQgn_indi_find_goto;
 							txt = STRING_r_view_mark_as_unplayed_cmd_short;
-							helptxt = STRING_r_view_mark_as_unplayed_cmd;
+							helptxt = STRING_r_view_mark_as_unplayed_cmd_short;
 							}  
 						};
 					};
