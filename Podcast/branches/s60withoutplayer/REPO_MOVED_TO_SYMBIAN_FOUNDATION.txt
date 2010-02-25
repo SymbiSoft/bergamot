@@ -1,0 +1,4 @@
+All the files are now version managed in the 
+Symbian Foundation Mercurial repo
+
+http://developer.symbian.org/oss/FCL/sf/incubator/podcatcher/
