@@ -78,9 +78,6 @@ class CPodcastSearchView : public CPodcastListView, public MEikListBoxObserver,
 		 */
 		void HandleCommandL(TInt aCommand);
 		
-		// from MProgressDialogCallback
-		void DialogDismissedL(TInt aButtonId); 
-
 		void UpdateToolbar();
 		
 	private:

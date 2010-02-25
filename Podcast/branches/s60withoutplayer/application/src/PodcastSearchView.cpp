@@ -276,21 +276,16 @@ void CPodcastSearchView::HandleCommandL(TInt aCommand)
 		UpdateToolbar();
 	}
 
-void CPodcastSearchView::OpmlParsingComplete(TUint aNumFeedsImported)
+void CPodcastSearchView::OpmlParsingComplete(TUint /*aNumFeedsImported*/)
 	{
 	DP("CPodcastSearchView::OpmlParsingComplete BEGIN");
-//	if (iSearchRunning)
-//		{
-//		iSearchRunning = EFalse;
-		UpdateListboxItemsL();
-		UpdateToolbar();
-//		}
+	UpdateListboxItemsL();
+	UpdateToolbar();
 	DP("CPodcastSearchView::OpmlParsingComplete END");
 	}
 
 void CPodcastSearchView::UpdateToolbar()
 {
-
 	TBool disableAdd = iItemArray->MdcaCount() == 0 || iSearchRunning;
 	
 	CAknToolbar* toolbar = Toolbar();
@@ -302,11 +297,3 @@ void CPodcastSearchView::UpdateToolbar()
 		toolbar->HideItem(EPodcastCancelUpdateAllFeeds, !iSearchRunning, ETrue);
 		}
 }
-
-void CPodcastSearchView::DialogDismissedL (TInt aButtonId)
-	{
-	DP("CPodcastSearchView::DialogDismissedL BEGIN");
-	iPodcastModel.FeedEngine().CancelUpdateAllFeeds();
-	DP("CPodcastSearchView::DialogDismissedL END");
-	}
-

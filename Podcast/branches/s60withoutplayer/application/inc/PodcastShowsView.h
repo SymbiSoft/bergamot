@@ -81,7 +81,7 @@ protected:
 	void FeedDownloadStartedL(TFeedState aState,TUint aFeedUid);
 	void FeedDownloadFinishedL(TFeedState aState,TUint aFeedUid, TInt aError);
 	void FeedUpdateAllCompleteL(TFeedState aState);
-	void OpmlParsingComplete(TUint aNumFeedsImported) {}
+	void OpmlParsingComplete(TUint /*aNumFeedsImported*/) {}
 
 	/** 
 	 * Command handling function intended for overriding by sub classes. 

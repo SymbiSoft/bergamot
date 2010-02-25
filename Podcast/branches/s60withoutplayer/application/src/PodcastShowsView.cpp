@@ -284,7 +284,7 @@ void CPodcastShowsView::ShowDownloadUpdatedL(TInt aBytesOfCurrentDownload, TInt 
 		}		
 	}
 
-void CPodcastShowsView::ShowDownloadFinishedL(TUint aFeedUid, TInt aError)
+void CPodcastShowsView::ShowDownloadFinishedL(TUint /*aFeedUid*/, TInt aError)
 	{
 	iProgressAdded = EFalse;
 	
@@ -303,7 +303,7 @@ void CPodcastShowsView::ShowDownloadFinishedL(TUint aFeedUid, TInt aError)
 	}
 
 
-void CPodcastShowsView::FeedDownloadStartedL(TFeedState aState,TUint aFeedUid)
+void CPodcastShowsView::FeedDownloadStartedL(TFeedState /*aState*/, TUint aFeedUid)
 	{
 	// TODO make use of the fact that we know that the feed download is
 	// started instead of checking feed engine states in UpdateFeedUpdateStateL.
@@ -315,7 +315,7 @@ void CPodcastShowsView::FeedDownloadStartedL(TFeedState aState,TUint aFeedUid)
 		}	
 	}
 
-void CPodcastShowsView::FeedDownloadFinishedL(TFeedState aState,TUint aFeedUid, TInt /*aError*/)
+void CPodcastShowsView::FeedDownloadFinishedL(TFeedState /*aState*/, TUint aFeedUid, TInt /*aError*/)
 	{
 	DP("CPodcastShowsView::FeedDownloadFinishedL BEGIN");
 	// TODO make use of the fact that we know that the feed download is
@@ -858,12 +858,12 @@ void CPodcastShowsView::DeleteShow()
 		}
 	}
 
-void CPodcastShowsView::DownloadQueueUpdatedL(TInt aDownloadingShows, TInt aQueuedShows)
+void CPodcastShowsView::DownloadQueueUpdatedL(TInt /*aDownloadingShows*/, TInt /*aQueuedShows*/)
 	{
 	//((CPodcastAppUi*)AppUi())->UpdateQueueTab(aDownloadingShows+aQueuedShows);
 	}
 
-void CPodcastShowsView::FeedUpdateAllCompleteL(TFeedState aState)
+void CPodcastShowsView::FeedUpdateAllCompleteL(TFeedState /*aState*/)
 	{
 	UpdateListboxItemsL();
 	UpdateToolbar();

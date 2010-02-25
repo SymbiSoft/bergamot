@@ -137,7 +137,7 @@ public MProgressDialogCallback, public MKeyEventListener
 		virtual void HandleLongTapEventL( const TPoint& aPenEventLocation, const TPoint& aPenEventScreenLocation );
 		 
 		// from MProgressDialogCallback		
-		void DialogDismissedL(TInt aButtonId) {}
+		void DialogDismissedL(TInt /*aButtonId*/) {}
 
 		// from MKeyEventListener
 		virtual TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType);

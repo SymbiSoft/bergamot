@@ -221,13 +221,13 @@ void CPodcastFeedView::HandleListBoxEventL(CEikListBox* /* aListBox */, TListBox
 	DP("CPodcastFeedView::HandleListBoxEventL END");
 	}
 
-void CPodcastFeedView::FeedUpdateAllCompleteL(TFeedState aState)
+void CPodcastFeedView::FeedUpdateAllCompleteL(TFeedState /*aState*/)
 	{
 	iUpdatingAllRunning = EFalse;
 	UpdateToolbar();
 	}
 
-void CPodcastFeedView::FeedDownloadStartedL(TFeedState aState,TUint aFeedUid)
+void CPodcastFeedView::FeedDownloadStartedL(TFeedState /*aState*/, TUint aFeedUid)
 	{
 	// Update status text
 	UpdateFeedInfoStatusL(aFeedUid, ETrue);
@@ -915,7 +915,7 @@ void CPodcastFeedView::OpmlParsingComplete(TUint aNumFeedsImported)
 	DP("CPodcastFeedView::OpmlParsingComplete END");
 	}
 
-void CPodcastFeedView::DialogDismissedL(TInt aButtonId)
+void CPodcastFeedView::DialogDismissedL(TInt /*aButtonId*/)
 	{
-	
+	iPodcastModel.FeedEngine().CancelUpdateAllFeeds();
 	}

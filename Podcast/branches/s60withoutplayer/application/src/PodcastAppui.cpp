@@ -201,7 +201,7 @@ void CPodcastAppUi::SetActiveTab(TInt aIndex) {
 	iTabGroup->SetActiveTabByIndex(aIndex);
 }
 
-void CPodcastAppUi::HandleTimeout(const CTimeout& aId, TInt aError)
+void CPodcastAppUi::HandleTimeout(const CTimeout& /*aId*/, TInt /*aError*/)
 	{
 	iFeedView->CheckResumeDownload();
 	}

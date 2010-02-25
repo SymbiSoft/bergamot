@@ -76,8 +76,8 @@ TInt CConnectionEngine::RunError( TInt /*aError*/ )
 	return KErrNone;
 	}
 
-void CConnectionEngine::PreferredCarrierAvailable( TAccessPointInfo aOldAPInfo,
-		TAccessPointInfo aNewAPInfo,
+void CConnectionEngine::PreferredCarrierAvailable( TAccessPointInfo /*aOldAPInfo*/,
+		TAccessPointInfo /*aNewAPInfo*/,
 		TBool aIsUpgrade,
 		TBool aIsSeamless )
 	{   
@@ -101,7 +101,7 @@ void CConnectionEngine::PreferredCarrierAvailable( TAccessPointInfo aOldAPInfo,
 
 	}
 
-void CConnectionEngine::NewCarrierActive( TAccessPointInfo aNewAPInfo, TBool aIsSeamless )
+void CConnectionEngine::NewCarrierActive( TAccessPointInfo /*aNewAPInfo*/, TBool aIsSeamless )
 	{    
 	if ( aIsSeamless )
 		{
