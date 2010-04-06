@@ -1,0 +1,18 @@
+rls_string STRING_syncclient_caption_string "Swim"
+rls_string STRING_sync_about "About"
+
+rls_string STRING_r_about_title "About"
+rls_string STRING_about_text_uiq "Swim 0.40\n\nCopyright © 2007-2008,\nThe Bergamot Project\n\nhttp://bergamot.googlecode.com"
+rls_string STRING_about_text_s60 "Swim 0.50\n©2008 The Bergamot Project"
+
+rls_string STRING_option_0 "Manually"
+rls_string STRING_option_1 "Every 15 minutes"
+rls_string STRING_option_2 "Every hour"
+rls_string STRING_option_3 "Every 4 hours"
+rls_string STRING_option_4 "Every 12 hours"
+rls_string STRING_option_5 "Daily"
+rls_string STRING_option_6 "Weekly"
+
+rls_string STRING_no_items "No Items"
+
+rls_string STRING_navi_text "Remote Sync Timer"
