@@ -5,7 +5,7 @@
 
 After three years as a stand-alone project, Escarpod has now become an official Symbian platform application under the name [http://developer.symbian.org/wiki/index.php/Podcatcher_package Symbian Podcatcher] and will be included in the Symbian^3 release.
 
-Versions for previous releases of Symbian (including 3rd and 5th editions) will be provided based on the S^3 version.
+Versions for previous releases of Symbian (including 3rd and 5th editions) will be provided based on the S^3 version. The UIQ version works fine and has been retired.
 
 = Escarpod =
 
