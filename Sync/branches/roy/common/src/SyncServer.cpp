@@ -115,7 +115,7 @@ void CSyncServer::LoadSettingsL() {
 		instream  >> readData;	
 		timerArray.Append(readData);
 		DP3("Read settings %d: profile %d with period %d", i, readData.profileId, readData.period);
-		SetTimer(readData.profileId, readData.period);
+		SetTimer(readData.profileId, readData.period, readData.day, readData.hour, readData.minute);
 	}
 	DP("Read all accounts");
 	CleanupStack::PopAndDestroy(); // instream
@@ -160,10 +160,17 @@ void CSyncServer::SaveSettings()
 	CleanupStack::Pop(store);
 }
 
-void CSyncServer::SetTimer(TSmlProfileId profileId, TSyncServerPeriod period)
+// Finds the profile from the timerArray
+void CSyncServer::SetTimer(TSmlProfileId profileId, TSyncServerPeriod period, TDay day, TInt hour, TInt minute)
 	{
 	DP1("SetTimer for profile %d", profileId);
 
+/*
+ * 	CSyncServerData holds:
+ * 	profileId
+	period = (TSyncServerPeriod)
+	timer
+ */
 	CSyncServerData* sData = NULL;
 
 	for (int i=0;i<timerArray.Count();i++) {
@@ -173,6 +180,8 @@ void CSyncServer::SetTimer(TSmlProfileId profileId, TSyncServerPeriod period)
 		}
 	}
 	
+	// sData will be NULL if this is the first time we've set
+	// the timing information for this Sync Profile
 	if (sData == NULL) {
 		DP1("Creating new sync data for profile %d", profileId);
 		sData = new CSyncServerData();
@@ -180,13 +189,27 @@ void CSyncServer::SetTimer(TSmlProfileId profileId, TSyncServerPeriod period)
 		sData->timer->ConstructL();
 		sData->profileId = profileId;
 		sData->period = period;
+		sData->day = day;
+		sData->hour = hour;
+		sData->minute = minute;
+		
 		if (period != ENever) {
 			DP2("Starting timer for profile %d, period=%d", profileId, period);
+			
+			// thePeriod = aPeriod;
+			// according to period, which is an enum
+			// it calculates the next run-time for the timer/sync
 			sData->timer->SetPeriod(period);
+			sData->timer->SetDay(day);	
+			sData->timer->SetHour(hour);
+			sData->timer->SetMinute(minute);
 			sData->timer->RunPeriodically();
 		}
 		timerArray.Append(*sData);
-	} else {
+	} else 
+		{
+		// In case sData is NULL we create a new timer for it
+		// set the period and run it, just as we would do if sData were not NULL
 		if (sData->timer == NULL) {
 			DP1("Creating new timer for profile %d", profileId);
 			sData->timer = new CSyncServerTimer(profileId);
@@ -198,27 +221,42 @@ void CSyncServer::SetTimer(TSmlProfileId profileId, TSyncServerPeriod period)
 
 		sData->profileId = profileId;
 		sData->period = period;
-
+		sData->day = day;
+		sData->hour = hour;
+		sData->minute = minute;
+		
 		if (period != ENever) {
 			DP2("Starting timer for profile %d, period=%d", profileId, period);
 			sData->timer->SetPeriod(period);
+			sData->timer->SetDay(day);	
+			sData->timer->SetHour(hour);
+			sData->timer->SetMinute(minute);
 			sData->timer->RunPeriodically();
 		}
 
 	}
 }
 
-TSyncServerPeriod CSyncServer::GetTimer(TSmlProfileId profileId)
-	{
+TSyncProfileDetails CSyncServer::GetTimer(TSmlProfileId profileId)
+{
+	TSyncProfileDetails profDetalis;
+	profDetalis.period = ENever;
+	
 	for (int i=0;i<timerArray.Count();i++)
 		{
 			if (timerArray[i].profileId == profileId) {
 				DP2("Found profile %d with period %d", profileId, timerArray[i].period);
-				return (TSyncServerPeriod) timerArray[i].period;
+				
+				profDetalis.period = timerArray[i].period;
+				profDetalis.day = timerArray[i].day;
+				profDetalis.hour = timerArray[i].hour;
+				profDetalis.minute = timerArray[i].minute;
+				
+				return profDetalis;
 			}
 		}
 	
-	return ENever;
+	return profDetalis;
 }
 
 GLDEF_C TInt E32Main()

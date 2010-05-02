@@ -2,6 +2,6 @@
  
 RESOURCE STARTUP_ITEM_INFO startexe
 {
-    executable_name = "c:\\sys\\bin\\SyncServer_0xE0983802.exe";
+    executable_name = "c:\\sys\\bin\\SyncServer_0x2002C25C.exe";
     recovery = EStartupItemExPolicyNone;
 }

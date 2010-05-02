@@ -29,8 +29,8 @@ public:
 	static TInt ThreadFunction(TAny *aParam);
 	static void PanicServer(TSyncServerPanic aPanic);
 public:
-	void SetTimer(TSmlProfileId profileId, TSyncServerPeriod period);
-	TSyncServerPeriod GetTimer(TSmlProfileId profileId);
+	void SetTimer(TSmlProfileId profileId, TSyncServerPeriod period, TDay day = ESunday, TInt hour = 0, TInt minute = 0);
+	TSyncProfileDetails GetTimer(TSmlProfileId profileId);
 
 public:
 	void LoadSettingsL();

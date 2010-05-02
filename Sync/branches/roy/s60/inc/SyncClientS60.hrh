@@ -9,11 +9,18 @@ enum THelloWorldBasicIds
     EHelloWorldBasicCommand2,
     ESyncSettingItem,
     EDlgMeLookupAbout,
-    ECmdAbout
+    ECmdAbout,
+    ENewProfileGoogleCalendar,
+    ENewProfileGoogleContacts,
+    ENewProfileOvi,
+    ENewProfileZyb,
+    ENewProfileFunambol,
+    ENewProfileMobical,
+    ETake3NewSync,
+    ETake3DeleteSync,
+    ETake3GetMore,
+    ETake3ViewDetails
     };
 
-#define KMaxTextLength 50
-#define KMaxPasswordLength 50
-#define KDefaultVolume 5
 
 #endif

@@ -15,10 +15,18 @@ public:
 	void RunPeriodically();
 	void SetPeriod(int period);
 	
+	void SetDay(TDay aDay) {day = aDay;}
+	void SetHour(TInt aHour) {hour = aHour;}
+	void SetMinute(TInt aMinute) {minute = aMinute;}
+	
 private:
 	TTime timeToSync;
 	TSmlProfileId profileId;
 	int thePeriod;
+	TDay day;
+	TInt hour;
+	TInt minute;
+	
 //	RMutex mutex;
 };
 #endif

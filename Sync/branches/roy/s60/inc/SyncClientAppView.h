@@ -7,8 +7,38 @@
 #include <aknsettingitemlist.h> 
 #include "RSyncServerSession.h"
 #include <eiklabel.h> 
+#include "SyncSetting.h"
+#include <SyncMLClient.h>
+#include <SyncMLClientDS.h>
+
+#include <CommDbConnPref.h>
+#include <es_sock.h>
+#include <cdbcols.h>
+#include <commdb.h>
+#include <cdbtemp.h>
 
 // CLASS DECLARATION
+#define CONTACTS_DATA_STORE_NAME _L("C:Contacts.cdb")
+#define CALENDAR_DATA_STORE_NAME _L("C:Calendar")
+#define NOTES_DATA_STORE_NAME _L("c:Notepad.dat")
+
+#define _UID3 0x2002C265
+// CONSTANTS
+const TUint32 KUndefinedIAPid = 0x00;
+
+struct TIAP 
+    {
+    TBuf<KCommsDbSvrRealMaxFieldLength> iServiceName;
+    TUint32 iId;
+    };
+
+
+enum TSyncApp
+	{
+	ESyncCalendar,
+	ESyncContacts,
+	ESyncNotes
+	};
 
 /**
 * A view class for a dynamic setting list.
@@ -32,6 +62,12 @@ public: // Constructor and destructor
 	*/
      ~CSyncClientAppView();
           
+     void DeleteSync();
+     
+     void CreateNewProfile(TInt aCommand);
+     
+     void ViewDetails();
+     
 private: // Functions from base classes
 
 	/**
@@ -39,7 +75,10 @@ private: // Functions from base classes
     */
     void Draw(const TRect& aRect) const;
 
-	/**
+    void SetDataProvider(RSyncMLDataSyncProfile& profile, TSmlDataProviderId& iProvider, const TDesC& serverURI,TSyncApp aSyncApp);
+    void setIapIdForConnPropertiesL(const TDesC& aIapName);
+    void SetServer(RSyncMLDataSyncProfile& profile, const TDesC8& aServerURI, const TDesC& aIapName);
+    /**
     * From CoeControl,CountComponentControls.
     */        
     TInt CountComponentControls() const;
@@ -72,6 +111,11 @@ private: // New Functions
     void ShowSyncProfiles();
 
 private: // Data members
+    /*
+     * descriptor storing the IAP id, used by CreateProfileL.
+     */
+    TBuf8<32>   iIapId;
+    RArray<TIAP> iIAPs;
 
 	CAknSettingItemList* iItemList;
 	RSyncServerSession serverSession;

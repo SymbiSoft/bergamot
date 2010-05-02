@@ -4,7 +4,10 @@
 #include "SyncClientAppView.h"
 #include "SyncClientS60.hrh"
 #include <aknnotedialog.h> 
-#include <SyncClientS60_0xE0983804.rsg>
+#include <SyncClientS60_0x2002C265.rsg>
+#include "APGCLI.H"
+
+_LIT(KMobileMoreURL,"http://store.ovi.com/publisher/SBSH/");
 
 // ================= MEMBER FUNCTIONS =======================
 
@@ -73,10 +76,58 @@ void CSyncClientAppUi::HandleCommandL(TInt aCommand)
         case ECmdAbout:
         	RunAboutDialogL();
         	break;
+        case ETake3DeleteSync:
+        	iAppView->DeleteSync();
+        	break;
+        case ETake3ViewDetails:
+        	iAppView->ViewDetails();
+        	break;
+        case ETake3GetMore:
+        	RunBuyWebBrowser(KMobileMoreURL);
+        	break;
+        case ENewProfileGoogleCalendar:
+        case ENewProfileGoogleContacts:
+        case ENewProfileOvi:
+        case ENewProfileZyb:
+        case ENewProfileMobical:
+        	iAppView->CreateNewProfile(aCommand);
+        	break;
       default:
             break;
         }
     }
+     
+void CSyncClientAppUi::RunBuyWebBrowser(const TDesC& aUrl)
+{
+	const TInt KWmlBrowserUid = 0x10008D39;
+	TUid id( TUid::Uid( KWmlBrowserUid ) );
+	TApaTaskList taskList( CEikonEnv::Static()->WsSession() );
+	TApaTask task = taskList.FindApp( id );
+	if ( task.Exists() )
+	{
+		HBufC8* param = HBufC8::NewLC( aUrl.Length() + 2);
+                //"4 " is to Start/Continue the browser specifying a URL
+		param->Des().Append(_L("4 "));
+		param->Des().Append(aUrl);
+		task.SendMessage( TUid::Uid( 0 ), *param ); // Uid is not used
+		CleanupStack::PopAndDestroy(param);
+	}
+	else
+	{
+		HBufC16* param = HBufC16::NewLC( aUrl.Length() + 2);
+                //"4 " is to Start/Continue the browser specifying a URL
+		param->Des().Append(_L("4 "));
+		param->Des().Append(aUrl);
+		RApaLsSession appArcSession;
+                // connect to AppArc server 
+		User::LeaveIfError(appArcSession.Connect()); 
+		TThreadId id;
+		appArcSession.StartDocument( *param, TUid::Uid( KWmlBrowserUid)
+                                                                       , id );
+		appArcSession.Close(); 
+		CleanupStack::PopAndDestroy(param);
+	}
+}
 
 void CSyncClientAppUi::RunAboutDialogL()
 {

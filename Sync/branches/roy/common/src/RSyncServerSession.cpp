@@ -42,24 +42,26 @@ TInt RSyncServerSession::Connect()
 	return error;
 }
 
-
-void RSyncServerSession::SetTimer(TSmlProfileId profileId, TSyncServerPeriod period)
+// Sends a packaged message to the server
+void RSyncServerSession::SetTimer(TSmlProfileId profileId, TSyncServerPeriod period, TDay day, TInt hour, TInt minute)
 	{
 	//DP("RSyncServerSession::SetTimer BEGIN");
-	TIpcArgs args(profileId, period);
+	minute += hour*100;
+	TIpcArgs args(profileId, period, day, minute);
 	SendReceive(ESetTimer, args);
 	//DP("RSyncServerSession::SetTimer END");
 	}
 
-TSyncServerPeriod RSyncServerSession::GetTimer(TSmlProfileId profileId)
+TSyncProfileDetails RSyncServerSession::GetTimer(TSmlProfileId profileId)
 	{
 	//DP("RSyncServerSession::GetTimer BEGIN");
-    TPckgBuf<TInt> pckg;
+    TPckgBuf<TSyncProfileDetails> pckg;
+        
     TIpcArgs args((TInt)profileId, &pckg);
 	
 	SendReceive(EGetTimer, args);
 	
-	TInt res = pckg();
+	TSyncProfileDetails res = pckg();
 	//DP1("RSyncServerSession::GetTimer END, res=%d", res);
-	return (TSyncServerPeriod) res;
+	return res;
 	}

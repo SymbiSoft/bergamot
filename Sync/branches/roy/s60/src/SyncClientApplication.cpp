@@ -6,7 +6,7 @@
 
 // UID for the application;
 // this should correspond to the uid defined in the mmp file
-const TUid KUidSyncClientApp = { 0xE0983804 };
+const TUid KUidSyncClientApp = { 0x2002C265 };
 
 // -----------------------------------------------------------------------------
 // CSyncClientApplication::CreateDocumentL()

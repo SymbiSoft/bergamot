@@ -1,6 +1,6 @@
-TARGET            SyncServer_0xE0983802.exe
+TARGET            SyncServer_0x2002C25C.exe
 TARGETTYPE        exe
-UID 			  0x100039CE 0xE0983802
+UID 			  0x100039CE 0x2002C25C
 
 VENDORID          0
 EPOCSTACKSIZE	  0x10000

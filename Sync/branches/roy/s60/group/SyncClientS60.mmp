@@ -1,6 +1,6 @@
-TARGET            SyncClientS60_0xE0983804.exe
+TARGET            SyncClientS60_0x2002C265.exe
 TARGETTYPE        exe
-UID		  		  0x100039CE 0xE0983804
+UID		  		  0x100039CE 0x2002C265
 
 EPOCSTACKSIZE 81920
 EPOCHEAPSIZE 1024000 32768000
@@ -22,12 +22,12 @@ SOURCE 			RSyncServerSession.cpp
 USERINCLUDE ..\..\common\group
 
 SOURCEPATH      .
-START RESOURCE SyncClientS60_0xE0983804.rss
+START RESOURCE SyncClientS60_0x2002C265.rss
 	HEADER
 	TARGETPATH resource\apps
 END
 
-START RESOURCE    SyncClientS60_0xE0983804_reg.rss
+START RESOURCE    SyncClientS60_0x2002C265_reg.rss
 #ifdef WINSCW
 TARGETPATH 	  \private\10003a3f\apps
 #else
@@ -35,8 +35,10 @@ TARGETPATH 	  \private\10003a3f\import\apps
 #endif
 END
 
-START RESOURCE  E0983805.rss
-END
+START RESOURCE 2002C264.rss 
+  TARGETPATH                              \private\101f875a\import\ 
+  HEADER                                   
+END  
 
 LIBRARY           euser.lib
 LIBRARY           apparc.lib
@@ -48,6 +50,19 @@ LIBRARY		  	  efsrv.lib
 LIBRARY           estor.lib
 LIBRARY	     	  flogger.lib
 LIBRARY			  eikcoctl.lib 
+LIBRARY			  apgrfx.lib
+LIBRARY			  apengine.lib 
+LIBRARY 		  commdb.lib
+LIBRARY 		  apsettingshandlerui.lib
+LIBRARY             insock.lib
+LIBRARY             esock.lib
+
+/*
+LIBRARY             ikdlg.lib uiklaf.lib
+LIBRARY             aknnotify.lib  esock.lib
+LIBRARY             etext.lib connmon.lib
+ charconv.lib
+*/
 
 #ifndef WINSCW
 LIBRARY			syncmlclientapi.lib 
@@ -58,3 +73,5 @@ LANG SC
 CAPABILITY LocalServices NetworkServices WriteDeviceData ReadDeviceData ReadUserData WriteUserData
 SOURCEPATH ..\src
 SOURCE SyncSetting.cpp
+
+

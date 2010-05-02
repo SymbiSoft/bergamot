@@ -1,17 +1,57 @@
 rls_string STRING_syncclient_caption_string "Swim"
 rls_string STRING_sync_about "About"
 
+rls_string string_menu_new "New Sync Profile"
+rls_string string_menu_delete "Delete Sync Profile"
+
+rls_string string_get_more "Get More!"
+rls_string string_profile_name "Profile display name"
+rls_string string_server_address "Server Address"
+rls_string string_username "Username"
+rls_string string_password "Password"
+
+rls_string string_username_google_calendar "Username (you@gmail.com)"
+rls_string string_password_google_calendar "Password (your google account password)"
+
+rls_string string_view_details "View Details"
+rls_string string_next_sync "Next sync: "
+rls_string string_sync_type "Sync Type: "
+rls_string string_sync_profile "Sync Profile: "
+
+rls_string string_delete_confirmation "Are you sure you want to delete this Syncing Profile from your phone?"
+
+rls_string string_interval_hours "Sync every X hours"
+rls_string string_interval_minutes "and X minutes"
+rls_string string_sync_daily_at "Sync daily at"
+rls_string string_sync_weekly_at "Sync at"
+
+rls_string string_monday "Monday"
+rls_string string_tuesday "Tuesday"
+rls_string string_wednesday "Wednesday"
+rls_string string_thursday "Thursday"
+rls_string string_friday "Friday"
+rls_string string_saturday "Saturday"
+rls_string string_sunday "Sunday"
+
+rls_string string_google_calendar "Google Calendar"
+rls_string string_google_contacts "Google Contacts"
+rls_string string_ovi "Ovi"
+rls_string string_zyb "Vodafone 360 (Zyb)"
+rls_string string_funambol "Funambol"
+rls_string string_mobical "Mobical"
+
 rls_string STRING_r_about_title "About"
 rls_string STRING_about_text_uiq "Swim 0.40\n\nCopyright © 2007-2008,\nThe Bergamot Project\n\nhttp://bergamot.googlecode.com"
-rls_string STRING_about_text_s60 "Swim 0.50\n©2008 The Bergamot Project"
+rls_string STRING_about_text_s60 "Swim 1.00\n©2010 The Bergamot Project and SBSH Mobile Software"
 
 rls_string STRING_option_0 "Manually"
-rls_string STRING_option_1 "Every 15 minutes"
-rls_string STRING_option_2 "Every hour"
-rls_string STRING_option_3 "Every 4 hours"
-rls_string STRING_option_4 "Every 12 hours"
-rls_string STRING_option_5 "Daily"
-rls_string STRING_option_6 "Weekly"
+rls_string STRING_option_1 "Every X Interval"
+rls_string STRING_option_2 "Every 15 minutes"
+rls_string STRING_option_3 "Every hour"
+rls_string STRING_option_4 "Every 4 hours"
+rls_string STRING_option_5 "Every 12 hours"
+rls_string STRING_option_6 "Daily"
+rls_string STRING_option_7 "Weekly"
 
 rls_string STRING_no_items "No Items"
 

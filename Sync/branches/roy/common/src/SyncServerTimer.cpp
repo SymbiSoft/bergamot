@@ -6,7 +6,7 @@
 #include "SyncServerData.h"
 #include "debug.h"
 
-CSyncServerTimer::CSyncServerTimer(TSmlProfileId anId) : CTimer::CTimer(EPriorityIdle) {
+CSyncServerTimer::CSyncServerTimer(TSmlProfileId anId) : CTimer::CTimer(EPriorityIdle), hour(0), minute(0), day(ESunday) {
 	profileId = anId;
 }
 
@@ -74,6 +74,9 @@ void CSyncServerTimer::SetPeriod(int aPeriod) {
 	thePeriod = aPeriod;
 }
 
+// Recalculates data member timeToSync
+// by taking NOW (UniversalTime) and adding the "period" to it
+// Period is Never, 15 minutes, one hour etc...
 void CSyncServerTimer::RunPeriodically() {
 	DP1("RunPeriodically; thePeriod=%d", thePeriod);
 	TTime time;
@@ -83,6 +86,14 @@ void CSyncServerTimer::RunPeriodically() {
 	case ENever:
 		DP("ENever");
 		return;
+	case EInterval:
+	{
+		TTimeIntervalMinutes tmi = minute;
+		TTimeIntervalHours thi = hour;
+		time = time + tmi;
+		time = time + thi;
+		break;
+	}
 	case EFifteenMinutes: {
 		DP("EFifteenMinutes");
 		TTimeIntervalMinutes tmi;
@@ -113,16 +124,35 @@ void CSyncServerTimer::RunPeriodically() {
 	}	
 	case EDaily: {
 		DP("EDaily");
-		TTimeIntervalHours tmi;
-		tmi = 24;
-		time = time + tmi;
+		TDateTime nowDateTime = time.DateTime();
+		TDateTime syncDateTime(nowDateTime.Year(),nowDateTime.Month(),nowDateTime.Day(),hour,minute,0,0);
+		TTime syncTime(syncDateTime);
+		
+		// If the sync time has already passed
+		// we inrease by 1 day
+		if (syncTime.Int64() <= time.Int64())
+		{
+			syncTime += TTimeIntervalDays(1);
+		}
+		
+		time = syncTime;
 		break;
 	}
 	case EWeekly: {
 		DP("EWeekly");
-		TTimeIntervalDays tmi;
-		tmi = 7;
-		time = time + tmi;
+		
+		TDateTime nowDateTime = time.DateTime();
+		TDateTime syncDateTime(nowDateTime.Year(),nowDateTime.Month(),day,hour,minute,0,0);
+		TTime syncTime(syncDateTime);
+		
+		// If the sync time has already passed
+		// we inrease by 1 day
+		if (syncTime.Int64() <= time.Int64())
+		{
+			syncTime += TTimeIntervalDays(7);
+		}
+		
+		time = syncTime;
 		break;
 	}
 	default:

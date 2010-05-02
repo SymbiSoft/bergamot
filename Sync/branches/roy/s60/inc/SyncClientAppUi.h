@@ -49,7 +49,7 @@ public: // Functions from base classes
     void HandleCommandL(TInt aCommand);
 
 private:
-	
+    void RunBuyWebBrowser(const TDesC& aUrl);
 	void RunAboutDialogL();
 private: // Data members
 
