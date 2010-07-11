@@ -5,17 +5,17 @@
 
 After three years as a stand-alone project, Escarpod has now become an official Symbian platform application under the name [http://developer.symbian.org/wiki/index.php/Podcatcher_package Symbian Podcatcher] and will be included in the Symbian^3 release.
 
-Versions for previous releases of Symbian (including 3rd and 5th editions) will be provided based on the S^3 version. The UIQ version works fine and has been retired.
+Versions for previous releases of Symbian (including 3rd and 5th editions) [http://developer.symbian.org/wiki/index.php/Podcatcher_package are available from the Symbian Developer site].
 
-= Escarpod =
+For UIQ, Escarpod 1.10 is still the preferred version.
+
+= Escarpod for UIQ =
 
 http://bergamot.googlecode.com/svn/wiki/escarpod_large.jpg
 
 Escarpod is a [Podcast podcatcher] for cell phones that run the Symbian operating system.
 
 Presently Escarpod is only available for the UIQ graphical environment. This includes all newer phones in the Sony Ericsson P-, M- and G-series, as well as W950 and W960 and Motorola Z8 and Z10. See supported phones below for a list of phones Escarpod is known to work on.
-
-A version of Escarpod for the S60 graphical environment, including all Nokia N- and E-series phones is under construction and will be released shortly.
 
 Notable features include:
   
@@ -59,11 +59,6 @@ If your phone supports it, using your own wireless LAN or Bluetooth PAN are grea
 == Releases ==
 
 To download binaries of Escarpod to use on your phone, visit our [http://code.google.com/p/bergamot/downloads/list Downloads] page.
-
-  * Escarpod 1.20 (January 2009)
-    * First S60 version
-    * New SQLite based backend with massive performance and stability improvements
-    * Other improvements based on user suggestions
 
   * Escarpod 1.10 (July 29th) [http://bergamot.googlecode.com/svn/Podcast/tags/v110 code]
     * Spanish language (new)
