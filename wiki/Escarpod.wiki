@@ -1,14 +1,7 @@
 #summary The Symbian Podcatcher
 #labels Featured
 
-= Escarpod is now Symbian Podcatcher =
-
-After three years as a stand-alone project, Escarpod has now become an official Symbian platform application under the name [http://developer.symbian.org/wiki/index.php/Podcatcher_package Symbian Podcatcher] and will be included in the Symbian^3 release.
-
-Versions for previous releases of Symbian (including 3rd and 5th editions) [http://developer.symbian.org/wiki/index.php/Podcatcher_package are available from the Symbian Developer site].
-
-For UIQ, Escarpod 1.10 is still the preferred version.
-
+*This page is about Escarpod for UIQ. For the Symbian/S60 version called Podcatcher, please visit the [https://projects.forum.nokia.com/podcatcher Forum Nokia project].
 = Escarpod for UIQ =
 
 http://bergamot.googlecode.com/svn/wiki/escarpod_large.jpg
