@@ -1,5 +1,11 @@
 #summary Older news postings, for tracking purposes.
 
+  * 2009-12-14 - Updated Escarpod with a new 10 year certificate.
+  * 2009-10-30 - A prototype of [ForYourEarsOnly For Your Ears Only] is available [http://code.google.com/p/bergamot/downloads/list for download].
+  * 2009-10-11 - Finally posted an alpha of the [http://code.google.com/p/bergamot/downloads/list S60 version of Escarpod]. It is not stable and should only be used for testing.
+  * 2009-09-01 - I'm starting my new employment with Symbian Foundation. As I have no programming duties, I might have more energy to work on my projects here.
+  * 2009-08-23 - My [http://tantapanna.com/osmwidget.png simple WRT app] for Open Street Map is now running in the emulator, but not on device.
+  * 2009-07-23 - After many months of inactivity, the project will now resume, and the S60 version of Escarpod should be out soon!
   * 2008-11-29 - [Escarpod] 1.10 has been updated with new certificate, it now installs again!
   * 2008-11-17 - [Swim] 0.41 for S60 fixes the "every 30 minute sync" bug.
   * 2008-11-06 - [Swim] 0.40 has been released with support for both S60 and UIQ!
