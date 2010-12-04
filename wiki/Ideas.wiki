@@ -1,4 +1,3 @@
-#labels Featured
 == Future Project Ideas ==
 
 There are many programs that need to be written for Symbian. Some ideas that come to mind are:
