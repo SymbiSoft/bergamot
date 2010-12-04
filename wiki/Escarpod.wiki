@@ -1,14 +1,12 @@
-#summary The Symbian Podcatcher
+#summary The UIQ Podcatcher
 #labels Featured
 
-*This page is about Escarpod for UIQ. For the Symbian/S60 version called Podcatcher, please visit the [https://projects.forum.nokia.com/podcatcher Forum Nokia project].
+*Note:* This page is about Escarpod for UIQ. For the Symbian and S60 version called Podcatcher, please visit the [https://projects.forum.nokia.com/podcatcher Forum Nokia project].
 = Escarpod for UIQ =
 
 http://bergamot.googlecode.com/svn/wiki/escarpod_large.jpg
 
-Escarpod is a [Podcast podcatcher] for cell phones that run the Symbian operating system.
-
-Presently Escarpod is only available for the UIQ graphical environment. This includes all newer phones in the Sony Ericsson P-, M- and G-series, as well as W950 and W960 and Motorola Z8 and Z10. See supported phones below for a list of phones Escarpod is known to work on.
+Escarpod is a [Podcast podcatcher] for cell phones that run the UIQ operating system. This includes all newer phones in the Sony Ericsson P-, M- and G-series, as well as W950 and W960 and Motorola Z8 and Z10. See supported phones below for a list of phones Escarpod is known to work on.
 
 Notable features include:
   
@@ -53,7 +51,7 @@ If your phone supports it, using your own wireless LAN or Bluetooth PAN are grea
 
 To download binaries of Escarpod to use on your phone, visit our [http://code.google.com/p/bergamot/downloads/list Downloads] page.
 
-  * Escarpod 1.10 (July 29th) [http://bergamot.googlecode.com/svn/Podcast/tags/v110 code]
+  * Escarpod 1.10 (July 29th 2008) [http://bergamot.googlecode.com/svn/Podcast/tags/v110 code]
     * Spanish language (new)
     * Polish language fixed
     * Updated Estonian language
@@ -61,7 +59,7 @@ To download binaries of Escarpod to use on your phone, visit our [http://code.go
     * M3U import function for audio books
     * Refusal to start when no memory stick bug fixed
 
-  * Escarpod 1.00 (May 22th) [http://bergamot.googlecode.com/svn/Podcast/tags/v100 code]
+  * Escarpod 1.00 (May 22th 2008) [http://bergamot.googlecode.com/svn/Podcast/tags/v100 code]
     * Audio book improvements
     * Bug fixes
 
@@ -94,7 +92,7 @@ All UIQ 3 based phones should work, however Escarpod has been specifically teste
 
 == Why Escarpod? ==
 
-The name Escarpod is a pun on the french Escargot, meaning snail, and also used for cooked snails is many other languages. Apart from being a cutesy name allowing the nice little icon, downloading podcasts over cell phone networks is at best done at snail's pace.
+The name Escarpod is a pun on the french Escargot, meaning snail, and also used for cooked snails is many other languages. Apart from being a cutesy name allowing the nice little icon, downloading podcasts over cell phone networks is at best done at snail's pace. Ok, that's not a very good reason.
 
 == Feature suggestions ==
 
@@ -114,9 +112,3 @@ We have our own international [PodcastFeeds short list of good feeds].
 == License ==
 
 Escarpod is licensed under the [http://www.gnu.org/licenses/gpl-3.0.html GPL version 3] open source license.
-
-== Donations ==
-
-You can donate using !PayPal:
-
-[https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=teknolog%40gmail%2ecom&item_name=The%20Bergamot%20Project&no_shipping=0&no_note=1&tax=0&currency_code=EUR&lc=SE&bn=PP%2dDonationsBF&charset=UTF%2d8 https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif]
