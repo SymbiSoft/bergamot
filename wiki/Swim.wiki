@@ -4,7 +4,7 @@ http://bergamot.googlecode.com/svn/wiki/swimicon.jpg
 
 = Swim =
 
-Swim is a utility for automatic periodic synchronization of data with internet servers such as Google Calendar (through [http://www.goosync.com/ GooSync]), [http://www.mobical.net Mobical], [http://zyb.com Zyb], [http://www.scheduleworld.com ScheduleWorld], [http://ovi.com/ Ovi] or any system running [http://www.funambol.com Funambol]. It makes use of the existing SyncML support in the system, and adds timing capabilities, something both UIQ and S60 mysteriously lack! You can set it to sync your data every 15 minutes, every hour, every 4 hours, every 12 hours, daily, or weekly.
+Swim is a utility for automatic periodic synchronization of data with internet servers such as Google Calendar (through [http://www.goosync.com/ GooSync]), [http://www.mobical.net Mobical], [http://zyb.com Zyb], [http://www.scheduleworld.com ScheduleWorld], [http://www.syncgcal.com/ syncgcal], [http://ovi.com/ Ovi] or any system running [http://www.funambol.com Funambol]. It makes use of the existing SyncML support in the system, and adds timing capabilities, something both UIQ and S60 mysteriously lack! You can set it to sync your data every 15 minutes, every hour, every 4 hours, every 12 hours, daily, or weekly.
 
 Swim is now available for UIQ 3, S60 3rd, _3rd FP2 and S60 5th edition (Symbian^1)_. Thanks to _kuldippujara_ for hints how to do it.
 
