@@ -1,7 +1,7 @@
 #summary The UIQ Podcatcher
 #labels Featured
 
-*Note:* This page is about Escarpod for UIQ. For the Symbian and S60 version called Podcatcher, please visit the [https://projects.forum.nokia.com/podcatcher Forum Nokia project].
+*Note:* This page is about Escarpod for UIQ. For the Symbian and S60 version called Podcatcher, please [http://store.ovi.com/content/99315 get it from the Ovi store], or visit the [https://projects.forum.nokia.com/podcatcher Forum Nokia project].
 = Escarpod for UIQ =
 
 http://bergamot.googlecode.com/svn/wiki/escarpod_large.jpg
