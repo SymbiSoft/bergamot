@@ -78,6 +78,11 @@ RESOURCE MENU_PANE r_helloworldbasic_menu
         // added the new Options menu command here
         MENU_ITEM
                 {
+                command = ECmdHelp;
+                txt = STRING_sync_help;
+                },
+        MENU_ITEM
+                {
                 command = ECmdAbout;
                 txt = STRING_sync_about;
                 }
@@ -167,34 +172,46 @@ RESOURCE LOCALISABLE_APP_INFO r_syncclient_localisable_app_info
         caption = STRING_syncclient_caption_string;
 
         number_of_icons = 1;
-	   	icon_file = "\\resource\\apps\\SyncClientS60_0xE0983804.mif";
+	   	icon_file = "\\resource\\apps\\SyncClientS60_0x200409D8.mif";
 	    };
     }
 
-RESOURCE TBUF r_about_text { buf=STRING_about_text; }
+RESOURCE DIALOG r_show_info_note
+{
+   flags = EAknDialogGenericQueryFlags | EEikDialogFlagNoBorder | EEikDialogFlagNoShadow;
+   buttons = R_AVKON_SOFTKEYS_OK_EMPTY;
+   items=
+   {
+  
+      DLG_LINE 
+      {
+      	 type = EAknCtPopupHeadingPane;
+      	 id = EAknMessageQueryHeaderId;
+         itemflags = EEikDlgItemNonFocusing;
+         control = AVKON_HEADING
+         {
+		headinglayout=R_AVKON_LIST_HEADING_PANE_POPUPS;		
+         };
+      },  
+      DLG_LINE
+      {
+         type = EAknCtMessageQuery;
+         id = EAknMessageQueryContentId;
+         control = AVKON_MESSAGE_QUERY
+         {
+          
+         };
+      }
+   };
+}
+
+RESOURCE TBUF r_about_body { buf=STRING_about_body; }
+RESOURCE TBUF r_about_title { buf=STRING_about_title; }
+
 RESOURCE TBUF r_no_items_text { buf=STRING_no_items; }
 RESOURCE TBUF r_navi_text { buf = STRING_navi_text; }
+RESOURCE TBUF r_no_profiles { buf = STRING_no_profiles; }
 
-RESOURCE DIALOG r_dlg_about
-    {
-    flags = EAknInformationNoteFlags;
-    items =
-        {
-        DLG_LINE
-            {
-            type = EAknCtNote;
-            id = EDlgMeLookupAbout;
-            control = AVKON_NOTE
-                {
-                layout = ENoteWithImageLayout;
-                singular_label = STRING_about_text_s60; 
-                imagefile = "\\resource\\apps\\SyncClientS60_0xE0983804.mif"; 
-                imageid = EMbmSyncclients60Swimicon;
-                imagemask = EMbmSyncclients60Swimicon_mask;
-                };
-            }
-        };
-    }
 
 // End of File
 

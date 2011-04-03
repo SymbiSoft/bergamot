@@ -1,14 +1,14 @@
 #include "SyncClient_english.rls"
 #include <appinfo.rh>
-#include <SyncClientS60_0xE0983804.rsg>
+#include <SyncClientS60_0x200409D8.rsg>
 
 UID2 KUidAppRegistrationResourceFile
-UID3 0xE0983804
+UID3 0x200409D8
 
 RESOURCE APP_REGISTRATION_INFO
   {
-  app_file="SyncClientS60_0xE0983804";
-  localisable_resource_file = "\\resource\\apps\\SyncClientS60_0xE0983804";
+  app_file="SyncClientS60_0x200409D8";
+  localisable_resource_file = "\\resource\\apps\\SyncClientS60_0x200409D8";
   localisable_resource_id = R_SYNCCLIENT_LOCALISABLE_APP_INFO;
 
   embeddability=KAppNotEmbeddable;
