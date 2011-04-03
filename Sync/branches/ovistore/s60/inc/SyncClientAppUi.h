@@ -52,7 +52,7 @@ protected:
     void HandleStatusPaneSizeChange();
     
 private:
-	
+    CArrayFix<TCoeHelpContext>* HelpContextL() const;
 	void RunAboutDialogL();
 	void ShowHelp();
 private: // Data members

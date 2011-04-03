@@ -48,6 +48,7 @@ LIBRARY		  	  efsrv.lib
 LIBRARY           estor.lib
 LIBRARY	     	  flogger.lib
 LIBRARY			  eikcoctl.lib 
+LIBRARY			  hlplch.lib
 
 #ifndef WINSCW
 LIBRARY			syncmlclientapi.lib 

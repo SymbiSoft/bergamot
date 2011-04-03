@@ -6,6 +6,11 @@
 #include <aknnotedialog.h> 
 #include "debug.h"
 #include <SyncClientS60_0x200409D8.rsg>
+#include <aknmessagequerydialog.h>
+#include <hlplch.h>  // HlpLauncher
+#include "..\help\help.hlp.hrh"
+
+const TUid KUidHelpFile = {0x200409D8};  // From the help file
 
 // ================= MEMBER FUNCTIONS =======================
 
@@ -92,18 +97,32 @@ void CSyncClientAppUi::HandleCommandL(TInt aCommand)
 
 void CSyncClientAppUi::ShowHelp()
 	{
-	
+	CArrayFix <TCoeHelpContext>* buf = CCoeAppUi::AppHelpContextL();
+	    HlpLauncher::LaunchHelpApplicationL(iEikonEnv->WsSession(), buf);
 	}
 
 void CSyncClientAppUi::RunAboutDialogL()
 {
-    // Create dialog
-	CAknNoteDialog* dlg = new(ELeave) CAknNoteDialog(
-	    CAknNoteDialog::EConfirmationTone,
-	    CAknNoteDialog::ELongTimeout);
-    CleanupStack::PushL(dlg);
+	HBufC *aboutTextTitle = iEikonEnv->AllocReadResourceLC(R_ABOUT_TITLE);
+	HBufC *aboutTextBody = iEikonEnv->AllocReadResourceLC(R_ABOUT_BODY);
+	
+	CAknMessageQueryDialog* note = new ( ELeave ) CAknMessageQueryDialog(aboutTextBody, aboutTextTitle );
+						
+	note->PrepareLC( R_SHOW_INFO_NOTE ); // Adds to CleanupStack
+	note->RunLD();
 
-    // Show dialog
-    CleanupStack::Pop(dlg);
-    dlg->ExecuteLD(R_DLG_ABOUT);
+	CleanupStack::Pop(aboutTextBody);
+	CleanupStack::Pop(aboutTextTitle);
 }
+
+CArrayFix <TCoeHelpContext>* CSyncClientAppUi::HelpContextL() const
+    {
+    CArrayFixFlat <TCoeHelpContext>* array =
+        new (ELeave) CArrayFixFlat <TCoeHelpContext>(1);
+    CleanupStack::PushL(array);
+    // KContextApplication below should refer to the context declared in
+    // help.rtf
+    array->AppendL(TCoeHelpContext(KUidHelpFile, KGettingStarted));
+    CleanupStack::Pop(array);
+    return array;
+    }
