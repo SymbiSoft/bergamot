@@ -1,0 +1,20 @@
+%{"Bergamot Project"}
+:"Bergamot Project"
+#{"Swim"}, (0xE0983805), 0, 50, 0, TYPE=SA
+[0x101F7961], 0, 0, 0, {"Series60ProductID"}
+[0x1028315F], 0, 0, 0, {"Series60ProductID"}
+
+"\epoc32\release\gcce\urel\SyncServer.exe"-"c:\sys\bin\SyncServer.exe"
+
+"\epoc32\data\z\resource\apps\SyncClientS60.rsc"-"c:\resource\apps\SyncClientS60.rsc"
+"\epoc32\data\z\resource\apps\SyncClientS60.mif"-"c:\resource\apps\SyncClientS60.mif"
+"\epoc32\Data\z\private\10003a3f\import\apps\SyncClientS60_reg.rsc"-"c:\private\10003a3f\import\apps\SyncClientS60_reg.rsc"
+
+; settings to be removed on uninstall
+""-"c:\private\e0983802\config.dat",FN
+
+; auto start file
+"\epoc32\data\E0983805.rsc"- "c:\private\101f875a\import\[E0983805].rsc"
+
+; application UI
+"\epoc32\release\gcce\urel\SyncClientS60.exe"-"c:\sys\bin\SyncClientS60.exe", FR, RI

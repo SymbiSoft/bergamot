@@ -1,0 +1,200 @@
+
+//  RESOURCE IDENTIFIER
+NAME SWIM    // 4 letter ID
+
+
+//  INCLUDES
+#include <eikon.rh>
+#include <avkon.rh>
+#include <avkon.rsg>
+#include <appinfo.rh>
+#include "SyncClientS60.hrh"
+#include "SyncClient_english.rls"
+#include <SyncClientS60.mbg>
+
+//  RESOURCE DEFINITIONS
+// -----------------------------------------------------------------------------
+//
+//    Define the resource file signature
+//    This resource should be empty.
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE RSS_SIGNATURE
+    {
+    }
+
+// -----------------------------------------------------------------------------
+//
+//    Default Document Name
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE TBUF r_default_document_name
+    {
+    buf="HEWB";
+    }
+
+// -----------------------------------------------------------------------------
+//
+//    Define default menu and CBA key.
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE EIK_APP_INFO
+    {
+    menubar = r_helloworldbasic_menubar;
+    cba = R_AVKON_SOFTKEYS_OPTIONS_EXIT;
+    }
+
+
+// -----------------------------------------------------------------------------
+//
+//   r_helloworldbasic_menubar
+//   Menubar for HelloWorldBasic example
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE MENU_BAR r_helloworldbasic_menubar
+    {
+    titles =
+        {
+        MENU_TITLE { menu_pane = r_helloworldbasic_menu; }
+        };
+    }
+
+
+// -----------------------------------------------------------------------------
+//
+//   r_helloworldbasic_menu
+//   Menu for "Options"
+//
+// -----------------------------------------------------------------------------
+//
+RESOURCE MENU_PANE r_helloworldbasic_menu
+    {
+    items =
+        {
+        // added the new Options menu command here
+        MENU_ITEM
+                {
+                command = ECmdAbout;
+                txt = STRING_sync_about;
+                }
+        
+        };
+    }
+
+
+// ---------------------------------------------------------
+//   
+//   SETTING ITEM LIST
+//
+// ---------------------------------------------------------
+//
+RESOURCE AVKON_SETTING_ITEM_LIST r_entry_settings_list
+	{
+	title = "Example";
+	}
+	
+
+// ---------------------------------------------------------
+//   
+//   ENUMERATED TEXT SETTING PAGE
+//
+// ---------------------------------------------------------
+//
+
+
+RESOURCE AVKON_SETTING_PAGE r_enumeratedtext_setting_page
+	{
+	type = EAknCtPopupSettingList;
+	editor_resource_id = r_popup_setting_list;
+	}
+	
+RESOURCE POPUP_SETTING_LIST r_popup_setting_list
+    {
+	flags = 0;
+    }
+    
+RESOURCE AVKON_POPUP_SETTING_TEXTS r_popup_setting_texts
+	{
+    setting_texts_resource = r_texts;
+    popped_up_texts_resource = r_texts_popped_up;
+
+	}
+	
+RESOURCE ARRAY r_texts
+    {
+    items =
+        {
+        AVKON_ENUMERATED_TEXT { value=0; text = STRING_option_0;},
+        AVKON_ENUMERATED_TEXT { value=1; text = STRING_option_1;},
+        AVKON_ENUMERATED_TEXT { value=2; text = STRING_option_2;},
+        AVKON_ENUMERATED_TEXT { value=3; text = STRING_option_3;},
+        AVKON_ENUMERATED_TEXT { value=4; text = STRING_option_4;},
+        AVKON_ENUMERATED_TEXT { value=5; text = STRING_option_5;},
+        AVKON_ENUMERATED_TEXT { value=6; text = STRING_option_6;}
+        };
+    }    
+
+RESOURCE ARRAY r_texts_popped_up
+    {
+    items =
+        {
+        LBUF { txt = STRING_option_0; },
+        LBUF { txt = STRING_option_1; },
+        LBUF { txt = STRING_option_2; },
+        LBUF { txt = STRING_option_3; },
+        LBUF { txt = STRING_option_4; },
+        LBUF { txt = STRING_option_5; },
+        LBUF { txt = STRING_option_6; }
+        };
+    }
+
+// ---------------------------------------------------------------------------- 
+//
+// r_helloworldbasic_localisable_app_info
+//
+// ---------------------------------------------------------------------------- 
+//
+RESOURCE LOCALISABLE_APP_INFO r_syncclient_localisable_app_info
+    {
+    short_caption = STRING_syncclient_caption_string;
+    caption_and_icon = 
+    CAPTION_AND_ICON_INFO
+        {
+        caption = STRING_syncclient_caption_string;
+
+        number_of_icons = 1;
+	   	icon_file = "\\resource\\apps\\SyncClientS60_0xE0983804.mif";
+	    };
+    }
+
+RESOURCE TBUF r_about_text { buf=STRING_about_text; }
+RESOURCE TBUF r_no_items_text { buf=STRING_no_items; }
+RESOURCE TBUF r_navi_text { buf = STRING_navi_text; }
+
+RESOURCE DIALOG r_dlg_about
+    {
+    flags = EAknInformationNoteFlags;
+    items =
+        {
+        DLG_LINE
+            {
+            type = EAknCtNote;
+            id = EDlgMeLookupAbout;
+            control = AVKON_NOTE
+                {
+                layout = ENoteWithImageLayout;
+                singular_label = STRING_about_text_s60; 
+                imagefile = "\\resource\\apps\\SyncClientS60_0xE0983804.mif"; 
+                imageid = EMbmSyncclients60Swimicon;
+                imagemask = EMbmSyncclients60Swimicon_mask;
+                };
+            }
+        };
+    }
+
+// End of File
+

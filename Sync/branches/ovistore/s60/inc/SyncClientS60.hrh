@@ -1,0 +1,20 @@
+
+#ifndef __SYNCCLIENT_HRH__
+#define __SYNCCLIENT_HRH__
+
+// HelloWorldBasic enumerate command codes
+enum THelloWorldBasicIds
+    {
+    EHelloWorldBasicCommand1 = 0x6001, // start value must not be 0
+    EHelloWorldBasicCommand2,
+    ESyncSettingItem,
+    EDlgMeLookupAbout,
+    ECmdHelp,
+    ECmdAbout
+    };
+
+#define KMaxTextLength 50
+#define KMaxPasswordLength 50
+#define KDefaultVolume 5
+
+#endif
