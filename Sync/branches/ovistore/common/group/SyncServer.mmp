@@ -8,6 +8,11 @@ EPOCHEAPSIZE	  0x5000 0x20000
 
 SYSTEMINCLUDE   \epoc32\include
 
+// for Symbian 3
+SYSTEMINCLUDE     \epoc32\include\mw
+SYSTEMINCLUDE     \epoc32\include\platform
+SYSTEMINCLUDE     \epoc32\include\platform\mw
+
 SOURCEPATH      ..\src
 USERINCLUDE     ..\inc
 

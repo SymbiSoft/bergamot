@@ -258,7 +258,8 @@ void CSyncClientAppView::ShowSyncProfiles() {
 				DP2("DisplayName: %S, period=%d", &profile.DisplayName(), period);
 		
 				if(profile.DisplayName().Compare(_L("PC Suite")) != 0 &&
-					profile.DisplayName().Compare(_L("Lifeblog")) != 0) {
+					profile.DisplayName().Compare(_L("Lifeblog")) != 0 &&
+					profile.DisplayName().Compare(_L("AutoSync Profile")) != 0) {
 					int selection = 0;
 					if (period != -1) {
 						selection = period;

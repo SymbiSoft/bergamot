@@ -6,6 +6,12 @@ EPOCSTACKSIZE 81920
 EPOCHEAPSIZE 1024000 32768000
 
 SYSTEMINCLUDE     \epoc32\include
+
+// for Symbian 3
+SYSTEMINCLUDE     \epoc32\include\mw
+SYSTEMINCLUDE     \epoc32\include\platform
+SYSTEMINCLUDE     \epoc32\include\platform\mw
+
 USERINCLUDE       ..\inc
 USERINCLUDE		..\..\common\inc
 

@@ -97,8 +97,8 @@ void CSyncClientAppUi::HandleCommandL(TInt aCommand)
 
 void CSyncClientAppUi::ShowHelp()
 	{
-	CArrayFix <TCoeHelpContext>* buf = CCoeAppUi::AppHelpContextL();
-	    HlpLauncher::LaunchHelpApplicationL(iEikonEnv->WsSession(), buf);
+	CArrayFix <TCoeHelpContext>* buf = HelpContextL();
+	HlpLauncher::LaunchHelpApplicationL(iEikonEnv->WsSession(), buf);
 	}
 
 void CSyncClientAppUi::RunAboutDialogL()
@@ -122,7 +122,11 @@ CArrayFix <TCoeHelpContext>* CSyncClientAppUi::HelpContextL() const
     CleanupStack::PushL(array);
     // KContextApplication below should refer to the context declared in
     // help.rtf
-    array->AppendL(TCoeHelpContext(KUidHelpFile, KGettingStarted));
+    if (iAppView->iProfiles == 0) {
+    	array->AppendL(TCoeHelpContext(KUidHelpFile, KSettingUpProfiles));
+    } else {
+        array->AppendL(TCoeHelpContext(KUidHelpFile, KSettingInterval));
+    }
     CleanupStack::Pop(array);
     return array;
     }

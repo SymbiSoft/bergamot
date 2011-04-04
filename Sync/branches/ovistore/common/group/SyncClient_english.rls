@@ -14,7 +14,7 @@ rls_string STRING_option_6 "Weekly"
 
 rls_string STRING_no_items "No Items"
 
-rls_string STRING_navi_text "Remote Sync Timer"
+rls_string STRING_navi_text "Data transfer profiles"
 
 rls_string STRING_no_profiles "(Set up profiles in Data transfer settings)"
 rls_string STRING_sync_help "Help"

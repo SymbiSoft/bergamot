@@ -80,6 +80,7 @@ private: // Data members
 	CAknSettingItemList* iItemList;
 	RSyncServerSession serverSession;
 	RArray<TSmlProfileId> lastViewProfiles;
+public:
 	int iProfiles;
     };
 
