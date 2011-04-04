@@ -10,6 +10,8 @@
 #define __HELP_HLP_HRH__
 
 
-_LIT(KGettingStarted,"GettingStarted"); //with a comment
+_LIT(KOverview,"Overview"); //with a comment
+_LIT(KSettingInterval,"SettingInterval"); //with a comment
+_LIT(KSettingUpProfiles,"SettingUpProfiles"); //with a comment
 
 #endif
