@@ -8,6 +8,8 @@ Swim is a utility for automatic periodic synchronization of data with internet s
 
 Swim is now available for UIQ 3, S60 3rd, _3rd FP2 and S60 5th edition (Symbian^1)_. Thanks to _kuldippujara_ for hints how to do it.
 
+You can get Swim for Nokia phones [http://store.ovi.com/content/114419?clickSource=publisher+channel in the Ovi store].
+
 == Screenshots ==
 
 ===On Sony Ericsson G900===
@@ -72,6 +74,8 @@ Many people are asking where to specify which data connection to use.
 == Releases ==
 
 The complete source code is found in the [http://bergamot.googlecode.com/svn/Sync/trunk subversion repository]. Compiled binaries for each release can be found on our [http://code.google.com/p/bergamot/downloads/list Downloads page]. Note that the unsigned binaries are unusable without signing them yourself!
+
+*You can get Swim for Nokia phones [http://store.ovi.com/content/114419?clickSource=publisher+channel in the Ovi store].*
 
   * 0.50 (2009-12-22) [http://bergamot.googlecode.com/svn/Sync/tags/v050 Source]
     * *Support for S60 3rd FP2 and S60 5th ed*
