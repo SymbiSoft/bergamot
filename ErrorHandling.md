@@ -1,0 +1,1 @@
+Moved to http://developer.symbian.org/wiki/index.php/Podcatcher_package/Error_Handling

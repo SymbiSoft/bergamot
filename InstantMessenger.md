@@ -1,0 +1,1 @@
+Presently UIQ lacks a good free IM client. By porting libpurple (previously libgaim) we would get access to almost all popular IM services.

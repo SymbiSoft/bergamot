@@ -1,0 +1,1 @@
+The standard stand-by screen on my P1i is pretty lacking. This could be improved.
